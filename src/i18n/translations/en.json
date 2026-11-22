@@ -64,6 +64,8 @@
     "alreadyHaveAccount": "Already have an account?",
     "registerCta": "Create Free Account",
     "loginCta": "Sign In",
+    "continueWithGoogle": "Continue with Google",
+    "or": "OR",
     "orContinueAs": "Or explore without account",
     "continueAsGuest": "Continue as Guest Farmer",
     "passwordMismatch": "Passwords do not match.",

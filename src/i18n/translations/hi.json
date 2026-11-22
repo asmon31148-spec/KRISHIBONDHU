@@ -64,6 +64,8 @@
     "alreadyHaveAccount": "पहले से खाता है?",
     "registerCta": "निःशुल्क खाता बनाएं",
     "loginCta": "लॉग इन करें",
+    "continueWithGoogle": "गूगल के साथ जारी रखें",
+    "or": "या",
     "orContinueAs": "या बिना खाते के आगे बढ़ें",
     "continueAsGuest": "अतिथि किसान के रूप में जारी रखें",
     "passwordMismatch": "दोनों पासवर्ड मेल नहीं खाते।",

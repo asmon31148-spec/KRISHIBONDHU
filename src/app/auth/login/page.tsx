@@ -11,6 +11,7 @@ import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '@/com
 import { Input } from '@/components/ui/Input';
 import { Button } from '@/components/ui/Button';
 import { Sprout, AlertCircle } from 'lucide-react';
+import { GoogleSignInButton } from '@/components/auth/GoogleSignInButton';
 
 export default function LoginPage() {
   const { t } = useTranslation();
@@ -136,6 +137,17 @@ export default function LoginPage() {
               {t('auth.loginCta')}
             </Button>
           </form>
+
+          <div className="relative my-5">
+            <div className="absolute inset-0 flex items-center">
+              <div className="w-full border-t border-cream-200" />
+            </div>
+            <div className="relative flex justify-center text-xs uppercase">
+              <span className="bg-white px-2 text-brand-dark/50 font-bold">{t('auth.or')}</span>
+            </div>
+          </div>
+
+          <GoogleSignInButton redirectTo="/auth/callback" />
 
           <div className="mt-6 pt-4 border-t border-cream-200 text-center space-y-3">
             <p className="text-xs text-brand-dark/70">

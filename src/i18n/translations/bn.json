@@ -64,6 +64,8 @@
     "alreadyHaveAccount": "ইতিমধ্যেই অ্যাকাউন্ট আছে?",
     "registerCta": "বিনামূল্যে অ্যাকাউন্ট তৈরি করুন",
     "loginCta": "লগইন করুন",
+    "continueWithGoogle": "গুগল দিয়ে প্রবেশ করুন",
+    "or": "অথবা",
     "orContinueAs": "অথবা অ্যাকাউন্ট ছাড়াই চালিয়ে যান",
     "continueAsGuest": "অতিথি কৃষক হিসেবে চালিয়ে যান",
     "passwordMismatch": "দুটি পাসওয়ার্ড মিলছে না।",
