@@ -123,12 +123,75 @@
 
 ---
 ## Phase 5: Weather, Location, News and Notifications
-- **Status**: NOT STARTED
+- **Status**: COMPLETED
+- **Started**: 2026-11-22
+- **Completed**: 2026-11-22
+- **What Works**:
+  - Live Open-Meteo Weather integration (`src/lib/weather/open-meteo.ts`, `/api/weather`, `/weather`) with 30-minute server caching.
+  - Multi-location selector covering all major West Bengal agricultural districts (Purba/Paschim Bardhaman, Hooghly, Nadia, Murshidabad, Birbhum, Bankura, Medinipur, Malda, Jalpaiguri, etc.) + HTML5 GPS Geolocation detection.
+  - Current meteorological parameters: temperature, feels like, condition description, humidity %, 1-hour rainfall mm, wind speed km/h, and cloud cover %.
+  - 3 Science-backed Agronomic Insights:
+    1. Pesticide Spraying Window: Evaluates precipitation and wind velocity (calm < 15 km/h -> Optimal; moderate -> Marginal; active rain or > 18 km/h wind -> Unfavorable).
+    2. Irrigation Guidance: Analyzes 72-hour cumulative precipitation forecast (holds irrigation if > 20 mm expected to prevent waterlogging and root rot).
+    3. Fungal Pathogen / Late Blight Alert: Detects critical microclimate triggers (> 85% relative humidity + 14-23°C temperature).
+  - 7-Day Agricultural Forecast cards displaying max/min temperatures, precipitation sums, and conditions.
+  - Real Agriculture News Aggregator (`src/lib/news/aggregator.ts`, `/api/news`, `/news`): Fetches verified dispatches from Press Information Bureau (PIB) Agriculture, ICAR, and Government of West Bengal with 1-hour cache.
+  - Category filters (Schemes, Agronomy & Tech, Fertilizers, Mandi Rates) and search engine.
+  - Article bookmarking for signed-in farmers into `news_bookmarks` table.
+  - In-app Notification Center (`/dashboard/notifications`, `/api/notifications`) triggered strictly by active weather warnings and real farm events.
+- **What Was Tested**:
+  - Vitest test suite (`src/__tests__/phase5.test.ts`): All 5 tests passed (WMO weather code mapping, spraying window rule evaluations, fungal disease risk triggers, news category filtering and keyword search).
+  - Vitest total: 28 passing tests across 5 suites.
+  - Next.js production build (`npm run build`): Successfully compiled 30 routes with zero TypeScript or ESLint errors.
+- **Phase 5 Honesty Report**:
+  - Fake weather: 0% (Live Open-Meteo API).
+  - Fake news: 0% (Authentic PIB, ICAR, and agricultural release URLs).
+  - Fake notifications: 0% (Driven by evaluated weather conditions and real farmer triggers).
+- **Pending for Phase 6**:
+  - AI Yield Prediction model (`/yield`) using transparent published crop baselines adjusted by soil NPK, irrigation, weather, and health
+  - Unit conversions between Acres, Hectares, Bigha, and Katha
+  - Historical harvest logging and estimated vs actual yield comparison
+  - Analytics dashboards and interactive Recharts charts (`/analytics`): scan trends, disease distribution, yield trends, crop comparisons
+  - Downloadable agronomy PDF reports
 
 ---
 ## Phase 6: Yield Prediction, Analytics, Charts and Reports
-- **Status**: NOT STARTED
+- **Status**: COMPLETED
+- **Started**: 2026-11-22
+- **Completed**: 2026-11-22
+- **What Works**:
+  - Empirical Agronomic Yield Prediction Engine (`src/lib/yield/engine.ts`): Built upon transparent, published Indian Council of Agricultural Research (ICAR) & BCKV baseline regional yields (Rice Aman/Boro, Potato, Jute, Mustard, Brinjal, Tomato, Wheat).
+  - Multi-variable empirical calibration:
+    - Crop Health multiplier (1.0 healthy, 0.85 needs attention, 0.68 diseased).
+    - Irrigation efficiency multiplier (1.15 drip, 1.08 sprinkler, 1.04 tube well, 0.88 rainfed).
+    - Soil N-P-K nutrient factors based on soil test inputs.
+    - Soil pH acidity/alkalinity penalty factor (optimal 6.2-7.4, penalties for < 5.8 or > 8.0).
+  - Regional Bengal land conversions: Calculations yield output in tons/acre, tons/bigha, and kg/katha (`1 Bigha = 20 Katha = 0.3305785 Acres`).
+  - Transparent confidence scoring (65% to 95%) and harvest date calculation based on crop duration.
+  - Interactive Yield Projection Tool (`/yield`, `/api/yield/predict`): Crop selector, acreage & unit picker, irrigation type, crop health, soil test parameters, and automated crop database linking via query parameters (`?crop_id=...`).
+  - Actual Harvest logging (`/api/yield/actual`) storing historical yields for variance tracking against projections.
+  - Farmer Analytics Dashboard (`/analytics`):
+    - Recharts interactive disease severity distribution pie chart.
+    - Recharts cultivated crop acreage breakdown bar chart.
+    - Recharts predicted vs actual harvest yield comparison chart.
+    - Zero fake data: if a farmer has no scans or crops, displays clean empty states with call-to-actions to scan a crop or record a plot.
+    - Print and export official summary feature.
+- **What Was Tested**:
+  - Vitest test suite (`src/__tests__/phase6.test.ts`): All 6 tests passed (ICAR baselines, optimal predictions, disease/rainfed penalties, West Bengal Bigha/Katha conversions, soil pH and nutrient adjustments, harvest date projections).
+  - Vitest total: 34 passing tests across 6 suites.
+  - Next.js production build (`npm run build`): Successfully compiled and prerendered 34 routes with zero TypeScript or ESLint errors.
+- **Phase 6 Honesty Report**:
+  - Mock yield data: 0% (Uses transparent empirical ICAR baselines and user inputs; actual harvest comparisons query real database records).
+  - Hardcoded analytics: 0% (Dynamic charts derived directly from user's live crop and scan records).
+  - Dead buttons: 0% (Calculate, Print Report, Add Crop, and New Scan are fully wired).
+- **Pending for Phase 7**:
+  - Comprehensive Security Audit (`SECURITY.md`) and RLS test verification (`src/__tests__/security.test.ts`)
+  - Accessibility audit (WCAG AA contrast, 44px touch targets, screen reader labels, reduced-motion)
+  - Performance audit (PWA caching, lazy loading, image canvas compression, API caching)
+  - Full production README.md documentation and deployment guide
+  - Final end-to-end verification and testing
 
 ---
 ## Phase 7: Security Review, Accessibility, Performance, Testing and Bug Fixing
-- **Status**: NOT STARTED
+- **Status**: IN PROGRESS
+- **Started**: 2026-11-22
