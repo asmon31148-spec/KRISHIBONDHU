@@ -9,7 +9,7 @@ export class OpenRouterVisionAdapter implements AiProviderAdapter {
       throw new Error('OpenRouter API key is not configured.');
     }
 
-    const model = process.env.OPENROUTER_VISION_MODEL || 'google/gemini-2.0-flash-001';
+    const model = process.env.OPENROUTER_VISION_MODEL || 'openrouter/free';
     const lang = request.language || 'en';
 
     const systemPrompt = `You are a plant pathologist. Return strictly JSON crop diagnosis. Language: ${lang}.
