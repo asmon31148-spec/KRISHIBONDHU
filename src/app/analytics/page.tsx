@@ -160,7 +160,7 @@ export default function AnalyticsPage() {
   };
 
   return (
-    <div className="space-y-6 max-w-6xl mx-auto text-left print:m-0">
+    <div className="space-y-6 w-full text-left print:m-0">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
           <h1 className="text-2xl sm:text-3xl font-extrabold text-brand-forest">

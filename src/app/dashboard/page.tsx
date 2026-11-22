@@ -142,7 +142,7 @@ export default function DashboardPage() {
   }
 
   return (
-    <div className="space-y-8 max-w-6xl mx-auto text-left">
+    <div className="space-y-8 w-full text-left">
       {/* Welcome Banner */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 p-6 rounded-3xl bg-gradient-to-r from-brand-forest via-brand-leaf to-brand-forest text-white shadow-md">
         <div className="space-y-1">

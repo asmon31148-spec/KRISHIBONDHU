@@ -171,7 +171,7 @@ export default function ProfilePage() {
   }
 
   return (
-    <div className="space-y-6 max-w-4xl mx-auto text-left">
+    <div className="space-y-6 w-full text-left">
       <div>
         <h1 className="text-2xl sm:text-3xl font-extrabold text-brand-forest">
           {t('profile.title')}

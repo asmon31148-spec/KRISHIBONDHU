@@ -102,7 +102,7 @@ export default function WeatherPage() {
   };
 
   return (
-    <div className="space-y-6 max-w-5xl mx-auto text-left">
+    <div className="space-y-6 w-full text-left">
       {/* Title & Location Selector */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>

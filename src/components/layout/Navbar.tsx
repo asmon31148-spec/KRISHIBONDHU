@@ -13,8 +13,8 @@ export function Navbar() {
   const { user, profile, isGuest } = useAuth();
 
   return (
-    <header className="sticky top-0 z-40 w-full bg-cream-50/95 backdrop-blur-md border-b border-cream-200/80 px-4 sm:px-6 py-2.5 transition-all">
-      <div className="max-w-7xl mx-auto flex items-center justify-between gap-3">
+    <header className="sticky top-0 z-40 w-full bg-cream-50/95 backdrop-blur-md border-b border-cream-200/80 px-4 sm:px-6 lg:px-8 py-2.5 transition-all">
+      <div className="w-full max-w-[1536px] mx-auto flex items-center justify-between gap-3">
         {/* Brand identity */}
         <Link href="/" className="flex items-center gap-2.5 group">
           <div className="w-9 h-9 rounded-xl bg-brand-forest flex items-center justify-center text-white shadow-xs group-hover:bg-brand-leaf transition-colors">

@@ -119,7 +119,7 @@ function YieldPredictionContent() {
   };
 
   return (
-    <div className="space-y-6 max-w-5xl mx-auto text-left">
+    <div className="space-y-6 w-full text-left">
       <div>
         <div className="flex items-center gap-2">
           <Badge variant="forest" size="md">

@@ -49,7 +49,7 @@ export default function SetupPage() {
   }
 
   return (
-    <div className="max-w-4xl mx-auto space-y-6 text-left">
+    <div className="w-full space-y-6 text-left">
       <div>
         <h1 className="text-2xl sm:text-3xl font-extrabold text-brand-forest">
           System & Service Configuration Status

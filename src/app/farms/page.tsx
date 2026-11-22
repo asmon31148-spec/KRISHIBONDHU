@@ -232,7 +232,7 @@ export default function FarmsPage() {
   };
 
   return (
-    <div className="space-y-6 max-w-5xl mx-auto text-left">
+    <div className="space-y-6 w-full text-left">
       {/* Header with Title and Add Action */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>

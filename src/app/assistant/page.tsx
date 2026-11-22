@@ -240,7 +240,7 @@ export default function AssistantPage() {
   const currentSuggestions = SUGGESTED_PROMPTS[language] || SUGGESTED_PROMPTS.en;
 
   return (
-    <div className="flex flex-col h-[calc(100vh-140px)] max-w-6xl mx-auto text-left relative">
+    <div className="flex flex-col h-[calc(100vh-140px)] w-full text-left relative">
       {/* Top Bar with Language Indicator & Actions */}
       <div className="flex items-center justify-between pb-3 border-b border-cream-200 gap-3">
         <div className="flex items-center gap-2">

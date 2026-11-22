@@ -26,9 +26,9 @@ export default function LandingPage() {
   const { isGuest } = useAuth();
 
   return (
-    <div className="space-y-12 sm:space-y-16 max-w-6xl mx-auto">
+    <div className="space-y-12 sm:space-y-16 w-full">
       {/* Pilot Warning / Academic Notice */}
-      <div className="flex items-center gap-2 p-3 bg-cream-100 border border-cream-200 rounded-xl text-xs sm:text-sm text-brand-dark/80">
+      <div className="flex items-center gap-2 p-3.5 bg-cream-100 border border-cream-200 rounded-2xl text-xs sm:text-sm text-brand-dark/80">
         <AlertCircle className="w-4 h-4 text-brand-harvest shrink-0" />
         <span className="flex-1">{t('landing.pilotNotice')}</span>
         <div className="hidden sm:block">
@@ -37,9 +37,9 @@ export default function LandingPage() {
       </div>
 
       {/* Hero Section */}
-      <section className="relative overflow-hidden rounded-3xl bg-gradient-to-b from-brand-forest/5 via-cream-100/60 to-white border border-cream-200/90 p-6 sm:p-10 lg:p-14">
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
-          <div className="lg:col-span-7 space-y-5 text-left">
+      <section className="relative overflow-hidden rounded-3xl bg-gradient-to-b from-brand-forest/5 via-cream-100/60 to-white border border-cream-200/90 p-6 sm:p-10 lg:p-12 xl:p-14 w-full shadow-xs">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 xl:gap-12 items-center">
+          <div className="lg:col-span-7 xl:col-span-7 space-y-6 text-left">
             <Badge variant="forest" size="md">
               <Sparkles className="w-3.5 h-3.5 text-brand-harvest" />
               <span>{t('landing.heroBadge')}</span>
@@ -49,7 +49,7 @@ export default function LandingPage() {
               {t('landing.heroTitle')}
             </h1>
 
-            <p className="text-sm sm:text-base lg:text-lg text-brand-dark/80 leading-relaxed max-w-xl">
+            <p className="text-sm sm:text-base lg:text-lg text-brand-dark/80 leading-relaxed max-w-2xl">
               {t('landing.heroDescription')}
             </p>
 
@@ -73,8 +73,8 @@ export default function LandingPage() {
           </div>
 
           {/* Hero Visual Card */}
-          <div className="lg:col-span-5 relative">
-            <div className="relative rounded-2xl overflow-hidden shadow-md border-2 border-white bg-cream-100 aspect-4/3 flex flex-col justify-end p-5 text-white">
+          <div className="lg:col-span-5 xl:col-span-5 relative w-full h-full min-h-[300px] sm:min-h-[360px] lg:min-h-[400px] flex">
+            <div className="relative w-full rounded-2xl overflow-hidden shadow-md border-2 border-white bg-cream-100 flex flex-col justify-end p-6 text-white">
               {/* Real Agriculture Landscape Photography (Attributed Unsplash open agritech photograph) */}
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
@@ -83,14 +83,14 @@ export default function LandingPage() {
                 className="absolute inset-0 w-full h-full object-cover brightness-[0.82] transition-transform duration-700 hover:scale-105"
                 loading="eager"
               />
-              <div className="absolute inset-0 bg-gradient-to-t from-brand-dark/90 via-brand-dark/30 to-transparent" />
+              <div className="absolute inset-0 bg-gradient-to-t from-brand-dark/95 via-brand-dark/40 to-transparent" />
               
-              <div className="relative z-10 space-y-1">
-                <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-emerald-900/80 backdrop-blur-xs text-[11px] font-semibold text-emerald-200 border border-emerald-500/30">
+              <div className="relative z-10 space-y-1.5">
+                <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-900/85 backdrop-blur-xs text-[11px] font-semibold text-emerald-200 border border-emerald-500/30">
                   <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400" />
                   <span>Verified ICAR & BCKV Knowledge Core</span>
                 </div>
-                <h4 className="text-base font-bold text-white">
+                <h4 className="text-base sm:text-lg font-bold text-white leading-snug">
                   Rice, Potato, Jute & Vegetable Disease Identification
                 </h4>
                 <p className="text-xs text-gray-200">

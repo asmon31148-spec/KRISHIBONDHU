@@ -194,7 +194,7 @@ export default function CropScannerPage() {
   };
 
   return (
-    <div className="space-y-8 max-w-4xl mx-auto text-left">
+    <div className="space-y-8 w-full text-left">
       <div>
         <div className="flex items-center gap-2">
           <Badge variant="forest" size="md">
