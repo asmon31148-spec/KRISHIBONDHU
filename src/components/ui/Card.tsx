@@ -1,0 +1,97 @@
+import React from 'react';
+import { clsx } from 'clsx';
+import { twMerge } from 'tailwind-merge';
+
+export function Card({
+  className,
+  children,
+  ...props
+}: React.HTMLAttributes<HTMLDivElement>) {
+  return (
+    <div
+      className={twMerge(
+        clsx(
+          'rounded-2xl border border-cream-200/90 bg-white/95 shadow-xs transition-shadow',
+          className
+        )
+      )}
+      {...props}
+    >
+      {children}
+    </div>
+  );
+}
+
+export function CardHeader({
+  className,
+  children,
+  ...props
+}: React.HTMLAttributes<HTMLDivElement>) {
+  return (
+    <div
+      className={twMerge(clsx('flex flex-col space-y-1.5 p-5 sm:p-6', className))}
+      {...props}
+    >
+      {children}
+    </div>
+  );
+}
+
+export function CardTitle({
+  className,
+  children,
+  ...props
+}: React.HTMLAttributes<HTMLHeadingElement>) {
+  return (
+    <h3
+      className={twMerge(
+        clsx('text-lg sm:text-xl font-bold leading-none tracking-tight text-brand-dark', className)
+      )}
+      {...props}
+    >
+      {children}
+    </h3>
+  );
+}
+
+export function CardDescription({
+  className,
+  children,
+  ...props
+}: React.HTMLAttributes<HTMLParagraphElement>) {
+  return (
+    <p
+      className={twMerge(clsx('text-xs sm:text-sm text-brand-dark/70 leading-relaxed', className))}
+      {...props}
+    >
+      {children}
+    </p>
+  );
+}
+
+export function CardContent({
+  className,
+  children,
+  ...props
+}: React.HTMLAttributes<HTMLDivElement>) {
+  return (
+    <div className={twMerge(clsx('p-5 sm:p-6 pt-0', className))} {...props}>
+      {children}
+    </div>
+  );
+}
+
+export function CardFooter({
+  className,
+  children,
+  ...props
+}: React.HTMLAttributes<HTMLDivElement>) {
+  return (
+    <div
+      className={twMerge(clsx('flex items-center p-5 sm:p-6 pt-0', className))}
+      {...props}
+    >
+      {children}
+    </div>
+  );
+}

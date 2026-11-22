@@ -1,0 +1,17 @@
+{
+  "name": "KRISHIBONDHU - AI Smart Agriculture",
+  "short_name": "Krishibondhu",
+  "description": "Smart Agriculture, Crop Disease Detection & Agronomy AI for Bengal and India",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#FAF9F5",
+  "theme_color": "#1B4332",
+  "icons": [
+    {
+      "src": "/icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}
