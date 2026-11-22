@@ -1,5 +1,12 @@
 import type { Metadata, Viewport } from 'next';
+import { Plus_Jakarta_Sans } from 'next/font/google';
 import './globals.css';
+
+const plusJakarta = Plus_Jakarta_Sans({
+  subsets: ['latin'],
+  display: 'swap',
+  variable: '--font-inter',
+});
 import { I18nProvider } from '@/i18n/context';
 import { AuthProvider } from '@/context/AuthContext';
 import { ToastProvider } from '@/components/ui/Toast';
@@ -31,7 +38,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <body className="bg-cream-50 text-brand-dark min-h-screen flex flex-col font-sans selection:bg-brand-mint selection:text-brand-forest">
+      <body className={`${plusJakarta.variable} bg-cream-50 text-brand-dark min-h-screen flex flex-col font-sans selection:bg-brand-mint selection:text-brand-forest`}>
         <I18nProvider>
           <AuthProvider>
             <ToastProvider>
