@@ -1,5 +1,4 @@
 import { describe, it, expect } from 'vitest';
-import { z } from 'zod';
 
 // Magic number detector matching server implementation
 function testValidateSignature(buffer: Buffer): 'image/jpeg' | 'image/png' | 'image/webp' | null {
