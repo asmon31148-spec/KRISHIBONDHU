@@ -54,3 +54,34 @@ All user tables enforce RLS with `auth.uid() = user_id`:
 9. `notifications`: In-app farmer advisories driven by real weather thresholds, disease warnings, or user reminders.
 10. `sensor_devices` & `sensor_readings`: IoT-ready schema with device API tokens for future hardware telemetry.
 11. `news_bookmarks`: Farmer bookmarked real agricultural news items.
+
+## 5. Empirical Yield Prediction Methodology
+- Rather than a black-box AI model inventing yield numbers, KRISHIBONDHU utilizes an empirical agronomic model calibrated against published Indian Council of Agricultural Research (ICAR) & Bidhan Chandra Krishi Viswavidyalaya (BCKV) regional crop baselines:
+  - Rice Aman: 2.1 tons/acre (range 1.6 - 2.6)
+  - Rice Boro: 2.5 tons/acre (range 2.0 - 3.1)
+  - Potato (Kufri Jyoti): 10.5 tons/acre (range 8.5 - 13.0)
+  - Jute (Tossa): 1.25 tons/acre (range 1.0 - 1.5)
+  - Mustard: 0.70 tons/acre (range 0.5 - 0.95)
+  - Brinjal: 9.0 tons/acre (range 7.0 - 12.0)
+  - Tomato: 10.0 tons/acre (range 8.0 - 13.5)
+  - Wheat: 1.5 tons/acre (range 1.2 - 1.9)
+- Adjustment Multipliers:
+  - Crop Health: Healthy (1.00), Needs Attention (0.85), Diseased (0.68)
+  - Irrigation: Drip (1.15), Sprinkler (1.08), Shallow/Deep Tube Well (1.04), Rainfed (0.88)
+  - Soil N-P-K: Suboptimal nitrogen (< 240 kg/ha) applies a 0.92 multiplier; balanced (280-500 kg/ha) applies 1.06.
+  - Soil pH: Optimal (6.2-7.4) applies 1.03; acidic (< 5.8) applies 0.92; alkaline (> 8.0) applies 0.94.
+- Regional Land Standards:
+  - 1 Bigha = 20 Katha = 0.3305785 Acres (1 Acre ≈ 3.025 Bigha).
+
+## 6. Security, Performance & Accessibility Architecture
+- **Zero Frontend Secrets**: API keys (`GEMINI_API_KEY`, `GROQ_API_KEY`, `OPENROUTER_API_KEY`, `SUPABASE_SERVICE_ROLE_KEY`) are kept on the server only.
+- **Server File Signature Validation**: In `/api/scan/analyze`, images are checked against magic numbers (`0xFF 0xD8 0xFF` for JPEG, `0x89 0x50 0x4E 0x47` for PNG, `RIFF/WEBP` for WebP). Spoofed file extensions and executable files are rejected.
+- **Client Canvas Compression**: Images captured on mobile devices are downscaled to 1600px max dimension and 85% quality via HTML5 canvas before upload, saving bandwidth and preventing memory exhaustion.
+- **Accessibility (WCAG AA)**:
+  - High contrast ratio: Near-black green text `#081C15` on warm cream `#FAF9F5` (exceeds 14:1 contrast, far above WCAG AA 4.5:1 requirement).
+  - Minimum 44px mobile touch targets on buttons, inputs, and selectors.
+  - Respects `prefers-reduced-motion` media queries.
+  - Screen reader accessible `aria-label` tags and focus rings.
+- **PWA & Offline Readiness**:
+  - Full Web App Manifest (`public/manifest.json`), responsive viewports, SVG app icons.
+  - In-memory 30m weather cache and 1h news cache to eliminate repetitive external traffic.
