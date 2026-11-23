@@ -273,7 +273,7 @@ export default function AssistantPage() {
   const currentSuggestions = SUGGESTED_PROMPTS[language] || SUGGESTED_PROMPTS.en;
 
   return (
-    <div className="flex flex-col h-[calc(100dvh-115px)] sm:h-[calc(100dvh-130px)] lg:h-[calc(100vh-140px)] w-full text-left relative overflow-hidden">
+    <div className="flex flex-col h-[calc(100dvh-145px)] sm:h-[calc(100dvh-155px)] lg:h-[calc(100vh-110px)] w-full text-left relative overflow-hidden">
       {/* Top Bar with Language Indicator & Actions */}
       <div className="flex items-center justify-between pb-2.5 sm:pb-3 border-b border-cream-200 gap-2 shrink-0">
         <div className="flex items-center gap-2 min-w-0">
@@ -432,43 +432,44 @@ export default function AssistantPage() {
         )}
 
         {/* Chat Messages Stream Area */}
-        <div className="flex-1 flex flex-col min-h-0 bg-white rounded-3xl border border-cream-200/90 shadow-xs overflow-hidden">
+        <div className="flex-1 flex flex-col min-h-0 bg-white rounded-2xl sm:rounded-3xl border border-cream-200/90 shadow-xs overflow-hidden">
           {/* Scrollable Message History */}
-          <div className="flex-1 overflow-y-auto p-4 sm:p-6 space-y-4">
-            {messages.length === 0 ? (
-              <div className="h-full flex flex-col items-center justify-center text-center p-6 space-y-4 max-w-md mx-auto">
-                <div className="w-14 h-14 rounded-2xl bg-brand-forest/10 border border-brand-forest/20 flex items-center justify-center text-brand-forest">
-                  <Bot className="w-7 h-7 text-brand-leaf" />
-                </div>
-                <div className="space-y-1">
-                  <h3 className="text-lg font-bold text-brand-dark">
-                    How can I assist your farm today?
-                  </h3>
-                  <p className="text-xs text-brand-dark/70 leading-relaxed">
-                    Ask any question about crop diseases, pest remedies, fertilizer schedules, or government schemes in your preferred language.
-                  </p>
-                </div>
+          <div className="flex-1 overflow-y-auto p-2.5 sm:p-5 lg:p-6 space-y-4">
+            <div className="max-w-4xl mx-auto w-full space-y-3 sm:space-y-4">
+              {messages.length === 0 ? (
+                <div className="h-full flex flex-col items-center justify-center text-center p-3 sm:p-6 space-y-3 max-w-xl mx-auto">
+                  <div className="w-11 h-11 sm:w-14 sm:h-14 rounded-2xl bg-brand-forest/10 border border-brand-forest/20 flex items-center justify-center text-brand-forest shrink-0">
+                    <Bot className="w-5 h-5 sm:w-7 sm:h-7 text-brand-leaf" />
+                  </div>
+                  <div className="space-y-0.5">
+                    <h3 className="text-base sm:text-lg font-bold text-brand-dark">
+                      How can I assist your farm today?
+                    </h3>
+                    <p className="text-xs text-brand-dark/70 leading-relaxed max-w-sm">
+                      Ask any question about crop diseases, pest remedies, fertilizer schedules, or government schemes.
+                    </p>
+                  </div>
 
-                {/* Suggested Prompt Chips */}
-                <div className="w-full space-y-2 pt-2">
-                  <span className="text-[11px] font-bold text-brand-forest uppercase tracking-wider block">
-                    Suggested Questions
-                  </span>
-                  <div className="flex flex-col gap-2">
-                    {currentSuggestions.map((prompt, idx) => (
-                      <button
-                        key={idx}
-                        onClick={() => handleSendMessage(prompt)}
-                        className="p-3 text-left rounded-xl bg-cream-50 hover:bg-cream-100 border border-cream-200 text-xs font-semibold text-brand-dark/85 transition-colors flex items-center justify-between group"
-                      >
-                        <span>{prompt}</span>
-                        <ChevronRight className="w-3.5 h-3.5 text-brand-leaf opacity-0 group-hover:opacity-100 transition-opacity" />
-                      </button>
-                    ))}
+                  {/* Suggested Prompt Chips */}
+                  <div className="w-full space-y-1.5 pt-1">
+                    <span className="text-[10px] font-bold text-brand-forest uppercase tracking-wider block text-center sm:text-left">
+                      Suggested Questions
+                    </span>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-left">
+                      {currentSuggestions.map((prompt, idx) => (
+                        <button
+                          key={idx}
+                          onClick={() => handleSendMessage(prompt)}
+                          className="p-2.5 sm:p-3 text-left rounded-xl bg-cream-50 hover:bg-cream-100 border border-cream-200 text-xs font-semibold text-brand-dark/85 transition-colors flex items-center justify-between group"
+                        >
+                          <span className="line-clamp-2 leading-snug">{prompt}</span>
+                          <ChevronRight className="w-3.5 h-3.5 text-brand-leaf opacity-60 group-hover:opacity-100 shrink-0 ml-1.5 transition-opacity" />
+                        </button>
+                      ))}
+                    </div>
                   </div>
                 </div>
-              </div>
-            ) : (
+              ) : (
               messages.map((msg) => (
                 <div
                   key={msg.id}
@@ -481,7 +482,7 @@ export default function AssistantPage() {
                   )}
 
                   <div
-                    className={`max-w-[85%] sm:max-w-[75%] rounded-2xl p-4 text-xs sm:text-sm leading-relaxed ${
+                    className={`max-w-[88%] sm:max-w-[80%] md:max-w-[75%] rounded-2xl p-3 sm:p-4 text-xs sm:text-sm leading-relaxed ${
                       msg.role === 'user'
                         ? 'bg-brand-forest text-white shadow-xs rounded-tr-xs'
                         : 'bg-cream-50 text-brand-dark border border-cream-200 rounded-tl-xs shadow-2xs'
@@ -489,12 +490,12 @@ export default function AssistantPage() {
                   >
                     {/* Attached image if any */}
                     {msg.imageUrl && (
-                      <div className="mb-2 rounded-xl overflow-hidden max-w-xs border border-white/20">
+                      <div className="mb-2 rounded-xl overflow-hidden max-w-[220px] sm:max-w-xs border border-white/20">
                         {/* eslint-disable-next-line @next/next/no-img-element */}
                         <img
                           src={msg.imageUrl}
                           alt="Attached leaf"
-                          className="w-full h-auto max-h-48 object-cover"
+                          className="w-full h-auto max-h-52 object-contain bg-black/10 rounded-lg"
                         />
                       </div>
                     )}
@@ -563,38 +564,41 @@ export default function AssistantPage() {
               </div>
             )}
             <div ref={messagesEndRef} />
+            </div>
           </div>
 
           {/* Attached image preview pill before sending */}
           {attachedImage && (
             <div className="px-3 sm:px-4 py-1.5 sm:py-2 bg-cream-100 border-t border-cream-200 flex items-center justify-between gap-2 shrink-0">
-              <div className="flex items-center gap-2">
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img
-                  src={attachedImage}
-                  alt="Attachment preview"
-                  className="w-8 h-8 sm:w-10 sm:h-10 rounded-lg object-cover border border-cream-300"
-                />
-                <span className="text-xs font-semibold text-brand-dark">Leaf Attached</span>
+              <div className="max-w-4xl mx-auto w-full flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img
+                    src={attachedImage}
+                    alt="Attachment preview"
+                    className="w-8 h-8 sm:w-10 sm:h-10 rounded-lg object-cover border border-cream-300"
+                  />
+                  <span className="text-xs font-semibold text-brand-dark">Leaf Attached</span>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => setAttachedImage(null)}
+                  className="p-1 rounded-lg text-brand-dark/60 hover:text-red-600"
+                >
+                  <X className="w-4 h-4" />
+                </button>
               </div>
-              <button
-                type="button"
-                onClick={() => setAttachedImage(null)}
-                className="p-1 rounded-lg text-brand-dark/60 hover:text-red-600"
-              >
-                <X className="w-4 h-4" />
-              </button>
             </div>
           )}
 
           {/* Chat Input Bar */}
-          <div className="p-2 sm:p-3.5 border-t border-cream-200 bg-white/95 backdrop-blur-md shrink-0">
+          <div className="p-2 sm:p-3 border-t border-cream-200 bg-white/95 backdrop-blur-md shrink-0">
             <form
               onSubmit={(e) => {
                 e.preventDefault();
                 handleSendMessage();
               }}
-              className="flex items-center gap-1.5 sm:gap-2"
+              className="max-w-4xl mx-auto flex items-center gap-1.5 sm:gap-2"
             >
               {/* Image upload trigger */}
               <input

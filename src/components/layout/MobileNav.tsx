@@ -32,10 +32,10 @@ export function MobileNav() {
     { label: t('nav.scan'), href: '/scan', icon: ScanLine },
     { label: t('nav.assistant'), href: '/assistant', icon: Bot },
     { label: t('nav.myFarm'), href: '/farms', icon: Warehouse },
-    { label: t('nav.profile'), href: '/profile', icon: User },
   ];
 
   const moreItems = [
+    { label: t('nav.profile'), href: '/profile', icon: User },
     { label: t('nav.weather'), href: '/weather', icon: CloudSun },
     { label: t('nav.news'), href: '/news', icon: Newspaper },
     { label: 'Schemes', href: '/schemes', icon: FileText },
@@ -116,7 +116,7 @@ export function MobileNav() {
             <Link
               key={tab.href}
               href={tab.href}
-              className={`flex flex-col items-center justify-center min-w-[52px] min-h-[46px] py-0.5 px-1 rounded-xl text-[10px] transition-all ${
+              className={`flex flex-col items-center justify-center min-w-[62px] min-h-[48px] py-1 px-1 rounded-xl text-[10px] transition-all ${
                 isActive
                   ? 'text-brand-forest font-extrabold'
                   : 'text-brand-dark/75 hover:text-brand-forest font-semibold'
@@ -129,7 +129,7 @@ export function MobileNav() {
               >
                 <Icon className="w-4 h-4 sm:w-5 sm:h-5" />
               </div>
-              <span className="truncate max-w-[58px] leading-tight mt-0.5">{tab.label}</span>
+              <span className="truncate max-w-[64px] leading-tight mt-0.5">{tab.label}</span>
             </Link>
           );
         })}
@@ -138,7 +138,7 @@ export function MobileNav() {
         <button
           type="button"
           onClick={() => setIsMoreOpen(true)}
-          className="flex flex-col items-center justify-center min-w-[52px] min-h-[46px] py-0.5 px-1 rounded-xl text-[10px] font-semibold text-brand-dark/75 hover:text-brand-forest"
+          className="flex flex-col items-center justify-center min-w-[62px] min-h-[48px] py-1 px-1 rounded-xl text-[10px] font-semibold text-brand-dark/75 hover:text-brand-forest"
         >
           <div className="p-1.5 rounded-xl text-brand-dark/70">
             <Menu className="w-4 h-4 sm:w-5 sm:h-5" />
