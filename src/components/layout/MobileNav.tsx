@@ -13,11 +13,11 @@ import {
   User,
   Menu,
   X,
-  Sprout,
   CloudSun,
   Newspaper,
   LineChart,
-  ShieldCheck,
+  BookOpen,
+  FileText,
   LogOut,
 } from 'lucide-react';
 
@@ -36,11 +36,11 @@ export function MobileNav() {
   ];
 
   const moreItems = [
-    { label: t('nav.crops'), href: '/crops', icon: Sprout },
     { label: t('nav.weather'), href: '/weather', icon: CloudSun },
     { label: t('nav.news'), href: '/news', icon: Newspaper },
+    { label: 'Schemes', href: '/schemes', icon: FileText },
     { label: t('nav.analytics'), href: '/analytics', icon: LineChart },
-    { label: t('nav.systemStatus'), href: '/setup', icon: ShieldCheck },
+    { label: 'Sources', href: '/sources', icon: BookOpen },
   ];
 
   return (
@@ -50,15 +50,15 @@ export function MobileNav() {
         <div
           role="dialog"
           aria-modal="true"
-          className="lg:hidden fixed inset-0 z-50 bg-brand-dark/50 backdrop-blur-xs flex flex-col justify-end"
+          className="lg:hidden fixed inset-0 z-50 bg-brand-dark/60 backdrop-blur-xs flex flex-col justify-end"
         >
           <div
             className="fixed inset-0"
             onClick={() => setIsMoreOpen(false)}
             aria-hidden="true"
           />
-          <div className="relative bg-cream-50 rounded-t-3xl border-t border-cream-200 p-5 shadow-2xl z-10 max-h-[80vh] overflow-y-auto animate-in slide-in-from-bottom duration-200">
-            <div className="flex items-center justify-between pb-4 border-b border-cream-200">
+          <div className="relative bg-cream-50 rounded-t-3xl border-t border-cream-200 p-5 pb-[max(1.5rem,env(safe-area-inset-bottom))] shadow-2xl z-10 max-h-[80vh] overflow-y-auto animate-in slide-in-from-bottom duration-200">
+            <div className="flex items-center justify-between pb-3.5 border-b border-cream-200">
               <span className="text-base font-bold text-brand-dark">
                 {t('nav.more')}
               </span>
@@ -104,32 +104,32 @@ export function MobileNav() {
         </div>
       )}
 
-      {/* Persistent Bottom Bar */}
+      {/* Persistent Bottom Bar with 85-90% Frosted Liquid Glass & Safe-Area Inset */}
       <nav
         aria-label="Mobile navigation"
-        className="lg:hidden fixed bottom-0 left-0 right-0 z-40 bg-cream-50/98 backdrop-blur-md border-t border-cream-200/90 px-1 py-1 pb-[max(0.35rem,env(safe-area-inset-bottom))] shadow-lg flex items-center justify-around"
+        className="lg:hidden fixed bottom-0 left-0 right-0 z-50 bg-cream-50/92 backdrop-blur-md border-t border-brand-forest/15 px-1 pt-1.5 pb-[max(0.6rem,env(safe-area-inset-bottom))] shadow-[0_-4px_24px_rgba(0,0,0,0.08)] flex items-center justify-around"
       >
         {mainTabs.map((tab) => {
-          const isActive = pathname === tab.href;
+          const isActive = pathname === tab.href || (tab.href !== '/' && pathname.startsWith(tab.href));
           const Icon = tab.icon;
           return (
             <Link
               key={tab.href}
               href={tab.href}
-              className={`flex flex-col items-center justify-center min-w-[52px] min-h-[44px] py-0.5 px-1 rounded-xl text-[10px] font-semibold transition-colors ${
+              className={`flex flex-col items-center justify-center min-w-[52px] min-h-[46px] py-0.5 px-1 rounded-xl text-[10px] transition-all ${
                 isActive
-                  ? 'text-brand-forest font-bold'
-                  : 'text-brand-dark/60 hover:text-brand-dark'
+                  ? 'text-brand-forest font-extrabold'
+                  : 'text-brand-dark/75 hover:text-brand-forest font-semibold'
               }`}
             >
               <div
-                className={`p-1 rounded-lg ${
-                  isActive ? 'bg-brand-mint/40 text-brand-forest' : 'text-brand-dark/70'
+                className={`p-1.5 rounded-xl transition-all ${
+                  isActive ? 'bg-brand-forest text-white shadow-xs' : 'text-brand-dark/70'
                 }`}
               >
-                <Icon className="w-5 h-5" />
+                <Icon className="w-4 h-4 sm:w-5 sm:h-5" />
               </div>
-              <span className="truncate max-w-[58px] leading-tight">{tab.label}</span>
+              <span className="truncate max-w-[58px] leading-tight mt-0.5">{tab.label}</span>
             </Link>
           );
         })}
@@ -138,12 +138,12 @@ export function MobileNav() {
         <button
           type="button"
           onClick={() => setIsMoreOpen(true)}
-          className="flex flex-col items-center justify-center min-w-[52px] min-h-[44px] py-0.5 px-1 rounded-xl text-[10px] font-semibold text-brand-dark/60 hover:text-brand-dark"
+          className="flex flex-col items-center justify-center min-w-[52px] min-h-[46px] py-0.5 px-1 rounded-xl text-[10px] font-semibold text-brand-dark/75 hover:text-brand-forest"
         >
-          <div className="p-1 rounded-lg text-brand-dark/70">
-            <Menu className="w-5 h-5" />
+          <div className="p-1.5 rounded-xl text-brand-dark/70">
+            <Menu className="w-4 h-4 sm:w-5 sm:h-5" />
           </div>
-          <span className="leading-tight">{t('nav.more')}</span>
+          <span className="leading-tight mt-0.5">{t('nav.more')}</span>
         </button>
       </nav>
     </>

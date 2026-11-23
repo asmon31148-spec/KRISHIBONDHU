@@ -307,6 +307,26 @@ export default function CropsPage() {
 
   return (
     <div className="space-y-6 w-full text-left">
+      {/* Notice: Unified into My Farm */}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-4 rounded-2xl bg-emerald-50 border border-emerald-200 text-emerald-950">
+        <div className="flex items-start gap-2.5">
+          <Warehouse className="w-5 h-5 text-brand-forest shrink-0 mt-0.5" />
+          <div className="text-xs sm:text-sm">
+            <span className="font-bold block text-brand-forest">Crops are now managed inside your Farm Plots!</span>
+            <span className="text-brand-dark/80">
+              For better micro-climate alerts and soil health tracking, all crops are organized by land plot under My Farm.
+            </span>
+          </div>
+        </div>
+        <Link
+          href="/farms"
+          className="inline-flex items-center justify-center gap-1.5 px-3.5 py-2 rounded-xl bg-brand-forest text-white text-xs font-bold hover:bg-brand-leaf transition-colors whitespace-nowrap shadow-xs"
+        >
+          <span>Go to My Farm</span>
+          <TrendingUp className="w-3.5 h-3.5" />
+        </Link>
+      </div>
+
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>

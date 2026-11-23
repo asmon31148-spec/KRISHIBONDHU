@@ -47,17 +47,17 @@ export const LanguageSelector: React.FC<LanguageSelectorProps> = ({
       <label htmlFor="language-select" className="sr-only">
         Language
       </label>
-      <div className="flex items-center gap-1.5 px-2.5 py-1.5 text-xs sm:text-sm font-medium bg-cream-100 hover:bg-cream-200/70 border border-cream-200 rounded-lg text-brand-dark transition-colors">
-        <Languages className="w-4 h-4 text-brand-leaf shrink-0" aria-hidden="true" />
+      <div className="flex items-center gap-1 sm:gap-1.5 px-2 sm:px-2.5 py-1 sm:py-1.5 text-xs sm:text-sm font-medium bg-cream-100/90 hover:bg-cream-200 border border-cream-200/90 rounded-lg text-brand-dark transition-colors">
+        <Languages className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-brand-leaf shrink-0" aria-hidden="true" />
         <select
           id="language-select"
           value={language}
           onChange={(e) => setLanguage(e.target.value as Language)}
-          className="bg-transparent border-none text-brand-dark font-medium focus:ring-0 focus:outline-none cursor-pointer pr-1"
+          className="bg-transparent border-none text-brand-dark font-semibold focus:ring-0 focus:outline-none cursor-pointer pr-1 text-xs sm:text-sm max-w-[70px] sm:max-w-none"
         >
           {LANGUAGES.map((l) => (
             <option key={l.code} value={l.code} className="bg-white text-gray-900">
-              {l.nativeName} ({l.label})
+              {l.nativeName}
             </option>
           ))}
         </select>

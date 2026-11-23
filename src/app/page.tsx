@@ -7,7 +7,6 @@ import { useAuth } from '@/context/AuthContext';
 import { Button } from '@/components/ui/Button';
 import { Badge } from '@/components/ui/Badge';
 import { Card, CardContent } from '@/components/ui/Card';
-import { LanguageSelector } from '@/components/ui/LanguageSelector';
 import {
   ScanLine,
   Bot,
@@ -31,9 +30,6 @@ export default function LandingPage() {
       <div className="flex items-center gap-2 p-3 sm:p-3.5 bg-cream-100 border border-cream-200 rounded-2xl text-xs sm:text-sm text-brand-dark/80">
         <AlertCircle className="w-4 h-4 text-brand-harvest shrink-0" />
         <span className="flex-1 leading-snug">{t('landing.pilotNotice')}</span>
-        <div className="hidden sm:block">
-          <LanguageSelector variant="inline" />
-        </div>
       </div>
 
       {/* Hero Section */}
@@ -86,15 +82,18 @@ export default function LandingPage() {
               <div className="absolute inset-0 bg-gradient-to-t from-brand-dark/95 via-brand-dark/40 to-transparent" />
               
               <div className="relative z-10 space-y-1">
-                <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-emerald-900/85 backdrop-blur-xs text-[10px] sm:text-[11px] font-semibold text-emerald-200 border border-emerald-500/30">
+                <Link
+                  href="/sources"
+                  className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-emerald-900/85 backdrop-blur-xs text-[10px] sm:text-[11px] font-semibold text-emerald-200 border border-emerald-500/30 hover:bg-emerald-800 transition-colors"
+                >
                   <CheckCircle2 className="w-3 h-3 text-emerald-400" />
-                  <span>Verified ICAR & BCKV Knowledge Core</span>
-                </div>
+                  <span>Informed by ICAR & BCKV Public Guides (See Sources)</span>
+                </Link>
                 <h4 className="text-sm sm:text-lg font-bold text-white leading-snug">
                   Rice, Potato, Jute & Vegetable Disease Identification
                 </h4>
                 <p className="text-[11px] sm:text-xs text-gray-200">
-                  Bengal agro-climatic zone calibration
+                  Calibrated for Bengal agro-climatic zones
                 </p>
               </div>
             </div>

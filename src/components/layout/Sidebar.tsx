@@ -10,14 +10,14 @@ import {
   ScanLine,
   Bot,
   Warehouse,
-  Sprout,
   CloudSun,
   Newspaper,
   LineChart,
   User,
   LogOut,
   Sparkles,
-  ShieldCheck,
+  BookOpen,
+  FileText,
 } from 'lucide-react';
 
 export function Sidebar() {
@@ -30,12 +30,12 @@ export function Sidebar() {
     { label: t('nav.scan'), href: '/scan', icon: ScanLine },
     { label: t('nav.assistant'), href: '/assistant', icon: Bot },
     { label: t('nav.myFarm'), href: '/farms', icon: Warehouse },
-    { label: t('nav.crops'), href: '/crops', icon: Sprout },
     { label: t('nav.weather'), href: '/weather', icon: CloudSun },
     { label: t('nav.news'), href: '/news', icon: Newspaper },
+    { label: 'Schemes', href: '/schemes', icon: FileText },
     { label: t('nav.analytics'), href: '/analytics', icon: LineChart },
+    { label: 'Sources', href: '/sources', icon: BookOpen },
     { label: t('nav.profile'), href: '/profile', icon: User },
-    { label: t('nav.systemStatus'), href: '/setup', icon: ShieldCheck },
   ];
 
   return (

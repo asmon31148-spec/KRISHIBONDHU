@@ -28,6 +28,7 @@ export const viewport: Viewport = {
   width: 'device-width',
   initialScale: 1,
   maximumScale: 5,
+  viewportFit: 'cover',
   themeColor: '#1B4332',
 };
 
@@ -37,15 +38,15 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" suppressHydrationWarning>
-      <body className={`${plusJakarta.variable} bg-cream-50 text-brand-dark min-h-screen flex flex-col font-sans selection:bg-brand-mint selection:text-brand-forest`}>
+    <html lang="en" className="overflow-x-clip" suppressHydrationWarning>
+      <body className={`${plusJakarta.variable} bg-cream-50 text-brand-dark min-h-screen flex flex-col font-sans overflow-x-clip selection:bg-brand-mint selection:text-brand-forest`}>
         <I18nProvider>
           <AuthProvider>
             <ToastProvider>
               <Navbar />
-              <div className="flex-1 flex w-full pb-16 sm:pb-20 lg:pb-6">
+              <div className="flex-1 flex w-full pb-20 lg:pb-6 overflow-x-clip">
                 <Sidebar />
-                <main className="flex-1 min-w-0 w-full p-2.5 sm:p-5 lg:p-8 xl:p-10">
+                <main className="flex-1 min-w-0 w-full p-2.5 sm:p-5 lg:p-8 xl:p-10 overflow-x-clip">
                   <div className="w-full max-w-[1536px] mx-auto">
                     {children}
                   </div>

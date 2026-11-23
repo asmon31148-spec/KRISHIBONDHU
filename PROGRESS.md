@@ -240,3 +240,35 @@
   7. Official PIB/ICAR agriculture news aggregator and in-app notifications
   8. Empirical ICAR-calibrated yield prediction tool and Recharts analytics
   9. Comprehensive documentation: `README.md`, `DECISIONS.md`, `SECURITY.md`, `PROGRESS.md`, `TRANSLATION_REVIEW.md`
+
+---
+## Phase 8: Expert Intelligence Guide Implementation (Sections 1-13)
+- **Status**: COMPLETED
+- **Started**: 2026-11-23
+- **Completed**: 2026-11-23
+- **What Works**:
+  - **Section 13 (Mobile Layout & Liquid Glass Navigation)**:
+    - Added `viewportFit: 'cover'` and `#1B4332` theme color in `src/app/layout.tsx`.
+    - Zero horizontal overflow at 360px, 390px, and 412px widths (`overflow-x-clip` on root, body, and main).
+    - Liquid glass bottom navigation anchored flush to the screen edge with internal safe-area padding (`pb-[max(0.6rem,env(safe-area-inset-bottom))]`) extending seamlessly beneath the device gesture bar.
+    - Calibrated frosted glass opacity (88-92%) with high-contrast text (`text-brand-dark/75` inactive, `bg-brand-forest text-white` active).
+    - Mobile header redesigned to single line: compact logo, compact native language selector (`English`, `বাংলা`, `हिन्दी`), and single-line sign-in button.
+    - AI Assistant full viewport height (`100dvh`) with docked chat input bar above mobile bottom nav.
+  - **Section 9 (Unified Farm & Crop Management & Overclaiming Fixes)**:
+    - Unified `My Farm` and `My Crops` under `/farms`: plot cards display land area, location, GPS, latest soil health test (N, P, K, pH), and active crops with inline "Add Crop" and "Add Soil Test" modals.
+    - Added informative banner and quick redirect to `/crops` so existing bookmarks route seamlessly to `/farms`.
+    - Removed duplicate language selector on home page.
+    - Removed overclaiming text: replaced "Verified ICAR & BCKV Knowledge Core" with "Informed by ICAR & BCKV Public Guides (See Sources)" linking to `/sources`.
+    - Dedicated Sources page at `/sources` cataloging Tier 1 (Official & Scientific), Tier 2 (Academic), and Tier 3 (Live Numerical APIs) feeds with provenance disclosures.
+    - Dedicated Schemes page at `/schemes` featuring verified West Bengal (Krishak Bandhu, Bangla Shasya Bima, Matir Katha) and Central (PM-KISAN, KCC, PMKSY) welfare programs with official portal links and last verified dates.
+  - **Sections 5 & 8 (Structured Pesticide Knowledge & Safe Agronomy Registry)**:
+    - Created `src/lib/ai/pesticides.ts` with CIBRC and BCKV registered chemicals, active ingredients, label dosages per liter/acre, PHI waiting periods, toxicity classes, and organic alternatives.
+    - Enforced mandatory rule: chemical dosages must strictly match the registered label or state "Dose unknown in official registry — refer strictly to container label", with cultural/organic remedies always listed first.
+    - Groq multimodal model updated to active `qwen/qwen3.8-27b` with runtime guards preventing crashes from decommissioned legacy models.
+  - **Section 8 (Report a Wrong Answer Feedback Loop)**:
+    - Added "Report" flag button to all AI Assistant responses and crop scan results with a categorized reporting modal for agronomy review.
+  - **Section 12 (Storage Plan)**:
+    - Text passages, embeddings, and metadata stay strictly within Supabase free limits; client-side image compression keeps photo storage under quota.
+- **Verification**:
+  - Next.js production build (`node ./node_modules/next/dist/bin/next build`): 37 static and dynamic routes compiled and generated successfully with 0 errors.
+

@@ -9,7 +9,10 @@ export class GroqVisionAdapter implements AiProviderAdapter {
       throw new Error('Groq API key is not configured.');
     }
 
-    const model = process.env.GROQ_VISION_MODEL || 'qwen/qwen3.8-27b';
+    let model = process.env.GROQ_VISION_MODEL || 'qwen/qwen3.8-27b';
+    if (model.includes('llama-3.2-11b') || model.includes('llama-3.2-90b') || model.includes('decommissioned')) {
+      model = 'qwen/qwen3.8-27b';
+    }
     const lang = request.language || 'en';
 
     const systemPrompt = `You are an expert plant pathologist. Analyze the crop leaf photo and return strictly valid JSON matching this schema:

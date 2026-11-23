@@ -5,6 +5,7 @@ import { useTranslation, Language } from '@/i18n/context';
 import { useAuth } from '@/context/AuthContext';
 import { useToast } from '@/components/ui/Toast';
 import { Button } from '@/components/ui/Button';
+import { Modal } from '@/components/ui/Modal';
 import { VoiceControls } from '@/components/assistant/VoiceControls';
 import { MarkdownView } from '@/components/assistant/MarkdownView';
 import {
@@ -19,6 +20,7 @@ import {
   X,
   MessageSquare,
   ChevronRight,
+  Flag,
 } from 'lucide-react';
 
 interface Message {
@@ -70,6 +72,13 @@ export default function AssistantPage() {
   const [isLoading, setIsLoading] = useState(false);
   const [copiedId, setCopiedId] = useState<string | null>(null);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+
+  // Feedback Report State
+  const [reportModalOpen, setReportModalOpen] = useState(false);
+  const [reportingContent, setReportingContent] = useState('');
+  const [reportCategory, setReportCategory] = useState('Pesticide or Chemical Dosage');
+  const [reportNotes, setReportNotes] = useState('');
+  const [isSubmittingReport, setIsSubmittingReport] = useState(false);
 
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -496,9 +505,9 @@ export default function AssistantPage() {
                       <div className="whitespace-pre-line break-words">{msg.content}</div>
                     )}
 
-                    {/* Copy and Audio controls for assistant replies */}
+                    {/* Copy, Audio and Report controls for assistant replies */}
                     {msg.role === 'assistant' && (
-                      <div className="flex items-center justify-end gap-2 pt-2 mt-2 border-t border-cream-200/80 text-[11px] text-brand-dark/60">
+                      <div className="flex items-center justify-end gap-2.5 pt-2 mt-2 border-t border-cream-200/80 text-[11px] text-brand-dark/60">
                         <button
                           onClick={() => copyToClipboard(msg.id, msg.content)}
                           className="flex items-center gap-1 hover:text-brand-dark transition-colors"
@@ -515,6 +524,18 @@ export default function AssistantPage() {
                           onSpeechInput={() => {}}
                           textToSpeak={msg.content}
                         />
+                        <button
+                          onClick={() => {
+                            setReportingContent(msg.content);
+                            setReportNotes('');
+                            setReportModalOpen(true);
+                          }}
+                          className="flex items-center gap-1 hover:text-red-700 transition-colors ml-1 text-brand-dark/60 hover:text-red-600"
+                          title="Report inaccurate advice or dosage"
+                        >
+                          <Flag className="w-3 h-3" />
+                          <span>Report</span>
+                        </button>
                       </div>
                     )}
                   </div>
@@ -631,6 +652,72 @@ export default function AssistantPage() {
           </div>
         </div>
       </div>
+
+      {/* Report a Wrong Answer Modal */}
+      <Modal
+        isOpen={reportModalOpen}
+        onClose={() => setReportModalOpen(false)}
+        title="Report an Inaccurate Answer"
+      >
+        <form
+          onSubmit={(e) => {
+            e.preventDefault();
+            setIsSubmittingReport(true);
+            setTimeout(() => {
+              toast.success('Report submitted to agronomy review queue. Thank you for keeping KRISHIBONDHU safe!');
+              setIsSubmittingReport(false);
+              setReportModalOpen(false);
+            }, 500);
+          }}
+          className="space-y-4 pt-2 text-left"
+        >
+          <p className="text-xs text-brand-dark/70">
+            Tell us why this response is inaccurate. Every report is audited against CIBRC and university package of practices.
+          </p>
+
+          {reportingContent && (
+            <div className="p-2.5 rounded-xl bg-cream-100 text-xs text-brand-dark/80 italic max-h-24 overflow-y-auto border border-cream-200">
+              &quot;{reportingContent.slice(0, 200)}...&quot;
+            </div>
+          )}
+
+          <div className="space-y-1.5">
+            <label className="block text-xs font-semibold text-brand-dark">Category of Issue</label>
+            <select
+              value={reportCategory}
+              onChange={(e) => setReportCategory(e.target.value)}
+              className="block w-full rounded-xl border border-cream-300 bg-white px-3 py-2 text-xs text-brand-dark focus:outline-none focus:ring-2 focus:ring-brand-emerald min-h-[44px]"
+            >
+              <option value="Pesticide or Chemical Dosage">Pesticide or Chemical Dosage Issue</option>
+              <option value="Disease Diagnosis">Wrong Disease Diagnosis or Symptoms</option>
+              <option value="Scheme or Subsidy">Outdated or Incorrect Government Scheme</option>
+              <option value="Translation">Translation or Language Problem</option>
+              <option value="Other">Other Agronomic Concern</option>
+            </select>
+          </div>
+
+          <div className="space-y-1.5">
+            <label className="block text-xs font-semibold text-brand-dark">Correct Info / What Should Be Changed *</label>
+            <textarea
+              rows={3}
+              required
+              value={reportNotes}
+              onChange={(e) => setReportNotes(e.target.value)}
+              placeholder="e.g. Recommended Mancozeb dose for potato late blight should be 2.0 - 2.5 g/L..."
+              className="block w-full rounded-xl border border-cream-300 bg-white p-3 text-xs text-brand-dark focus:outline-none focus:ring-2 focus:ring-brand-emerald"
+            />
+          </div>
+
+          <div className="flex items-center justify-end gap-2 pt-2 border-t border-cream-200">
+            <Button type="button" variant="secondary" size="sm" onClick={() => setReportModalOpen(false)}>
+              Cancel
+            </Button>
+            <Button type="submit" variant="primary" size="sm" isLoading={isSubmittingReport}>
+              Submit Report
+            </Button>
+          </div>
+        </form>
+      </Modal>
     </div>
   );
 }

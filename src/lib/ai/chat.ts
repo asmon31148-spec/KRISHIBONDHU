@@ -3,6 +3,8 @@
  * Grounded in ICAR, BCKV, and State Agricultural University Extension Knowledge.
  */
 
+import { buildPesticideRegistryGrounding } from './pesticides';
+
 export interface ChatMessageParam {
   role: 'user' | 'assistant';
   content: string;
@@ -65,6 +67,8 @@ CORE BEHAVIORAL RULES:
    - Do not spray in strong wind or imminent rain.
    - Observe the waiting period (PHI) before harvesting.
 5. Be Honest and Humble: If a query lacks details (e.g., "my leaves have spots" without crop name or description), ask gentle follow-up questions to clarify the crop, age, and lesion pattern. Never guess wildly.
+
+${buildPesticideRegistryGrounding()}
 `;
 }
 
@@ -177,7 +181,10 @@ async function generateGroqChatReply(
   systemPrompt: string,
   apiKey: string
 ): Promise<string> {
-  const model = process.env.GROQ_CHAT_MODEL || 'qwen/qwen3.8-27b';
+  let model = process.env.GROQ_CHAT_MODEL || 'qwen/qwen3.8-27b';
+  if (model.includes('llama-3.2-11b') || model.includes('llama-3.2-90b') || model.includes('decommissioned')) {
+    model = 'qwen/qwen3.8-27b';
+  }
   const chatMessages = [
     { role: 'system', content: systemPrompt },
     ...messages.map((m) => ({
