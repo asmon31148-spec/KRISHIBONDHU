@@ -87,8 +87,31 @@ export async function POST(req: NextRequest) {
           data: { user },
         } = await supabase.auth.getUser();
 
-        // Convert image to data URL or upload to bucket
-        const dataUrl = `data:${validatedMime};base64,${base64Data}`;
+        // 1. Upload to Supabase Storage bucket 'crop-scans' to avoid database text column bloat
+        let finalImageUrl = `data:${validatedMime};base64,${base64Data}`;
+        try {
+          const buffer = Buffer.from(base64Data, 'base64');
+          const ext = validatedMime.split('/')[1] || 'jpeg';
+          const filename = `${user?.id || 'guest'}/${Date.now()}-${Math.random().toString(36).substring(2, 7)}.${ext}`;
+
+          const { data: uploadData, error: uploadErr } = await supabase.storage
+            .from('crop-scans')
+            .upload(filename, buffer, {
+              contentType: validatedMime,
+              upsert: true,
+            });
+
+          if (!uploadErr && uploadData?.path) {
+            const { data: publicUrlData } = supabase.storage
+              .from('crop-scans')
+              .getPublicUrl(uploadData.path);
+            if (publicUrlData?.publicUrl) {
+              finalImageUrl = publicUrlData.publicUrl;
+            }
+          }
+        } catch (storageErr) {
+          console.warn('Storage bucket upload notice (fallback to dataUrl):', storageErr);
+        }
 
         const { data: inserted, error: insertError } = await supabase
           .from('crop_scans')
@@ -102,7 +125,7 @@ export async function POST(req: NextRequest) {
             disease_confidence: result.disease_confidence,
             severity: result.severity,
             is_uncertain: result.is_uncertain,
-            image_url: dataUrl,
+            image_url: finalImageUrl,
             symptoms: result.symptoms,
             affected_parts: result.affected_parts,
             ai_explanation: result.ai_explanation,
