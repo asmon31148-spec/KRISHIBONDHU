@@ -21,7 +21,6 @@ import {
   CheckCircle2,
   PhoneCall,
   ArrowRight,
-  ShieldCheck,
 } from 'lucide-react';
 
 export default function ProfilePage() {
