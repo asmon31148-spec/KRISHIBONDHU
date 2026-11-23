@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
 import Link from 'next/link';
 import { useTranslation } from '@/i18n/context';
 import { useAuth } from '@/context/AuthContext';
@@ -136,6 +136,7 @@ export default function WeatherPage() {
   const [isLoading, setIsLoading] = useState(true);
   const [isDetectingGps, setIsDetectingGps] = useState(false);
   const [lastFetchedAt, setLastFetchedAt] = useState<string | null>(null);
+  const lastFetchedRef = useRef<string>('');
 
   // Load user's active crops to enable crop-aware weather risk
   useEffect(() => {
@@ -177,7 +178,11 @@ export default function WeatherPage() {
   }, [toast]);
 
   useEffect(() => {
-    fetchWeather(selectedLocation.lat, selectedLocation.lon, selectedLocation.name);
+    const locKey = `${selectedLocation.lat}_${selectedLocation.lon}_${selectedLocation.name}`;
+    if (lastFetchedRef.current !== locKey) {
+      lastFetchedRef.current = locKey;
+      fetchWeather(selectedLocation.lat, selectedLocation.lon, selectedLocation.name);
+    }
   }, [fetchWeather, selectedLocation.lat, selectedLocation.lon, selectedLocation.name]);
 
   const handleDistrictChange = (e: React.ChangeEvent<HTMLSelectElement>) => {

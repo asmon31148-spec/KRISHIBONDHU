@@ -1,6 +1,6 @@
 'use client';
 
-import React, { createContext, useContext, useState, useCallback } from 'react';
+import React, { createContext, useContext, useState, useCallback, useMemo } from 'react';
 import { CheckCircle2, AlertTriangle, AlertCircle, Info, X } from 'lucide-react';
 
 export type ToastType = 'success' | 'error' | 'warning' | 'info';
@@ -39,13 +39,21 @@ export function ToastProvider({ children }: { children: React.ReactNode }) {
     [removeToast]
   );
 
-  const value = {
-    toast: addToast,
-    success: (msg: string) => addToast(msg, 'success'),
-    error: (msg: string) => addToast(msg, 'error'),
-    warning: (msg: string) => addToast(msg, 'warning'),
-    info: (msg: string) => addToast(msg, 'info'),
-  };
+  const success = useCallback((msg: string) => addToast(msg, 'success'), [addToast]);
+  const error = useCallback((msg: string) => addToast(msg, 'error'), [addToast]);
+  const warning = useCallback((msg: string) => addToast(msg, 'warning'), [addToast]);
+  const info = useCallback((msg: string) => addToast(msg, 'info'), [addToast]);
+
+  const value = useMemo(
+    () => ({
+      toast: addToast,
+      success,
+      error,
+      warning,
+      info,
+    }),
+    [addToast, success, error, warning, info]
+  );
 
   const icons = {
     success: <CheckCircle2 className="w-5 h-5 text-emerald-600 shrink-0" />,

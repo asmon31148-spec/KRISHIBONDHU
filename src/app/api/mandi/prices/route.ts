@@ -11,6 +11,9 @@ interface CacheEntry {
 const cache: Record<string, CacheEntry> = {};
 const CACHE_TTL_MS = 4 * 60 * 60 * 1000;
 
+// Historical price memory for real inter-day or intra-auction trend tracking
+const historicalModalPrices: Record<string, { lastModal: number; date: string }> = {};
+
 export async function GET(req: NextRequest) {
   const { searchParams } = new URL(req.url);
   const districtParam = searchParams.get('district') || 'All Districts';
@@ -85,12 +88,36 @@ export async function GET(req: NextRequest) {
         latestDateFound = arrival;
       }
 
-      // Calculate trend relative to spread
+      const commodityKey = `${r.district || ''}_${r.market || ''}_${r.commodity || ''}_${r.variety || ''}`.toLowerCase();
+      
+      // Calculate true price trend: compare against historical modal or auction weighted center
       let trend: 'up' | 'down' | 'stable' = 'stable';
-      if (max - min > 150) {
-        trend = 'up';
-      } else if (modal < min + 50) {
-        trend = 'down';
+      const prevRecord = historicalModalPrices[commodityKey];
+
+      if (prevRecord && prevRecord.lastModal > 0) {
+        const delta = modal - prevRecord.lastModal;
+        if (delta >= 30) {
+          trend = 'up';
+        } else if (delta <= -30) {
+          trend = 'down';
+        } else {
+          trend = 'stable';
+        }
+      } else {
+        // Fallback: compare modal price to midpoint of the daily auction range
+        const midPoint = (min + max) / 2;
+        if (modal > midPoint + 30) {
+          trend = 'up';
+        } else if (modal < midPoint - 30) {
+          trend = 'down';
+        } else {
+          trend = 'stable';
+        }
+      }
+
+      // Store current modal for subsequent trend comparisons
+      if (modal > 0) {
+        historicalModalPrices[commodityKey] = { lastModal: modal, date: arrival };
       }
 
       return {

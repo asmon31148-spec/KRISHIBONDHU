@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect, useCallback, Suspense } from 'react';
+import React, { useState, useEffect, useCallback, useRef, Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { useToast } from '@/components/ui/Toast';
 import { createClient } from '@/lib/supabase/client';
@@ -35,6 +35,7 @@ function YieldPredictionContent() {
 
   const [isLoading, setIsLoading] = useState(false);
   const [result, setResult] = useState<YieldPredictionOutput | null>(null);
+  const loadedCropRef = useRef<string | null>(null);
 
   // If crop_id is passed in query, auto-populate from crop database record
   const loadExistingCrop = useCallback(async (cropId: string) => {
@@ -71,7 +72,8 @@ function YieldPredictionContent() {
   }, [toast]);
 
   useEffect(() => {
-    if (queryCropId) {
+    if (queryCropId && loadedCropRef.current !== queryCropId) {
+      loadedCropRef.current = queryCropId;
       loadExistingCrop(queryCropId);
     }
   }, [loadExistingCrop, queryCropId]);

@@ -224,7 +224,7 @@ export default function DashboardPage() {
           </div>
 
           {/* Right Column: Full-Color, Radiant, Sunlit Real Agricultural Photo with Smiling Indian Farmers (5 cols) */}
-          <div className="lg:col-span-5 relative min-h-[220px] sm:min-h-[280px] lg:min-h-full overflow-hidden">
+          <div className="lg:col-span-5 relative min-h-[220px] sm:min-h-[280px] lg:min-h-full overflow-hidden bg-gradient-to-br from-emerald-700 via-emerald-800 to-brand-forest">
             {/* Real Unsuppressed High-Res Farmer & Lush Paddy Photography */}
             <div 
               className="absolute inset-0 bg-cover bg-center transition-transform duration-700 hover:scale-105"

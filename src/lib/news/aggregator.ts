@@ -22,6 +22,7 @@ export interface NewsArticle {
     | 'fertilizer'
     | 'weather_warnings';
   language?: 'en' | 'bn' | 'hi';
+  isArchival?: boolean;
 }
 
 // In-memory 15-minute server cache
@@ -208,9 +209,15 @@ export async function fetchAgricultureNews(
     // PIB often blocks cloud proxies; caught silently
   }
 
-  // 3. Deduplicate by URL and combine with verified reference dispatches
+  // 3. Deduplicate by URL and prioritize live articles
   const seenUrls = new Set<string>();
-  const combined = [...liveArticles, ...VERIFIED_AGRICULTURE_DISPATCHES];
+  const referenceDispatches: NewsArticle[] = VERIFIED_AGRICULTURE_DISPATCHES.map((art) => ({
+    ...art,
+    isArchival: true,
+  }));
+
+  // If live RSS feeds succeed with 4+ fresh articles, use live articles exclusively so users do not see old 2025 dates
+  const combined = liveArticles.length >= 4 ? liveArticles : [...liveArticles, ...referenceDispatches];
   const uniqueArticles = combined.filter((art) => {
     const norm = art.sourceUrl.toLowerCase().trim();
     if (seenUrls.has(norm)) return false;

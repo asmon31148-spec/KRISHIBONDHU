@@ -169,15 +169,23 @@ export default function NewsPage() {
                 <div className="p-4 sm:p-5 space-y-3">
                   {/* Source & Date Header */}
                   <div className="flex items-center justify-between text-xs text-brand-dark/70">
-                    <span className="font-bold text-brand-forest flex items-center gap-1">
-                      <Building2 className="w-3.5 h-3.5" />
-                      {article.source}
-                    </span>
+                    <div className="flex items-center gap-1.5 flex-wrap">
+                      <span className="font-bold text-brand-forest flex items-center gap-1">
+                        <Building2 className="w-3.5 h-3.5" />
+                        {article.source}
+                      </span>
+                      {article.isArchival && (
+                        <span className="px-2 py-0.5 rounded-full bg-cream-200 text-brand-dark/70 text-[10px] font-semibold">
+                          Archival Reference
+                        </span>
+                      )}
+                    </div>
                     <span className="flex items-center gap-1 text-[11px] text-brand-dark/60">
                       <Calendar className="w-3 h-3" />
                       {new Date(article.publishedAt).toLocaleDateString('en-IN', {
                         day: 'numeric',
                         month: 'short',
+                        year: 'numeric',
                       })}
                     </span>
                   </div>
