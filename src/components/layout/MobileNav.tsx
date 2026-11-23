@@ -19,6 +19,8 @@ import {
   BookOpen,
   FileText,
   LogOut,
+  TrendingUp,
+  FlaskConical,
 } from 'lucide-react';
 
 export function MobileNav() {
@@ -35,6 +37,8 @@ export function MobileNav() {
   ];
 
   const moreItems = [
+    { label: 'Mandi Rates', href: '/mandi', icon: TrendingUp },
+    { label: 'Fertilizer Calc', href: '/fertilizer', icon: FlaskConical },
     { label: t('nav.profile'), href: '/profile', icon: User },
     { label: t('nav.weather'), href: '/weather', icon: CloudSun },
     { label: t('nav.news'), href: '/news', icon: Newspaper },

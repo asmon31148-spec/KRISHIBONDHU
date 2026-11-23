@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect, useCallback } from 'react';
 import Link from 'next/link';
+import { useTranslation } from '@/i18n/context';
 import { useAuth } from '@/context/AuthContext';
 import { useToast } from '@/components/ui/Toast';
 import { createClient } from '@/lib/supabase/client';
@@ -18,8 +19,12 @@ import {
   Info,
   Clock,
   ShieldCheck,
+  Volume2,
+  VolumeX,
+  Wind,
 } from 'lucide-react';
 import type { WeatherData } from '@/lib/weather/open-meteo';
+import { evaluateWeatherDirectives } from '@/lib/weather/advisories';
 
 interface BengalDistrict {
   name: string;
@@ -80,7 +85,38 @@ interface CropRecord {
 
 export default function WeatherPage() {
   const { user, profile } = useAuth();
+  const { language } = useTranslation();
   const toast = useToast();
+  const [speakingId, setSpeakingId] = useState<string | null>(null);
+
+  const speakDirective = (id: string, text: string) => {
+    if (typeof window === 'undefined' || !('speechSynthesis' in window)) {
+      toast.info('Audio readout not supported on this browser.');
+      return;
+    }
+
+    if (speakingId === id) {
+      window.speechSynthesis.cancel();
+      setSpeakingId(null);
+      return;
+    }
+
+    window.speechSynthesis.cancel();
+    const langCode = language === 'bn' ? 'bn-IN' : language === 'hi' ? 'hi-IN' : 'en-IN';
+    const utterance = new SpeechSynthesisUtterance(text);
+    utterance.lang = langCode;
+    utterance.rate = 0.95;
+
+    const voices = window.speechSynthesis.getVoices();
+    const matched = voices.find((v) => v.lang.replace('_', '-').includes(langCode));
+    if (matched) utterance.voice = matched;
+
+    utterance.onstart = () => setSpeakingId(id);
+    utterance.onend = () => setSpeakingId(null);
+    utterance.onerror = () => setSpeakingId(null);
+
+    window.speechSynthesis.speak(utterance);
+  };
 
   const [selectedLocation, setSelectedLocation] = useState<{
     name: string;
@@ -259,6 +295,8 @@ export default function WeatherPage() {
     });
   }
 
+  const directives = weather ? evaluateWeatherDirectives(weather) : [];
+
   return (
     <div className="space-y-6 w-full text-left pb-12">
       {/* Title & Location Bar */}
@@ -401,6 +439,95 @@ export default function WeatherPage() {
               </div>
             )}
           </Card>
+
+          {/* Actionable Weather Directives with Voice Alerts */}
+          {directives.length > 0 && (
+            <div className="space-y-3">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <Wind className="w-4 h-4 text-brand-leaf" />
+                  <h3 className="text-sm font-bold text-brand-dark uppercase tracking-wider">
+                    {language === 'bn'
+                      ? 'জরুরি কৃষি নির্দেশিকা ও অডিও বার্তা'
+                      : language === 'hi'
+                      ? 'तत्काल कृषि निर्देश व ऑडियो संदेश'
+                      : 'Actionable Weather Directives & Voice Alerts'}
+                  </h3>
+                </div>
+                <span className="text-xs text-brand-dark/50 font-medium">Deterministic Rule Engine</span>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                {directives.map((d) => {
+                  const title = language === 'bn' ? d.title_bn : language === 'hi' ? d.title_hi : d.title_en;
+                  const message = language === 'bn' ? d.message_bn : language === 'hi' ? d.message_hi : d.message_en;
+                  const action = language === 'bn' ? d.action_bn : language === 'hi' ? d.action_hi : d.action_en;
+                  const isSpeaking = speakingId === d.id;
+
+                  return (
+                    <Card
+                      key={d.id}
+                      className={`border-t-4 transition-all ${
+                        d.status === 'optimal'
+                          ? 'border-t-emerald-600 bg-white'
+                          : d.status === 'warning'
+                          ? 'border-t-amber-500 bg-amber-50/20'
+                          : 'border-t-rose-600 bg-rose-50/20'
+                      }`}
+                    >
+                      <CardContent className="p-4 sm:p-5 flex flex-col justify-between h-full space-y-3">
+                        <div className="space-y-2">
+                          <div className="flex items-start justify-between gap-2">
+                            <span
+                              className={`text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-md ${
+                                d.status === 'optimal'
+                                  ? 'bg-emerald-100 text-emerald-800'
+                                  : d.status === 'warning'
+                                  ? 'bg-amber-100 text-amber-900'
+                                  : 'bg-rose-100 text-rose-900'
+                              }`}
+                            >
+                              {d.type.replace('_', ' ')}
+                            </span>
+
+                            {/* Speaker Voice Alert Icon */}
+                            <button
+                              type="button"
+                              onClick={() => speakDirective(d.id, `${title}. ${message}. ${action}`)}
+                              className={`p-1.5 rounded-lg border transition-colors cursor-pointer ${
+                                isSpeaking
+                                  ? 'bg-rose-600 text-white border-rose-600 animate-pulse'
+                                  : 'bg-white text-brand-dark/70 hover:text-brand-forest hover:bg-cream-100 border-cream-200'
+                              }`}
+                              title={isSpeaking ? 'Stop Audio Readout' : 'Listen in Bengali/Hindi'}
+                            >
+                              {isSpeaking ? <VolumeX className="w-4 h-4" /> : <Volume2 className="w-4 h-4" />}
+                            </button>
+                          </div>
+
+                          <h4 className="text-sm font-bold text-brand-dark leading-snug">
+                            {title}
+                          </h4>
+                          <p className="text-xs text-brand-dark/75 leading-relaxed">
+                            {message}
+                          </p>
+                        </div>
+
+                        <div className="pt-2 border-t border-cream-200/80">
+                          <span className="text-[11px] font-bold text-brand-forest block">
+                            Direct Farm Action:
+                          </span>
+                          <span className="text-[11px] text-brand-dark/80 font-medium">
+                            {action}
+                          </span>
+                        </div>
+                      </CardContent>
+                    </Card>
+                  );
+                })}
+              </div>
+            </div>
+          )}
 
           {/* Personalized Crop-Aware Risk Warnings */}
           <div className="space-y-3">

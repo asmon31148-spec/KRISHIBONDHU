@@ -1,167 +1,53 @@
 'use client';
 
 import React, { useState } from 'react';
+import Link from 'next/link';
+import { useTranslation } from '@/i18n/context';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/Card';
 import { Badge } from '@/components/ui/Badge';
+import { Button } from '@/components/ui/Button';
 import {
-  FileText,
   ExternalLink,
   Calendar,
   Search,
-  IndianRupee,
   Phone,
   ShieldCheck,
-  Activity,
+  CheckSquare,
+  Square,
 } from 'lucide-react';
-
-interface Scheme {
-  id: string;
-  name: string;
-  bengaliName: string;
-  sponsor: 'West Bengal State Government' | 'Central Government (Govt of India)';
-  category: 'Direct Income' | 'Crop Insurance' | 'Irrigation & Subsidies' | 'Credit & Loan' | 'Mechanization';
-  benefitAmount: string;
-  helpline: string;
-  availabilityStatus: string;
-  statusCheckUrl: string;
-  statusCheckLabel: string;
-  eligibility: string[];
-  documents: string[];
-  officialUrl: string;
-  lastUpdated: string;
-}
-
-const SCHEMES: Scheme[] = [
-  {
-    id: 'krishak-bandhu',
-    name: 'Krishak Bandhu (Natun)',
-    bengaliName: 'কৃষক বন্ধু (নতুন)',
-    sponsor: 'West Bengal State Government',
-    category: 'Direct Income',
-    benefitAmount: '₹4,000 to ₹10,000 per year + ₹2 Lakh death insurance',
-    helpline: '8334904040 / 033-2214-5555',
-    availabilityStatus: 'Active & Ongoing (FY 2025–26)',
-    statusCheckUrl: 'https://krishakbandhu.wb.gov.in',
-    statusCheckLabel: 'Check Voter ID Status',
-    eligibility: [
-      'All farmers cultivating land in West Bengal (including recorded Bhagchasi / Sharecroppers).',
-      'Assistance is ₹10,000/year (two instalments of ₹5,000 in Kharif & Rabi) for 1 acre or more; pro-rata min ₹4,000/year.',
-      'Krishak Bandhu Death Benefit: In case of untimely death of farmer aged 18–60, legal heirs receive ₹2,00,000 one-time grant.',
-    ],
-    documents: ['Voter ID Card (EPIC)', 'Aadhaar Card', 'RoR / Khaitan copy / Patta doc', 'Bank Passbook (first page with IFSC)'],
-    officialUrl: 'https://krishakbandhu.wb.gov.in',
-    lastUpdated: 'February 2025 (Active FY 2025-26)',
-  },
-  {
-    id: 'bangla-shasya-bima',
-    name: 'Bangla Shasya Bima (BSB)',
-    bengaliName: 'বাংলা শস্য বীমা (BSB)',
-    sponsor: 'West Bengal State Government',
-    category: 'Crop Insurance',
-    benefitAmount: '100% Free Crop Insurance (0% Farmer Premium)',
-    helpline: '1800-889-6888 (Toll-Free)',
-    availabilityStatus: 'Active (Rabi / Boro Season Enrolling)',
-    statusCheckUrl: 'https://banglashasyabima.net',
-    statusCheckLabel: 'Check Application & Certificate',
-    eligibility: [
-      'Entire insurance premium is borne by the West Bengal State Government for all notified crops (Aman paddy, Aus paddy, Boro paddy, Jute, Maize, Pulses, Mustard).',
-      'Farmers pay zero premium, except for potato and sugarcane where state subsidizes the majority share.',
-      'Compensation paid directly to bank account based on satellite, weather and crop cutting experiment (CCE) shortfall.',
-    ],
-    documents: ['Aadhaar Card', 'Khatian / Parcha (Land Record)', 'Sowing Certificate from Gram Panchayat / Krishi Sahayak', 'Bank Passbook'],
-    officialUrl: 'https://banglashasyabima.net',
-    lastUpdated: 'February 2025 (Active FY 2025-26)',
-  },
-  {
-    id: 'pm-kisan',
-    name: 'Pradhan Mantri Kisan Samman Nidhi (PM-KISAN)',
-    bengaliName: 'প্রধানমন্ত্রী কিষাণ সম্মান নিধি',
-    sponsor: 'Central Government (Govt of India)',
-    category: 'Direct Income',
-    benefitAmount: '₹6,000 per year (3 instalments of ₹2,000)',
-    helpline: '155261 / 1800-11-5526 (Toll-Free)',
-    availabilityStatus: 'Active & Ongoing (DBT Disbursements Active)',
-    statusCheckUrl: 'https://pmkisan.gov.in/BeneficiaryStatus_New.aspx',
-    statusCheckLabel: 'Live Beneficiary Status Tracker',
-    eligibility: [
-      'All landholding farmer families having cultivable landholding in their names.',
-      'Transferred directly via DBT in 3 equal four-monthly payments.',
-      'Mandatory e-KYC and land seeding on the PM-KISAN portal required for disbursements.',
-    ],
-    documents: ['Aadhaar Card (linked to mobile)', 'Land Ownership Documents (Parcha / Deed)', 'Aadhaar-seeded Bank Account'],
-    officialUrl: 'https://pmkisan.gov.in',
-    lastUpdated: 'February 2025 (Active FY 2025-26)',
-  },
-  {
-    id: 'kcc',
-    name: 'Kisan Credit Card (KCC) Scheme',
-    bengaliName: 'কিষাণ ক্রেডিট কার্ড (KCC)',
-    sponsor: 'Central Government (Govt of India)',
-    category: 'Credit & Loan',
-    benefitAmount: 'Short-term loans up to ₹3,00,000 at effective 4% interest',
-    helpline: '1800-180-1551 (Kisan Call Center)',
-    availabilityStatus: 'Active & Accepting Applications Year-Round',
-    statusCheckUrl: 'https://www.myscheme.gov.in/schemes/kcc',
-    statusCheckLabel: 'Check Bank Checklist & Form',
-    eligibility: [
-      'All farmers, individual/joint borrowers, tenant farmers, oral lessees and self-help groups (SHGs).',
-      'Nominal interest rate of 7%, reduced to 4% p.a. for prompt repayment within 1 year.',
-      'Collateral-free agricultural loans up to ₹1.60 lakh (extendable to ₹2.00 lakh under specific bank rules).',
-    ],
-    documents: ['Identity Proof (Aadhaar / Voter ID)', 'Address Proof', 'Land Ownership Record / Crop cultivation certificate', 'Passport photos'],
-    officialUrl: 'https://agricoop.nic.in',
-    lastUpdated: 'February 2025 (Active FY 2025-26)',
-  },
-  {
-    id: 'pmksy-micro-irrigation',
-    name: 'Per Drop More Crop (PMKSY - Micro Irrigation)',
-    bengaliName: 'প্রতি ফোঁটা জলে অধিক ফসল (ড্রিপ ও স্প্রিংকলার)',
-    sponsor: 'Central Government (Govt of India)',
-    category: 'Irrigation & Subsidies',
-    benefitAmount: 'Up to 55% subsidy on Drip & Sprinkler Systems',
-    helpline: '1800-180-1551 (Kisan Call Center)',
-    availabilityStatus: 'Active (District Allotments Open)',
-    statusCheckUrl: 'https://pmksy.gov.in',
-    statusCheckLabel: 'Check State Allotment Status',
-    eligibility: [
-      'Small and marginal farmers receive 55% financial assistance for micro-irrigation installation.',
-      'Other farmers receive 45% financial assistance.',
-      'Saves up to 40–50% water while boosting crop yields in vegetable, potato, and orchard belts.',
-    ],
-    documents: ['Land Records (ROR)', 'Aadhaar Card', 'Water source verification (tubewell/pond)', 'Bank Details'],
-    officialUrl: 'https://pmksy.gov.in',
-    lastUpdated: 'February 2025 (Active FY 2025-26)',
-  },
-  {
-    id: 'matir-katha-farm-mechanization',
-    name: 'West Bengal Farm Mechanization (FSSM & CHC)',
-    bengaliName: 'কৃষি যান্ত্রিকীকরণ প্রকল্প (মাটির কথা)',
-    sponsor: 'West Bengal State Government',
-    category: 'Mechanization',
-    benefitAmount: '40% to 80% subsidy on modern farm machinery',
-    helpline: '033-2358-0050 (Agri Directorate, WB)',
-    availabilityStatus: 'Active (Departmental Subsidy Cycles)',
-    statusCheckUrl: 'https://matirkatha.net',
-    statusCheckLabel: 'Matir Katha Application Portal',
-    eligibility: [
-      'Financial Support for Purchase of Farm Machinery (FSSM): 50% subsidy for individual small/marginal farmers.',
-      'Custom Hiring Centres (CHC): 40% subsidy (up to ₹20–40 Lakh) for Primary Agricultural Credit Societies (PACS) and Farmer Producer Companies (FPOs).',
-    ],
-    documents: ['Land Record (Parcha)', 'Aadhaar Card', 'Voter Card', 'Quotation from authorized implement dealer'],
-    officialUrl: 'https://matirkatha.gov.in',
-    lastUpdated: 'February 2025 (Active FY 2025-26)',
-  },
-];
+import {
+  VERIFIED_SCHEMES,
+  PICTORIAL_CHECKLIST,
+  OFFICIAL_HELPLINES,
+} from '@/data/schemes';
 
 export default function SchemesPage() {
+  const { language } = useTranslation();
+
   const [search, setSearch] = useState('');
   const [selectedCategory, setSelectedCategory] = useState<string>('All');
   const [selectedSponsor, setSelectedSponsor] = useState<string>('All');
+  const [checkedDocs, setCheckedDocs] = useState<Record<string, boolean>>({});
 
-  const categories = ['All', 'Direct Income', 'Crop Insurance', 'Irrigation & Subsidies', 'Credit & Loan', 'Mechanization'];
-  const sponsors = ['All', 'West Bengal State Government', 'Central Government (Govt of India)'];
+  const toggleDoc = (id: string) => {
+    setCheckedDocs((prev) => ({ ...prev, [id]: !prev[id] }));
+  };
 
-  const filtered = SCHEMES.filter((scheme) => {
+  const categories = [
+    'All',
+    'Direct Income',
+    'Crop Insurance',
+    'Irrigation & Subsidies',
+    'Credit & Loan',
+  ];
+
+  const sponsors = [
+    'All',
+    'West Bengal State Government',
+    'Central Government (Govt of India)',
+  ];
+
+  const filtered = VERIFIED_SCHEMES.filter((scheme) => {
     const matchesSearch =
       scheme.name.toLowerCase().includes(search.toLowerCase()) ||
       scheme.bengaliName.toLowerCase().includes(search.toLowerCase()) ||
@@ -174,57 +60,175 @@ export default function SchemesPage() {
   });
 
   return (
-    <div className="space-y-6 w-full text-left max-w-full overflow-x-clip pb-12">
-      {/* Page Header */}
-      <div>
-        <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-brand-forest/10 text-brand-forest text-xs font-semibold mb-2">
-          <FileText className="w-3.5 h-3.5" />
-          <span>Verified Government Benefits</span>
-        </div>
-        <h1 className="text-2xl sm:text-3xl font-extrabold text-brand-forest">
-          Agricultural Welfare Schemes & Subsidies
-        </h1>
-        <p className="text-xs sm:text-sm text-brand-dark/70 mt-1 max-w-3xl">
-          Direct income support, free state crop insurance, and equipment subsidies for farmers in West Bengal and India. Always verify eligibility on official department portals before applying.
-        </p>
-      </div>
+    <div className="space-y-6 sm:space-y-8 w-full text-left max-w-full overflow-x-clip pb-12">
+      {/* Page Header Banner */}
+      <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-cream-50 via-white to-emerald-50/50 border border-cream-300 shadow-xs p-6 sm:p-8">
+        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+          <div className="space-y-2">
+            <div className="flex items-center gap-2">
+              <Badge variant="emerald" size="sm">
+                FY 2025–2026 Verified
+              </Badge>
+              <span className="text-xs text-brand-dark/60">• Zero Middleman Guarantee</span>
+            </div>
+            <h1 className="text-2xl sm:text-3xl font-extrabold text-brand-dark tracking-tight">
+              {language === 'bn'
+                ? 'সরকারি কৃষি প্রকল্প ও বীমা ন্যাভিগেটর'
+                : language === 'hi'
+                ? 'सरकारी कृषि योजनाएं व बीमा नेविगेटर'
+                : 'Government Agricultural Schemes & Insurance Navigator'}
+            </h1>
+            <p className="text-xs sm:text-sm text-brand-dark/75 max-w-xl">
+              {language === 'bn'
+                ? 'দালালমুক্ত সরাসরি সরকারি সুবিধা। কৃষকবন্ধু, বাংলা শস্য বীমা, ও পিএম-কিষাণের সরাসরি স্ট্যাটাস ট্র্যাকার ও নথি চেকলিস্ট।'
+                : language === 'hi'
+                ? 'बिचौलियों के बिना सीधे सरकारी लाभ। कृषक बंधु, फसल बीमा व पीएम-किसान की आधिकारिक स्थिति व दस्तावेज चेकलिस्ट।'
+                : 'Direct verified welfare benefits, zero-premium state crop insurance, and official beneficiary lookup portals without brokers.'}
+            </p>
+          </div>
 
-      {/* Official Availability Checkline Notice */}
-      <div className="flex items-start gap-2.5 p-3.5 bg-emerald-50/90 border border-emerald-200/90 rounded-2xl text-xs sm:text-sm text-emerald-950">
-        <ShieldCheck className="w-5 h-5 text-emerald-600 shrink-0 mt-0.5" />
-        <div className="space-y-0.5">
-          <span className="font-bold block text-xs sm:text-sm text-emerald-950">
-            Official Availability Checkline & Active Status (FY 2025–2026):
+          <div className="flex flex-wrap items-center gap-2">
+            <a href="tel:18001801551">
+              <Button variant="primary" size="sm" leftIcon={<Phone className="w-3.5 h-3.5" />}>
+                {language === 'bn' ? 'কিষাণ কল সেন্টার ১৮০০-১৮০-১৫৫১' : 'Kisan Helpline 1800-180-1551'}
+              </Button>
+            </a>
+            <Link href="/mandi">
+              <Button variant="secondary" size="sm">
+                {language === 'bn' ? 'মান্ডি দর' : 'Mandi Rates'}
+              </Button>
+            </Link>
+          </div>
+        </div>
+
+        {/* Verification Checkline Banner */}
+        <div className="mt-4 pt-3 border-t border-cream-200/80 flex flex-wrap items-center justify-between gap-3 text-xs text-brand-dark/70">
+          <div className="flex items-center gap-2 text-emerald-800 font-semibold">
+            <ShieldCheck className="w-4 h-4 text-emerald-700" />
+            <span>Official Availability Checkline & Active Status (FY 2025–2026 Active DBT Cycles)</span>
+          </div>
+          <span className="text-emerald-800 bg-emerald-100/70 px-2.5 py-0.5 rounded-full font-bold text-[11px]">
+            Direct Official Govt Links
           </span>
-          <p className="text-emerald-900/85 text-[11px] sm:text-xs leading-relaxed">
-            All 6 schemes cataloged below are verified active and currently disbursing seasonal assistance or enrolling farmers across West Bengal districts. Use the direct <strong className="text-emerald-950">Beneficiary Status Tracker</strong> buttons on each card to search your Voter ID or Aadhaar status directly on official state and central servers.
-          </p>
         </div>
       </div>
 
-      {/* Filter and Search */}
-      <div className="flex flex-col sm:flex-row gap-3">
-        <div className="relative flex-1">
-          <Search className="w-4 h-4 text-brand-dark/50 absolute left-3.5 top-1/2 -translate-y-1/2" />
+      {/* Interactive Pictorial Document Checklist */}
+      <Card className="border-t-4 border-t-brand-forest shadow-xs">
+        <CardHeader className="pb-3 border-b border-cream-200">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+            <div className="flex items-center gap-2">
+              <span className="w-6 h-6 rounded-full bg-brand-forest text-white flex items-center justify-center text-xs font-bold">
+                ✓
+              </span>
+              <CardTitle className="text-sm sm:text-base font-bold text-brand-dark">
+                {language === 'bn'
+                  ? 'প্রকল্পে আবেদনের সচিত্র নথি চেকলিস্ট (Interactive Document Checklist)'
+                  : 'Interactive Pictorial Document Checklist (Click to tick off)'}
+              </CardTitle>
+            </div>
+            <span className="text-xs text-brand-leaf font-bold">
+              {Object.values(checkedDocs).filter(Boolean).length} / {PICTORIAL_CHECKLIST.length} Ready
+            </span>
+          </div>
+        </CardHeader>
+        <CardContent className="p-4 sm:p-6">
+          <p className="text-xs text-brand-dark/70 mb-4">
+            {language === 'bn'
+              ? 'কৃষি অফিসে বা বাংলা সহায়তা কেন্দ্রে (BSK) যাওয়ার আগে প্রয়োজনীয় কাগজপত্র সঙ্গে রাখুন:'
+              : 'Keep these 4 verified essential documents ready before visiting the Agriculture Office or BSK counter:'}
+          </p>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+            {PICTORIAL_CHECKLIST.map((doc) => {
+              const isChecked = Boolean(checkedDocs[doc.id]);
+              return (
+                <div
+                  key={doc.id}
+                  onClick={() => toggleDoc(doc.id)}
+                  className={`p-4 rounded-2xl border transition-all cursor-pointer flex flex-col justify-between ${
+                    isChecked
+                      ? 'border-emerald-500 bg-emerald-50/40 ring-1 ring-emerald-400 shadow-2xs'
+                      : 'border-cream-200 bg-white hover:border-brand-leaf/40'
+                  }`}
+                >
+                  <div>
+                    <div className="flex items-center justify-between">
+                      <span className="text-2xl">{doc.icon}</span>
+                      <button type="button" className="text-brand-forest">
+                        {isChecked ? (
+                          <CheckSquare className="w-5 h-5 text-emerald-600" />
+                        ) : (
+                          <Square className="w-5 h-5 text-cream-400" />
+                        )}
+                      </button>
+                    </div>
+                    <h4 className="text-xs sm:text-sm font-bold text-brand-dark mt-2">
+                      {language === 'bn' ? doc.title_bn : language === 'hi' ? doc.title_hi : doc.title_en}
+                    </h4>
+                    <p className="text-[11px] text-brand-dark/70 mt-1 leading-snug">
+                      {language === 'bn' ? doc.description_bn : language === 'hi' ? doc.description_hi : doc.description_en}
+                    </p>
+                  </div>
+                  <div className="mt-3 pt-2 border-t border-cream-200/80 text-[10px] font-bold text-brand-leaf">
+                    {isChecked ? 'Ready in Folder ✓' : 'Click to Mark Ready'}
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* One-Touch Helpline Dialing Bar */}
+      <div className="p-4 rounded-2xl bg-gradient-to-r from-emerald-800 to-brand-forest text-white shadow-xs">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+          <div className="space-y-0.5">
+            <span className="text-xs uppercase tracking-wider text-emerald-200 font-bold block">
+              Direct Farmer Helplines (One-Touch Dialing)
+            </span>
+            <p className="text-xs text-white/90">
+              Speak directly with official agricultural extension scientists without brokers or middlemen:
+            </p>
+          </div>
+
+          <div className="flex flex-wrap items-center gap-2">
+            {OFFICIAL_HELPLINES.map((h, i) => (
+              <a
+                key={i}
+                href={`tel:${h.dial}`}
+                className="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl bg-white/15 hover:bg-white/25 backdrop-blur-xs text-white text-xs font-bold border border-white/20 transition-colors shadow-2xs"
+              >
+                <Phone className="w-3.5 h-3.5 text-emerald-300" />
+                <span>{h.number}</span>
+              </a>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      {/* Filters & Search */}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+        <div className="relative flex-1 max-w-md">
+          <Search className="w-4 h-4 text-brand-dark/40 absolute left-3.5 top-1/2 -translate-y-1/2" />
           <input
             type="text"
+            placeholder="Search scheme name, benefit amount, or eligibility..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            placeholder="Search by scheme name (Krishak Bandhu, PM-KISAN, BSB)..."
-            className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-cream-300 bg-white text-sm text-brand-dark focus:outline-none focus:ring-2 focus:ring-brand-emerald min-h-[44px]"
+            className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-cream-200 bg-white text-xs sm:text-sm text-brand-dark focus:outline-hidden focus:border-brand-leaf"
           />
         </div>
 
-        <div className="flex items-center gap-2 overflow-x-auto pb-1 sm:pb-0">
+        <div className="flex items-center gap-2 flex-wrap">
           <select
             value={selectedCategory}
             onChange={(e) => setSelectedCategory(e.target.value)}
-            aria-label="Filter by Benefit Category"
-            className="rounded-xl border border-cream-300 bg-white px-3 py-2 text-xs font-semibold text-brand-dark focus:outline-none focus:ring-2 focus:ring-brand-emerald min-h-[44px]"
+            className="px-3 py-2 rounded-xl border border-cream-200 bg-white text-xs font-semibold text-brand-dark focus:outline-hidden focus:border-brand-leaf"
           >
-            {categories.map((cat) => (
-              <option key={cat} value={cat}>
-                {cat === 'All' ? 'All Categories' : cat}
+            {categories.map((c) => (
+              <option key={c} value={c}>
+                Category: {c}
               </option>
             ))}
           </select>
@@ -232,117 +236,120 @@ export default function SchemesPage() {
           <select
             value={selectedSponsor}
             onChange={(e) => setSelectedSponsor(e.target.value)}
-            aria-label="Filter by Government Authority"
-            className="rounded-xl border border-cream-300 bg-white px-3 py-2 text-xs font-semibold text-brand-dark focus:outline-none focus:ring-2 focus:ring-brand-emerald min-h-[44px]"
+            className="px-3 py-2 rounded-xl border border-cream-200 bg-white text-xs font-semibold text-brand-dark focus:outline-hidden focus:border-brand-leaf"
           >
             {sponsors.map((s) => (
               <option key={s} value={s}>
-                {s === 'All' ? 'All Authorities' : s.replace(' Government (Govt of India)', '')}
+                {s === 'All' ? 'All Sponsors' : s.replace(' (Govt of India)', '')}
               </option>
             ))}
           </select>
         </div>
       </div>
 
-      {/* Scheme Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+      {/* Schemes Grid */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
         {filtered.map((scheme) => (
-          <Card key={scheme.id} className="border border-cream-200/90 shadow-xs hover:border-brand-leaf/40 transition-all bg-white flex flex-col justify-between overflow-hidden">
-            <CardHeader className="bg-cream-50/70 border-b border-cream-200/70 p-4 sm:p-5 pb-3">
+          <Card
+            key={scheme.id}
+            className="flex flex-col justify-between border-t-4 border-t-brand-leaf hover:shadow-md transition-shadow group"
+          >
+            <CardHeader className="pb-3 space-y-2">
               <div className="flex items-start justify-between gap-2">
-                <span className="text-[10px] font-bold px-2 py-0.5 rounded-full uppercase tracking-wider bg-brand-forest/10 text-brand-forest border border-brand-forest/20 shrink-0">
-                  {scheme.sponsor.includes('West Bengal') ? 'West Bengal Scheme' : 'Central Scheme'}
-                </span>
-
-                <Badge variant="outline" className="text-[10px] font-semibold bg-white text-brand-dark/80">
+                <Badge variant={scheme.sponsor.includes('West Bengal') ? 'emerald' : 'forest'} size="sm">
+                  {scheme.sponsor}
+                </Badge>
+                <Badge variant="slate" size="sm">
                   {scheme.category}
                 </Badge>
               </div>
 
-              <div className="mt-2">
-                <CardTitle className="text-lg font-bold text-brand-forest leading-snug">
+              <div>
+                <CardTitle className="text-base sm:text-lg font-bold text-brand-dark group-hover:text-brand-forest transition-colors">
                   {scheme.name}
                 </CardTitle>
-                <span className="text-xs font-semibold text-brand-leaf block">
+                <span className="text-xs font-bold text-brand-leaf block mt-0.5">
                   {scheme.bengaliName}
                 </span>
-
-                {/* Live Availability Status Checkline */}
-                <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-emerald-50 text-emerald-900 border border-emerald-300 text-[10px] font-bold w-fit mt-2">
-                  <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse shrink-0" />
-                  <span>{scheme.availabilityStatus}</span>
-                </div>
               </div>
 
-              {/* Benefit Highlight */}
-              <div className="mt-3 p-2.5 rounded-xl bg-white border border-brand-mint/60 flex items-center gap-2">
-                <IndianRupee className="w-4 h-4 text-emerald-600 shrink-0" />
-                <span className="text-xs font-bold text-brand-dark">
-                  {scheme.benefitAmount}
+              {/* Benefit Highlight Box */}
+              <div className="p-3 rounded-xl bg-cream-50 border border-cream-200 flex items-center justify-between">
+                <span className="text-xs font-bold text-brand-forest">
+                  ₹ {scheme.benefitAmount}
+                </span>
+                <span className="text-[10px] font-bold text-emerald-800 bg-emerald-100 px-2 py-0.5 rounded-full">
+                  {scheme.availabilityStatus}
                 </span>
               </div>
             </CardHeader>
 
-            <CardContent className="p-4 sm:p-5 space-y-4 pt-3 text-xs">
-              {/* Eligibility */}
-              <div>
-                <span className="font-bold text-brand-dark uppercase tracking-wider text-[10px] block mb-1.5 text-brand-forest">
-                  Key Eligibility & Provisions:
+            <CardContent className="space-y-4 pt-0">
+              {/* Key Eligibility */}
+              <div className="space-y-1.5">
+                <span className="text-xs font-bold uppercase tracking-wider text-brand-dark/70 block">
+                  Eligibility & Key Provisions:
                 </span>
-                <ul className="space-y-1.5 text-brand-dark/80 pl-3">
-                  {scheme.eligibility.map((item, idx) => (
-                    <li key={idx} className="list-disc leading-relaxed">
-                      {item}
+                <ul className="space-y-1 text-xs text-brand-dark/80">
+                  {scheme.eligibility.map((el, i) => (
+                    <li key={i} className="flex items-start gap-1.5">
+                      <span className="text-emerald-700 font-bold shrink-0">•</span>
+                      <span>{el}</span>
                     </li>
                   ))}
                 </ul>
               </div>
 
-              {/* Required Documents */}
-              <div className="p-2.5 rounded-lg bg-cream-50/80 border border-cream-200">
-                <span className="font-bold text-brand-dark text-[10px] uppercase block mb-1 text-brand-dark/70">
-                  Required Documents:
+              {/* Claims & Cutoff Dates if any */}
+              {scheme.cutoffDates && (
+                <div className="p-2.5 rounded-xl bg-white border border-cream-200 text-xs text-brand-dark/75 space-y-1">
+                  <div className="flex items-center gap-1.5 font-bold text-brand-dark">
+                    <Calendar className="w-3.5 h-3.5 text-brand-leaf" />
+                    <span>Cutoff & Enrollment Timeline:</span>
+                  </div>
+                  <p className="text-[11px] leading-relaxed">{scheme.cutoffDates}</p>
+                </div>
+              )}
+
+              {/* Documents Required */}
+              <div className="pt-2 border-t border-cream-200/80">
+                <span className="text-xs font-bold uppercase tracking-wider text-brand-dark/70 block mb-1.5">
+                  Required Documents Checklist:
                 </span>
-                <p className="text-[11px] text-brand-dark/80 leading-normal">
-                  {scheme.documents.join(' • ')}
-                </p>
+                <div className="flex flex-wrap gap-1.5">
+                  {scheme.documents.map((doc, i) => (
+                    <span
+                      key={i}
+                      className="inline-flex items-center gap-1 text-[11px] px-2.5 py-1 rounded-lg bg-cream-100 text-brand-dark font-medium border border-cream-200"
+                    >
+                      <span>{doc.icon}</span>
+                      <span>{doc.name_en}</span>
+                    </span>
+                  ))}
+                </div>
               </div>
 
-              {/* Official Helpline */}
-              <div className="flex items-center gap-1.5 text-[11px] text-brand-dark/70 bg-cream-50/60 p-2 rounded-lg border border-cream-200/60">
-                <Phone className="w-3.5 h-3.5 text-brand-forest shrink-0" />
-                <span className="font-bold text-brand-forest">Helpline:</span>
-                <span className="font-medium">{scheme.helpline}</span>
-              </div>
-
-              {/* Footer with portal links and verified status */}
-              <div className="space-y-2 pt-2 border-t border-cream-200/70 text-xs">
-                <div className="flex items-center justify-between text-[11px] text-brand-dark/60">
-                  <span className="flex items-center gap-1">
-                    <Calendar className="w-3 h-3 text-brand-leaf" />
-                    Verified: {scheme.lastUpdated}
-                  </span>
+              {/* Direct Government Action Buttons */}
+              <div className="pt-3 border-t border-cream-200/80 flex flex-col sm:flex-row sm:items-center justify-between gap-2.5">
+                {scheme.statusCheckUrl && (
                   <a
-                    href={scheme.officialUrl}
+                    href={scheme.statusCheckUrl}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="inline-flex items-center gap-1 text-brand-dark/75 hover:text-brand-forest hover:underline font-medium"
+                    className="inline-flex items-center justify-center gap-1.5 px-3.5 py-2 rounded-xl bg-brand-forest hover:bg-brand-forest/90 text-white text-xs font-bold shadow-xs transition-colors"
                   >
-                    <span>Guidelines Portal</span>
-                    <ExternalLink className="w-3 h-3 text-brand-dark/50" />
+                    <span>{scheme.statusCheckLabel}</span>
+                    <ExternalLink className="w-3.5 h-3.5" />
                   </a>
-                </div>
+                )}
 
-                {/* Primary Action Button: Live Status Tracker */}
                 <a
-                  href={scheme.statusCheckUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="w-full py-2 px-3 rounded-xl bg-brand-forest hover:bg-brand-leaf text-white font-bold text-xs flex items-center justify-center gap-1.5 transition-colors shadow-2xs"
+                  href={`tel:${scheme.phoneDial}`}
+                  className="inline-flex items-center justify-center gap-1 px-3 py-2 rounded-xl bg-white border border-cream-300 hover:border-brand-leaf text-brand-dark text-xs font-semibold transition-colors"
+                  title="Direct Phone Call"
                 >
-                  <Activity className="w-3.5 h-3.5 text-brand-mint" />
-                  <span>{scheme.statusCheckLabel}</span>
-                  <ExternalLink className="w-3.5 h-3.5" />
+                  <Phone className="w-3.5 h-3.5 text-brand-leaf" />
+                  <span>Call {scheme.helpline.split(' ')[0]}</span>
                 </a>
               </div>
             </CardContent>

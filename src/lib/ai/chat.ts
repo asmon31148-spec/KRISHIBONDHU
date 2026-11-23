@@ -22,9 +22,9 @@ export interface FarmerContext {
 
 export function buildSystemPrompt(language: 'en' | 'bn' | 'hi', context?: FarmerContext): string {
   const languageInstructions = {
-    en: 'Reply strictly in clear, respectful, plain English suitable for an Indian farmer.',
-    bn: 'Reply strictly in natural, respectful, and standard Bengali (বাংলা). Use authentic agricultural terminology commonly understood by West Bengal farmers (e.g. বিঘা, আমন, বোরো, ধসা রোগ, পাতা পোড়া, জৈব সার, ইউরিয়া, ডিএপি, ইত্যাদ).',
-    hi: 'Reply strictly in natural, respectful, and standard Hindi (हिन्दी). Use authentic agricultural terminology (e.g. बीघा, कट्ठा, रबी, खरीफ, झुलसा रोग, जैविक खाद, यूरिया, इत्यादि).',
+    en: 'Reply strictly in clear, respectful, plain English suitable for an Indian farmer. Avoid complex academic jargon. Provide maximum 3 clear, actionable bulleted steps.',
+    bn: 'Reply strictly in respectful, colloquial Bengali (সহজ চলতি বাংলা). Avoid high-flown academic jargon. Use common rural terms (e.g. ইউরিয়া, পটাশ, নাবধসা, আগাম ধসা, মাজরা পোকা, বিঘা, চাপান সার). Structure the answer in maximum 3 clear, actionable bulleted steps so it can be effortlessly listened to via voice.',
+    hi: 'Reply strictly in respectful, simple spoken Hindi (सरल बोलचाल की हिन्दी). Avoid academic jargon. Use common rural terms (e.g. यूरिया, पोटाश, झुलसा रोग, तना छेदक, बीघा, छिड़काव). Structure the answer in maximum 3 clear, actionable bulleted steps for voice readability.',
   };
 
   const farmerInfo = context

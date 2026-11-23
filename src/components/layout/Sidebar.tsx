@@ -18,6 +18,8 @@ import {
   Sparkles,
   BookOpen,
   FileText,
+  TrendingUp,
+  FlaskConical,
 } from 'lucide-react';
 
 export function Sidebar() {
@@ -29,6 +31,8 @@ export function Sidebar() {
     { label: t('nav.home'), href: isGuest ? '/' : '/dashboard', icon: Home },
     { label: t('nav.scan'), href: '/scan', icon: ScanLine },
     { label: t('nav.assistant'), href: '/assistant', icon: Bot },
+    { label: 'Mandi Radar', href: '/mandi', icon: TrendingUp },
+    { label: 'Fertilizer Calc', href: '/fertilizer', icon: FlaskConical },
     { label: t('nav.myFarm'), href: '/farms', icon: Warehouse },
     { label: t('nav.weather'), href: '/weather', icon: CloudSun },
     { label: t('nav.news'), href: '/news', icon: Newspaper },

@@ -7,6 +7,7 @@ import { useToast } from '@/components/ui/Toast';
 import { Button } from '@/components/ui/Button';
 import { Modal } from '@/components/ui/Modal';
 import { VoiceControls } from '@/components/assistant/VoiceControls';
+import { WalkieTalkie } from '@/components/voice/WalkieTalkie';
 import { MarkdownView } from '@/components/assistant/MarkdownView';
 import {
   Bot,
@@ -635,11 +636,12 @@ export default function AssistantPage() {
                 <ImageIcon className="w-4 h-4 sm:w-5 sm:h-5" />
               </button>
 
-              {/* Voice Input (Speech-to-Text) */}
+              {/* Voice-First Walkie-Talkie (Speech-to-Text & Automatic Bengali/Hindi Readout) */}
               <div className="shrink-0">
-                <VoiceControls
+                <WalkieTalkie
                   language={language}
-                  onSpeechInput={(transcript) => {
+                  lastAiResponse={messages.filter((m) => m.role === 'assistant').pop()?.content}
+                  onSpeechFinal={(transcript) => {
                     setInputText((prev) => (prev ? `${prev} ${transcript}` : transcript));
                   }}
                 />

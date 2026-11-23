@@ -15,7 +15,6 @@ import {
   Warehouse,
   Sprout,
   CloudSun,
-  Newspaper,
   CheckCircle2,
   MapPin,
   Calendar,
@@ -26,6 +25,8 @@ import {
   ArrowRight,
   AlertTriangle,
   ChevronRight,
+  TrendingUp,
+  FlaskConical,
 } from 'lucide-react';
 import { formatLandArea, LandUnit } from '@/lib/units';
 
@@ -287,7 +288,7 @@ export default function DashboardPage() {
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         {/* Highlight 1: Soil Insights & NPK */}
         <Link 
-          href="/soil" 
+          href="/fertilizer" 
           className="group block p-5 rounded-2xl bg-gradient-to-br from-emerald-50/60 to-white border border-emerald-200/80 hover:border-emerald-500 hover:shadow-md transition-all cursor-pointer"
         >
           <div className="flex items-start gap-4">
@@ -504,13 +505,13 @@ export default function DashboardPage() {
           </h2>
           <span className="text-xs text-brand-dark/50 font-medium">1-Tap Farmer Tools</span>
         </div>
-        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-3">
+        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-3">
           <Link
             href="/scan"
-            className="flex flex-col items-center justify-center p-4 rounded-2xl bg-white border border-cream-200/90 hover:border-brand-leaf/40 hover:shadow-md transition-all text-center group cursor-pointer"
+            className="flex flex-col items-center justify-center p-3.5 sm:p-4 rounded-2xl bg-white border border-cream-200/90 hover:border-brand-leaf/40 hover:shadow-md transition-all text-center group cursor-pointer"
           >
-            <div className="w-12 h-12 rounded-xl bg-emerald-50 text-emerald-700 flex items-center justify-center mb-2 group-hover:scale-105 transition-transform shadow-2xs">
-              <ScanLine className="w-6 h-6" />
+            <div className="w-11 h-11 rounded-xl bg-emerald-50 text-emerald-700 flex items-center justify-center mb-2 group-hover:scale-105 transition-transform shadow-2xs">
+              <ScanLine className="w-5 h-5" />
             </div>
             <span className="text-xs font-bold text-brand-dark group-hover:text-brand-forest">
               {t('nav.scan')}
@@ -520,54 +521,67 @@ export default function DashboardPage() {
 
           <Link
             href="/assistant"
-            className="flex flex-col items-center justify-center p-4 rounded-2xl bg-white border border-cream-200/90 hover:border-brand-leaf/40 hover:shadow-md transition-all text-center group cursor-pointer"
+            className="flex flex-col items-center justify-center p-3.5 sm:p-4 rounded-2xl bg-white border border-cream-200/90 hover:border-brand-leaf/40 hover:shadow-md transition-all text-center group cursor-pointer"
           >
-            <div className="w-12 h-12 rounded-xl bg-brand-forest/10 text-brand-forest flex items-center justify-center mb-2 group-hover:scale-105 transition-transform shadow-2xs">
-              <Bot className="w-6 h-6" />
+            <div className="w-11 h-11 rounded-xl bg-brand-forest/10 text-brand-forest flex items-center justify-center mb-2 group-hover:scale-105 transition-transform shadow-2xs">
+              <Bot className="w-5 h-5" />
             </div>
             <span className="text-xs font-bold text-brand-dark group-hover:text-brand-forest">
               {t('nav.assistant')}
             </span>
-            <span className="text-[10px] text-brand-dark/60 mt-0.5">Ask Agronomist</span>
+            <span className="text-[10px] text-brand-dark/60 mt-0.5">Voice Agronomist</span>
           </Link>
 
           <Link
-            href="/crops"
-            className="flex flex-col items-center justify-center p-4 rounded-2xl bg-white border border-cream-200/90 hover:border-brand-leaf/40 hover:shadow-md transition-all text-center group cursor-pointer"
+            href="/mandi"
+            className="flex flex-col items-center justify-center p-3.5 sm:p-4 rounded-2xl bg-white border border-cream-200/90 hover:border-brand-leaf/40 hover:shadow-md transition-all text-center group cursor-pointer"
           >
-            <div className="w-12 h-12 rounded-xl bg-lime-50 text-lime-700 flex items-center justify-center mb-2 group-hover:scale-105 transition-transform shadow-2xs">
-              <Sprout className="w-6 h-6" />
+            <div className="w-11 h-11 rounded-xl bg-amber-50 text-amber-700 flex items-center justify-center mb-2 group-hover:scale-105 transition-transform shadow-2xs">
+              <TrendingUp className="w-5 h-5" />
             </div>
-            <span className="text-xs font-bold text-brand-dark group-hover:text-lime-800">
-              {t('crops.addCrop')}
+            <span className="text-xs font-bold text-brand-dark group-hover:text-amber-800">
+              Mandi Radar
             </span>
-            <span className="text-[10px] text-brand-dark/60 mt-0.5">Track Sowing</span>
+            <span className="text-[10px] text-brand-dark/60 mt-0.5">Live APMC Rates</span>
+          </Link>
+
+          <Link
+            href="/fertilizer"
+            className="flex flex-col items-center justify-center p-3.5 sm:p-4 rounded-2xl bg-white border border-cream-200/90 hover:border-brand-leaf/40 hover:shadow-md transition-all text-center group cursor-pointer"
+          >
+            <div className="w-11 h-11 rounded-xl bg-emerald-50 text-emerald-700 flex items-center justify-center mb-2 group-hover:scale-105 transition-transform shadow-2xs">
+              <FlaskConical className="w-5 h-5" />
+            </div>
+            <span className="text-xs font-bold text-brand-dark group-hover:text-brand-forest">
+              Fertilizer Calc
+            </span>
+            <span className="text-[10px] text-brand-dark/60 mt-0.5">ICAR N-P-K Doses</span>
           </Link>
 
           <Link
             href="/weather"
-            className="flex flex-col items-center justify-center p-4 rounded-2xl bg-white border border-cream-200/90 hover:border-brand-leaf/40 hover:shadow-md transition-all text-center group cursor-pointer"
+            className="flex flex-col items-center justify-center p-3.5 sm:p-4 rounded-2xl bg-white border border-cream-200/90 hover:border-brand-leaf/40 hover:shadow-md transition-all text-center group cursor-pointer"
           >
-            <div className="w-12 h-12 rounded-xl bg-amber-50 text-amber-700 flex items-center justify-center mb-2 group-hover:scale-105 transition-transform shadow-2xs">
-              <CloudSun className="w-6 h-6" />
+            <div className="w-11 h-11 rounded-xl bg-sky-50 text-sky-700 flex items-center justify-center mb-2 group-hover:scale-105 transition-transform shadow-2xs">
+              <CloudSun className="w-5 h-5" />
             </div>
-            <span className="text-xs font-bold text-brand-dark group-hover:text-amber-800">
+            <span className="text-xs font-bold text-brand-dark group-hover:text-sky-800">
               {t('nav.weather')}
             </span>
-            <span className="text-[10px] text-brand-dark/60 mt-0.5">Pathogen Index</span>
+            <span className="text-[10px] text-brand-dark/60 mt-0.5">Spray Windows</span>
           </Link>
 
           <Link
-            href="/news"
-            className="flex flex-col items-center justify-center p-4 rounded-2xl bg-white border border-cream-200/90 hover:border-brand-leaf/40 hover:shadow-md transition-all text-center group col-span-2 sm:col-span-1 cursor-pointer"
+            href="/schemes"
+            className="flex flex-col items-center justify-center p-3.5 sm:p-4 rounded-2xl bg-white border border-cream-200/90 hover:border-brand-leaf/40 hover:shadow-md transition-all text-center group cursor-pointer"
           >
-            <div className="w-12 h-12 rounded-xl bg-sky-50 text-sky-700 flex items-center justify-center mb-2 group-hover:scale-105 transition-transform shadow-2xs">
-              <Newspaper className="w-6 h-6" />
+            <div className="w-11 h-11 rounded-xl bg-lime-50 text-lime-700 flex items-center justify-center mb-2 group-hover:scale-105 transition-transform shadow-2xs">
+              <FileText className="w-5 h-5" />
             </div>
-            <span className="text-xs font-bold text-brand-dark group-hover:text-sky-800">
-              {t('nav.news')}
+            <span className="text-xs font-bold text-brand-dark group-hover:text-lime-800">
+              Govt Schemes
             </span>
-            <span className="text-[10px] text-brand-dark/60 mt-0.5">Live Dispatches</span>
+            <span className="text-[10px] text-brand-dark/60 mt-0.5">Track DBT Status</span>
           </Link>
         </div>
       </div>
