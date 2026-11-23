@@ -932,17 +932,19 @@ export default function DashboardPage() {
                       href="/scans/history"
                       className="group flex items-center justify-between p-3.5 rounded-2xl bg-white border border-cream-200/90 hover:border-brand-leaf hover:shadow-xs transition-all cursor-pointer"
                     >
-                      <div className="flex items-center gap-3.5 min-w-0">
-                        {/* eslint-disable-next-line @next/next/no-img-element */}
-                        <img
-                          src={scan.image_url}
-                          alt={scan.crop_name}
-                          onError={(e) => {
-                            e.currentTarget.style.display = 'none';
-                          }}
-                          className="w-13 h-13 rounded-xl object-cover border border-cream-200 group-hover:scale-105 transition-transform shrink-0 shadow-2xs"
-                        />
-                        <div className="min-w-0">
+                      <div className="flex items-center gap-3.5 min-w-0 flex-1">
+                        <div className="w-14 h-14 min-w-[56px] min-h-[56px] max-w-[56px] max-h-[56px] rounded-2xl overflow-hidden shrink-0 border border-cream-200 bg-cream-100 shadow-2xs">
+                          {/* eslint-disable-next-line @next/next/no-img-element */}
+                          <img
+                            src={scan.image_url}
+                            alt={scan.crop_name}
+                            onError={(e) => {
+                              e.currentTarget.style.display = 'none';
+                            }}
+                            className="w-full h-full object-cover group-hover:scale-105 transition-transform"
+                          />
+                        </div>
+                        <div className="min-w-0 flex-1">
                           <div className="flex items-center gap-1.5">
                             <h4 className="text-xs sm:text-sm font-bold text-brand-dark group-hover:text-brand-forest transition-colors truncate">
                               {scan.crop_name}
@@ -952,13 +954,13 @@ export default function DashboardPage() {
                           <p className="text-xs font-semibold text-amber-900/90 truncate mt-0.5">
                             {scan.disease_name || 'Healthy Crop'}
                           </p>
-                          <span className="text-[10px] text-brand-dark/55 block">
+                          <span className="text-[10px] text-brand-dark/55 block truncate mt-0.5">
                             High AI Confidence • Verified
                           </span>
                         </div>
                       </div>
 
-                      <div className="shrink-0 ml-2">
+                      <div className="shrink-0 ml-3">
                         <Badge
                           variant={
                             scan.severity === 'healthy'
@@ -968,7 +970,7 @@ export default function DashboardPage() {
                               : 'amber'
                           }
                           size="sm"
-                          className="font-bold capitalize shadow-2xs"
+                          className="font-bold capitalize shadow-2xs whitespace-nowrap"
                         >
                           {scan.severity}
                         </Badge>
