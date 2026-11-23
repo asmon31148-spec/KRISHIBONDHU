@@ -29,6 +29,7 @@ import {
   FlaskConical,
   Plus,
   Lightbulb,
+  Scale,
 } from 'lucide-react';
 import { formatLandArea, LandUnit } from '@/lib/units';
 
@@ -223,6 +224,16 @@ export default function DashboardPage() {
                   className="bg-brand-forest hover:bg-brand-forest/90 text-white shadow-md font-bold"
                 >
                   Ask AI Agronomist
+                </Button>
+              </Link>
+              <Link href="/yield">
+                <Button 
+                  variant="primary" 
+                  size="md" 
+                  leftIcon={<Scale className="w-4 h-4 text-emerald-200" />}
+                  className="bg-emerald-800 hover:bg-emerald-900 text-white shadow-md font-bold"
+                >
+                  Yield & Profit Calc
                 </Button>
               </Link>
               <Link href="/schemes">

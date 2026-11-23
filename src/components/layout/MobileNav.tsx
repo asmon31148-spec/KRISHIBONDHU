@@ -21,6 +21,7 @@ import {
   LogOut,
   TrendingUp,
   FlaskConical,
+  Scale,
 } from 'lucide-react';
 
 export function MobileNav() {
@@ -37,6 +38,7 @@ export function MobileNav() {
   ];
 
   const moreItems = [
+    { label: 'Yield & Profit', href: '/yield', icon: Scale },
     { label: 'Mandi Rates', href: '/mandi', icon: TrendingUp },
     { label: 'Fertilizer Calc', href: '/fertilizer', icon: FlaskConical },
     { label: t('nav.profile'), href: '/profile', icon: User },

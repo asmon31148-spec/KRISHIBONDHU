@@ -23,6 +23,7 @@ import {
   Sprout,
   FlaskConical,
   ArrowRight,
+  Scale,
 } from 'lucide-react';
 import { formatLandArea, LandUnit } from '@/lib/units';
 
@@ -94,7 +95,7 @@ const IRRIGATION_TYPES = [
 ];
 
 export default function FarmsPage() {
-  const { t } = useTranslation();
+  const { t, language } = useTranslation();
   const { user, isGuest } = useAuth();
   const toast = useToast();
 
@@ -672,14 +673,25 @@ export default function FarmsPage() {
                               )}
                             </div>
 
-                            <div className="flex items-center justify-between pt-1 text-xs">
-                              <Link
-                                href={`/assistant?crop_id=${crop.id}&crop_name=${encodeURIComponent(crop.name)}&variety=${encodeURIComponent(crop.variety || '')}&status=${crop.health_status}&farm=${encodeURIComponent(farm.name)}&location=${encodeURIComponent(farm.location_name || 'West Bengal')}&soil=${encodeURIComponent(farm.soil_type || 'Clay')}&area=${crop.area}&unit=${encodeURIComponent(crop.area_unit)}&sown=${encodeURIComponent(crop.planting_date)}&irrigation=${encodeURIComponent(crop.irrigation_type || 'STW')}&auto_ask=true`}
-                                className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-emerald-50 hover:bg-emerald-100 text-brand-forest font-bold transition-all text-[11px] shadow-2xs border border-emerald-200/80 active:scale-95"
-                              >
-                                <span>Ask AI Advice</span>
-                                <ArrowRight className="w-3 h-3 text-emerald-700" />
-                              </Link>
+                            <div className="flex flex-wrap items-center justify-between gap-2 pt-1 text-xs">
+                              <div className="flex flex-wrap items-center gap-2">
+                                <Link
+                                  href={`/assistant?crop_id=${crop.id}&crop_name=${encodeURIComponent(crop.name)}&variety=${encodeURIComponent(crop.variety || '')}&status=${crop.health_status}&farm=${encodeURIComponent(farm.name)}&location=${encodeURIComponent(farm.location_name || 'West Bengal')}&soil=${encodeURIComponent(farm.soil_type || 'Clay')}&area=${crop.area}&unit=${encodeURIComponent(crop.area_unit)}&sown=${encodeURIComponent(crop.planting_date)}&irrigation=${encodeURIComponent(crop.irrigation_type || 'STW')}&auto_ask=true`}
+                                  className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-emerald-50 hover:bg-emerald-100 text-brand-forest font-bold transition-all text-[11px] shadow-2xs border border-emerald-200/80 active:scale-95"
+                                >
+                                  <span>{language === 'bn' ? 'এআই পরামর্শ' : language === 'hi' ? 'एआई सलाह' : 'Ask AI Advice'}</span>
+                                  <ArrowRight className="w-3 h-3 text-emerald-700" />
+                                </Link>
+
+                                <Link
+                                  href={`/yield?crop_id=${crop.id}`}
+                                  className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-amber-50 hover:bg-amber-100 text-amber-900 font-bold transition-all text-[11px] shadow-2xs border border-amber-200/80 active:scale-95"
+                                  title="Calculate harvest yield and production economics"
+                                >
+                                  <Scale className="w-3 h-3 text-amber-700" />
+                                  <span>{language === 'bn' ? 'ফলন ও লাভ' : language === 'hi' ? 'उपज व लाभ' : 'Yield & Profit'}</span>
+                                </Link>
+                              </div>
 
                               <div className="flex items-center gap-1">
                                 <button
