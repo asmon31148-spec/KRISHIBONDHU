@@ -35,7 +35,7 @@ interface ScanItem {
 }
 
 export default function ScanHistoryPage() {
-  const { t } = useTranslation();
+  const { t, language } = useTranslation();
   const { user, isGuest } = useAuth();
 
   const [scans, setScans] = useState<ScanItem[]>([]);
@@ -119,15 +119,23 @@ export default function ScanHistoryPage() {
           <ScanLine className="w-7 h-7" />
         </div>
         <h2 className="text-xl font-bold text-brand-dark">
-          কোনো স্ক্যান রেকর্ড পাওয়া যায়নি
+          {language === 'bn'
+            ? 'কোনো স্ক্যান রেকর্ড পাওয়া যায়নি'
+            : language === 'hi'
+            ? 'कोई स्कैन रिकॉर्ड नहीं मिला'
+            : 'No Scan Records Found'}
         </h2>
         <p className="text-xs sm:text-sm text-brand-dark/70 leading-relaxed">
-          পাতার ছবি তুললে আপনার পূর্ববর্তী রোগ পরীক্ষার রিপোর্ট এখানে জমা থাকবে।
+          {language === 'bn'
+            ? 'পাতার ছবি তুললে আপনার পূর্ববর্তী রোগ পরীক্ষার রিপোর্ট এখানে জমা থাকবে।'
+            : language === 'hi'
+            ? 'पत्ती की फोटो लेने पर आपकी पिछली जांच रिपोर्ट यहां सुरक्षित रहेगी।'
+            : 'When you take leaf photos, your past diagnosis reports will appear here.'}
         </p>
         <div className="pt-2 flex justify-center gap-3">
           <Link href="/scan">
             <Button variant="primary">
-              প্রথম স্ক্যান করুন
+              {language === 'bn' ? 'প্রথম স্ক্যান করুন' : language === 'hi' ? 'पहला स्कैन करें' : 'Start First Scan'}
             </Button>
           </Link>
           <Link href="/auth/signup">
@@ -145,16 +153,24 @@ export default function ScanHistoryPage() {
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
           <h1 className="text-2xl sm:text-3xl font-extrabold text-brand-forest">
-            Crop Disease Scan History
+            {language === 'bn'
+              ? 'ফসলের রোগ স্ক্যান ইতিহাস'
+              : language === 'hi'
+              ? 'फसल रोग स्कैन इतिहास'
+              : 'Crop Disease Scan History'}
           </h1>
           <p className="text-xs sm:text-sm text-brand-dark/70 mt-1">
-            Browse and review past leaf diagnoses, symptoms, and treatment plans.
+            {language === 'bn'
+              ? 'আপনার পূর্ববর্তী পাতার রোগ নির্ণয়, লক্ষণ ও অনুমোদিত ওষুধের তালিকা পর্যালোচনা করুন।'
+              : language === 'hi'
+              ? 'अपनी पिछली जांच, लक्षण और स्वीकृत दवाओं की सूची देखें।'
+              : 'Browse and review past leaf diagnoses, symptoms, and treatment plans.'}
           </p>
         </div>
 
         <Link href="/scan">
           <Button variant="primary" size="md" leftIcon={<ScanLine className="w-4 h-4" />}>
-            New Scan
+            {language === 'bn' ? 'নতুন স্ক্যান' : language === 'hi' ? 'नया स्कैन' : 'New Scan'}
           </Button>
         </Link>
       </div>
@@ -162,14 +178,15 @@ export default function ScanHistoryPage() {
       {/* Severity Filter Tabs */}
       <div className="flex flex-wrap items-center gap-2">
         <span className="text-xs font-semibold text-brand-dark/60 flex items-center gap-1">
-          <Filter className="w-3.5 h-3.5" /> Filter:
+          <Filter className="w-3.5 h-3.5" />
+          {language === 'bn' ? 'ফিল্টার:' : language === 'hi' ? 'फ़िल्टर:' : 'Filter:'}
         </span>
         {[
-          { id: 'all', label: 'All Scans' },
-          { id: 'healthy', label: 'Healthy' },
-          { id: 'mild', label: 'Mild' },
-          { id: 'moderate', label: 'Moderate' },
-          { id: 'severe', label: 'Severe' },
+          { id: 'all', label: language === 'bn' ? 'সব স্ক্যান' : language === 'hi' ? 'सभी स्कैन' : 'All Scans' },
+          { id: 'healthy', label: language === 'bn' ? 'সুস্থ' : language === 'hi' ? 'स्वस्थ' : 'Healthy' },
+          { id: 'mild', label: language === 'bn' ? 'হালকা' : language === 'hi' ? 'हल्का' : 'Mild' },
+          { id: 'moderate', label: language === 'bn' ? 'মাঝারি' : language === 'hi' ? 'मध्यम' : 'Moderate' },
+          { id: 'severe', label: language === 'bn' ? 'মারাত্মক' : language === 'hi' ? 'गंभीर' : 'Severe' },
         ].map((f) => (
           <button
             key={f.id}
@@ -195,13 +212,27 @@ export default function ScanHistoryPage() {
       ) : filteredScans.length === 0 ? (
         <EmptyState
           icon={<ScanLine className="w-8 h-8" />}
-          title="No Crop Scans Found"
+          title={
+            language === 'bn'
+              ? 'কোনো স্ক্যান রেকর্ড পাওয়া যায়নি'
+              : language === 'hi'
+              ? 'कोई स्कैन नहीं मिला'
+              : 'No Crop Scans Found'
+          }
           description={
             filterSeverity !== 'all'
-              ? `No scans found matching filter '${filterSeverity}'.`
+              ? language === 'bn'
+                ? `এই ফিল্টারে কোনো স্ক্যান পাওয়া যায়নি: '${filterSeverity}'`
+                : language === 'hi'
+                ? `इस श्रेणी में कोई रिकॉर्ड नहीं मिला: '${filterSeverity}'`
+                : `No scans found matching filter '${filterSeverity}'.`
+              : language === 'bn'
+              ? 'আপনি এখনো কোনো ফসলের পাতা স্ক্যান করেননি।'
+              : language === 'hi'
+              ? 'आपने अभी तक कोई पत्ता स्कैन नहीं किया है।'
               : 'You have not scanned any crop leaves yet.'
           }
-          actionLabel="Scan a Crop Leaf"
+          actionLabel={language === 'bn' ? 'ফসল পাতা স্ক্যান করুন' : language === 'hi' ? 'पत्ती स्कैन करें' : 'Scan a Crop Leaf'}
           onAction={() => (window.location.href = '/scan')}
         />
       ) : (
@@ -254,7 +285,7 @@ export default function ScanHistoryPage() {
                 </div>
 
                 <Button variant="ghost" size="sm" leftIcon={<Eye className="w-4 h-4" />}>
-                  View Details
+                  {language === 'bn' ? 'বিস্তারিত দেখুন' : language === 'hi' ? 'विवरण देखें' : 'View Details'}
                 </Button>
               </CardContent>
             </Card>
@@ -267,7 +298,13 @@ export default function ScanHistoryPage() {
         <Modal
           isOpen={Boolean(selectedScan)}
           onClose={() => setSelectedScan(null)}
-          title={`Diagnosis: ${selectedScan.crop_name}`}
+          title={
+            language === 'bn'
+              ? `রোগ নির্ণয়: ${selectedScan.crop_name}`
+              : language === 'hi'
+              ? `जांच रिपोर्ट: ${selectedScan.crop_name}`
+              : `Diagnosis: ${selectedScan.crop_name}`
+          }
           maxWidth="lg"
         >
           <div className="space-y-4 pt-2 text-left">
@@ -280,13 +317,13 @@ export default function ScanHistoryPage() {
               />
               <div className="space-y-0.5">
                 <span className="text-xs font-bold text-brand-dark">
-                  {selectedScan.disease_name || 'Healthy Crop'}
+                  {selectedScan.disease_name || (language === 'bn' ? 'সুস্থ ফসল' : language === 'hi' ? 'स्वस्थ फसल' : 'Healthy Crop')}
                 </span>
                 <p className="text-xs text-brand-dark/70">
-                  Severity: {selectedScan.severity.toUpperCase()} • Confidence: {selectedScan.crop_confidence}%
+                  {language === 'bn' ? 'তীব্রতা' : language === 'hi' ? 'गंभीरता' : 'Severity'}: {selectedScan.severity.toUpperCase()} • {language === 'bn' ? 'নির্ভুলতা' : language === 'hi' ? 'सटीकता' : 'Confidence'}: {selectedScan.crop_confidence}%
                 </p>
                 <p className="text-[11px] text-brand-dark/60">
-                  Scanned: {new Date(selectedScan.created_at).toLocaleDateString()}
+                  {language === 'bn' ? 'পরীক্ষার তারিখ' : language === 'hi' ? 'जांच की तारीख' : 'Scanned'}: {new Date(selectedScan.created_at).toLocaleDateString()}
                 </p>
               </div>
             </div>
@@ -294,7 +331,7 @@ export default function ScanHistoryPage() {
             {selectedScan.ai_explanation && (
               <div className="p-3 bg-white rounded-xl border border-cream-200 space-y-1">
                 <span className="text-xs font-bold text-brand-forest block">
-                  Agronomy Assessment
+                  {language === 'bn' ? 'কৃষি বিশেষজ্ঞের মূল্যায়ন' : language === 'hi' ? 'कृषि विशेषज्ञ समीक्षा' : 'Agronomy Assessment'}
                 </span>
                 <p className="text-xs text-brand-dark/80 leading-relaxed whitespace-pre-line">
                   {selectedScan.ai_explanation}
@@ -305,7 +342,7 @@ export default function ScanHistoryPage() {
             {selectedScan.treatment_organic && (
               <div className="p-3 bg-emerald-50 rounded-xl border border-emerald-200 space-y-1">
                 <span className="text-xs font-bold text-emerald-950 block">
-                  Organic Remedy
+                  {language === 'bn' ? 'জৈব প্রতিকার' : language === 'hi' ? 'जैविक उपचार' : 'Organic Remedy'}
                 </span>
                 <p className="text-xs text-emerald-900 leading-relaxed">
                   {selectedScan.treatment_organic}
@@ -316,7 +353,11 @@ export default function ScanHistoryPage() {
             {selectedScan.treatment_chemical && (
               <div className="p-3 bg-cream-100 rounded-xl border border-cream-200 space-y-1">
                 <span className="text-xs font-bold text-brand-dark block">
-                  Chemical Treatment (Follow Safety Label)
+                  {language === 'bn'
+                    ? 'রাসায়নিক চিকিৎসা (সুরক্ষা নির্দেশিকা মেনে চলুন)'
+                    : language === 'hi'
+                    ? 'रासायनिक उपचार (सुरक्षा नियमों का पालन करें)'
+                    : 'Chemical Treatment (Follow Safety Label)'}
                 </span>
                 <p className="text-xs text-brand-dark/80 leading-relaxed">
                   {selectedScan.treatment_chemical}
@@ -326,7 +367,7 @@ export default function ScanHistoryPage() {
 
             <div className="flex justify-end pt-2 border-t border-cream-200">
               <Button variant="secondary" size="sm" onClick={() => setSelectedScan(null)}>
-                Close
+                {language === 'bn' ? 'বন্ধ করুন' : language === 'hi' ? 'बंद करें' : 'Close'}
               </Button>
             </div>
           </div>

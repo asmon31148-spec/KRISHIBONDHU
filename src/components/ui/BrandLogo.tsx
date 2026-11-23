@@ -114,7 +114,7 @@ export function BrandLogo({ className = '', size = 'md', showSubtitle = true }: 
             </span>
             <span className="text-[9px] text-brand-dark/40 font-semibold">•</span>
             <span className="text-[8px] sm:text-[9px] font-semibold text-emerald-700/70 uppercase tracking-widest">
-              Digital Platform
+              {language === 'bn' ? 'ডিজিটাল প্ল্যাটফর্ম' : language === 'hi' ? 'डिजिटल मंच' : 'Digital Platform'}
             </span>
           </div>
         )}

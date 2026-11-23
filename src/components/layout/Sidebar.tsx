@@ -32,17 +32,17 @@ export function Sidebar() {
   const navItems = [
     { label: t('nav.home'), href: isGuest ? '/' : '/dashboard', icon: Home },
     { label: t('nav.scan'), href: '/scan', icon: ScanLine },
-    { label: 'Scan History', href: '/scans/history', icon: History },
+    { label: t('nav.scanHistory'), href: '/scans/history', icon: History },
     { label: t('nav.assistant'), href: '/assistant', icon: Bot },
-    { label: 'Yield & Profit', href: '/yield', icon: Scale },
-    { label: 'Mandi Radar', href: '/mandi', icon: TrendingUp },
-    { label: 'Fertilizer Calc', href: '/fertilizer', icon: FlaskConical },
+    { label: t('nav.yield'), href: '/yield', icon: Scale },
+    { label: t('nav.mandi'), href: '/mandi', icon: TrendingUp },
+    { label: t('nav.fertilizer'), href: '/fertilizer', icon: FlaskConical },
     { label: t('nav.myFarm'), href: '/farms', icon: Warehouse },
     { label: t('nav.weather'), href: '/weather', icon: CloudSun },
     { label: t('nav.news'), href: '/news', icon: Newspaper },
-    { label: 'Schemes', href: '/schemes', icon: FileText },
+    { label: t('nav.schemes'), href: '/schemes', icon: FileText },
     { label: t('nav.analytics'), href: '/analytics', icon: LineChart },
-    { label: 'Sources', href: '/sources', icon: BookOpen },
+    { label: t('nav.sources'), href: '/sources', icon: BookOpen },
     { label: t('nav.profile'), href: '/profile', icon: User },
   ];
 

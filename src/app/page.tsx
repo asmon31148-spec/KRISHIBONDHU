@@ -24,9 +24,10 @@ export default function LandingPage() {
 
   const content = {
     bn: {
-      ticker: 'লাইভ কৃষি আপডেট: আলু (জ্যোতি) পাইকারি দর ₹১৮/কেজি · আমন ধান ₹২,৩৫০/কুইন্টাল · আজ সকালের অনুকূল স্প্রে উইন্ডো: সকাল ৬টা - ৯টা',
-      platformBadge: 'আইসিএআর অনুমোদিত · আধুনিক এআই কৃষি প্ল্যাটফর্ম',
-      headline: 'আধুনিক কৃষি প্রযুক্তি,\nকৃষকের নির্ভুল ডিজিটাল বন্ধু',
+      ticker: 'লাইভ কৃষি আপডেট: আলু (জ্যোতি) পাইকারি দর ₹১৮/কেজি · আমন ধান ₹২,৩৫০/কুইন্টাল · আজ সকালের অনুকূল স্প্রে সময়: সকাল ৬টা - ৯টা',
+      liveFeedBadge: 'লাইভ ফিড',
+      platformBadge: 'আইসিএআর নির্দেশিত · আধুনিক এআই কৃষি প্ল্যাটফর্ম',
+      headline: 'আধুনিক কৃষি প্রযুক্তি,\nকৃষকের নির্ভরযোগ্য ডিজিটাল বন্ধু',
       subtitle:
         'গাছের পাতার ছবি তুলে রোগ ও সঠিক ওষুধের মাত্রা জানুন, জমির মাপে সারের হিসাব করুন এবং আজকের পাইকারি বাজার দর পান — সবকিছু এক ঠিকানায়।',
       primaryBtn: 'ক্যামেরা দিয়ে পাতার রোগ দেখুন',
@@ -43,27 +44,29 @@ export default function LandingPage() {
       ],
 
       // Services Section
+      servicesTag: 'ডিজিটাল কৃষক সমাধান',
       servicesTitle: 'কৃষকের প্রয়োজনীয় সব আধুনিক ডিজিটাল সেবা',
       servicesSubtitle:
         'নিচের যেকোনো সেবায় সরাসরি ক্লিক করে এখুনি ব্যবহার করুন — কোনো টাকা বা রেজিস্ট্রেশনের প্রয়োজন নেই',
+      directAccess: 'সরাসরি সেবা নিন',
       services: [
         {
           id: 'scan',
           category: 'health',
-          title: 'রোগ নির্ণয় (Crop Leaf Doctor)',
+          title: 'পাতার রোগ নির্ণয়',
           badge: '📸 এআই স্ক্যানার',
           badgeColor: 'bg-emerald-500/15 text-emerald-800 border-emerald-300/60',
           desc: 'ধানের ব্লাস্ট, আলুর নাবি ধসা বা বেগুনের ডগা ছিদ্রকারী পোকার ছবি তুলুন। কয়েক সেকেন্ডেই সঠিক জৈব ও রাসায়নিক প্রতিকার পান।',
           action: 'ছবি স্ক্যান করুন',
           href: '/scan',
-          tag: 'আইসিএআর অনুমোদিত',
+          tag: 'আইসিএআর নির্দেশিত',
           image:
             'https://images.unsplash.com/photo-1595974482597-4b8da8879bc5?auto=format&fit=crop&w=600&q=80',
         },
         {
           id: 'fertilizer',
           category: 'fertilizer',
-          title: 'সার পরিমাপক (Fertilizer Calculator)',
+          title: 'সারের নিখুঁত পরিমাপক',
           badge: '🧪 N-P-K বৈজ্ঞানিক অনুপাত',
           badgeColor: 'bg-blue-500/15 text-blue-800 border-blue-300/60',
           desc: 'আপনার জমির সঠিক মাপ (বিঘা, শতক, কাঠা) ও মাটির ধরন অনুযায়ী ইউরিয়া, ডিএপি ও এমওপির সঠিক ডোজ বের করুন। অপচয় রোধ করুন।',
@@ -76,7 +79,7 @@ export default function LandingPage() {
         {
           id: 'mandi',
           category: 'mandi',
-          title: 'আজকের বাজার দর (Mandi Radar)',
+          title: 'আজকের পাইকারি বাজার দর',
           badge: '📈 সরকারি পাইকারি দর',
           badgeColor: 'bg-amber-500/15 text-amber-800 border-amber-300/60',
           desc: 'পশ্চিমবঙ্গের সব জেলার প্রধান নিয়ন্ত্রিত পাইকারি বাজারে আলু, আমন/বোরো ধান, পাট ও শাকসবজির আজকের আসল দর জানুন।',
@@ -89,8 +92,8 @@ export default function LandingPage() {
         {
           id: 'weather',
           category: 'weather',
-          title: 'আবহাওয়া ও স্প্রে পরামর্শ (Weather Alert)',
-          badge: '⛅ কীটনাশক স্প্রে উইন্ডো',
+          title: 'আবহাওয়া ও স্প্রে পরামর্শ',
+          badge: '⛅ কীটনাশক স্প্রে সময়',
           badgeColor: 'bg-sky-500/15 text-sky-800 border-sky-300/60',
           desc: 'আগামী ৭ দিনের বৃষ্টিপাত ও বাতাসের গতি দেখুন। কীটনাশক স্প্রে করার নিরাপদ সকালের সময় ও বৃষ্টির আগে ফসল তোলার সতর্কতা পান।',
           action: 'আবহাওয়া দেখুন',
@@ -102,7 +105,7 @@ export default function LandingPage() {
         {
           id: 'farms',
           category: 'health',
-          title: 'আমার খামার ও ফসল (My Farm Plots)',
+          title: 'আমার খামার ও ফসলের খতিয়ান',
           badge: '🌾 জমির খতিয়ান ও ফসল',
           badgeColor: 'bg-teal-500/15 text-teal-800 border-teal-300/60',
           desc: 'আপনার নিজস্ব প্লট, বপন করা ফসলের জাত, মাটির উর্বরতা ও সেচ ব্যবস্থার সম্পূর্ণ খতিয়ান এক জায়গায় ডিজিটালভাবে সংরক্ষণ করুন।',
@@ -115,7 +118,7 @@ export default function LandingPage() {
         {
           id: 'schemes',
           category: 'mandi',
-          title: 'সরকারি প্রকল্প ও বিমা (Govt Schemes)',
+          title: 'সরকারি প্রকল্প ও কৃষি বিমা',
           badge: '🏛️ কৃষকবন্ধু ও পিএম কিষান',
           badgeColor: 'bg-purple-500/15 text-purple-800 border-purple-300/60',
           desc: 'পশ্চিমবঙ্গ কৃষকবন্ধু প্রকল্প, বাংলা শস্য বিমা (BSB), পিএম কিষান ও যন্ত্রাংশ কেনার ভরতুকির সরকারি নিয়মের সরাসরি গাইড।',
@@ -136,6 +139,7 @@ export default function LandingPage() {
       ],
 
       // How it Works Section
+      methodTag: 'সহজ ৩টি ধাপ',
       howTitle: 'খুব সহজ ৩টি ধাপে রোগ নির্ণয়',
       howSubtitle: 'যেকোনো সাধারণ স্মার্টফোন থেকে মাত্র ৩০ সেকেন্ডের মধ্যে ফলাফল পান',
       steps: [
@@ -167,10 +171,12 @@ export default function LandingPage() {
       // Disclaimer
       disclaimer:
         'সতর্কবার্তা: কৃষিবন্ধু একটি মুক্ত কৃষি নির্দেশিকা প্ল্যাটফর্ম। গুরুতর রোগবালাই ও কীটনাশক ব্যবহারের পূর্বে আপনার নিকটবর্তী ব্লক কৃষি কর্মকর্তা (ADA) অথবা কৃষি বিজ্ঞান কেন্দ্রের (KVK) বিশেষজ্ঞদের পরামর্শ নিন।',
+      footerCitation: `© ${new Date().getFullYear()} কৃষিবন্ধু · তথ্য সহায়তা: ICAR, এগমार्कনেট, IMD ও বিধানচন্দ্র কৃষি বিশ্ববিদ্যালয় (BCKV)`,
     },
     hi: {
-      ticker: 'लाइव कृषि अपडेट: आलू (ज्योति) थोक भाव ₹18/किलो · धान (अमन) ₹2,350/क्विंटल · आज सुबह कीटनाशक छिड़काव का सही समय: सुबह 6 से 9 बजे',
-      platformBadge: 'ICAR प्रमाणित · आधुनिक एआई कृषि प्लेटफॉर्म',
+      ticker: 'लाइव कृषि अपडेट: आलू (ज्योति) थोक भाव ₹18/किलो · अमन धान ₹2,350/क्विंटल · आज सुबह कीटनाशक छिड़काव का सही समय: सुबह 6 से 9 बजे',
+      liveFeedBadge: 'लाइव अपडेट',
+      platformBadge: 'आईसीएआर (ICAR) प्रमाणित · आधुनिक एआई कृषि मंच',
       headline: 'स्मार्ट कृषि तकनीक,\nकिसान का सच्चा डिजिटल साथी',
       subtitle:
         'पत्ती की फोटो खींचकर रोग पहचानें, बीघा अनुसार खाद का हिसाब लगाएं और आज का लाइव मंडी भाव जानें — सब कुछ एक जगह।',
@@ -186,27 +192,29 @@ export default function LandingPage() {
         { id: 'weather', label: '⛅ मौसम व छिड़काव' },
       ],
 
+      servicesTag: 'डिजिटल किसान समाधान',
       servicesTitle: 'किसान भाइयों के लिए संपूर्ण डिजिटल सेवाएं',
       servicesSubtitle:
         'नीचे दी गई किसी भी सेवा पर सीधे क्लिक करके तुरंत उपयोग करें — बिल्कुल मुफ्त और आसान',
+      directAccess: 'सीधे उपयोग करें',
       services: [
         {
           id: 'scan',
           category: 'health',
-          title: 'रोग पहचान (Crop Leaf Doctor)',
+          title: 'फसल रोग पहचान',
           badge: '📸 एआई स्कैनर',
           badgeColor: 'bg-emerald-500/15 text-emerald-800 border-emerald-300/60',
           desc: 'धान, आलू, सरसों या सब्जियों के रोगी पत्ते की फोटो लें। तुरंत प्रमाणित जैविक व रासायनिक दवाओं की सही खुराक जानें।',
           action: 'फोटो स्कैन करें',
           href: '/scan',
-          tag: 'ICAR प्रमाणित',
+          tag: 'आईसीएआर (ICAR) अनुमोदित',
           image:
             'https://images.unsplash.com/photo-1595974482597-4b8da8879bc5?auto=format&fit=crop&w=600&q=80',
         },
         {
           id: 'fertilizer',
           category: 'fertilizer',
-          title: 'खाद कैलकुलेटर (Fertilizer Calculator)',
+          title: 'खाद का सटीक कैलकुलेटर',
           badge: '🧪 N-P-K वैज्ञानिक अनुपात',
           badgeColor: 'bg-blue-500/15 text-blue-800 border-blue-300/60',
           desc: 'अपनी जमीन की सही माप (बीघा, एकड़, कट्ठा) के अनुसार यूरिया, डीएपी और पोटाश की सटीक मात्रा जानें। बर्बादी रोकें।',
@@ -219,7 +227,7 @@ export default function LandingPage() {
         {
           id: 'mandi',
           category: 'mandi',
-          title: 'आज का मंडी भाव (Mandi Radar)',
+          title: 'आज का थोक मंडी भाव',
           badge: '📈 सरकारी थोक भाव',
           badgeColor: 'bg-amber-500/15 text-amber-800 border-amber-300/60',
           desc: 'सरकारी एगमार्कनेट से आलू, धान, सरसों व मौसमी सब्जियों के आज के ताज़ा न्यूनतम व अधिकतम थोक भाव जानें।',
@@ -232,7 +240,7 @@ export default function LandingPage() {
         {
           id: 'weather',
           category: 'weather',
-          title: 'मौसम व छिड़काव सलाह (Weather Alert)',
+          title: 'मौसम व छिड़काव सलाह',
           badge: '⛅ सुरक्षित छिड़काव समय',
           badgeColor: 'bg-sky-500/15 text-sky-800 border-sky-300/60',
           desc: 'आगामी 7 दिनों की बारिश व हवा की गति देखकर कीटनाशक छिड़काव का सबसे सुरक्षित समय और बारिश का अलर्ट पाएं।',
@@ -245,7 +253,7 @@ export default function LandingPage() {
         {
           id: 'farms',
           category: 'health',
-          title: 'मेरा खेत और फसलें (My Farm Plots)',
+          title: 'मेरा खेत और फसलों का रिकॉर्ड',
           badge: '🌾 जमीन व फसल रिकॉर्ड',
           badgeColor: 'bg-teal-500/15 text-teal-800 border-teal-300/60',
           desc: 'अपने खेतों के प्लॉट, बोई गई किस्मों, बुवाई की तारीख और मिट्टी की जांच का पूरा रिकॉर्ड सुरक्षित रखें।',
@@ -258,7 +266,7 @@ export default function LandingPage() {
         {
           id: 'schemes',
           category: 'mandi',
-          title: 'सरकारी योजनाएं व अनुदान (Govt Schemes)',
+          title: 'सरकारी योजनाएं व अनुदान',
           badge: '🏛️ पीएम-किसान व बीमा',
           badgeColor: 'bg-purple-500/15 text-purple-800 border-purple-300/60',
           desc: 'पीएम-किसान सम्मान निधि, फसल बीमा और कृषि यंत्रों पर मिलने वाली सरकारी सब्सिडी की पूरी गाइड।',
@@ -277,6 +285,7 @@ export default function LandingPage() {
         { label: 'टोल-फ्री किसान कॉल सेंटर', value: '1800-180-1551', sub: 'मुफ्त वैज्ञानिक परामर्श' },
       ],
 
+      methodTag: 'सरल 3 चरण',
       howTitle: 'आसान 3 चरणों में काम करता है',
       howSubtitle: 'किसी भी साधारण फोन से सिर्फ 30 सेकंड में सटीक परिणाम प्राप्त करें',
       steps: [
@@ -289,7 +298,7 @@ export default function LandingPage() {
         {
           num: '2',
           title: 'एआई व वैज्ञानिक जांच',
-          desc: 'ICAR वैज्ञानिक डेटाबेस से मिलान करके सेकंडों में सटीक रोग की पहचान होती है।',
+          desc: 'आईसीएआर (ICAR) वैज्ञानिक डेटाबेस से मिलान करके सेकंडों में सटीक रोग की पहचान होती है।',
           icon: Cpu,
         },
         {
@@ -306,9 +315,11 @@ export default function LandingPage() {
 
       disclaimer:
         'अस्वीकरण: कृषिबंधु एक डिजिटल कृषि परामर्श मंच है। गंभीर रोग व कीटनाशक छिड़काव से पहले अपने नजदीकी कृषि विज्ञान केंद्र (KVK) अथवा कृषि अधिकारी से सलाह अवश्य लें।',
+      footerCitation: `© ${new Date().getFullYear()} कृषिबंधु · डेटा सहायता: ICAR, एगमार्कनेट, IMD एवं विधानचंद्र कृषि विश्वविद्यालय (BCKV)`,
     },
     en: {
-      ticker: 'Live Mandi Update: Potato (Jyoti) Wholesale ₹18/kg · Kharif Paddy ₹2,350/Qtl · Safe Morning Spray Window Today: 6:00 AM - 9:00 AM',
+      ticker: 'Live Agri Update: Potato (Jyoti) Wholesale ₹18/kg · Kharif Paddy ₹2,350/Qtl · Safe Morning Spray Window Today: 6:00 AM - 9:00 AM',
+      liveFeedBadge: 'LIVE AGRI FEED',
       platformBadge: 'ICAR Aligned · Commercial Agritech Platform',
       headline: 'Smarter farming,\nguided by AI.',
       subtitle:
@@ -325,9 +336,11 @@ export default function LandingPage() {
         { id: 'weather', label: '⛅ Weather & Spray' },
       ],
 
+      servicesTag: 'Digital Farmer Solutions',
       servicesTitle: 'Essential Farmer Direct Services',
       servicesSubtitle:
         'Tap directly on any service below to begin immediately — zero subscription or account required',
+      directAccess: 'Direct Access',
       services: [
         {
           id: 'scan',
@@ -416,6 +429,7 @@ export default function LandingPage() {
         { label: 'Toll-Free Kisan Line', value: '1800-180-1551', sub: 'Free Scientist Guidance' },
       ],
 
+      methodTag: 'Simple 3 Steps',
       howTitle: 'How It Works in 3 Simple Steps',
       howSubtitle: 'Get certified agronomic results on any smartphone in under 30 seconds',
       steps: [
@@ -445,6 +459,7 @@ export default function LandingPage() {
 
       disclaimer:
         'Disclaimer: KRISHIBONDHU is an open public agronomy guidance platform. Always verify with your local Block Agriculture Officer (ADA) or Krishi Vigyan Kendra (KVK) before applying scheduled chemical sprays.',
+      footerCitation: `© ${new Date().getFullYear()} KRISHIBONDHU · Data Support: ICAR, Agmarknet, IMD & BCKV`,
     },
   }[language || 'en'];
 
@@ -465,7 +480,7 @@ export default function LandingPage() {
           <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-emerald-500" />
         </span>
         <span className="font-bold text-amber-300 uppercase tracking-wider shrink-0 text-[11px]">
-          {language === 'bn' ? 'লাইভ ফিড' : language === 'hi' ? 'लाइव अपडेट' : 'LIVE AGRI FEED'}
+          {content.liveFeedBadge}
         </span>
         <div className="h-3.5 w-px bg-white/20 shrink-0" />
         <p className="truncate font-medium text-emerald-100/90 text-[11px] sm:text-xs">
@@ -569,7 +584,7 @@ export default function LandingPage() {
         <div className="flex flex-col md:flex-row md:items-end justify-between gap-4">
           <div className="space-y-1.5 text-left">
             <span className="text-xs font-bold uppercase tracking-wider text-emerald-700">
-              ডিজিটাল কৃষক সমাধান
+              {content.servicesTag}
             </span>
             <h2 className="text-2xl sm:text-3xl font-black text-brand-dark tracking-tight">
               {content.servicesTitle}
@@ -643,7 +658,7 @@ export default function LandingPage() {
                       <ArrowRight className="w-4 h-4 group-hover:translate-x-1.5 transition-transform" />
                     </span>
                     <span className="text-[11px] font-semibold text-emerald-900/60 bg-emerald-50 px-2 py-0.5 rounded-md">
-                      সরাসরি ব্যবহার করুন
+                      {content.directAccess}
                     </span>
                   </div>
                 </div>
@@ -660,7 +675,7 @@ export default function LandingPage() {
         <div className="text-center space-y-2 max-w-xl mx-auto">
           <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-100 text-emerald-900 text-xs font-bold">
             <CheckCircle2 className="w-3.5 h-3.5 text-emerald-700" />
-            <span>সহজ পদ্ধতি</span>
+            <span>{content.methodTag}</span>
           </span>
           <h2 className="text-2xl sm:text-3xl font-black text-brand-dark tracking-tight">
             {content.howTitle}
@@ -729,8 +744,7 @@ export default function LandingPage() {
       <footer className="pt-6 border-t border-cream-200/60 text-center space-y-2 text-xs text-brand-dark/60 font-medium max-w-4xl mx-auto">
         <p className="leading-relaxed">{content.disclaimer}</p>
         <p className="text-brand-dark/40 pt-1">
-          © {new Date().getFullYear()} KRISHIBONDHU (কৃষিবন্ধু) · তথ্য সহায়তা: ICAR,
-          Agmarknet, IMD & বিধানচন্দ্র কৃষি বিশ্ববিদ্যালয় (BCKV)
+          {content.footerCitation}
         </p>
       </footer>
     </div>

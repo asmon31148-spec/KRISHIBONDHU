@@ -377,6 +377,27 @@ export default function CropScannerPage() {
     }
   };
 
+  const getStatusLabel = (isHealthy: boolean, severity?: string | null) => {
+    if (isHealthy) {
+      return language === 'bn' ? 'সুস্থ' : language === 'hi' ? 'स्वस्थ' : 'Healthy';
+    }
+    if (severity === 'severe') {
+      return language === 'bn' ? 'মারাত্মক' : language === 'hi' ? 'गंभीर' : 'Severe';
+    }
+    if (severity === 'moderate') {
+      return language === 'bn' ? 'মাঝারি' : language === 'hi' ? 'मध्यम' : 'Moderate';
+    }
+    return language === 'bn' ? 'আক্রান্ত' : language === 'hi' ? 'संक्रमित' : 'Mild';
+  };
+
+  const getConditionLabel = (isHealthy: boolean, diseaseName?: string | null) => {
+    if (diseaseName) return diseaseName;
+    if (isHealthy) {
+      return language === 'bn' ? 'কোনো রোগ নেই' : language === 'hi' ? 'कोई बीमारी नहीं' : 'No Disease Detected';
+    }
+    return language === 'bn' ? 'রোগ শনাক্ত' : language === 'hi' ? 'रोग की पहचान' : 'Disease Detected';
+  };
+
   return (
     <div className="space-y-6 sm:space-y-8 w-full text-left pt-2 pb-16 max-w-5xl mx-auto">
       {/* Top Header & Navigation Switcher */}
@@ -389,13 +410,15 @@ export default function CropScannerPage() {
                 {language === 'bn' ? 'ফ্ল্যাগশিপ এআই ভিশন' : language === 'hi' ? 'एआई विजन स्कैनर' : 'Flagship AI Vision'}
               </span>
             </span>
-            <span className="text-xs text-brand-dark/60">• ICAR Aligned</span>
+            <span className="text-xs text-brand-dark/60">
+              • {language === 'bn' ? 'আইসিএআর নির্দেশিত' : language === 'hi' ? 'आईसीएआर निर्देशित' : 'ICAR Aligned'}
+            </span>
           </div>
           <h1 className="text-2xl sm:text-3xl font-black text-brand-dark mt-1 tracking-tight">
             {language === 'bn'
-              ? 'ফসলের রোগ নির্ণয় (Crop Doctor)'
+              ? 'ফসলের পাতার রোগ নির্ণয়'
               : language === 'hi'
-              ? 'फसल रोग डॉक्टर (Crop Doctor)'
+              ? 'फसल रोग डॉक्टर'
               : 'AI Crop Disease Scanner'}
           </h1>
           <p className="text-xs sm:text-sm text-brand-dark/70 mt-1 max-w-2xl leading-relaxed">
@@ -516,11 +539,11 @@ export default function CropScannerPage() {
                           variant={sc.is_healthy ? 'emerald' : sc.severity === 'severe' ? 'red' : 'amber'}
                           size="sm"
                         >
-                          {sc.is_healthy ? 'সুস্থ' : sc.severity}
+                          {getStatusLabel(sc.is_healthy, sc.severity)}
                         </Badge>
                       </div>
                       <p className="text-xs font-semibold text-emerald-800 truncate">
-                        {sc.disease_name || (sc.is_healthy ? 'কোনো রোগ নেই' : 'রোগ শনাক্ত')}
+                        {getConditionLabel(sc.is_healthy, sc.disease_name)}
                       </p>
                       <div className="flex items-center gap-1 text-[11px] text-brand-dark/50">
                         <Calendar className="w-3 h-3" />
@@ -773,11 +796,11 @@ export default function CropScannerPage() {
                               : 'bg-amber-100 text-amber-800'
                           }`}
                         >
-                          {sc.is_healthy ? 'সুস্থ' : sc.severity}
+                          {getStatusLabel(sc.is_healthy, sc.severity)}
                         </span>
                       </div>
                       <p className="text-[11px] font-semibold text-emerald-800 truncate">
-                        {sc.disease_name || (sc.is_healthy ? 'Healthy' : 'Diseased')}
+                        {getConditionLabel(sc.is_healthy, sc.disease_name)}
                       </p>
                       <span className="text-[10px] text-brand-dark/50">
                         {new Date(sc.created_at).toLocaleDateString()}
