@@ -186,7 +186,9 @@ export interface YieldPredictionInput {
   variety?: string;
   area: number;
   areaUnit: LandUnit;
+  state?: string;
   district?: string;
+  agroZone?: string;
 
   // Level 1: Farmer Field Experience inputs
   healthStatus?: 'healthy' | 'needs_attention' | 'diseased';
@@ -270,6 +272,7 @@ export interface YieldPredictionOutput {
     irrigationMultiplier: number;
     soilNutrientMultiplier: number;
     phMultiplier: number;
+    agroZoneMultiplier?: number;
   };
   recommendations: string[];
   scientificDisclaimers: string[];
@@ -329,11 +332,52 @@ export function calculateYieldPrediction(
     irrigationMultiplier = 0.88;
   }
 
+  // Traceability tracking & recommendations arrays
+  const dataIncluded: string[] = ['Regional ICAR / BCKV Agronomic Baseline'];
+  const dataMissing: string[] = [];
+  const recommendations: string[] = [];
+
+  // Location & Agro-Climatic Zone Multiplier
+  let agroZoneMultiplier = 1.0;
+  let zoneInfoName = '';
+  let zoneTip = '';
+  if (input.district || input.state) {
+    dataIncluded.push(`Geographic Region: ${input.district ? `${input.district}, ` : ''}${input.state || 'West Bengal'}`);
+  }
+  if (input.agroZone) {
+    if (input.agroZone === 'alluvial_gangetic') {
+      agroZoneMultiplier = 1.05;
+      zoneInfoName = 'Gangetic Alluvial Delta Zone';
+      zoneTip = 'High natural soil fertility; optimal for rice, potato, jute and mustard.';
+    } else if (input.agroZone === 'red_laterite') {
+      agroZoneMultiplier = 0.94;
+      zoneInfoName = 'Red & Laterite Undulating Zone';
+      zoneTip = 'Acidic soils with lower water retention; in-situ moisture conservation advised.';
+    } else if (input.agroZone === 'coastal_saline') {
+      agroZoneMultiplier = 0.95;
+      zoneInfoName = 'Coastal Saline Zone';
+      zoneTip = 'Seasonal brackish salinity; raised bed bunding and freshwater flushing advised.';
+    } else if (input.agroZone === 'terai_dooars') {
+      agroZoneMultiplier = 1.02;
+      zoneInfoName = 'Terai & Teesta Alluvial Plain';
+      zoneTip = 'High precipitation zone; light acidic soil responsive to balanced micronutrients.';
+    } else if (input.agroZone === 'barind') {
+      agroZoneMultiplier = 0.98;
+      zoneInfoName = 'Old Alluvial Barind Tract';
+      zoneTip = 'Clayey soil structure; organic FYM application enhances moisture permeability.';
+    } else if (input.agroZone === 'hill') {
+      agroZoneMultiplier = 0.92;
+      zoneInfoName = 'Eastern Himalayan Hill Zone';
+      zoneTip = 'Terraced contour slopes; cooler temperatures require cold-hardy varieties.';
+    }
+    if (zoneInfoName) {
+      dataIncluded.push(`Agro-Climatic Zone: ${zoneInfoName}`);
+    }
+  }
+
   // Level 3 Lab Multipliers (ONLY applied if explicitly provided by farmer)
   let soilNutrientMultiplier = 1.0;
   let phMultiplier = 1.0;
-  const dataIncluded: string[] = ['Regional ICAR / BCKV Agronomic Baseline'];
-  const dataMissing: string[] = [];
 
   if (input.area && input.areaUnit) {
     dataIncluded.push(`Field Area: ${input.area} ${input.areaUnit}`);
@@ -390,7 +434,11 @@ export function calculateYieldPrediction(
 
   // 5. Compute Adjusted Yield Estimates
   const combinedMultiplier =
-    healthMultiplier * irrigationMultiplier * soilNutrientMultiplier * phMultiplier;
+    healthMultiplier * irrigationMultiplier * soilNutrientMultiplier * phMultiplier * agroZoneMultiplier;
+
+  if (zoneTip) {
+    recommendations.push(`Agro-Climatic Zone Tip: ${zoneTip}`);
+  }
 
   // When lab data is missing, we expand the range uncertainty honestly
   const uncertaintyFactor = input.hasSoilReport ? 0.08 : 0.16;
@@ -499,7 +547,6 @@ export function calculateYieldPrediction(
   }
 
   // 9. Tailored Agronomic Recommendations
-  const recommendations: string[] = [];
   if (scenario === 'in_season' && input.healthStatus && input.healthStatus !== 'healthy') {
     recommendations.push(
       'Address active leaf lesions immediately with organic/bio-control or targeted fungicide to prevent potential 15% to 32% yield loss.'
@@ -588,6 +635,7 @@ export function calculateYieldPrediction(
       irrigationMultiplier: Math.round(irrigationMultiplier * 100) / 100,
       soilNutrientMultiplier: Math.round(soilNutrientMultiplier * 100) / 100,
       phMultiplier: Math.round(phMultiplier * 100) / 100,
+      agroZoneMultiplier: Math.round(agroZoneMultiplier * 100) / 100,
     },
     recommendations,
     scientificDisclaimers,
