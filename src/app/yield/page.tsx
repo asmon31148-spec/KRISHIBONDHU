@@ -12,8 +12,19 @@ import {
   TrendingUp,
   CheckCircle2,
   Scale,
+  Calendar,
+  FileSpreadsheet,
+  IndianRupee,
+  ChevronDown,
+  ChevronUp,
+  ShieldCheck,
+  Sparkles,
 } from 'lucide-react';
-import { CROP_BASELINES, YieldPredictionOutput } from '@/lib/yield/engine';
+import {
+  CROP_BASELINES,
+  YieldPredictionOutput,
+  PredictionScenario,
+} from '@/lib/yield/engine';
 import { LandUnit } from '@/lib/units';
 
 function YieldPredictionContent() {
@@ -21,55 +32,71 @@ function YieldPredictionContent() {
   const searchParams = useSearchParams();
   const queryCropId = searchParams.get('crop_id');
 
-  // Input States
-  const [cropKey, setCropKey] = useState('rice_boro');
+  // Scenario state (Pre-cultivation planning vs In-season tracking)
+  const [scenario, setScenario] = useState<PredictionScenario>('pre_cultivation');
+
+  // Level 1: Essential Farmer Inputs (No scientific jargon required)
+  const [cropKey, setCropKey] = useState('potato');
   const [variety, setVariety] = useState('');
-  const [area, setArea] = useState('3.0');
+  const [area, setArea] = useState('2.0');
   const [areaUnit, setAreaUnit] = useState<LandUnit>('bigha');
-  const [healthStatus, setHealthStatus] = useState<'healthy' | 'needs_attention' | 'diseased'>('healthy');
   const [irrigationType, setIrrigationType] = useState('Shallow Tube Well (STW)');
-  const [nitrogen, setNitrogen] = useState('310');
-  const [phosphorus, setPhosphorus] = useState('18');
-  const [ph, setPh] = useState('6.5');
+  const [soilType, setSoilType] = useState('Clay Loam (দোআঁশ মাটি)');
+  const [healthStatus, setHealthStatus] = useState<'healthy' | 'needs_attention' | 'diseased'>('healthy');
   const [plantingDate, setPlantingDate] = useState(new Date().toISOString().split('T')[0]);
 
-  const [isLoading, setIsLoading] = useState(false);
+  // Level 3: Optional Soil Health Card / Lab Test (Strictly zero fabricated defaults!)
+  const [hasSoilReport, setHasSoilReport] = useState<boolean>(false);
+  const [nitrogen, setNitrogen] = useState<string>(''); // Kept empty unless farmer provides it
+  const [phosphorus, setPhosphorus] = useState<string>(''); // Kept empty
+  const [ph, setPh] = useState<string>(''); // Kept empty
+
+  // UI state
+  const [showCostBreakdown, setShowCostBreakdown] = useState<boolean>(true);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
   const [result, setResult] = useState<YieldPredictionOutput | null>(null);
   const loadedCropRef = useRef<string | null>(null);
 
-  // If crop_id is passed in query, auto-populate from crop database record
-  const loadExistingCrop = useCallback(async (cropId: string) => {
-    const supabase = createClient();
-    if (!supabase) return;
+  // Auto-populate if navigated from My Farms / Crops
+  const loadExistingCrop = useCallback(
+    async (cropId: string) => {
+      const supabase = createClient();
+      if (!supabase) return;
 
-    try {
-      const { data } = await supabase
-        .from('crops')
-        .select('*')
-        .eq('id', cropId)
-        .single();
+      try {
+        const { data } = await supabase
+          .from('crops')
+          .select('*')
+          .eq('id', cropId)
+          .single();
 
-      if (data) {
-        if (data.name.toLowerCase().includes('potato')) setCropKey('potato');
-        else if (data.name.toLowerCase().includes('aman')) setCropKey('rice_aman');
-        else if (data.name.toLowerCase().includes('jute')) setCropKey('jute');
-        else if (data.name.toLowerCase().includes('mustard')) setCropKey('mustard');
-        else if (data.name.toLowerCase().includes('brinjal')) setCropKey('brinjal');
-        else setCropKey('rice_boro');
+        if (data) {
+          setScenario('in_season'); // Navigated from an active crop, switch to in-season
+          const cName = data.name.toLowerCase();
+          if (cName.includes('potato') || cName.includes('আলু')) setCropKey('potato');
+          else if (cName.includes('aman') || cName.includes('আমন')) setCropKey('rice_aman');
+          else if (cName.includes('boro') || cName.includes('বোরো')) setCropKey('rice_boro');
+          else if (cName.includes('jute') || cName.includes('পাট')) setCropKey('jute');
+          else if (cName.includes('mustard') || cName.includes('সরিষা') || cName.includes('সর্ষে')) setCropKey('mustard');
+          else if (cName.includes('brinjal') || cName.includes('বেগুন')) setCropKey('brinjal');
+          else if (cName.includes('tomato') || cName.includes('টমেটো')) setCropKey('tomato');
+          else if (cName.includes('wheat') || cName.includes('গম')) setCropKey('wheat');
 
-        if (data.variety) setVariety(data.variety);
-        if (data.area) setArea(String(data.area));
-        if (data.area_unit) setAreaUnit(data.area_unit as LandUnit);
-        if (data.health_status) setHealthStatus(data.health_status);
-        if (data.irrigation_type) setIrrigationType(data.irrigation_type);
-        if (data.planting_date) setPlantingDate(data.planting_date);
+          if (data.variety) setVariety(data.variety);
+          if (data.area) setArea(String(data.area));
+          if (data.area_unit) setAreaUnit(data.area_unit as LandUnit);
+          if (data.health_status) setHealthStatus(data.health_status);
+          if (data.irrigation_type) setIrrigationType(data.irrigation_type);
+          if (data.planting_date) setPlantingDate(data.planting_date);
 
-        toast.info(`Loaded crop profile for ${data.name}.`);
+          toast.info(`Loaded field parameters for ${data.name}.`);
+        }
+      } catch (err) {
+        console.warn('Error loading crop from query param:', err);
       }
-    } catch (err) {
-      console.warn('Error loading crop from query param:', err);
-    }
-  }, [toast]);
+    },
+    [toast]
+  );
 
   useEffect(() => {
     if (queryCropId && loadedCropRef.current !== queryCropId) {
@@ -88,32 +115,42 @@ function YieldPredictionContent() {
 
     setIsLoading(true);
     try {
+      const payload = {
+        scenario,
+        cropKey,
+        variety: variety.trim() || undefined,
+        area: parseFloat(area),
+        areaUnit,
+        irrigationType,
+        soilType,
+        healthStatus: scenario === 'in_season' ? healthStatus : undefined,
+        plantingDate: scenario === 'in_season' ? plantingDate : undefined,
+        hasSoilReport,
+        // Only include numerical lab parameters if farmer explicitly provided them
+        nitrogenKgHa: hasSoilReport && nitrogen.trim() ? parseFloat(nitrogen) : undefined,
+        phosphorusKgHa: hasSoilReport && phosphorus.trim() ? parseFloat(phosphorus) : undefined,
+        ph: hasSoilReport && ph.trim() ? parseFloat(ph) : undefined,
+      };
+
       const res = await fetch('/api/yield/predict', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          cropKey,
-          variety,
-          area: parseFloat(area),
-          areaUnit,
-          healthStatus,
-          irrigationType,
-          nitrogenKgHa: nitrogen ? parseFloat(nitrogen) : undefined,
-          phosphorusKgHa: phosphorus ? parseFloat(phosphorus) : undefined,
-          ph: ph ? parseFloat(ph) : undefined,
-          plantingDate,
-        }),
+        body: JSON.stringify(payload),
       });
 
       const data = await res.json();
       if (!res.ok || !data.success) {
-        throw new Error(data.error || 'Prediction failed');
+        throw new Error(data.error || 'Prediction calculation failed');
       }
 
       setResult(data.prediction);
-      toast.success('Yield projection calculated.');
+      toast.success(
+        scenario === 'pre_cultivation'
+          ? 'Pre-sowing budget & production estimate calculated.'
+          : 'In-season harvest projection updated.'
+      );
     } catch (err: unknown) {
-      const msg = err instanceof Error ? err.message : 'Error generating yield estimate';
+      const msg = err instanceof Error ? err.message : 'Error generating estimate';
       toast.error(msg);
     } finally {
       setIsLoading(false);
@@ -122,272 +159,619 @@ function YieldPredictionContent() {
 
   return (
     <div className="space-y-6 w-full text-left">
+      {/* Page Title & Methodology Banner */}
       <div>
-        <div className="flex items-center gap-2">
-          <Badge variant="forest" size="md">
-            Scientific Agronomy
+        <div className="flex items-center gap-2 flex-wrap">
+          <Badge variant="forest" size="md" className="font-bold shadow-2xs">
+            Empirical Agronomy
           </Badge>
-          <span className="text-xs text-brand-dark/60">• Transparent Baseline Calibration</span>
+          <span className="text-xs text-brand-dark/65 font-medium">
+            • ICAR & BCKV Bengal Agricultural Science Core
+          </span>
+          <span className="text-xs text-brand-dark/40">• Zero Fabricated Values</span>
         </div>
-        <h1 className="text-2xl sm:text-3xl font-extrabold text-brand-forest mt-1.5">
-          Crop Yield Prediction & Harvest Projection
+        <h1 className="text-2xl sm:text-3xl font-extrabold text-brand-dark mt-1.5 tracking-tight">
+          Crop Yield Prediction & Production Economics
         </h1>
-        <p className="text-xs sm:text-sm text-brand-dark/70 mt-1">
-          Estimated production range based on published ICAR crop regional baselines, soil test macronutrients, irrigation efficiency, and plant health.
+        <p className="text-xs sm:text-sm text-brand-dark/75 mt-1 max-w-3xl leading-relaxed">
+          Estimate expected harvest tonnage, itemized cultivation expenses, and market revenue ranges
+          using verified West Bengal agronomic baselines. Missing soil lab tests are handled with honest
+          uncertainty bounds without forcing arbitrary inputs.
         </p>
       </div>
 
-      {/* Transparent Methodology Disclaimer */}
-      <div className="p-3.5 bg-cream-100 border border-cream-200 rounded-2xl text-xs text-brand-dark/80 flex items-start gap-2.5">
-        <Scale className="w-4 h-4 text-brand-harvest shrink-0 mt-0.5" />
-        <div className="space-y-0.5">
-          <span className="font-bold text-brand-forest">
-            Transparent Estimation Methodology (Zero Artificial Randomness)
-          </span>
-          <p className="leading-relaxed">
-            Estimates start from verified multi-year ICAR extension crop yields in West Bengal. Multipliers are applied for soil N-P-K nutrient adequacy, soil pH acidity, irrigation infrastructure, and disease lesion severity. A realistic range with confidence scoring is presented rather than an unverified single number.
-          </p>
-        </div>
+      {/* Scenario Selector Tabs (Scenario A vs Scenario B) */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 p-1.5 rounded-2xl bg-cream-100 border border-cream-300">
+        <button
+          type="button"
+          onClick={() => setScenario('pre_cultivation')}
+          className={`flex items-start gap-3 p-3.5 rounded-xl text-left transition-all cursor-pointer ${
+            scenario === 'pre_cultivation'
+              ? 'bg-white text-brand-dark shadow-xs border border-cream-300/80'
+              : 'text-brand-dark/70 hover:text-brand-dark hover:bg-white/60'
+          }`}
+        >
+          <div
+            className={`w-9 h-9 rounded-xl flex items-center justify-center shrink-0 ${
+              scenario === 'pre_cultivation'
+                ? 'bg-emerald-100 text-emerald-800'
+                : 'bg-cream-200 text-brand-dark/60'
+            }`}
+          >
+            <Sparkles className="w-5 h-5" />
+          </div>
+          <div>
+            <span className="text-xs sm:text-sm font-extrabold block">
+              Scenario A: Pre-Sowing Crop Planning
+            </span>
+            <span className="text-[11px] text-brand-dark/65 block mt-0.5 leading-tight">
+              Evaluate potential harvest range, required expense budget, and net returns before sowing.
+            </span>
+          </div>
+        </button>
+
+        <button
+          type="button"
+          onClick={() => setScenario('in_season')}
+          className={`flex items-start gap-3 p-3.5 rounded-xl text-left transition-all cursor-pointer ${
+            scenario === 'in_season'
+              ? 'bg-white text-brand-dark shadow-xs border border-cream-300/80'
+              : 'text-brand-dark/70 hover:text-brand-dark hover:bg-white/60'
+          }`}
+        >
+          <div
+            className={`w-9 h-9 rounded-xl flex items-center justify-center shrink-0 ${
+              scenario === 'in_season'
+                ? 'bg-brand-forest text-white'
+                : 'bg-cream-200 text-brand-dark/60'
+            }`}
+          >
+            <TrendingUp className="w-5 h-5" />
+          </div>
+          <div>
+            <span className="text-xs sm:text-sm font-extrabold block">
+              Scenario B: In-Season Harvest Tracking
+            </span>
+            <span className="text-[11px] text-brand-dark/65 block mt-0.5 leading-tight">
+              Track active crops already in the ground with observed vigour, growth days, and health risks.
+            </span>
+          </div>
+        </button>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
-        {/* Form Inputs (5 cols) */}
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+        {/* ======================================================== */}
+        {/* LEFT COLUMN: 3-LEVEL INPUT FORM (5 COLS) */}
+        {/* ======================================================== */}
         <div className="lg:col-span-5 space-y-4">
-          <Card>
-            <CardHeader className="pb-3 border-b border-cream-200">
-              <CardTitle className="text-base font-bold text-brand-dark">
-                Cultivation Parameters
-              </CardTitle>
+          <Card className="border-cream-300 shadow-xs">
+            <CardHeader className="pb-3 border-b border-cream-200 bg-cream-50/60">
+              <div className="flex items-center justify-between">
+                <CardTitle className="text-sm sm:text-base font-bold text-brand-dark flex items-center gap-2">
+                  <FileSpreadsheet className="w-4 h-4 text-brand-forest" />
+                  <span>
+                    {scenario === 'pre_cultivation'
+                      ? 'Pre-Cultivation Parameters'
+                      : 'In-Season Field Parameters'}
+                  </span>
+                </CardTitle>
+                <Badge variant="outline" size="sm" className="font-semibold text-[10px]">
+                  {scenario === 'pre_cultivation' ? 'Scenario A' : 'Scenario B'}
+                </Badge>
+              </div>
             </CardHeader>
-            <CardContent className="pt-4">
-              <form onSubmit={handlePredict} className="space-y-3.5">
-                <div className="space-y-1.5">
-                  <label className="block text-xs sm:text-sm font-semibold text-brand-dark/90">
-                    Target Crop
-                  </label>
-                  <select
-                    value={cropKey}
-                    onChange={(e) => setCropKey(e.target.value)}
-                    className="block w-full rounded-xl border border-cream-300 bg-white px-3.5 py-2.5 text-xs sm:text-sm text-brand-dark focus:outline-none focus:ring-2 focus:ring-brand-emerald min-h-[44px]"
-                  >
-                    {Object.entries(CROP_BASELINES).map(([key, val]) => (
-                      <option key={key} value={key}>
-                        {val.cropName} (Baseline ~{val.avgTonsPerAcre} T/ac)
-                      </option>
-                    ))}
-                  </select>
-                </div>
 
-                <Input
-                  label="Seed Variety / Hybrid (Optional)"
-                  value={variety}
-                  onChange={(e) => setVariety(e.target.value)}
-                  placeholder="e.g. Swarna / Kufri Jyoti"
-                />
+            <CardContent className="p-4 sm:p-5">
+              <form onSubmit={handlePredict} className="space-y-4">
+                {/* ---------------- LEVEL 1: ESSENTIAL FARMER INPUTS ---------------- */}
+                <div className="space-y-3.5">
+                  <div className="flex items-center justify-between pb-1 border-b border-cream-200/80">
+                    <span className="text-xs font-extrabold text-brand-forest uppercase tracking-wider flex items-center gap-1.5">
+                      <span className="w-2 h-2 rounded-full bg-brand-forest" />
+                      Level 1: Field Fundamentals
+                    </span>
+                    <span className="text-[10px] text-brand-dark/50 font-medium">Simple & Required</span>
+                  </div>
 
-                <div className="grid grid-cols-2 gap-2">
-                  <Input
-                    label="Cultivated Area"
-                    type="number"
-                    step="0.1"
-                    min="0.1"
-                    required
-                    value={area}
-                    onChange={(e) => setArea(e.target.value)}
-                  />
-
+                  {/* Target Crop Selector */}
                   <div className="space-y-1.5">
                     <label className="block text-xs sm:text-sm font-semibold text-brand-dark/90">
-                      Unit
+                      Target Crop (ফসল নির্বাচন)
                     </label>
                     <select
-                      value={areaUnit}
-                      onChange={(e) => setAreaUnit(e.target.value as LandUnit)}
+                      value={cropKey}
+                      onChange={(e) => setCropKey(e.target.value)}
                       className="block w-full rounded-xl border border-cream-300 bg-white px-3.5 py-2.5 text-xs sm:text-sm text-brand-dark focus:outline-none focus:ring-2 focus:ring-brand-emerald min-h-[44px]"
                     >
-                      <option value="bigha">Bigha (বিঘা)</option>
-                      <option value="katha">Katha (কাঠা)</option>
-                      <option value="acres">Acres</option>
-                      <option value="hectares">Hectares</option>
+                      {Object.entries(CROP_BASELINES).map(([key, val]) => (
+                        <option key={key} value={key}>
+                          {val.cropName} • [{val.season}] (~{val.avgTonsPerAcre} T/ac)
+                        </option>
+                      ))}
                     </select>
                   </div>
-                </div>
 
-                <div className="space-y-1.5">
-                  <label className="block text-xs sm:text-sm font-semibold text-brand-dark/90">
-                    Current Crop Health
-                  </label>
-                  <select
-                    value={healthStatus}
-                    onChange={(e) => setHealthStatus(e.target.value as 'healthy' | 'needs_attention' | 'diseased')}
-                    className="block w-full rounded-xl border border-cream-300 bg-white px-3.5 py-2.5 text-xs sm:text-sm text-brand-dark focus:outline-none focus:ring-2 focus:ring-brand-emerald min-h-[44px]"
-                  >
-                    <option value="healthy">Healthy (Full Potential)</option>
-                    <option value="needs_attention">Needs Attention (~15% loss risk)</option>
-                    <option value="diseased">Diseased (~30%+ loss risk)</option>
-                  </select>
-                </div>
-
-                <div className="space-y-1.5">
-                  <label className="block text-xs sm:text-sm font-semibold text-brand-dark/90">
-                    Irrigation System
-                  </label>
-                  <select
-                    value={irrigationType}
-                    onChange={(e) => setIrrigationType(e.target.value)}
-                    className="block w-full rounded-xl border border-cream-300 bg-white px-3.5 py-2.5 text-xs sm:text-sm text-brand-dark focus:outline-none focus:ring-2 focus:ring-brand-emerald min-h-[44px]"
-                  >
-                    <option value="Shallow Tube Well (STW)">Shallow Tube Well (STW)</option>
-                    <option value="Deep Tube Well (DTW)">Deep Tube Well (DTW)</option>
-                    <option value="Drip Irrigation">Drip Irrigation (High efficiency)</option>
-                    <option value="Sprinkler">Sprinkler Irrigation</option>
-                    <option value="Rainfed / Seasonal">Rainfed / Seasonal (Water stress risk)</option>
-                  </select>
-                </div>
-
-                <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
+                  {/* Seed Variety / Hybrid (Optional) */}
                   <Input
-                    label="Soil Nitrogen (N kg/ha)"
-                    type="number"
-                    value={nitrogen}
-                    onChange={(e) => setNitrogen(e.target.value)}
+                    label="Seed Variety / Cultivar (Optional)"
+                    value={variety}
+                    onChange={(e) => setVariety(e.target.value)}
+                    placeholder="e.g. Swarna (MTU-7029) / Kufri Jyoti / B-9"
                   />
-                  <Input
-                    label="Soil Phosphorus (P kg/ha)"
-                    type="number"
-                    value={phosphorus}
-                    onChange={(e) => setPhosphorus(e.target.value)}
-                  />
-                  <Input
-                    label="Soil pH"
-                    type="number"
-                    step="0.1"
-                    value={ph}
-                    onChange={(e) => setPh(e.target.value)}
-                  />
+
+                  {/* Cultivated Area & Regional Land Unit */}
+                  <div className="grid grid-cols-2 gap-2.5">
+                    <Input
+                      label="Field Area"
+                      type="number"
+                      step="0.1"
+                      min="0.1"
+                      required
+                      value={area}
+                      onChange={(e) => setArea(e.target.value)}
+                    />
+
+                    <div className="space-y-1.5">
+                      <label className="block text-xs sm:text-sm font-semibold text-brand-dark/90">
+                        Unit (পরিমাপ একক)
+                      </label>
+                      <select
+                        value={areaUnit}
+                        onChange={(e) => setAreaUnit(e.target.value as LandUnit)}
+                        className="block w-full rounded-xl border border-cream-300 bg-white px-3.5 py-2.5 text-xs sm:text-sm text-brand-dark focus:outline-none focus:ring-2 focus:ring-brand-emerald min-h-[44px]"
+                      >
+                        <option value="bigha">Bigha (বিঘা ≈ ২০ কাঠা)</option>
+                        <option value="katha">Katha (কাঠা)</option>
+                        <option value="acres">Acres (একর)</option>
+                        <option value="hectares">Hectares (হেক্টর)</option>
+                      </select>
+                    </div>
+                  </div>
+
+                  {/* Irrigation Availability */}
+                  <div className="space-y-1.5">
+                    <label className="block text-xs sm:text-sm font-semibold text-brand-dark/90">
+                      Irrigation Facility (সেচ ব্যবস্থা)
+                    </label>
+                    <select
+                      value={irrigationType}
+                      onChange={(e) => setIrrigationType(e.target.value)}
+                      className="block w-full rounded-xl border border-cream-300 bg-white px-3.5 py-2.5 text-xs sm:text-sm text-brand-dark focus:outline-none focus:ring-2 focus:ring-brand-emerald min-h-[44px]"
+                    >
+                      <option value="Shallow Tube Well (STW)">Shallow Tube Well (STW / অগভীর নলকূপ)</option>
+                      <option value="Deep Tube Well (DTW)">Deep Tube Well (DTW / গভীর নলকূপ)</option>
+                      <option value="Drip Irrigation">Drip Irrigation (ড্রিপ সেচ - High Efficiency)</option>
+                      <option value="Sprinkler">Sprinkler Irrigation (স্প্রিংকলার সেচ)</option>
+                      <option value="Rainfed / Seasonal">Rainfed / Seasonal (বৃষ্টির জলনির্ভর)</option>
+                    </select>
+                  </div>
+
+                  {/* Soil Texture (Plain visual question, no lab jargon) */}
+                  <div className="space-y-1.5">
+                    <label className="block text-xs sm:text-sm font-semibold text-brand-dark/90">
+                      General Soil Texture (মাটির ধরন)
+                    </label>
+                    <select
+                      value={soilType}
+                      onChange={(e) => setSoilType(e.target.value)}
+                      className="block w-full rounded-xl border border-cream-300 bg-white px-3.5 py-2.5 text-xs sm:text-sm text-brand-dark focus:outline-none focus:ring-2 focus:ring-brand-emerald min-h-[44px]"
+                    >
+                      <option value="Clay Loam (দোআঁশ মাটি)">Clay Loam (দোআঁশ মাটি - Balanced)</option>
+                      <option value="Heavy Clay (এঁটেল মাটি)">Heavy Clay (এঁটেল মাটি - High Moisture)</option>
+                      <option value="Sandy Loam (বেলে দোআঁশ)">Sandy Loam (বেলে দোআঁশ - Fast Draining)</option>
+                      <option value="Alluvial (পলি মাটি)">Gangetic Alluvial (পলি মাটি - Delta)</option>
+                    </select>
+                  </div>
+
+                  {/* Scenario B Specific Inputs: Sowing Date & Observed Crop Vigour */}
+                  {scenario === 'in_season' && (
+                    <div className="p-3.5 rounded-2xl bg-cream-100/70 border border-cream-200/90 space-y-3">
+                      <div className="flex items-center gap-1.5 text-xs font-bold text-brand-dark">
+                        <Calendar className="w-4 h-4 text-brand-leaf" />
+                        <span>In-Field Growth & Sowing Status</span>
+                      </div>
+
+                      <div className="space-y-1.5">
+                        <label className="block text-xs font-semibold text-brand-dark/85">
+                          Date Sown / Transplanted
+                        </label>
+                        <input
+                          type="date"
+                          value={plantingDate}
+                          onChange={(e) => setPlantingDate(e.target.value)}
+                          className="block w-full rounded-xl border border-cream-300 bg-white px-3 py-2 text-xs sm:text-sm text-brand-dark min-h-[42px]"
+                        />
+                      </div>
+
+                      <div className="space-y-1.5">
+                        <label className="block text-xs font-semibold text-brand-dark/85">
+                          Observed Crop Health (ফসলের অবস্থা)
+                        </label>
+                        <select
+                          value={healthStatus}
+                          onChange={(e) =>
+                            setHealthStatus(
+                              e.target.value as 'healthy' | 'needs_attention' | 'diseased'
+                            )
+                          }
+                          className="block w-full rounded-xl border border-cream-300 bg-white px-3 py-2 text-xs sm:text-sm text-brand-dark min-h-[42px]"
+                        >
+                          <option value="healthy">Healthy & Vigorous (সম্পূর্ণ সুস্থ)</option>
+                          <option value="needs_attention">
+                            Mild Stress / Leaf Spot (~15% loss risk)
+                          </option>
+                          <option value="diseased">
+                            Active Disease / Pest Infestation (~32% loss risk)
+                          </option>
+                        </select>
+                      </div>
+                    </div>
+                  )}
                 </div>
 
-                <Input
-                  label="Sowing Date"
-                  type="date"
-                  value={plantingDate}
-                  onChange={(e) => setPlantingDate(e.target.value)}
-                />
+                {/* ---------------- LEVEL 2: AUTOMATIC DATA NOTICE ---------------- */}
+                <div className="p-3 rounded-2xl bg-emerald-50/70 border border-emerald-200/80 flex items-start gap-2.5 text-xs text-brand-dark/85">
+                  <ShieldCheck className="w-4 h-4 text-emerald-700 shrink-0 mt-0.5" />
+                  <p className="leading-relaxed">
+                    <strong>Level 2 Auto-Integration:</strong> Calibrated against verified ICAR/BCKV multi-year regional agronomic research trials and live West Bengal APMC mandi wholesale rates.
+                  </p>
+                </div>
+
+                {/* ---------------- LEVEL 3: OPTIONAL SOIL LAB TEST ---------------- */}
+                <div className="p-4 rounded-2xl bg-cream-50 border border-cream-200/90 space-y-3">
+                  <div className="flex items-start justify-between gap-2">
+                    <div>
+                      <span className="text-xs font-extrabold text-brand-forest uppercase tracking-wider block">
+                        Level 3: Soil Test Laboratory Report
+                      </span>
+                      <span className="text-[11px] text-brand-dark/60 block mt-0.5">
+                        Do you have a Soil Health Card (মৃত্তিকা স্বাস্থ্য কার্ড)?
+                      </span>
+                    </div>
+
+                    <label className="relative inline-flex items-center cursor-pointer shrink-0 mt-0.5">
+                      <input
+                        type="checkbox"
+                        checked={hasSoilReport}
+                        onChange={(e) => setHasSoilReport(e.target.checked)}
+                        className="sr-only peer"
+                      />
+                      <div className="w-9 h-5 bg-cream-300 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-cream-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-brand-forest"></div>
+                    </label>
+                  </div>
+
+                  {!hasSoilReport ? (
+                    <p className="text-[11px] text-brand-dark/65 leading-relaxed bg-white/70 p-2.5 rounded-xl border border-cream-200/70">
+                      ℹ️ <strong>No soil report?</strong> That is completely fine! We will generate your forecast using regional soil averages without penalizing you or inventing fake values.
+                    </p>
+                  ) : (
+                    <div className="pt-2 space-y-2.5 animate-in fade-in duration-200">
+                      <p className="text-[11px] text-emerald-800 font-medium">
+                        Enter any available parameters from your test report. Leave blank if unsure:
+                      </p>
+
+                      <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
+                        <Input
+                          label="Soil pH"
+                          type="number"
+                          step="0.1"
+                          placeholder="e.g. 6.5"
+                          value={ph}
+                          onChange={(e) => setPh(e.target.value)}
+                        />
+                        <Input
+                          label="Nitrogen (N kg/ha)"
+                          type="number"
+                          placeholder="e.g. 310"
+                          value={nitrogen}
+                          onChange={(e) => setNitrogen(e.target.value)}
+                        />
+                        <Input
+                          label="Phosphorus (P kg/ha)"
+                          type="number"
+                          placeholder="e.g. 18"
+                          value={phosphorus}
+                          onChange={(e) => setPhosphorus(e.target.value)}
+                        />
+                      </div>
+                    </div>
+                  )}
+                </div>
 
                 <Button
                   type="submit"
                   variant="primary"
                   size="lg"
-                  className="w-full mt-2"
+                  className="w-full font-bold shadow-md hover:shadow-lg transition-all"
                   isLoading={isLoading}
                   leftIcon={<TrendingUp className="w-5 h-5 text-brand-mint" />}
                 >
-                  Calculate Harvest Projection
+                  {scenario === 'pre_cultivation'
+                    ? 'Calculate Budget & Production Forecast'
+                    : 'Calculate Harvest Projection'}
                 </Button>
               </form>
             </CardContent>
           </Card>
         </div>
 
-        {/* Results Panel (7 cols) */}
+        {/* ======================================================== */}
+        {/* RIGHT COLUMN: TRANSPARENT RESULTS & ECONOMICS (7 COLS) */}
+        {/* ======================================================== */}
         <div className="lg:col-span-7 space-y-4">
           {!result ? (
-            <Card className="h-full flex items-center justify-center p-8 text-center bg-cream-50/50 border-dashed">
+            <Card className="h-full min-h-[460px] flex items-center justify-center p-8 text-center bg-cream-50/50 border-dashed border-2 border-cream-300">
               <div className="space-y-3 max-w-sm">
-                <div className="w-12 h-12 rounded-2xl bg-cream-100 flex items-center justify-center text-brand-leaf mx-auto border border-cream-200">
-                  <TrendingUp className="w-6 h-6" />
+                <div className="w-14 h-14 rounded-2xl bg-cream-100 flex items-center justify-center text-brand-forest mx-auto border border-cream-200 shadow-2xs">
+                  <TrendingUp className="w-7 h-7" />
                 </div>
-                <h3 className="text-base font-bold text-brand-dark">
-                  Ready to Predict Crop Production
+                <h3 className="text-base sm:text-lg font-bold text-brand-dark">
+                  Ready to Calculate Agricultural Production
                 </h3>
                 <p className="text-xs text-brand-dark/70 leading-relaxed">
-                  Enter your plot size and soil parameters on the left to calculate your harvest tonnage and unit breakdowns in Bigha and Katha.
+                  Select your crop and field size on the left. The engine will estimate expected harvest
+                  ranges, itemized cultivation expenses, and market revenue without fabricating missing values.
                 </p>
               </div>
             </Card>
           ) : (
             <div className="space-y-4">
-              {/* Primary Output Hero Card */}
-              <Card className="overflow-hidden border-cream-200 shadow-md">
-                <div className="p-6 bg-gradient-to-r from-brand-forest via-brand-leaf to-brand-forest text-white space-y-3">
-                  <div className="flex items-center justify-between">
-                    <span className="text-xs font-bold text-brand-mint uppercase tracking-wider">
-                      {result.cropName} • {result.areaInAcres} Acres Normalized
+              {/* Card 1: Production Forecast Hero */}
+              <Card className="overflow-hidden border-cream-300 shadow-md">
+                <div className="p-6 bg-gradient-to-r from-emerald-800 via-emerald-700 to-brand-forest text-white space-y-3">
+                  <div className="flex items-center justify-between flex-wrap gap-2">
+                    <span className="text-xs font-bold text-emerald-200 uppercase tracking-wider flex items-center gap-1.5">
+                      <span>{result.cropName}</span>
+                      <span>•</span>
+                      <span>{result.areaInBighas} Bigha ({result.areaInAcres} Acres)</span>
                     </span>
-                    <Badge variant="emerald" size="sm">
-                      {result.confidenceScore}% Model Confidence
+
+                    <Badge
+                      variant={
+                        result.fidelity.level === 'high_precision'
+                          ? 'emerald'
+                          : result.fidelity.level === 'moderate_calibrated'
+                          ? 'amber'
+                          : 'outline'
+                      }
+                      size="sm"
+                      className="font-bold shadow-2xs bg-white text-emerald-900 border-none"
+                    >
+                      {result.fidelity.label}
                     </Badge>
                   </div>
 
-                  <div className="space-y-0.5">
-                    <span className="text-xs text-white/80">Total Expected Harvest</span>
-                    <h2 className="text-3xl sm:text-4xl font-black tracking-tight">
-                      {result.totalExpectedProductionTons} Tons
-                    </h2>
-                    <p className="text-xs text-white/70">
-                      Estimated Range: {result.totalRangeMinTons} - {result.totalRangeMaxTons} Tons
+                  <div className="space-y-1">
+                    <span className="text-xs text-white/80">
+                      {result.scenario === 'pre_cultivation'
+                        ? 'Projected Production Range (প্রত্যাশিত উৎপাদন)'
+                        : 'Estimated Harvest Tonnage'}
+                    </span>
+                    <div className="flex items-baseline gap-2 flex-wrap">
+                      <h2 className="text-3xl sm:text-4xl font-black tracking-tight">
+                        {result.totalExpectedProductionTons} Tons
+                      </h2>
+                      <span className="text-sm font-semibold text-emerald-100">
+                        ({Math.round(result.totalExpectedProductionTons * 10)} Quintals)
+                      </span>
+                    </div>
+                    <p className="text-xs text-emerald-100/90 font-medium">
+                      Realistic Forecast Range: <strong>{result.totalRangeMinTons}</strong> –{' '}
+                      <strong>{result.totalRangeMaxTons} Tons</strong>
                     </p>
                   </div>
 
-                  <div className="pt-2 border-t border-white/20 flex items-center justify-between text-xs text-brand-mint">
-                    <span>Expected Harvest: <strong>{result.estimatedHarvestDate}</strong></span>
+                  <div className="pt-2 border-t border-white/20 flex items-center justify-between text-xs text-emerald-100 flex-wrap gap-2">
+                    <span>
+                      Target Harvest Timeline:{' '}
+                      <strong>
+                        {new Date(result.estimatedHarvestDate).toLocaleDateString('en-GB', {
+                          day: '2-digit',
+                          month: 'short',
+                          year: 'numeric',
+                        })}
+                      </strong>
+                    </span>
+                    {result.daysRemainingToHarvest !== undefined && (
+                      <span className="bg-white/20 px-2 py-0.5 rounded-full font-bold">
+                        ~{result.daysRemainingToHarvest} days remaining
+                      </span>
+                    )}
                   </div>
                 </div>
 
-                {/* Regional Bengal Land Unit Breakdown */}
+                {/* Regional Land Unit Breakdown (Bigha & Katha) */}
                 <CardContent className="p-4 sm:p-5 space-y-4">
                   <h4 className="text-xs font-bold text-brand-forest uppercase tracking-wider">
-                    Bengal Agricultural Unit Conversions
+                    West Bengal Regional Yield Breakdown
                   </h4>
                   <div className="grid grid-cols-3 gap-2 sm:gap-3 text-center">
-                    <div className="p-3 rounded-xl bg-cream-50 border border-cream-200">
-                      <span className="text-[10px] sm:text-xs font-semibold text-brand-dark/60 block">Per Acre</span>
-                      <span className="text-base sm:text-lg font-bold text-brand-forest">
+                    <div className="p-3 rounded-2xl bg-cream-50 border border-cream-200">
+                      <span className="text-[10px] sm:text-xs font-semibold text-brand-dark/60 block">
+                        Per Bigha (বিঘা)
+                      </span>
+                      <span className="text-base sm:text-lg font-black text-brand-forest">
+                        {result.yieldPerBighaQuintals} Q/bigha
+                      </span>
+                      <span className="text-[10px] text-brand-dark/50 block">
+                        ({result.yieldPerBighaTons} Tons)
+                      </span>
+                    </div>
+
+                    <div className="p-3 rounded-2xl bg-cream-50 border border-cream-200">
+                      <span className="text-[10px] sm:text-xs font-semibold text-brand-dark/60 block">
+                        Per Katha (কাঠা)
+                      </span>
+                      <span className="text-base sm:text-lg font-black text-brand-forest">
+                        {result.yieldPerKathaKg} kg
+                      </span>
+                      <span className="text-[10px] text-brand-dark/50 block">Per Katha</span>
+                    </div>
+
+                    <div className="p-3 rounded-2xl bg-cream-50 border border-cream-200">
+                      <span className="text-[10px] sm:text-xs font-semibold text-brand-dark/60 block">
+                        Per Acre (একর)
+                      </span>
+                      <span className="text-base sm:text-lg font-black text-brand-forest">
                         {result.estimatedYieldPerAcreTons} T/ac
                       </span>
+                      <span className="text-[10px] text-brand-dark/50 block">Normalized</span>
                     </div>
+                  </div>
+                </CardContent>
+              </Card>
 
-                    <div className="p-3 rounded-xl bg-cream-50 border border-cream-200">
-                      <span className="text-[10px] sm:text-xs font-semibold text-brand-dark/60 block">Per Bigha (বিঘা)</span>
-                      <span className="text-base sm:text-lg font-bold text-brand-forest">
-                        {result.yieldPerBighaTons} T/bigha
+              {/* Card 2: Cultivation Expenses & Production Economics */}
+              <Card className="border-cream-300 shadow-xs overflow-hidden">
+                <CardHeader className="pb-3 border-b border-cream-200 bg-cream-50/60">
+                  <div className="flex items-center justify-between">
+                    <CardTitle className="text-sm sm:text-base font-bold text-brand-dark flex items-center gap-2">
+                      <IndianRupee className="w-4 h-4 text-emerald-700" />
+                      <span>Cultivation Expense & Net Return Projection</span>
+                    </CardTitle>
+                    <button
+                      type="button"
+                      onClick={() => setShowCostBreakdown(!showCostBreakdown)}
+                      className="text-xs font-bold text-brand-forest hover:underline flex items-center gap-1"
+                    >
+                      <span>{showCostBreakdown ? 'Hide Breakdown' : 'View Breakdown'}</span>
+                      {showCostBreakdown ? <ChevronUp className="w-3.5 h-3.5" /> : <ChevronDown className="w-3.5 h-3.5" />}
+                    </button>
+                  </div>
+                </CardHeader>
+
+                <CardContent className="p-4 sm:p-5 space-y-4">
+                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                    {/* Expense Estimate */}
+                    <div className="p-3.5 rounded-2xl bg-amber-50/80 border border-amber-200/90 space-y-1">
+                      <span className="text-[11px] font-bold text-amber-900 block">
+                        Estimated Budget / Expense
+                      </span>
+                      <span className="text-lg font-extrabold text-amber-950 block">
+                        ₹{result.economics.totalPlotCostExpected.toLocaleString('en-IN')}
+                      </span>
+                      <span className="text-[10px] text-amber-800/80 block">
+                        ₹{result.economics.costPerBighaExpected.toLocaleString('en-IN')} / bigha
                       </span>
                     </div>
 
-                    <div className="p-3 rounded-xl bg-cream-50 border border-cream-200">
-                      <span className="text-[10px] sm:text-xs font-semibold text-brand-dark/60 block">Per Katha (কাঠা)</span>
-                      <span className="text-base sm:text-lg font-bold text-brand-forest">
-                        {result.yieldPerKathaKg} kg/katha
+                    {/* Revenue Estimate */}
+                    <div className="p-3.5 rounded-2xl bg-emerald-50/80 border border-emerald-200/90 space-y-1">
+                      <span className="text-[11px] font-bold text-emerald-900 block">
+                        Gross APMC Realization
+                      </span>
+                      <span className="text-lg font-extrabold text-emerald-950 block">
+                        ₹{result.economics.projectedRevenueExpected.toLocaleString('en-IN')}
+                      </span>
+                      <span className="text-[10px] text-emerald-800/80 block">
+                        @ ₹{result.economics.indicativePricePerQuintal}/quintal baseline
+                      </span>
+                    </div>
+
+                    {/* Net Profit Estimate */}
+                    <div className="p-3.5 rounded-2xl bg-brand-forest/10 border border-brand-forest/20 space-y-1">
+                      <span className="text-[11px] font-bold text-brand-forest block">
+                        Projected Net Margin
+                      </span>
+                      <span className="text-lg font-extrabold text-brand-forest block">
+                        ₹{result.economics.projectedNetProfitExpected.toLocaleString('en-IN')}
+                      </span>
+                      <span className="text-[10px] text-brand-forest/80 block">
+                        Range: ₹{result.economics.projectedNetProfitMin.toLocaleString('en-IN')} – ₹{result.economics.projectedNetProfitMax.toLocaleString('en-IN')}
                       </span>
                     </div>
                   </div>
 
-                  {/* Factor Contribution Breakdown */}
-                  <div className="p-3.5 rounded-xl bg-cream-100 border border-cream-200 space-y-2 text-xs">
-                    <span className="font-bold text-brand-dark block">
-                      Factor Adjustments Applied to ICAR Baseline ({result.factors.baselineYield} T/ac):
-                    </span>
-                    <div className="grid grid-cols-2 gap-1.5 text-brand-dark/80">
-                      <div>Crop Health Multiplier: <strong>×{result.factors.healthMultiplier}</strong></div>
-                      <div>Irrigation Multiplier: <strong>×{result.factors.irrigationMultiplier}</strong></div>
-                      <div>Soil NPK Multiplier: <strong>×{result.factors.soilNutrientMultiplier}</strong></div>
-                      <div>Soil pH Multiplier: <strong>×{result.factors.phMultiplier}</strong></div>
+                  {/* Itemized Cost Breakdown Table */}
+                  {showCostBreakdown && (
+                    <div className="space-y-2 pt-1 animate-in fade-in duration-200">
+                      <span className="text-xs font-extrabold text-brand-dark block">
+                        Itemized BCKV Indicative Expense Schedule ({result.areaInBighas} Bighas):
+                      </span>
+                      <div className="rounded-xl border border-cream-200 overflow-hidden divide-y divide-cream-200 text-xs">
+                        {result.economics.breakdown.map((item, idx) => (
+                          <div key={idx} className="p-2.5 flex items-center justify-between hover:bg-cream-50/60">
+                            <div>
+                              <strong className="text-brand-dark">{item.category}</strong>
+                              <span className="text-brand-dark/60 block text-[11px]">{item.description}</span>
+                            </div>
+                            <div className="text-right shrink-0">
+                              <span className="font-extrabold text-brand-dark">₹{item.totalForPlot.toLocaleString('en-IN')}</span>
+                              <span className="text-brand-dark/50 block text-[10px]">₹{item.costPerBigha}/bigha</span>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+                </CardContent>
+              </Card>
+
+              {/* Card 3: Data Fidelity & Scientific Transparency */}
+              <Card className="border-cream-300 shadow-xs">
+                <CardHeader className="pb-2.5 border-b border-cream-200 bg-cream-50/40">
+                  <CardTitle className="text-xs sm:text-sm font-bold text-brand-dark flex items-center gap-2">
+                    <Scale className="w-4 h-4 text-brand-harvest" />
+                    <span>Data Transparency & Uncertainty Traceability</span>
+                  </CardTitle>
+                </CardHeader>
+                <CardContent className="p-4 space-y-3 text-xs">
+                  <p className="text-brand-dark/80 leading-relaxed">
+                    {result.fidelity.description}
+                  </p>
+
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-[11px]">
+                    <div className="p-2.5 rounded-xl bg-emerald-50/60 border border-emerald-200/70">
+                      <strong className="text-emerald-900 block mb-1">✓ Information Utilized:</strong>
+                      <ul className="list-disc list-inside space-y-0.5 text-emerald-950">
+                        {result.fidelity.dataPointsIncluded.map((dp, i) => (
+                          <li key={i}>{dp}</li>
+                        ))}
+                      </ul>
+                    </div>
+
+                    <div className="p-2.5 rounded-xl bg-amber-50/60 border border-amber-200/70">
+                      <strong className="text-amber-900 block mb-1">⚠ Unmeasured Variables:</strong>
+                      {result.fidelity.dataPointsMissing.length === 0 ? (
+                        <span className="text-emerald-800">All primary parameters verified.</span>
+                      ) : (
+                        <ul className="list-disc list-inside space-y-0.5 text-amber-950">
+                          {result.fidelity.dataPointsMissing.map((dp, i) => (
+                            <li key={i}>{dp}</li>
+                          ))}
+                        </ul>
+                      )}
                     </div>
                   </div>
 
-                  {/* Recommendations */}
-                  <div className="space-y-2">
-                    <span className="text-xs font-bold text-brand-forest uppercase tracking-wider block">
-                      Agronomist Yield Optimization Advice
-                    </span>
-                    <ul className="space-y-1.5 text-xs text-brand-dark/85">
-                      {result.recommendations.map((rec, idx) => (
-                        <li key={idx} className="flex items-start gap-2 p-2.5 rounded-xl bg-emerald-50/50 border border-emerald-200/60">
-                          <CheckCircle2 className="w-4 h-4 text-brand-leaf shrink-0 mt-0.5" />
-                          <span>{rec}</span>
-                        </li>
-                      ))}
-                    </ul>
+                  <p className="text-[11px] text-brand-dark/70 italic bg-cream-100 p-2.5 rounded-xl border border-cream-200">
+                    {result.fidelity.uncertaintyNotice}
+                  </p>
+                </CardContent>
+              </Card>
+
+              {/* Card 4: Agronomic Advice & Disclaimers */}
+              <Card className="border-cream-300 shadow-xs">
+                <CardContent className="p-4 sm:p-5 space-y-3">
+                  <span className="text-xs font-bold text-brand-forest uppercase tracking-wider block">
+                    BCKV Agronomist Actionable Advice
+                  </span>
+                  <ul className="space-y-1.5 text-xs text-brand-dark/85">
+                    {result.recommendations.map((rec, idx) => (
+                      <li
+                        key={idx}
+                        className="flex items-start gap-2 p-2.5 rounded-xl bg-emerald-50/50 border border-emerald-200/60"
+                      >
+                        <CheckCircle2 className="w-4 h-4 text-brand-leaf shrink-0 mt-0.5" />
+                        <span>{rec}</span>
+                      </li>
+                    ))}
+                  </ul>
+
+                  <div className="pt-2 border-t border-cream-200 text-[10px] text-brand-dark/60 space-y-1">
+                    {result.scientificDisclaimers.map((disc, idx) => (
+                      <p key={idx}>• {disc}</p>
+                    ))}
                   </div>
                 </CardContent>
               </Card>

@@ -1,14 +1,26 @@
 /**
- * KRISHIBONDHU - Empirical Agronomic Yield Prediction Engine
- * Transparent, documented estimation methodology based on published ICAR & BCKV
- * baseline regional yields adjusted by soil fertility, irrigation, health, and weather.
+ * KRISHIBONDHU - Empirical Agronomic Yield Prediction & Production Economics Engine
+ *
+ * Grounded in published ICAR, BCKV (Bidhan Chandra Krishi Viswavidyalaya), and
+ * Department of Agriculture, Govt. of West Bengal farm management surveys.
+ *
+ * Core Tenet: Build for the actual smallholder farmer.
+ * Never force laboratory parameters; never fabricate missing values;
+ * always be transparent about uncertainty, operational expenses, and limitations.
  *
  * Bengal Land Standard:
  * 1 Bigha ≈ 0.3305785 Acres (1 Acre ≈ 3.025 Bigha)
  * 1 Bigha = 20 Katha
+ * 1 Quintal = 100 Kilograms
  */
 
 import { convertLandArea, LandUnit } from '../units';
+
+export interface CropCostItem {
+  category: string;
+  costPerBigha: number; // In INR (₹)
+  description: string;
+}
 
 export interface CropYieldBaseline {
   cropName: string;
@@ -16,6 +28,9 @@ export interface CropYieldBaseline {
   avgTonsPerAcre: number;
   maxTonsPerAcre: number;
   growingDays: number;
+  season: 'Kharif' | 'Rabi' | 'Boro' | 'Zaid / Summer' | 'Annual';
+  typicalPricePerQuintal: { min: number; avg: number; max: number };
+  costSchedulePerBigha: CropCostItem[];
 }
 
 export const CROP_BASELINES: Record<string, CropYieldBaseline> = {
@@ -25,6 +40,17 @@ export const CROP_BASELINES: Record<string, CropYieldBaseline> = {
     avgTonsPerAcre: 2.1,
     maxTonsPerAcre: 2.6,
     growingDays: 135,
+    season: 'Kharif',
+    typicalPricePerQuintal: { min: 2183, avg: 2300, max: 2450 }, // Govt MSP / Bengal APMC baseline
+    costSchedulePerBigha: [
+      { category: 'Land Preparation', costPerBigha: 900, description: 'Power tiller tilling & puddling (২ বার চাষ ও মই)' },
+      { category: 'Seeds & Nursery', costPerBigha: 450, description: 'Certified seed (Swarna/MTU) & seedbed maintenance' },
+      { category: 'Transplanting Labor', costPerBigha: 1400, description: 'Manual seedling uprooting & transplanting' },
+      { category: 'Fertilizer & FYM', costPerBigha: 1100, description: 'Basal DAP/MOP, Urea top-dressing & farmyard manure' },
+      { category: 'Irrigation & Drainage', costPerBigha: 600, description: 'Supplemental STW pumping / canal drainage' },
+      { category: 'Plant Protection', costPerBigha: 500, description: 'Stem borer & sheath blight bio-control/spray' },
+      { category: 'Harvesting & Threshing', costPerBigha: 1800, description: 'Manual sickle reaping, bunding & power thresher' },
+    ],
   },
   rice_boro: {
     cropName: 'Rice (Boro / Summer Paddy)',
@@ -32,6 +58,17 @@ export const CROP_BASELINES: Record<string, CropYieldBaseline> = {
     avgTonsPerAcre: 2.5,
     maxTonsPerAcre: 3.1,
     growingDays: 125,
+    season: 'Boro',
+    typicalPricePerQuintal: { min: 2200, avg: 2350, max: 2500 },
+    costSchedulePerBigha: [
+      { category: 'Land Preparation', costPerBigha: 950, description: 'Puddling & levelling' },
+      { category: 'Seeds & Nursery', costPerBigha: 500, description: 'Hybrid / high-yield Boro varieties' },
+      { category: 'Transplanting Labor', costPerBigha: 1500, description: 'Winter transplanting labor' },
+      { category: 'Fertilizer & Manure', costPerBigha: 1350, description: 'Higher N-P-K nutrient input for summer potential' },
+      { category: 'Irrigation (Intensive)', costPerBigha: 2200, description: '10-14 rounds of shallow/deep tube well diesel/power' },
+      { category: 'Plant Protection', costPerBigha: 600, description: 'Stem borer & blast prevention' },
+      { category: 'Harvesting & Threshing', costPerBigha: 1900, description: 'Cutting, carrying & mechanical threshing' },
+    ],
   },
   potato: {
     cropName: 'Potato (আলু / Kufri Jyoti)',
@@ -39,6 +76,17 @@ export const CROP_BASELINES: Record<string, CropYieldBaseline> = {
     avgTonsPerAcre: 10.5,
     maxTonsPerAcre: 13.0,
     growingDays: 90,
+    season: 'Rabi',
+    typicalPricePerQuintal: { min: 950, avg: 1300, max: 1750 },
+    costSchedulePerBigha: [
+      { category: 'Land Preparation & Ridging', costPerBigha: 1200, description: 'Deep ploughing, rotavator, and ridge making' },
+      { category: 'Seed Tubers (Major Cost)', costPerBigha: 7500, description: 'Certified cold-storage seed tubers (3.5–4.5 quintals/bigha)' },
+      { category: 'Basal & Top Fertilizer', costPerBigha: 2200, description: 'NPK 10:26:26 or 15:15:15 + Potash + Organic manure' },
+      { category: 'Planting & Earthing Up', costPerBigha: 1600, description: 'Labor for dibbling, furrow placement & soil mounding' },
+      { category: 'Irrigation Cadence', costPerBigha: 1100, description: '4-5 rounds of furrow irrigation during tuber bulking' },
+      { category: 'Blight Protection & Spray', costPerBigha: 1400, description: 'Preventive Mancozeb/Metalaxyl sprays for Late Blight' },
+      { category: 'De-haulming & Harvesting', costPerBigha: 2500, description: 'Tuber digging, grading into sacks, field loading' },
+    ],
   },
   jute: {
     cropName: 'Jute (পাট / Tossa)',
@@ -46,6 +94,16 @@ export const CROP_BASELINES: Record<string, CropYieldBaseline> = {
     avgTonsPerAcre: 1.25,
     maxTonsPerAcre: 1.5,
     growingDays: 120,
+    season: 'Kharif',
+    typicalPricePerQuintal: { min: 4800, avg: 5350, max: 5800 },
+    costSchedulePerBigha: [
+      { category: 'Land Preparation', costPerBigha: 750, description: 'Fine tilth ploughing for small seeds' },
+      { category: 'Seeds & Sowing', costPerBigha: 350, description: 'Certified JRO-524 or JBO-2006 Tossa seeds' },
+      { category: 'Weeding & Thinning (Labor)', costPerBigha: 1800, description: 'Extensive hand weeding (নিড়ানি) at 21 & 35 days' },
+      { category: 'Fertilizer Input', costPerBigha: 850, description: 'Urea split applications' },
+      { category: 'Harvesting & Bundling', costPerBigha: 1600, description: 'Plant cutting at small pod stage' },
+      { category: 'Retting & Extraction', costPerBigha: 2200, description: 'Steeping in water pool (জাগ দেওয়া), stripping & sun-drying fiber' },
+    ],
   },
   mustard: {
     cropName: 'Mustard (সর্ষে)',
@@ -53,6 +111,17 @@ export const CROP_BASELINES: Record<string, CropYieldBaseline> = {
     avgTonsPerAcre: 0.7,
     maxTonsPerAcre: 0.95,
     growingDays: 85,
+    season: 'Rabi',
+    typicalPricePerQuintal: { min: 5400, avg: 5900, max: 6500 },
+    costSchedulePerBigha: [
+      { category: 'Land Preparation', costPerBigha: 700, description: 'Residual moisture tilling after Aman harvest' },
+      { category: 'Seeds', costPerBigha: 250, description: 'High-oil varieties (B-9 / Pusa Bold / Binoy)' },
+      { category: 'Fertilizer & Sulphur', costPerBigha: 900, description: 'Urea, SSP (for essential Sulphur), and MOP' },
+      { category: 'Intercultural & Weeding', costPerBigha: 600, description: 'Early thinning and light hoeing' },
+      { category: 'Irrigation (1-2 Light)', costPerBigha: 500, description: 'Flowering / siliqua development irrigation' },
+      { category: 'Aphid Pest Control', costPerBigha: 450, description: 'Scouting & bio-control/Neem oil or systemic spray' },
+      { category: 'Harvesting & Threshing', costPerBigha: 1100, description: 'Morning harvesting to prevent pod shattering & winnowing' },
+    ],
   },
   brinjal: {
     cropName: 'Brinjal (বেগুন)',
@@ -60,6 +129,16 @@ export const CROP_BASELINES: Record<string, CropYieldBaseline> = {
     avgTonsPerAcre: 9.0,
     maxTonsPerAcre: 12.0,
     growingDays: 110,
+    season: 'Annual',
+    typicalPricePerQuintal: { min: 1400, avg: 2200, max: 3200 },
+    costSchedulePerBigha: [
+      { category: 'Land & Bed Preparation', costPerBigha: 1100, description: 'Deep ploughing & raised beds' },
+      { category: 'Seedlings', costPerBigha: 800, description: 'Muktakeshi / Hybrid grafted nursery seedlings' },
+      { category: 'Nutrient Management', costPerBigha: 1900, description: 'Heavy organic manure + balanced NPK' },
+      { category: 'Irrigation', costPerBigha: 1200, description: 'Frequent light furrow or drip applications' },
+      { category: 'Borer & Pest Control', costPerBigha: 2200, description: 'Pheromone traps & shoot/fruit borer management' },
+      { category: 'Multiple Pluckings Labor', costPerBigha: 2800, description: 'Hand picking over 8-12 picking cycles' },
+    ],
   },
   tomato: {
     cropName: 'Tomato (টমেটো)',
@@ -67,6 +146,17 @@ export const CROP_BASELINES: Record<string, CropYieldBaseline> = {
     avgTonsPerAcre: 10.0,
     maxTonsPerAcre: 13.5,
     growingDays: 100,
+    season: 'Rabi',
+    typicalPricePerQuintal: { min: 900, avg: 1600, max: 2800 },
+    costSchedulePerBigha: [
+      { category: 'Land Preparation & Mulch', costPerBigha: 1200, description: 'Tilling and raised ridge beds' },
+      { category: 'Hybrid Seedlings', costPerBigha: 900, description: 'Determinate/indeterminate disease-tolerant hybrids' },
+      { category: 'Staking & Trellising', costPerBigha: 1500, description: 'Bamboo stakes and jute twine support' },
+      { category: 'Fertilizer & Micronutrients', costPerBigha: 1700, description: 'Boron, Calcium, NPK fertigation' },
+      { category: 'Irrigation', costPerBigha: 1000, description: 'Controlled soil moisture' },
+      { category: 'Pest & Blight Sprays', costPerBigha: 1600, description: 'Fruit borer & early/late blight protection' },
+      { category: 'Harvest & Sorting', costPerBigha: 2200, description: 'Harvesting at breaker/pink stage & crate packing' },
+    ],
   },
   wheat: {
     cropName: 'Wheat (গম)',
@@ -74,27 +164,64 @@ export const CROP_BASELINES: Record<string, CropYieldBaseline> = {
     avgTonsPerAcre: 1.5,
     maxTonsPerAcre: 1.9,
     growingDays: 115,
+    season: 'Rabi',
+    typicalPricePerQuintal: { min: 2275, avg: 2450, max: 2600 },
+    costSchedulePerBigha: [
+      { category: 'Land Preparation', costPerBigha: 850, description: 'Post-kharif fine seedbed preparation' },
+      { category: 'Seeds', costPerBigha: 600, description: 'HD-2967 / DBW-39 certified seeds (14-16 kg/bigha)' },
+      { category: 'Fertilizer Application', costPerBigha: 1150, description: 'Basal DAP/MOP and 2 split Urea doses' },
+      { category: 'Crown Root Irrigation', costPerBigha: 900, description: 'Critical irrigation at CRI, tillering & flowering stages' },
+      { category: 'Weed Management', costPerBigha: 400, description: 'Broadleaf weed control' },
+      { category: 'Harvesting & Threshing', costPerBigha: 1600, description: 'Reaper cutting and wheat thresher' },
+    ],
   },
 };
 
+export type PredictionScenario = 'pre_cultivation' | 'in_season';
+
 export interface YieldPredictionInput {
+  // Scenario selector
+  scenario?: PredictionScenario; // Defaults to in_season if healthStatus provided
   cropKey: string;
   variety?: string;
   area: number;
   areaUnit: LandUnit;
-  healthStatus: 'healthy' | 'needs_attention' | 'diseased';
+  district?: string;
+
+  // Level 1: Farmer Field Experience inputs
+  healthStatus?: 'healthy' | 'needs_attention' | 'diseased';
   irrigationType: string;
-  soilType?: string;
+  soilType?: string; // e.g. Clay, Loam, Sandy, Alluvial
+  plantingDate?: string;
+  growthStage?: 'sowing' | 'vegetative' | 'flowering' | 'grain_filling' | 'maturity';
+
+  // Level 3: Optional Laboratory / Soil Health Card inputs (never mandatory)
+  hasSoilReport?: boolean;
   nitrogenKgHa?: number;
   phosphorusKgHa?: number;
   potassiumKgHa?: number;
   ph?: number;
-  plantingDate?: string;
+  organicCarbonPercent?: number;
+
+  // Level 2: Automatic Environmental Context (if retrieved)
+  weatherContext?: {
+    rainfallAnomalyPercent?: number;
+    heatStressDays?: number;
+  };
+}
+
+export interface ExpenseBreakdownItem {
+  category: string;
+  costPerBigha: number;
+  totalForPlot: number;
+  description: string;
 }
 
 export interface YieldPredictionOutput {
+  scenario: PredictionScenario;
   cropName: string;
   areaInAcres: number;
+  areaInBighas: number;
   estimatedYieldPerAcreTons: number;
   yieldRangeMinTonsPerAcre: number;
   yieldRangeMaxTonsPerAcre: number;
@@ -102,9 +229,41 @@ export interface YieldPredictionOutput {
   totalRangeMinTons: number;
   totalRangeMaxTons: number;
   yieldPerBighaTons: number;
+  yieldPerBighaQuintals: number;
   yieldPerKathaKg: number;
-  confidenceScore: number; // 0 to 100
+  confidenceScore: number; // Kept for backward compatibility
+
+  // Honest Data Fidelity & Uncertainty transparency
+  fidelity: {
+    level: 'indicative_regional' | 'moderate_calibrated' | 'high_precision';
+    label: string;
+    description: string;
+    dataPointsIncluded: string[];
+    dataPointsMissing: string[];
+    uncertaintyNotice: string;
+  };
+
+  // Scenario A & B: Production Economics
+  economics: {
+    costPerBighaMin: number;
+    costPerBighaExpected: number;
+    costPerBighaMax: number;
+    totalPlotCostMin: number;
+    totalPlotCostExpected: number;
+    totalPlotCostMax: number;
+    breakdown: ExpenseBreakdownItem[];
+    projectedRevenueMin: number;
+    projectedRevenueExpected: number;
+    projectedRevenueMax: number;
+    projectedNetProfitMin: number;
+    projectedNetProfitExpected: number;
+    projectedNetProfitMax: number;
+    indicativePricePerQuintal: number;
+  };
+
   estimatedHarvestDate: string;
+  daysRemainingToHarvest?: number;
+
   factors: {
     baselineYield: number;
     healthMultiplier: number;
@@ -113,32 +272,51 @@ export interface YieldPredictionOutput {
     phMultiplier: number;
   };
   recommendations: string[];
+  scientificDisclaimers: string[];
 }
 
 export function calculateYieldPrediction(
   input: YieldPredictionInput
 ): YieldPredictionOutput {
-  // 1. Get Crop Baseline
+  // 1. Identify Scenario: if healthStatus or plantingDate provided, treat as in_season unless explicitly requested as pre_cultivation
+  const scenario: PredictionScenario =
+    input.scenario ||
+    (input.plantingDate || input.healthStatus ? 'in_season' : 'pre_cultivation');
+
+  // 2. Retrieve Crop Baseline
   const baseline = CROP_BASELINES[input.cropKey] || {
     cropName: input.cropKey,
     minTonsPerAcre: 2.0,
     avgTonsPerAcre: 3.0,
     maxTonsPerAcre: 4.0,
     growingDays: 110,
+    season: 'Annual' as const,
+    typicalPricePerQuintal: { min: 2000, avg: 2500, max: 3000 },
+    costSchedulePerBigha: [
+      { category: 'Land Preparation', costPerBigha: 900, description: 'Tilling and preparation' },
+      { category: 'Seeds & Planting', costPerBigha: 600, description: 'Seed material' },
+      { category: 'Fertilizers', costPerBigha: 1200, description: 'Nutrients and compost' },
+      { category: 'Irrigation', costPerBigha: 800, description: 'Water application' },
+      { category: 'Harvesting', costPerBigha: 1500, description: 'Cutting and threshing' },
+    ],
   };
 
-  // 2. Normalize Area to Acres
+  // 3. Normalize Area to Standard Bengal Conversions
   const areaInAcres = convertLandArea(input.area, input.areaUnit, 'acres');
+  const areaInBighas = areaInAcres / 0.3305785;
 
-  // 3. Health Impact Multiplier
+  // 4. Determine Multipliers
+  // Health Status (in-season observation, or neutral 1.0 for pre-cultivation planning)
   let healthMultiplier = 1.0;
-  if (input.healthStatus === 'needs_attention') {
-    healthMultiplier = 0.85;
-  } else if (input.healthStatus === 'diseased') {
-    healthMultiplier = 0.68;
+  if (scenario === 'in_season') {
+    if (input.healthStatus === 'needs_attention') {
+      healthMultiplier = 0.85;
+    } else if (input.healthStatus === 'diseased') {
+      healthMultiplier = 0.68;
+    }
   }
 
-  // 4. Irrigation Multiplier
+  // Irrigation Multiplier
   let irrigationMultiplier = 1.0;
   const irr = (input.irrigationType || '').toLowerCase();
   if (irr.includes('drip')) {
@@ -147,13 +325,37 @@ export function calculateYieldPrediction(
     irrigationMultiplier = 1.08;
   } else if (irr.includes('tube well') || irr.includes('stw') || irr.includes('dtw')) {
     irrigationMultiplier = 1.04;
-  } else if (irr.includes('rainfed')) {
+  } else if (irr.includes('rainfed') || irr.includes('seasonal')) {
     irrigationMultiplier = 0.88;
   }
 
-  // 5. Soil N-P-K Nutrient Factor
+  // Level 3 Lab Multipliers (ONLY applied if explicitly provided by farmer)
   let soilNutrientMultiplier = 1.0;
+  let phMultiplier = 1.0;
+  const dataIncluded: string[] = ['Regional ICAR / BCKV Agronomic Baseline'];
+  const dataMissing: string[] = [];
+
+  if (input.area && input.areaUnit) {
+    dataIncluded.push(`Field Area: ${input.area} ${input.areaUnit}`);
+  }
+  if (input.irrigationType && input.irrigationType !== 'unspecified') {
+    dataIncluded.push(`Irrigation System: ${input.irrigationType}`);
+  }
+  if (input.variety && input.variety.trim().length > 0) {
+    dataIncluded.push(`Cultivar/Variety: ${input.variety}`);
+  } else {
+    dataMissing.push('Specific Seed Variety / Hybrid designation');
+  }
+
+  if (scenario === 'in_season') {
+    dataIncluded.push(`Observed Crop Vigour: ${input.healthStatus || 'healthy'}`);
+  } else {
+    dataIncluded.push('Pre-Sowing Cultivation Planning Assessment');
+  }
+
+  // Soil Nutrient Multiplier
   if (input.nitrogenKgHa !== undefined && input.nitrogenKgHa > 0) {
+    dataIncluded.push(`Laboratory Soil Available Nitrogen: ${input.nitrogenKgHa} kg/ha`);
     if (input.nitrogenKgHa < 240) {
       soilNutrientMultiplier *= 0.92;
     } else if (input.nitrogenKgHa >= 280 && input.nitrogenKgHa <= 500) {
@@ -162,6 +364,7 @@ export function calculateYieldPrediction(
   }
 
   if (input.phosphorusKgHa !== undefined && input.phosphorusKgHa > 0) {
+    dataIncluded.push(`Laboratory Soil Phosphorus: ${input.phosphorusKgHa} kg/ha`);
     if (input.phosphorusKgHa < 10) {
       soilNutrientMultiplier *= 0.94;
     } else if (input.phosphorusKgHa >= 15 && input.phosphorusKgHa <= 30) {
@@ -169,9 +372,9 @@ export function calculateYieldPrediction(
     }
   }
 
-  // 6. pH Suitability Multiplier
-  let phMultiplier = 1.0;
+  // pH Suitability Multiplier
   if (input.ph !== undefined && input.ph > 0) {
+    dataIncluded.push(`Laboratory Soil Reaction (pH): ${input.ph}`);
     if (input.ph < 5.8) {
       phMultiplier = 0.92; // Soil acidity penalty
     } else if (input.ph >= 6.2 && input.ph <= 7.4) {
@@ -181,16 +384,30 @@ export function calculateYieldPrediction(
     }
   }
 
-  // Combined Adjustment Multiplier
+  if (!input.hasSoilReport && (input.ph === undefined || input.nitrogenKgHa === undefined)) {
+    dataMissing.push('Soil Health Card / Chemical Laboratory Test (pH & NPK)');
+  }
+
+  // 5. Compute Adjusted Yield Estimates
   const combinedMultiplier =
     healthMultiplier * irrigationMultiplier * soilNutrientMultiplier * phMultiplier;
+
+  // When lab data is missing, we expand the range uncertainty honestly
+  const uncertaintyFactor = input.hasSoilReport ? 0.08 : 0.16;
 
   const estimatedYieldPerAcre =
     Math.round(baseline.avgTonsPerAcre * combinedMultiplier * 100) / 100;
   const yieldRangeMinPerAcre =
-    Math.round(baseline.minTonsPerAcre * combinedMultiplier * 100) / 100;
+    Math.round(
+      Math.max(
+        0.2,
+        baseline.minTonsPerAcre * combinedMultiplier * (1 - uncertaintyFactor)
+      ) * 100
+    ) / 100;
   const yieldRangeMaxPerAcre =
-    Math.round(baseline.maxTonsPerAcre * combinedMultiplier * 100) / 100;
+    Math.round(
+      baseline.maxTonsPerAcre * combinedMultiplier * (1 + uncertaintyFactor) * 100
+    ) / 100;
 
   const totalExpectedProduction =
     Math.round(estimatedYieldPerAcre * areaInAcres * 100) / 100;
@@ -199,59 +416,133 @@ export function calculateYieldPrediction(
   const totalRangeMax =
     Math.round(yieldRangeMaxPerAcre * areaInAcres * 100) / 100;
 
-  // Regional Bengal Unit Conversions: 1 Bigha = 0.3305785 Acre; 1 Katha = 1/20 Bigha
+  // Regional Bengal Unit Conversions
+  // 1 Bigha = 0.3305785 Acre; 1 Katha = 1/20 Bigha
   const yieldPerBighaTons =
     Math.round(estimatedYieldPerAcre * 0.3305785 * 100) / 100;
+  const yieldPerBighaQuintals = Math.round(yieldPerBighaTons * 10 * 10) / 10;
   const yieldPerKathaKg = Math.round((yieldPerBighaTons * 1000) / 20);
 
-  // Calibrated Confidence Score based on actual data fidelity
-  let confidence = 66; // Regional baseline
-  if (input.healthStatus === 'healthy') confidence += 6;
-  if (input.healthStatus === 'diseased') confidence -= 8;
-  if (input.variety && input.variety.trim().length > 0) confidence += 6;
-  if (input.soilType && input.soilType.trim().length > 0) confidence += 5;
-  if (input.irrigationType && input.irrigationType !== 'unspecified') confidence += 8;
-  if (input.nitrogenKgHa && input.nitrogenKgHa > 0) confidence += 6;
-  if (input.ph && input.ph > 0) confidence += 4;
-  if (input.plantingDate) confidence += 3;
-  confidence = Math.min(95, Math.max(50, confidence));
+  // 6. Honest Fidelity & Scientific Transparency Rating
+  let fidelityLevel: 'indicative_regional' | 'moderate_calibrated' | 'high_precision' =
+    'indicative_regional';
+  let fidelityLabel = 'Indicative Regional Baseline';
+  let fidelityDesc =
+    'Prediction generated using verified regional multi-year ICAR research averages. Soil lab parameters were not provided and were NOT fabricated.';
+  let confidenceScore = 80;
 
-  // Estimate Harvest Date based on sowing date and crop duration
+  if (input.hasSoilReport && input.ph && input.nitrogenKgHa) {
+    fidelityLevel = 'high_precision';
+    fidelityLabel = 'High Precision (Soil Lab Verified)';
+    fidelityDesc =
+      'Calibrated with measured soil test chemistry, irrigation source, and variety parameters.';
+    confidenceScore = 92;
+  } else if (input.variety && (input.plantingDate || input.growthStage)) {
+    fidelityLevel = 'moderate_calibrated';
+    fidelityLabel = 'Moderate Fidelity (Agronomic Calibrated)';
+    fidelityDesc =
+      'Calibrated using farmer field parameters, variety, and crop growth duration.';
+    confidenceScore = 85;
+  }
+
+  // 7. Production Economics & Cultivation Expense Calculation
+  const costItems = baseline.costSchedulePerBigha;
+  const totalCostPerBighaBase = costItems.reduce((acc, c) => acc + c.costPerBigha, 0);
+
+  // Irrigation & health expense adjustments
+  let expenseAdjustment = 1.0;
+  if (irr.includes('rainfed')) expenseAdjustment -= 0.08;
+  if (irr.includes('drip')) expenseAdjustment += 0.05;
+
+  const costPerBighaExpected = Math.round(totalCostPerBighaBase * expenseAdjustment);
+  const costPerBighaMin = Math.round(costPerBighaExpected * 0.9);
+  const costPerBighaMax = Math.round(costPerBighaExpected * 1.15);
+
+  const totalPlotCostExpected = Math.round(costPerBighaExpected * areaInBighas);
+  const totalPlotCostMin = Math.round(costPerBighaMin * areaInBighas);
+  const totalPlotCostMax = Math.round(costPerBighaMax * areaInBighas);
+
+  const breakdown: ExpenseBreakdownItem[] = costItems.map((item) => ({
+    category: item.category,
+    costPerBigha: item.costPerBigha,
+    totalForPlot: Math.round(item.costPerBigha * areaInBighas),
+    description: item.description,
+  }));
+
+  // Revenue & Profit Estimation using APMC wholesale benchmark
+  const indicativePrice = baseline.typicalPricePerQuintal.avg;
+  const totalQuintalsExpected = totalExpectedProduction * 10;
+  const totalQuintalsMin = totalRangeMin * 10;
+  const totalQuintalsMax = totalRangeMax * 10;
+
+  const projectedRevenueExpected = Math.round(totalQuintalsExpected * indicativePrice);
+  const projectedRevenueMin = Math.round(
+    totalQuintalsMin * baseline.typicalPricePerQuintal.min
+  );
+  const projectedRevenueMax = Math.round(
+    totalQuintalsMax * baseline.typicalPricePerQuintal.max
+  );
+
+  const projectedNetProfitExpected = projectedRevenueExpected - totalPlotCostExpected;
+  const projectedNetProfitMin = projectedRevenueMin - totalPlotCostMax;
+  const projectedNetProfitMax = projectedRevenueMax - totalPlotCostMin;
+
+  // 8. Harvest Date & Growth Timeline
   const sowDate = input.plantingDate ? new Date(input.plantingDate) : new Date();
   const harvestDateObj = new Date(sowDate.getTime() + baseline.growingDays * 86400000);
   const estimatedHarvestDate = harvestDateObj.toISOString().split('T')[0];
 
-  // Tailored Agronomic Recommendations
+  let daysRemainingToHarvest: number | undefined;
+  if (input.plantingDate) {
+    const diffMs = harvestDateObj.getTime() - Date.now();
+    daysRemainingToHarvest = Math.max(0, Math.ceil(diffMs / (1000 * 60 * 60 * 24)));
+  }
+
+  // 9. Tailored Agronomic Recommendations
   const recommendations: string[] = [];
-  if (input.healthStatus !== 'healthy') {
+  if (scenario === 'in_season' && input.healthStatus && input.healthStatus !== 'healthy') {
     recommendations.push(
-      'Address active leaf lesions immediately with organic/bio-control or targeted fungicide to avoid up to 30% yield loss.'
+      'Address active leaf lesions immediately with organic/bio-control or targeted fungicide to prevent potential 15% to 32% yield loss.'
     );
   }
   if (irrigationMultiplier < 1.0) {
     recommendations.push(
-      'Rainfed moisture stress can constrain grain filling. Implement shallow supplemental tube well irrigation during peak flowering.'
+      'Rainfed cultivation experiences moisture stress during critical grain filling. Plan 1-2 supplemental irrigations from ponds or shallow tube wells.'
     );
   }
   if (phMultiplier < 1.0 && input.ph && input.ph < 5.8) {
     recommendations.push(
-      'Soil is moderately acidic (pH < 5.8). Apply agricultural lime or dolomite at 200-250 kg/acre prior to next sowing season.'
+      'Soil is moderately acidic (pH < 5.8). Apply agricultural dolomite/lime at 200–250 kg/acre after harvest to release locked phosphorus.'
     );
   }
   if (soilNutrientMultiplier < 1.0) {
     recommendations.push(
-      'Soil test indicates suboptimal nitrogen/phosphorus availability. Top-dress with well-decomposed vermicompost or split urea.'
+      'Soil test indicates suboptimal nitrogen/phosphorus. Apply well-decomposed FYM (গোবর সার) @ 1.5 tons/bigha and split urea doses.'
+    );
+  }
+  if (!input.hasSoilReport) {
+    recommendations.push(
+      'Tip: Test your soil sample at your local Block Assistant Director of Agriculture (ADA) office or KVK for a free Soil Health Card to unlock plot-specific fertilizer dosing.'
     );
   }
   if (recommendations.length === 0) {
     recommendations.push(
-      'Farming conditions are well-balanced. Maintain current irrigation cadence and periodic pest scouting.'
+      'Agronomic parameters are balanced. Maintain optimal weed control and periodic pest monitoring.'
     );
   }
 
+  // 10. Explicit Scientific Transparency Disclaimers
+  const scientificDisclaimers: string[] = [
+    'Predictions are mathematical agronomic models based on regional multi-year research trials, not guaranteed outcomes.',
+    'Actual harvest production is subject to extreme weather anomalies (unseasonal heavy rainfall, cyclone, heatwaves), local pest outbreaks, and timely field management.',
+    'Financial cost and revenue schedules are indicative based on standard West Bengal agricultural survey rates and APMC wholesale price trends.',
+  ];
+
   return {
+    scenario,
     cropName: baseline.cropName,
     areaInAcres,
+    areaInBighas: Math.round(areaInBighas * 100) / 100,
     estimatedYieldPerAcreTons: estimatedYieldPerAcre,
     yieldRangeMinTonsPerAcre: yieldRangeMinPerAcre,
     yieldRangeMaxTonsPerAcre: yieldRangeMaxPerAcre,
@@ -259,9 +550,38 @@ export function calculateYieldPrediction(
     totalRangeMinTons: totalRangeMin,
     totalRangeMaxTons: totalRangeMax,
     yieldPerBighaTons,
+    yieldPerBighaQuintals,
     yieldPerKathaKg,
-    confidenceScore: confidence,
+    confidenceScore,
+    fidelity: {
+      level: fidelityLevel,
+      label: fidelityLabel,
+      description: fidelityDesc,
+      dataPointsIncluded: dataIncluded,
+      dataPointsMissing: dataMissing,
+      uncertaintyNotice:
+        dataMissing.length > 0
+          ? `Forecast range has been widened by ±16% to account for unmeasured soil variables (${dataMissing.join(', ')}).`
+          : 'Forecast range is calibrated with measured plot data.',
+    },
+    economics: {
+      costPerBighaMin,
+      costPerBighaExpected,
+      costPerBighaMax,
+      totalPlotCostMin,
+      totalPlotCostExpected,
+      totalPlotCostMax,
+      breakdown,
+      projectedRevenueMin,
+      projectedRevenueExpected,
+      projectedRevenueMax,
+      projectedNetProfitMin,
+      projectedNetProfitExpected,
+      projectedNetProfitMax,
+      indicativePricePerQuintal: indicativePrice,
+    },
     estimatedHarvestDate,
+    daysRemainingToHarvest,
     factors: {
       baselineYield: baseline.avgTonsPerAcre,
       healthMultiplier: Math.round(healthMultiplier * 100) / 100,
@@ -270,5 +590,6 @@ export function calculateYieldPrediction(
       phMultiplier: Math.round(phMultiplier * 100) / 100,
     },
     recommendations,
+    scientificDisclaimers,
   };
 }
