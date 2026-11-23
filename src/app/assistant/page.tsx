@@ -266,9 +266,9 @@ export default function AssistantPage() {
   const currentSuggestions = SUGGESTED_PROMPTS[language] || SUGGESTED_PROMPTS.en;
 
   return (
-    <div className="flex flex-col h-[calc(100dvh-130px)] sm:h-[calc(100dvh-140px)] lg:h-[calc(100vh-125px)] w-full text-left relative overflow-hidden">
+    <div className="flex flex-col h-[calc(100dvh-54px-64px)] sm:h-[calc(100dvh-135px)] lg:h-[calc(100vh-100px)] -mx-2 -my-2 sm:mx-0 sm:my-0 w-[calc(100%+1rem)] sm:w-full bg-white sm:bg-transparent text-left relative overflow-hidden">
       {/* Top Bar with Language Indicator & Actions */}
-      <div className="flex items-center justify-between pb-2 sm:pb-2.5 border-b border-cream-200 gap-2 shrink-0">
+      <div className="flex items-center justify-between px-3 sm:px-0 py-2 sm:py-2.5 border-b border-cream-200 bg-white sm:bg-transparent gap-2 shrink-0">
         <div className="flex items-center gap-2 min-w-0">
           {/* Toggle history button for mobile/desktop */}
           {!isGuest && (
@@ -325,7 +325,7 @@ export default function AssistantPage() {
       </div>
 
       {/* Main Chat Workspace */}
-      <div className="flex flex-1 min-h-0 pt-2 sm:pt-2.5 gap-2.5 lg:gap-3 overflow-hidden">
+      <div className="flex flex-1 min-h-0 sm:pt-2.5 gap-2.5 lg:gap-3 overflow-hidden">
         {/* Desktop Sidebar (Logged in users, desktop screen) */}
         {!isGuest && isSidebarOpen && (
           <aside className="hidden lg:flex w-60 border border-cream-200 bg-white shadow-xs rounded-2xl p-3 flex-col space-y-2 shrink-0 animate-in fade-in duration-150">
@@ -450,37 +450,37 @@ export default function AssistantPage() {
         )}
 
         {/* Chat Messages Stream Area */}
-        <div className="flex-1 flex flex-col min-h-0 bg-white rounded-2xl sm:rounded-3xl border border-cream-200/90 shadow-xs overflow-hidden">
+        <div className="flex-1 flex flex-col min-h-0 bg-white sm:rounded-2xl lg:rounded-3xl border-t sm:border border-cream-200/90 shadow-none sm:shadow-xs overflow-hidden">
           {/* Scrollable Message History */}
-          <div className="flex-1 overflow-y-auto p-2.5 sm:p-4 lg:p-5 space-y-4">
-            <div className="max-w-3xl mx-auto w-full space-y-3 sm:space-y-4">
+          <div className="flex-1 overflow-y-auto px-3 py-2 sm:p-4 lg:p-5 space-y-3 sm:space-y-4">
+            <div className="max-w-3xl mx-auto w-full space-y-2.5 sm:space-y-4">
               {messages.length === 0 ? (
-                <div className="flex flex-col items-center justify-center text-center p-3 sm:p-5 space-y-3 w-full">
-                  <div className="w-11 h-11 sm:w-14 sm:h-14 rounded-2xl bg-brand-forest/10 border border-brand-forest/20 flex items-center justify-center text-brand-forest shrink-0">
+                <div className="flex flex-col items-center justify-center text-center p-2 sm:p-5 space-y-2 sm:space-y-3 w-full">
+                  <div className="w-10 h-10 sm:w-14 sm:h-14 rounded-2xl bg-brand-forest/10 border border-brand-forest/20 flex items-center justify-center text-brand-forest shrink-0">
                     <Bot className="w-5 h-5 sm:w-7 sm:h-7 text-brand-leaf" />
                   </div>
                   <div className="space-y-0.5">
-                    <h3 className="text-base sm:text-lg font-bold text-brand-dark">
+                    <h3 className="text-sm sm:text-lg font-bold text-brand-dark">
                       How can I assist your farm today?
                     </h3>
-                    <p className="text-xs text-brand-dark/70 leading-relaxed max-w-md mx-auto">
+                    <p className="text-[11px] sm:text-xs text-brand-dark/70 leading-relaxed max-w-md mx-auto">
                       Ask any question about crop diseases, pest remedies, fertilizer schedules, or government schemes.
                     </p>
                   </div>
 
                   {/* Suggested Prompt Chips */}
-                  <div className="w-full space-y-1.5 pt-1">
+                  <div className="w-full space-y-1 sm:space-y-1.5 pt-1">
                     <span className="text-[10px] font-bold text-brand-forest uppercase tracking-wider block text-center sm:text-left">
                       Suggested Questions
                     </span>
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-left w-full">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-1.5 sm:gap-2 text-left w-full">
                       {currentSuggestions.map((prompt, idx) => (
                         <button
                           key={idx}
                           onClick={() => handleSendMessage(prompt)}
-                          className="p-2.5 sm:p-3 text-left rounded-xl bg-cream-50 hover:bg-cream-100 border border-cream-200 text-xs font-semibold text-brand-dark/85 transition-colors flex items-center justify-between group"
+                          className="p-2 sm:p-2.5 text-left rounded-xl bg-cream-50 hover:bg-cream-100 border border-cream-200 text-xs font-semibold text-brand-dark/85 transition-colors flex items-center justify-between group"
                         >
-                          <span className="line-clamp-2 leading-snug">{prompt}</span>
+                          <span className="line-clamp-1 sm:line-clamp-2 leading-snug">{prompt}</span>
                           <ChevronRight className="w-3.5 h-3.5 text-brand-leaf opacity-60 group-hover:opacity-100 shrink-0 ml-1.5 transition-opacity" />
                         </button>
                       ))}
