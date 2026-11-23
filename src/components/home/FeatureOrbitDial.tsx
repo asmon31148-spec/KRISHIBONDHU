@@ -1,0 +1,365 @@
+'use client';
+
+import React, { useState, useEffect, useRef } from 'react';
+import Link from 'next/link';
+import { useTranslation } from '@/i18n/context';
+import {
+  Scan,
+  FlaskConical,
+  TrendingUp,
+  CloudRain,
+  Sprout,
+  Landmark,
+  ArrowRight,
+} from 'lucide-react';
+
+interface FeatureItem {
+  id: string;
+  icon: React.ComponentType<{ className?: string; style?: React.CSSProperties }>;
+  label: { bn: string; hi: string; en: string };
+  copy: { bn: string; hi: string; en: string };
+  href: string;
+  color: string;
+  anim: 'scan' | 'drop' | 'grow' | 'rain' | 'ripple' | 'ring';
+}
+
+const FEATURES: FeatureItem[] = [
+  {
+    id: 'scan',
+    icon: Scan,
+    label: { bn: 'রোগ শনাক্ত', hi: 'रोग पहचान', en: 'Crop Leaf Doctor' },
+    copy: {
+      bn: 'পাতার ছবি তুলুন, সরাসরি বৈজ্ঞানিক রোগ নির্ণয় ও অনুমোদিত ওষুধ পান।',
+      hi: 'पत्ते की फोटो लें, तुरंत वैज्ञानिक रोग पहचान व स्वीकृत उपचार पाएं।',
+      en: 'Take a clear leaf photo for instant certified biological & chemical remedies.',
+    },
+    href: '/scan',
+    color: '#7CC98F',
+    anim: 'scan',
+  },
+  {
+    id: 'fertilizer',
+    icon: FlaskConical,
+    label: { bn: 'সারের হিসাব', hi: 'उर्वरक कैलकुलेटर', en: 'Fertilizer Dosage' },
+    copy: {
+      bn: 'বিঘা, শতক ও মাটির ধরন অনুযায়ী ইউরিয়া, ডিএপি ও এমওপির সঠিক মাত্রা।',
+      hi: 'बीघा, कट्टा और मिट्टी के अनुसार यूरिया, डीएपी व एमओपी की सटीक मात्रा।',
+      en: 'Exact scientific dosages of Urea, DAP, and MOP tailored to your land unit.',
+    },
+    href: '/fertilizer',
+    color: '#56B4E9',
+    anim: 'drop',
+  },
+  {
+    id: 'mandi',
+    icon: TrendingUp,
+    label: { bn: 'বাজার দর', hi: 'मंडी भाव', en: 'Mandi Radar' },
+    copy: {
+      bn: 'সরকারি এগমार्कনেট থেকে আলু, ধান ও সবজির সরাসরি নির্ভরযোগ্য পাইকারি দর।',
+      hi: 'सरकारी एगमार्कनेट से आलू, धान व सब्जियों के सीधे थोक भाव।',
+      en: 'Live official wholesale mandi prices for potato, paddy, jute & vegetables.',
+    },
+    href: '/mandi',
+    color: '#E8B94A',
+    anim: 'grow',
+  },
+  {
+    id: 'weather',
+    icon: CloudRain,
+    label: { bn: 'আবহাওয়া ও স্প্রে', hi: 'मौसम व छिड़काव', en: 'Weather & Spray' },
+    copy: {
+      bn: 'বৃষ্টিপাত ও বাতাসের গতি দেখে কীটনাশক স্প্রে ও ফসল কাটার নির্ভুল সময়।',
+      hi: 'बारिश और हवा की गति देखकर कीटनाशक छिड़काव का सुरक्षित समय।',
+      en: 'Rainfall & wind forecast to identify safe pesticide spraying windows.',
+    },
+    href: '/weather',
+    color: '#7EC2DE',
+    anim: 'rain',
+  },
+  {
+    id: 'farms',
+    icon: Sprout,
+    label: { bn: 'আমার খামার', hi: 'मेरा खेत', en: 'My Farm Plots' },
+    copy: {
+      bn: 'আপনার জমির খতিয়ান, বর্তমান ফসল এবং মাটির স্বাস্থ্য এক জায়গায় রাখুন।',
+      hi: 'अपनी जमीन के प्लॉट, फसल और मिट्टी का स्वास्थ्य एक जगह सुरक्षित रखें।',
+      en: 'Track your plots, active crops, and soil test records in one simple hub.',
+    },
+    href: '/farms',
+    color: '#68D391',
+    anim: 'ripple',
+  },
+  {
+    id: 'schemes',
+    icon: Landmark,
+    label: { bn: 'সরকারি প্রকল্প', hi: 'सरकारी योजनाएं', en: 'Govt Schemes' },
+    copy: {
+      bn: 'কৃষকবন্ধু ও পিএম কিষান অনুদানের যাচাইকৃত আবেদন নির্দেশিকা।',
+      hi: 'कृषक बंधु व पीएम किसान अनुदान की सत्यापित आवेदन गाइड।',
+      en: 'Verified application guides for Krishak Bandhu, PM-Kisan & subsidies.',
+    },
+    href: '/schemes',
+    color: '#F6AD55',
+    anim: 'ring',
+  },
+];
+
+// Coordinate geometry for center hero bubble (slot 0) and 5 orbital satellite bubbles (slots 1..5)
+const SLOTS = [
+  { left: 50, top: 37.5, width: 43.48, height: 50 },
+  { left: 15.22, top: 61.25, width: 15.65, height: 18 },
+  { left: 30.43, top: 75.0, width: 15.65, height: 18 },
+  { left: 48.91, top: 82.5, width: 15.65, height: 18 },
+  { left: 67.39, top: 76.25, width: 15.65, height: 18 },
+  { left: 82.61, top: 62.5, width: 15.65, height: 18 },
+];
+
+export default function FeatureOrbitDial() {
+  const { language } = useTranslation();
+  const langKey = language === 'bn' || language === 'hi' ? language : 'en';
+
+  const [activeIdx, setActiveIdx] = useState<number>(0);
+  const [isPaused, setIsPaused] = useState<boolean>(false);
+  const timerRef = useRef<NodeJS.Timeout | null>(null);
+
+  // Auto-cycle through items when user isn't hovering
+  useEffect(() => {
+    if (isPaused) return;
+
+    timerRef.current = setInterval(() => {
+      setActiveIdx((prev) => (prev + 1) % FEATURES.length);
+    }, 3800);
+
+    return () => {
+      if (timerRef.current) clearInterval(timerRef.current);
+    };
+  }, [isPaused]);
+
+  // Calculate which item occupies which visual slot
+  // Slot 0 is always activeIdx. Remaining items fill slots 1..5 in order
+  const slotMapping: { [itemIdx: number]: number } = {};
+  slotMapping[activeIdx] = 0;
+  const others = FEATURES.map((_, i) => i).filter((i) => i !== activeIdx);
+  others.forEach((itemIdx, slotIdx) => {
+    slotMapping[itemIdx] = slotIdx + 1;
+  });
+
+  const activeItem = FEATURES[activeIdx];
+
+  return (
+    <div
+      className="relative w-full max-w-[460px] mx-auto select-none"
+      onMouseEnter={() => setIsPaused(true)}
+      onMouseLeave={() => setIsPaused(false)}
+      onTouchStart={() => setIsPaused(true)}
+    >
+      <style jsx>{`
+        @keyframes scanY {
+          0%, 8% { transform: translateY(-110%); opacity: 0; }
+          18% { opacity: 1; }
+          82% { opacity: 1; }
+          92%, 100% { transform: translateY(110%); opacity: 0; }
+        }
+        .anim-scan .line { animation: scanY 2.4s ease-in-out infinite; }
+
+        @keyframes dropFall {
+          0% { transform: translateY(-8px); opacity: 0; }
+          30% { opacity: 1; }
+          100% { transform: translateY(18px); opacity: 0; }
+        }
+        .anim-drop .d1 { animation: dropFall 1.4s ease-in infinite; }
+
+        @keyframes growPulse {
+          0%, 100% { transform: scale(1); }
+          50% { transform: scale(1.15); }
+        }
+        .anim-grow .icon-el { animation: growPulse 2s ease-in-out infinite; }
+
+        @keyframes rainFall {
+          0% { transform: translateY(-6px); opacity: 0; }
+          40% { opacity: 1; }
+          100% { transform: translateY(16px); opacity: 0; }
+        }
+        .anim-rain .r1 { animation: rainFall 1.2s ease-in infinite; }
+        .anim-rain .r2 { animation: rainFall 1.2s ease-in infinite; animation-delay: 0.35s; }
+
+        @keyframes rippleWave {
+          0% { transform: scale(0.6); opacity: 0.8; }
+          100% { transform: scale(1.9); opacity: 0; }
+        }
+        .anim-ripple .ring1 { animation: rippleWave 2.2s ease-out infinite; }
+
+        @keyframes ringPulse {
+          0% { transform: scale(1); opacity: 0.7; }
+          100% { transform: scale(1.8); opacity: 0; }
+        }
+        .anim-ring .ring1 { animation: ringPulse 1.8s ease-out infinite; }
+
+        .bubble {
+          transition: left 0.7s cubic-bezier(0.4, 0, 0.2, 1),
+                      top 0.7s cubic-bezier(0.4, 0, 0.2, 1),
+                      width 0.7s cubic-bezier(0.4, 0, 0.2, 1),
+                      height 0.7s cubic-bezier(0.4, 0, 0.2, 1),
+                      box-shadow 0.4s ease, border-color 0.4s ease, background-color 0.4s ease;
+        }
+
+        @keyframes captionIn {
+          from { opacity: 0; transform: translateY(6px); }
+          to { opacity: 1; transform: translateY(0); }
+        }
+        .caption-in { animation: captionIn 0.35s ease-out both; }
+      `}</style>
+
+      {/* Orbit Background Circular Guide Line */}
+      <div
+        className="absolute pointer-events-none rounded-full border border-dashed border-emerald-400/20"
+        style={{
+          left: '50%',
+          top: '55%',
+          width: '74%',
+          height: '74%',
+          transform: 'translate(-50%, -50%)',
+        }}
+      />
+
+      {/* Bubble Stage Area */}
+      <div className="relative w-full aspect-[460/370]">
+        {FEATURES.map((item, idx) => {
+          const slot = SLOTS[slotMapping[idx]];
+          const isSlotZero = slotMapping[idx] === 0;
+          const Icon = item.icon;
+
+          return (
+            <button
+              key={item.id}
+              onClick={() => setActiveIdx(idx)}
+              aria-label={`Select ${item.label[langKey]}`}
+              className="bubble absolute rounded-full flex flex-col items-center justify-center cursor-pointer backdrop-blur-md focus:outline-none"
+              style={{
+                left: `${slot.left}%`,
+                top: `${slot.top}%`,
+                width: `${slot.width}%`,
+                height: `${slot.height}%`,
+                transform: 'translate(-50%, -50%)',
+                borderColor: isSlotZero ? item.color : 'rgba(255, 255, 255, 0.22)',
+                borderWidth: isSlotZero ? '2.5px' : '1.5px',
+                boxShadow: isSlotZero
+                  ? `0 14px 36px -8px ${item.color}66, 0 0 20px ${item.color}33`
+                  : '0 4px 12px rgba(0,0,0,0.25)',
+                backgroundColor: isSlotZero
+                  ? 'rgba(12, 24, 14, 0.75)'
+                  : 'rgba(255, 255, 255, 0.12)',
+                zIndex: isSlotZero ? 20 : 10,
+              }}
+            >
+              {/* Animated Icon Container */}
+              <div
+                className={`relative flex items-center justify-center overflow-hidden rounded-full ${
+                  isSlotZero ? `anim-${item.anim}` : ''
+                }`}
+                style={{
+                  width: isSlotZero ? '42%' : '52%',
+                  aspectRatio: '1 / 1',
+                }}
+              >
+                <Icon
+                  className="icon-el relative z-10 transition-transform duration-300"
+                  style={{
+                    color: isSlotZero ? item.color : '#FFFFFF',
+                    width: isSlotZero ? '72%' : '60%',
+                    height: isSlotZero ? '72%' : '60%',
+                  }}
+                />
+
+                {/* Micro-animations in active slot */}
+                {isSlotZero && item.anim === 'scan' && (
+                  <span
+                    className="line absolute inset-x-0 h-[22%]"
+                    style={{ backgroundColor: `${item.color}66` }}
+                  />
+                )}
+                {isSlotZero && item.anim === 'drop' && (
+                  <span
+                    className="d1 absolute w-1.5 h-2.5 rounded-full"
+                    style={{ backgroundColor: item.color }}
+                  />
+                )}
+                {isSlotZero && item.anim === 'rain' && (
+                  <>
+                    <span className="r1 absolute left-2 w-1 h-2 rounded-full bg-sky-300" />
+                    <span className="r2 absolute right-2 w-1 h-2 rounded-full bg-sky-300" />
+                  </>
+                )}
+                {isSlotZero && item.anim === 'ripple' && (
+                  <span
+                    className="ring1 absolute inset-0 rounded-full border-2"
+                    style={{ borderColor: item.color }}
+                  />
+                )}
+                {isSlotZero && item.anim === 'ring' && (
+                  <span
+                    className="ring1 absolute inset-0 rounded-full border-2"
+                    style={{ borderColor: item.color }}
+                  />
+                )}
+              </div>
+
+              {/* Title inside bubble */}
+              {isSlotZero ? (
+                <span
+                  className="font-bold text-center leading-tight mt-1.5 px-1 tracking-tight"
+                  style={{
+                    color: '#FFFFFF',
+                    fontSize: 'clamp(13px, 2.8vw, 16px)',
+                    textShadow: '0 2px 4px rgba(0,0,0,0.6)',
+                  }}
+                >
+                  {item.label[langKey]}
+                </span>
+              ) : null}
+            </button>
+          );
+        })}
+      </div>
+
+      {/* Active Feature Description & Direct Launch Card */}
+      <div
+        key={`caption-${activeItem.id}`}
+        className="caption-in mt-1 p-4 rounded-xl bg-black/40 border border-white/15 backdrop-blur-md text-center shadow-lg"
+      >
+        <p className="text-white text-sm sm:text-base font-medium leading-relaxed drop-shadow-sm">
+          {activeItem.copy[langKey]}
+        </p>
+
+        <div className="mt-3 flex items-center justify-center gap-3">
+          <Link
+            href={activeItem.href}
+            className="inline-flex items-center gap-2 px-5 py-2.5 rounded-lg text-sm font-semibold transition-all shadow-md hover:scale-[1.02] active:scale-[0.98]"
+            style={{
+              backgroundColor: activeItem.color,
+              color: '#0A150D',
+            }}
+          >
+            <span>
+              {language === 'bn'
+                ? `${activeItem.label.bn} ব্যবহার করুন`
+                : language === 'hi'
+                ? `${activeItem.label.hi} देखें`
+                : `Open ${activeItem.label.en}`}
+            </span>
+            <ArrowRight className="w-4 h-4" />
+          </Link>
+        </div>
+
+        {/* Farmer Trust Reassurance Line */}
+        <p className="text-xs text-emerald-200/80 mt-2.5 font-normal tracking-wide">
+          {language === 'bn'
+            ? '✓ সরকারি সাহায্য ও বৈজ্ঞানিক তথ্য আপনার সাথে সবসময়'
+            : language === 'hi'
+            ? '✓ सरकारी सहायता और वैज्ञानिक जानकारी हमेशा आपके साथ'
+            : '✓ Verified scientific guidance & government data always by your side'}
+        </p>
+      </div>
+    </div>
+  );
+}
