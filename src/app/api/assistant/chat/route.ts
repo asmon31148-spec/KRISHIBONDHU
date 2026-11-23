@@ -1,9 +1,34 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { generateChatReply, FarmerContext, ChatMessageParam } from '@/lib/ai/chat';
 import { createServerSupabaseClient } from '@/lib/supabase/server';
+import { checkRateLimit } from '@/lib/security/rateLimiter';
 
 export async function POST(req: NextRequest) {
   try {
+    const rateLimit = checkRateLimit(req, {
+      prefix: 'ai-chat',
+      limit: 15,
+      windowSeconds: 60,
+    });
+
+    if (!rateLimit.success) {
+      return NextResponse.json(
+        {
+          error: 'Rate limit exceeded. Please wait a moment before sending more messages.',
+          retryAfter: rateLimit.resetInSeconds,
+        },
+        {
+          status: 429,
+          headers: {
+            'Retry-After': String(rateLimit.resetInSeconds),
+            'X-RateLimit-Limit': String(rateLimit.limit),
+            'X-RateLimit-Remaining': String(rateLimit.remaining),
+            'X-RateLimit-Reset': String(rateLimit.resetInSeconds),
+          },
+        }
+      );
+    }
+
     const { messages, language = 'en', conversationId, cropContext } = await req.json();
 
     if (!messages || !Array.isArray(messages) || messages.length === 0) {

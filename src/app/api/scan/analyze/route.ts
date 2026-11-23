@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { aiGateway } from '@/lib/ai/gateway';
 import { createServerSupabaseClient } from '@/lib/supabase/server';
+import { checkRateLimit } from '@/lib/security/rateLimiter';
 
 // Server-side magic number file signature validation
 function validateFileSignature(buffer: Buffer): 'image/jpeg' | 'image/png' | 'image/webp' | null {
@@ -37,6 +38,30 @@ function validateFileSignature(buffer: Buffer): 'image/jpeg' | 'image/png' | 'im
 
 export async function POST(req: NextRequest) {
   try {
+    const rateLimit = checkRateLimit(req, {
+      prefix: 'crop-scan',
+      limit: 10,
+      windowSeconds: 60,
+    });
+
+    if (!rateLimit.success) {
+      return NextResponse.json(
+        {
+          error: 'Rate limit exceeded. Please wait a moment before analyzing more crop images.',
+          retryAfter: rateLimit.resetInSeconds,
+        },
+        {
+          status: 429,
+          headers: {
+            'Retry-After': String(rateLimit.resetInSeconds),
+            'X-RateLimit-Limit': String(rateLimit.limit),
+            'X-RateLimit-Remaining': String(rateLimit.remaining),
+            'X-RateLimit-Reset': String(rateLimit.resetInSeconds),
+          },
+        }
+      );
+    }
+
     const formData = await req.formData();
     const file = formData.get('image') as File | null;
     const language = (formData.get('language') as 'en' | 'bn' | 'hi') || 'en';

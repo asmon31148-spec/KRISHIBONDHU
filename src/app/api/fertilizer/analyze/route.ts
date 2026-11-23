@@ -7,6 +7,7 @@ import {
   SoilTestOptions,
 } from '@/lib/agronomy/fertilizer';
 import { fetchLiveWeather } from '@/lib/weather/open-meteo';
+import { checkRateLimit } from '@/lib/security/rateLimiter';
 
 interface AnalyzeRequestBody {
   cropId?: string;
@@ -26,6 +27,30 @@ interface AnalyzeRequestBody {
 
 export async function POST(req: NextRequest) {
   try {
+    const rateLimit = checkRateLimit(req, {
+      prefix: 'fertilizer-calc',
+      limit: 20,
+      windowSeconds: 60,
+    });
+
+    if (!rateLimit.success) {
+      return NextResponse.json(
+        {
+          error: 'Rate limit exceeded. Please wait a moment before running more calculations.',
+          retryAfter: rateLimit.resetInSeconds,
+        },
+        {
+          status: 429,
+          headers: {
+            'Retry-After': String(rateLimit.resetInSeconds),
+            'X-RateLimit-Limit': String(rateLimit.limit),
+            'X-RateLimit-Remaining': String(rateLimit.remaining),
+            'X-RateLimit-Reset': String(rateLimit.resetInSeconds),
+          },
+        }
+      );
+    }
+
     const body: AnalyzeRequestBody = await req.json();
     const {
       cropId,

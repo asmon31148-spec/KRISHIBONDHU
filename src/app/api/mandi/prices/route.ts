@@ -32,50 +32,52 @@ export async function GET(req: NextRequest) {
     // 2. Try fetching live from Government of India Open Data Portal (data.gov.in)
     const apiKey =
       process.env.DATA_GOV_IN_API_KEY ||
-      process.env.NEXT_PUBLIC_DATA_GOV_IN_API_KEY ||
-      '579b464db66ec23bdd0000010d2414e127494e75439bb55acb65834f';
-    const resourceId = '9ef84268-d588-465a-a308-a864a43d0070';
-    const baseUrl = `https://api.data.gov.in/resource/${resourceId}`;
+      process.env.NEXT_PUBLIC_DATA_GOV_IN_API_KEY;
 
-    const queryParams = new URLSearchParams({
-      'api-key': apiKey,
-      format: 'json',
-      limit: '500',
-      'filters[state.keyword]': 'West Bengal',
-    });
+    if (apiKey) {
+      const resourceId = '9ef84268-d588-465a-a308-a864a43d0070';
+      const baseUrl = `https://api.data.gov.in/resource/${resourceId}`;
 
-    try {
-      const controller = new AbortController();
-      const timeoutId = setTimeout(() => controller.abort(), 12000); // 12 seconds timeout
-
-      const response = await fetch(`${baseUrl}?${queryParams.toString()}`, {
-        headers: {
-          Accept: 'application/json',
-          'User-Agent':
-            'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36',
-        },
-        signal: controller.signal,
-        next: { revalidate: 1800 },
+      const queryParams = new URLSearchParams({
+        'api-key': apiKey,
+        format: 'json',
+        limit: '500',
+        'filters[state.keyword]': 'West Bengal',
       });
 
-      clearTimeout(timeoutId);
+      try {
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 12000); // 12 seconds timeout
 
-      if (response.ok) {
-        const json = await response.json();
-        if (json.records && Array.isArray(json.records) && json.records.length > 0) {
-          rawRecords = json.records;
-          activeSource = 'live_agmarknet';
+        const response = await fetch(`${baseUrl}?${queryParams.toString()}`, {
+          headers: {
+            Accept: 'application/json',
+            'User-Agent':
+              'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36',
+          },
+          signal: controller.signal,
+          next: { revalidate: 1800 },
+        });
 
-          for (const r of rawRecords) {
-            const arr = String(r.arrival_date || r.Arrival_Date || '');
-            if (arr && (!latestDateFound || arr > latestDateFound)) {
-              latestDateFound = arr;
+        clearTimeout(timeoutId);
+
+        if (response.ok) {
+          const json = await response.json();
+          if (json.records && Array.isArray(json.records) && json.records.length > 0) {
+            rawRecords = json.records;
+            activeSource = 'live_agmarknet';
+
+            for (const r of rawRecords) {
+              const arr = String(r.arrival_date || r.Arrival_Date || '');
+              if (arr && (!latestDateFound || arr > latestDateFound)) {
+                latestDateFound = arr;
+              }
             }
           }
         }
+      } catch {
+        console.warn('Direct NIC Agmarknet gateway unreachable, activating live AI market grounding...');
       }
-    } catch {
-      console.warn('Direct NIC Agmarknet gateway unreachable, activating live AI market grounding...');
     }
 
     // 3. Fallback: If data.gov.in is unreachable or throttled, trigger live AI market aggregator
