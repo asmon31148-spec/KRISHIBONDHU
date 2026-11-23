@@ -69,6 +69,19 @@ body,
   scrollbar-width: none;
 }
 
+@keyframes floatSway {
+  0%, 100% {
+    transform: translateY(0px) scale(1);
+  }
+  50% {
+    transform: translateY(-4px) scale(1.02);
+  }
+}
+
+.animate-float-sway {
+  animation: floatSway 8s ease-in-out infinite;
+}
+
 /* Reduced motion support */
 @media (prefers-reduced-motion: reduce) {
   *,

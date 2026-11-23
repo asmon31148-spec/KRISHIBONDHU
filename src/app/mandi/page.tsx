@@ -24,11 +24,6 @@ import {
 import { BENGAL_COMMODITIES, BENGAL_DISTRICTS, MandiRecord } from '@/lib/mandi/types';
 import { parseAndFilterMandiRecords } from '@/lib/mandi/parser';
 
-const DATA_GOV_KEY =
-  process.env.NEXT_PUBLIC_DATA_GOV_IN_API_KEY ||
-  '579b464db66ec23bdd0000010d2414e127494e75439bb55acb65834f';
-const RESOURCE_ID = '9ef84268-d588-465a-a308-a864a43d0070';
-
 export default function MandiRadarPage() {
   const { language } = useTranslation();
 
@@ -45,48 +40,7 @@ export default function MandiRadarPage() {
   // Cached ref to avoid redundant re-fetches
   const rawCacheRef = useRef<Record<string, any>[]>([]);
 
-  // Direct client fetch to data.gov.in (bypasses foreign cloud datacenter firewall IP blocks)
-  const fetchDirectFromGov = useCallback(async (district: string, commodity: string) => {
-    try {
-      const url = `https://api.data.gov.in/resource/${RESOURCE_ID}?api-key=${DATA_GOV_KEY}&format=json&limit=500&filters[state]=West%20Bengal`;
-      const res = await fetch(url, {
-        headers: { Accept: 'application/json' },
-      });
-
-      if (!res.ok) {
-        throw new Error(`Data.gov.in direct gateway HTTP ${res.status}`);
-      }
-
-      const json = await res.json();
-      const raw = json.records || [];
-
-      if (raw.length > 0) {
-        rawCacheRef.current = raw;
-        setConnectionSource('browser_direct');
-
-        const { records: parsed, latestDateFound } = parseAndFilterMandiRecords(
-          raw,
-          district,
-          commodity
-        );
-        setRecords(parsed);
-        setLastTradeDate(latestDateFound);
-        setStatusMessage(
-          parsed.length === 0
-            ? 'Mandi Closed / Awaiting Daily Upload'
-            : `Live APMC Agmarknet Verified (${latestDateFound || 'Today'})`
-        );
-        setErrorNotice(null);
-        return true;
-      }
-      return false;
-    } catch (directErr) {
-      console.error('Client direct fetch to data.gov.in failed:', directErr);
-      return false;
-    }
-  }, []);
-
-  // Main load function: attempts server proxy first, seamlessly falls back to client direct fetch
+  // Main load function: attempts server proxy with resilience
   const fetchPrices = useCallback(
     async (district: string, commodity: string, forceFresh = false) => {
       // If we already have Bengal raw records in memory and didn't force fresh reload:
@@ -111,6 +65,7 @@ export default function MandiRadarPage() {
 
       try {
         const params = new URLSearchParams({ district, commodity });
+        if (forceFresh) params.set('force_fresh', 'true');
         const res = await fetch(`/api/mandi/prices?${params.toString()}`);
 
         if (res.ok) {
@@ -119,33 +74,43 @@ export default function MandiRadarPage() {
           if (data.success && data.records && data.records.length > 0) {
             setRecords(data.records);
             setLastTradeDate(data.lastTradeDate);
-            setStatusMessage(data.statusMessage || 'Live APMC Agmarknet Verified');
+            setStatusMessage(
+              data.source === 'live_agmarknet'
+                ? `Live APMC Agmarknet Verified (${data.lastTradeDate || 'Today'})`
+                : `Live Market Intelligence Grounding (${data.lastTradeDate || 'Today'})`
+            );
             setConnectionSource('server');
             setIsLoading(false);
             return;
           }
         }
 
-        // If server failed or returned empty records, seamlessly execute direct client fetch from user browser
-        const directSuccess = await fetchDirectFromGov(district, commodity);
-        if (!directSuccess) {
-          setErrorNotice(
-            'Government of India Agmarknet portal is currently undergoing scheduled maintenance or daily auction synchronization. Please retry in a few moments.'
-          );
-          setRecords([]);
+        // If not found for specific district, try with force_fresh
+        if (!forceFresh) {
+          const retryRes = await fetch(`/api/mandi/prices?district=${encodeURIComponent(district)}&commodity=${encodeURIComponent(commodity)}&force_fresh=true`);
+          if (retryRes.ok) {
+            const retryData = await retryRes.json();
+            if (retryData.success && retryData.records && retryData.records.length > 0) {
+              setRecords(retryData.records);
+              setLastTradeDate(retryData.lastTradeDate);
+              setStatusMessage(`Live Market Intelligence Verified (${retryData.lastTradeDate || 'Today'})`);
+              setIsLoading(false);
+              return;
+            }
+          }
         }
+
+        setStatusMessage('Mandi Closed / Awaiting Daily Upload');
+        setRecords([]);
       } catch (err: unknown) {
-        console.warn('Server fetch threw error, switching to direct client fetch...', err);
-        const directSuccess = await fetchDirectFromGov(district, commodity);
-        if (!directSuccess) {
-          setErrorNotice('Unable to connect to Agmarknet. Check internet connection and retry.');
-          setRecords([]);
-        }
+        console.warn('Mandi price fetch error:', err);
+        setErrorNotice('Live APMC Agmarknet synchronization temporarily unavailable. Please retry shortly.');
+        setRecords([]);
       } finally {
         setIsLoading(false);
       }
     },
-    [fetchDirectFromGov]
+    []
   );
 
   useEffect(() => {

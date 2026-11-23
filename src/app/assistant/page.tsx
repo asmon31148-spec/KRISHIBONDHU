@@ -89,6 +89,12 @@ function AssistantChat() {
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
+  useEffect(() => {
+    if (typeof window !== 'undefined' && window.innerWidth >= 1024 && !isGuest) {
+      setIsSidebarOpen(true);
+    }
+  }, [isGuest]);
+
   // Auto scroll to bottom of messages
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -343,28 +349,26 @@ What are the specific disease, pest, or nutrient risks for this crop in West Ben
   const currentSuggestions = SUGGESTED_PROMPTS[language] || SUGGESTED_PROMPTS.en;
 
   return (
-    <div className="flex flex-col h-[calc(100dvh-56px-60px)] sm:h-[calc(100dvh-130px)] -mx-2 -mt-2 -mb-16 sm:mx-0 sm:my-0 w-[calc(100%+1rem)] sm:w-full bg-white sm:bg-transparent relative overflow-hidden text-left">
-      {/* Top Bar with Language Indicator & Actions */}
-      <div className="flex items-center justify-between px-3 sm:px-0 py-2 sm:py-2.5 border-b border-cream-200 bg-white sm:bg-transparent gap-2 shrink-0">
+    <div className="flex flex-col h-full w-full bg-white relative overflow-hidden text-left">
+      {/* Top Bar with Clean Header & History Controls */}
+      <div className="flex items-center justify-between px-3 sm:px-4 py-2 sm:py-2.5 border-b border-cream-200 bg-white gap-2 shrink-0">
         <div className="flex items-center gap-2 min-w-0">
           {!isGuest && (
             <button
               onClick={() => setIsSidebarOpen(!isSidebarOpen)}
-              className={`inline-flex items-center gap-1.5 px-2.5 sm:px-3 py-1.5 rounded-xl border text-xs font-bold transition-all shrink-0 shadow-2xs ${
+              className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl border text-xs font-bold transition-all shrink-0 shadow-2xs ${
                 isSidebarOpen
-                  ? 'bg-brand-forest text-white border-brand-forest'
+                  ? 'bg-cream-100 text-brand-dark border-cream-300 hover:bg-cream-200'
                   : 'bg-white hover:bg-cream-100 text-brand-dark/80 hover:text-brand-forest border-cream-200'
               }`}
-              title="Toggle Chat History"
+              title={isSidebarOpen ? 'Hide History Panel' : 'Show Saved Conversations'}
               aria-label="Toggle history"
             >
-              <MessageSquare className="w-3.5 h-3.5" />
-              <span>History</span>
+              <MessageSquare className="w-3.5 h-3.5 text-brand-forest" />
+              <span>{isSidebarOpen ? 'Hide History' : 'History'}</span>
               {conversations.length > 0 && (
                 <span
-                  className={`px-1.5 py-0.2 rounded-full text-[10px] font-extrabold ${
-                    isSidebarOpen ? 'bg-white/20 text-white' : 'bg-brand-forest/10 text-brand-forest'
-                  }`}
+                  className="px-1.5 py-0.2 rounded-full text-[10px] font-extrabold bg-brand-forest/10 text-brand-forest"
                 >
                   {conversations.length}
                 </span>
@@ -374,7 +378,7 @@ What are the specific disease, pest, or nutrient risks for this crop in West Ben
 
           <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-800 text-[11px] font-bold">
             <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
-            <span>BCKV & ICAR Core</span>
+            <span>BCKV & ICAR Agronomy Core</span>
           </div>
         </div>
 
@@ -393,16 +397,16 @@ What are the specific disease, pest, or nutrient risks for this crop in West Ben
 
       {/* Main Chat Layout Area */}
       <div className="flex-1 flex overflow-hidden relative">
-        {/* Chat History Sidebar Drawer */}
+        {/* Chat History Sidebar Column (Flush Docked) */}
         {isSidebarOpen && !isGuest && (
-          <div className="w-72 sm:w-80 border-r border-cream-200 bg-cream-50/90 backdrop-blur-md flex flex-col shrink-0 z-20 absolute sm:relative inset-y-0 left-0 shadow-xl sm:shadow-none animate-in slide-in-from-left-4 duration-200">
-            <div className="p-3 border-b border-cream-200 flex items-center justify-between">
+          <aside className="w-72 lg:w-80 border-r border-cream-200 bg-white flex flex-col shrink-0 z-20 absolute lg:relative inset-y-0 left-0 shadow-xl lg:shadow-none transition-all duration-200">
+            <div className="p-3.5 border-b border-cream-200 flex items-center justify-between bg-cream-50/60">
               <span className="text-xs font-bold uppercase tracking-wider text-brand-dark">
                 Saved Conversations
               </span>
               <button
                 onClick={() => setIsSidebarOpen(false)}
-                className="p-1 rounded-lg text-brand-dark/50 hover:text-brand-dark"
+                className="p-1 rounded-lg text-brand-dark/50 hover:text-brand-dark lg:hidden"
                 aria-label="Close history"
               >
                 <X className="w-4 h-4" />
@@ -420,12 +424,12 @@ What are the specific disease, pest, or nutrient risks for this crop in West Ben
                     key={conv.id}
                     onClick={() => {
                       handleSelectConversation(conv.id);
-                      setIsSidebarOpen(false);
+                      if (window.innerWidth < 1024) setIsSidebarOpen(false);
                     }}
                     className={`flex items-center justify-between p-2.5 rounded-xl text-xs font-semibold cursor-pointer transition-colors ${
                       activeConversationId === conv.id
                         ? 'bg-brand-forest text-white'
-                        : 'bg-white text-brand-dark hover:bg-cream-100 border border-cream-200'
+                        : 'bg-white text-brand-dark hover:bg-cream-100 border border-cream-200/80 shadow-2xs'
                     }`}
                   >
                     <span className="truncate max-w-[200px]">{conv.title}</span>
@@ -441,25 +445,25 @@ What are the specific disease, pest, or nutrient risks for this crop in West Ben
               )}
             </div>
 
-            <div className="p-2 border-t border-cream-200">
+            <div className="p-3 border-t border-cream-200 bg-cream-50/40">
               <Button
                 variant="outline"
                 size="sm"
                 onClick={() => {
                   handleNewChat();
-                  setIsSidebarOpen(false);
+                  if (window.innerWidth < 1024) setIsSidebarOpen(false);
                 }}
-                className="w-full"
-                leftIcon={<Plus className="w-4 h-4" />}
+                className="w-full font-bold border-cream-300 hover:border-brand-leaf hover:bg-white text-brand-dark shadow-2xs"
+                leftIcon={<Plus className="w-4 h-4 text-brand-leaf" />}
               >
                 Start New Chat
               </Button>
             </div>
-          </div>
+          </aside>
         )}
 
-        {/* Chat Messages Stream Area */}
-        <div className="flex-1 flex flex-col min-h-0 bg-white sm:rounded-2xl lg:rounded-3xl border-t sm:border border-cream-200/90 shadow-none sm:shadow-xs overflow-hidden">
+        {/* Chat Messages Stream Area (Flush Docked flex-1) */}
+        <div className="flex-1 flex flex-col min-h-0 bg-white overflow-hidden">
           {/* Active Crop Field Issue Context Pill (If navigated from Farms/Crops/Alerts) */}
           {activeCropContext && (
             <div className="mx-3 mt-3 p-3 rounded-2xl bg-gradient-to-r from-amber-50 to-cream-50 border border-amber-300 flex items-start justify-between gap-3 shadow-2xs shrink-0">

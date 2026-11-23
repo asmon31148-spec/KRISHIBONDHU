@@ -682,10 +682,10 @@ export default function DashboardPage() {
       {/* ======================================================== */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 items-stretch">
         {/* Left Card: Registered Farm Plots */}
-        <Card className="border border-cream-300 shadow-xs overflow-hidden flex flex-col justify-between bg-white relative">
-          {/* Subtle agricultural background watermark */}
+        <Card className="border border-cream-300 shadow-xs overflow-hidden flex flex-col justify-between bg-white relative h-full min-h-[440px]">
+          {/* Subtle agricultural background watermark with gentle animation */}
           <div 
-            className="absolute right-0 bottom-0 w-48 h-48 bg-contain bg-no-repeat bg-bottom-right opacity-[0.04] pointer-events-none"
+            className="absolute right-2 bottom-2 w-56 h-56 bg-contain bg-no-repeat bg-bottom-right opacity-[0.05] pointer-events-none animate-float-sway"
             style={{
               backgroundImage: `url('https://images.unsplash.com/photo-1500937386664-56d1dfef3854?auto=format&fit=crop&w=400&q=80')`
             }}
@@ -779,10 +779,10 @@ export default function DashboardPage() {
         </Card>
 
         {/* Right Card: Active Sown Crops */}
-        <Card className="border border-cream-300 shadow-xs overflow-hidden flex flex-col justify-between bg-white relative">
-          {/* Subtle agricultural background watermark */}
+        <Card className="border border-cream-300 shadow-xs overflow-hidden flex flex-col justify-between bg-white relative h-full min-h-[440px]">
+          {/* Subtle agricultural background watermark with gentle animation */}
           <div 
-            className="absolute right-0 bottom-0 w-48 h-48 bg-contain bg-no-repeat bg-bottom-right opacity-[0.04] pointer-events-none"
+            className="absolute right-2 bottom-2 w-56 h-56 bg-contain bg-no-repeat bg-bottom-right opacity-[0.05] pointer-events-none animate-float-sway"
             style={{
               backgroundImage: `url('https://images.unsplash.com/photo-1595974482597-4b8da8879bc5?auto=format&fit=crop&w=400&q=80')`
             }}
