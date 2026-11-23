@@ -15,10 +15,8 @@ export interface ServiceStatus {
 }
 
 export function getServiceStatus(): ServiceStatus {
-  const supabaseUrl =
-    process.env.NEXT_PUBLIC_SUPABASE_URL || 'https://zidxtfjlqgdezszsfcah.supabase.co';
-  const supabaseAnonKey =
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || 'sb_publishable_XQ1q_kfc60EsCD3qK12hiA_6vZsZ9aM';
+  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || '';
+  const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || '';
   const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY || '';
 
   const isSupabaseConfigured = Boolean(

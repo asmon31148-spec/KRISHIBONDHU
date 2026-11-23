@@ -24,6 +24,7 @@ import {
   LineChart as AnalyticsIcon,
   Printer,
 } from 'lucide-react';
+import { convertLandArea, LandUnit } from '@/lib/units';
 
 interface ScanMetric {
   id: string;
@@ -36,6 +37,7 @@ interface CropMetric {
   id: string;
   name: string;
   area: number;
+  area_unit?: string;
   health_status: string;
 }
 
@@ -86,7 +88,7 @@ export default function AnalyticsPage() {
       // 2. Fetch user's crops
       const { data: cropsData } = await supabase
         .from('crops')
-        .select('id, name, area, health_status')
+        .select('id, name, area, area_unit, health_status')
         .eq('user_id', user.id);
       if (cropsData) setCrops(cropsData as CropMetric[]);
 
@@ -142,11 +144,18 @@ export default function AnalyticsPage() {
     color: SEVERITY_COLORS[sev] || '#64748B',
   }));
 
-  // 2. Compute Crop Cultivated Area Comparison
-  const cropAreaData = crops.map((c) => ({
-    name: c.name.split(' ')[0], // short name
-    area: c.area,
-  }));
+  // 2. Compute Crop Cultivated Area Comparison normalized to Bigha
+  const cropAreaData = crops.map((c) => {
+    const rawUnit = (c.area_unit?.toLowerCase() || 'bigha') as LandUnit;
+    const validUnit: LandUnit = ['acres', 'bigha', 'katha', 'hectares'].includes(rawUnit) ? rawUnit : 'bigha';
+    const normalizedBigha = convertLandArea(c.area, validUnit, 'bigha');
+
+    return {
+      name: c.name.split(' ')[0], // short name
+      area: Math.round(normalizedBigha * 10) / 10,
+      originalArea: `${c.area} ${c.area_unit || 'Bigha'}`,
+    };
+  });
 
   // 3. Compute Yield Prediction vs Actual Harvest
   const yieldComparisonData = yields.map((y) => ({
@@ -270,10 +279,10 @@ export default function AnalyticsPage() {
             <Card className="p-5 space-y-3">
               <div className="space-y-0.5">
                 <CardTitle className="text-base font-bold text-brand-dark">
-                  Crop Acreage Allocation
+                  Crop Acreage Allocation (Normalized Bigha)
                 </CardTitle>
                 <p className="text-xs text-brand-dark/60">
-                  Area cultivated per crop record.
+                  Standardized land allocation per crop (all regional units normalized to Bigha).
                 </p>
               </div>
 
@@ -287,9 +296,9 @@ export default function AnalyticsPage() {
                     <BarChart data={cropAreaData}>
                       <CartesianGrid strokeDasharray="3 3" stroke="#f0efe9" />
                       <XAxis dataKey="name" tick={{ fontSize: 11 }} />
-                      <YAxis tick={{ fontSize: 11 }} />
-                      <Tooltip />
-                      <Bar dataKey="area" fill="#2D6A4F" radius={[6, 6, 0, 0]} name="Area" />
+                      <YAxis tick={{ fontSize: 11 }} unit=" Bigha" />
+                      <Tooltip formatter={(val) => [`${val} Bigha`, 'Normalized Area']} />
+                      <Bar dataKey="area" fill="#2D6A4F" radius={[6, 6, 0, 0]} name="Bigha" />
                     </BarChart>
                   </ResponsiveContainer>
                 </div>

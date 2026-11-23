@@ -84,6 +84,7 @@ export interface YieldPredictionInput {
   areaUnit: LandUnit;
   healthStatus: 'healthy' | 'needs_attention' | 'diseased';
   irrigationType: string;
+  soilType?: string;
   nitrogenKgHa?: number;
   phosphorusKgHa?: number;
   potassiumKgHa?: number;
@@ -203,12 +204,17 @@ export function calculateYieldPrediction(
     Math.round(estimatedYieldPerAcre * 0.3305785 * 100) / 100;
   const yieldPerKathaKg = Math.round((yieldPerBighaTons * 1000) / 20);
 
-  // Confidence Score calculation
-  let confidence = 82;
+  // Calibrated Confidence Score based on actual data fidelity
+  let confidence = 66; // Regional baseline
+  if (input.healthStatus === 'healthy') confidence += 6;
+  if (input.healthStatus === 'diseased') confidence -= 8;
+  if (input.variety && input.variety.trim().length > 0) confidence += 6;
+  if (input.soilType && input.soilType.trim().length > 0) confidence += 5;
+  if (input.irrigationType && input.irrigationType !== 'unspecified') confidence += 8;
   if (input.nitrogenKgHa && input.nitrogenKgHa > 0) confidence += 6;
   if (input.ph && input.ph > 0) confidence += 4;
-  if (input.healthStatus === 'diseased') confidence -= 8;
-  confidence = Math.min(95, Math.max(65, confidence));
+  if (input.plantingDate) confidence += 3;
+  confidence = Math.min(95, Math.max(50, confidence));
 
   // Estimate Harvest Date based on sowing date and crop duration
   const sowDate = input.plantingDate ? new Date(input.plantingDate) : new Date();

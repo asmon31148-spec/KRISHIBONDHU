@@ -60,6 +60,67 @@ const SCHEME_QUERIES: Record<string, { query: string; defaultPortal: string; def
   },
 };
 
+function determineSchemeOperationalStatus(schemeId: string, now: Date = new Date()) {
+  const month = now.getMonth(); // 0 = Jan, 10 = Nov, 11 = Dec
+
+  if (schemeId === 'bangla-shasya-bima') {
+    // Kharif: June-July (months 5-6). Deadline: 31 July
+    // Rabi/Boro: December-January (months 11-0). Cutoff: 31 Dec (Potato/Mustard), 31 Jan (Boro)
+    if (month >= 5 && month <= 6) {
+      return {
+        status: 'active' as const,
+        statusBadge: 'Kharif Window Active (Cutoff: 31 July)',
+        season: 'Kharif Season (Aman & Aus Paddy)',
+      };
+    } else if (month === 11 || month === 0) {
+      return {
+        status: 'active' as const,
+        statusBadge: 'Rabi & Boro Enrollment Active (Cutoff: 31 Jan)',
+        season: 'Rabi & Boro Season (Potato, Mustard, Boro Paddy)',
+      };
+    } else if (month === 10) {
+      return {
+        status: 'review' as const,
+        statusBadge: 'Rabi Window Opening 1 Dec (Kharif Closed 31 July)',
+        season: 'Pre-Rabi Transition Phase',
+      };
+    } else {
+      return {
+        status: 'closed' as const,
+        statusBadge: 'Enrollment Window Closed for Season',
+        season: 'Off-Season Verification Period',
+      };
+    }
+  }
+
+  if (schemeId === 'krishak-bandhu') {
+    if (month === 10 || month === 11 || month === 0) {
+      return {
+        status: 'active' as const,
+        statusBadge: 'Rabi Installment Active (₹5,000/acre DBT)',
+        season: 'Rabi 2025–26 Direct Benefit Transfer',
+      };
+    } else if (month >= 4 && month <= 6) {
+      return {
+        status: 'active' as const,
+        statusBadge: 'Kharif Installment Active (₹5,000/acre DBT)',
+        season: 'Kharif Direct Benefit Transfer',
+      };
+    }
+    return {
+      status: 'active' as const,
+      statusBadge: 'Active Direct Farmer Assistance',
+      season: 'Continuous Direct Farmer Assistance',
+    };
+  }
+
+  return {
+    status: 'active' as const,
+    statusBadge: 'Active & Operational (Accepting Applications)',
+    season: 'FY 2025–26 Operational Window',
+  };
+}
+
 export async function GET(req: NextRequest) {
   const { searchParams } = new URL(req.url);
   const schemeId = searchParams.get('schemeId');
@@ -86,17 +147,18 @@ export async function GET(req: NextRequest) {
 
     const config = SCHEME_QUERIES[schemeId];
     const liveDispatches = await fetchLiveNewsDispatches(config.query);
+    const opStatus = determineSchemeOperationalStatus(schemeId);
 
     const verification: SchemeLiveVerification = {
       schemeId,
-      status: 'active',
-      statusBadge: 'Active & Accepting Applications',
+      status: opStatus.status,
+      statusBadge: opStatus.statusBadge,
       verifiedDate: todayStr,
-      activeSeason: config.season,
+      activeSeason: opStatus.season || config.season,
       summary:
         liveDispatches.length > 0
-          ? `Verified active on official government circulars. Latest release: "${cleanHtml(liveDispatches[0].title)}"`
-          : 'Verified active under official Department of Agriculture operational guidelines for current agricultural season.',
+          ? `Verified status from official dispatches. Latest notice: "${cleanHtml(liveDispatches[0].title)}"`
+          : `Operational status verified under official Department of Agriculture guidelines (${opStatus.statusBadge}).`,
       officialPortalUrl: config.defaultPortal,
       officialPortalLabel: config.defaultLabel,
       recentDispatches: liveDispatches.slice(0, 3),
@@ -126,17 +188,18 @@ export async function GET(req: NextRequest) {
 
       const config = SCHEME_QUERIES[id];
       const liveDispatches = await fetchLiveNewsDispatches(config.query);
+      const opStatus = determineSchemeOperationalStatus(id);
 
       const verification: SchemeLiveVerification = {
         schemeId: id,
-        status: 'active',
-        statusBadge: 'Active & Operational',
+        status: opStatus.status,
+        statusBadge: opStatus.statusBadge,
         verifiedDate: todayStr,
-        activeSeason: config.season,
+        activeSeason: opStatus.season || config.season,
         summary:
           liveDispatches.length > 0
-            ? `Verified active on live agricultural dispatch feeds: "${cleanHtml(liveDispatches[0].title)}"`
-            : 'Operational and verified active under Department of Agriculture gazette notifications.',
+            ? `Verified status on live agricultural feeds: "${cleanHtml(liveDispatches[0].title)}"`
+            : `Operational and verified under Department of Agriculture operational guidelines (${opStatus.statusBadge}).`,
         officialPortalUrl: config.defaultPortal,
         officialPortalLabel: config.defaultLabel,
         recentDispatches: liveDispatches.slice(0, 2),

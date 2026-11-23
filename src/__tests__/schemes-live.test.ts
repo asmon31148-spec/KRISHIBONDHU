@@ -10,7 +10,7 @@ describe('Live Scheme Internet Verification Test', () => {
 
     expect(data.success).toBe(true);
     expect(data.verification.schemeId).toBe('bangla-shasya-bima');
-    expect(data.verification.status).toBe('active');
+    expect(['active', 'review', 'closed']).toContain(data.verification.status);
     expect(data.verification.officialPortalUrl).toContain('banglashasyabima.net');
     expect(data.verification.verifiedDate).toBeDefined();
   }, 15000);

@@ -61,7 +61,8 @@ export default function ScanHistoryPage() {
         .from('crop_scans')
         .select('*')
         .eq('user_id', user.id)
-        .order('created_at', { ascending: false });
+        .order('created_at', { ascending: false })
+        .limit(25);
 
       if (!error && data) {
         setScans(data as ScanItem[]);

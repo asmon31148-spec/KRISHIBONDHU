@@ -150,15 +150,15 @@ function AssistantChat() {
         if (language === 'bn') {
           autoPrompt = `আমার খামার "${farmName || 'জমির'}"-এর ${area || '১'} ${unit || 'বিঘা'} জমিতে চাষ করা "${cropName}"${variety ? ` (${variety} জাত)` : ''}-এ 'Needs Attention' (মনোযোগ প্রয়োজন) সতর্কতা দেখাচ্ছে। মাটিতে ${soil || 'কাদা মাটি (Clay)'} এবং সেচ ${irrigation || 'STW'}। 
 
-এই আমন ধানে বর্তমান মৌসুমে (নভেম্বর/রবীন্দ্র শীতকালীন কুয়াশা) কী কী রোগ ও পোকার আক্রমণ হতে পারে (যেমন শিথ ব্লাইট বা ব্লাস্ট), এবং এর জন্য অবিলম্বে কী কী জৈব ও অনুমোদিত রাসায়নিক সমাধান প্রয়োগ করা উচিত?`;
+এই ফসলে বর্তমান মৌসুমে কী কী রোগ, বালাই বা পুষ্টির ঘাটতির ঝুঁকি রয়েছে, এবং এর জন্য অবিলম্বে কী কী জৈব ও ICAR/BCKV অনুমোদিত প্রতিকার ব্যবস্থা গ্রহণ করা উচিত?`;
         } else if (language === 'hi') {
           autoPrompt = `मेरे खेत "${farmName || 'खेत'}" के ${area || '1'} ${unit || 'बीघा'} में लगी "${cropName}"${variety ? ` (${variety})` : ''} फसल में 'Needs Attention' (कार्रवाई की आवश्यकता) अलर्ट आ रहा है। मिट्टी ${soil || 'चिकनी मिट्टी'} और सिंचाई ${irrigation || 'STW'} है। 
 
-इस समय किन बीमारियों (जैसे शीथ ब्लाइट या ब्लास्ट) का खतरा है और तुरंत क्या जैविक व अनुमोदित दवा छिड़काव करना चाहिए?`;
+इस फसल में वर्तमान मौसम में किन रोगों, कीटों या पोषक तत्वों की कमी का खतरा है और तुरंत क्या जैविक व ICAR अनुमोदित उपचार करना चाहिए?`;
         } else {
           autoPrompt = `My crop "${cropName}"${variety ? ` (Variety: ${variety})` : ''} on "${farmName || 'My Farm'}" (${area || '1'} ${unit || 'Bigha'}, ${soil || 'Clay'} soil, planted on ${sown || 'recent'}) currently has an active 'Needs Attention' status.
 
-What are the specific disease risks right now in Bengal (such as Sheath Blight or Rice Blast), and what immediate organic and ICAR/BCKV chemical treatment protocols should I apply?`;
+What are the specific disease, pest, or nutrient risks for this crop in West Bengal right now, and what immediate organic and ICAR/BCKV chemical treatment protocols should I apply?`;
         }
 
         handleSendMessage(autoPrompt, ctx);
