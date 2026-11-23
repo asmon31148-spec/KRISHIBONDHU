@@ -27,11 +27,11 @@ export class AiGateway {
   private adapters: AiProviderAdapter[] = [];
 
   constructor() {
-    // Register configured adapters in priority order
+    // Register configured adapters in priority order: Groq is ultra-fast (<1s) & free
     this.adapters = [
-      new GeminiVisionAdapter(),
       new GroqVisionAdapter(),
       new OpenRouterVisionAdapter(),
+      new GeminiVisionAdapter(),
     ];
   }
 
@@ -52,6 +52,15 @@ export class AiGateway {
     for (const adapter of this.adapters) {
       try {
         const rawResult = await adapter.analyzeCrop(request);
+
+        // Normalize confidence if returned as 0.0 - 1.0 fraction
+        if (typeof rawResult.crop_confidence === 'number' && rawResult.crop_confidence <= 1 && rawResult.crop_confidence > 0) {
+          rawResult.crop_confidence = Math.round(rawResult.crop_confidence * 100);
+        }
+        if (typeof rawResult.disease_confidence === 'number' && rawResult.disease_confidence <= 1 && rawResult.disease_confidence > 0) {
+          rawResult.disease_confidence = Math.round(rawResult.disease_confidence * 100);
+        }
+
         // 3. Strict schema validation
         const validated = cropScanResultSchema.parse(rawResult);
 

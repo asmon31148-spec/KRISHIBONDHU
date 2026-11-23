@@ -9,16 +9,16 @@ export class GroqVisionAdapter implements AiProviderAdapter {
       throw new Error('Groq API key is not configured.');
     }
 
-    const model = process.env.GROQ_VISION_MODEL || 'llama-3.2-11b-vision-preview';
+    const model = process.env.GROQ_VISION_MODEL || 'qwen/qwen3.8-27b';
     const lang = request.language || 'en';
 
     const systemPrompt = `You are an expert plant pathologist. Analyze the crop leaf photo and return strictly valid JSON matching this schema:
 {
   "crop_name": string,
-  "crop_confidence": number,
+  "crop_confidence": number between 0 and 100,
   "is_healthy": boolean,
   "disease_name": string or null,
-  "disease_confidence": number or null,
+  "disease_confidence": number between 0 and 100 or null,
   "severity": "healthy" | "mild" | "moderate" | "severe" | "uncertain",
   "is_uncertain": boolean,
   "uncertainty_reason": string,
@@ -77,7 +77,15 @@ Strict honesty: If unclear, blurry, or not a plant, mark is_uncertain: true. Lan
       const content = data.choices?.[0]?.message?.content;
       if (!content) throw new Error('Empty response from Groq');
 
-      return JSON.parse(content) as CropScanResult;
+      const parsed = JSON.parse(content) as CropScanResult;
+      if (typeof parsed.crop_confidence === 'number' && parsed.crop_confidence <= 1 && parsed.crop_confidence > 0) {
+        parsed.crop_confidence = Math.round(parsed.crop_confidence * 100);
+      }
+      if (typeof parsed.disease_confidence === 'number' && parsed.disease_confidence <= 1 && parsed.disease_confidence > 0) {
+        parsed.disease_confidence = Math.round(parsed.disease_confidence * 100);
+      }
+
+      return parsed;
     } finally {
       clearTimeout(timeout);
     }

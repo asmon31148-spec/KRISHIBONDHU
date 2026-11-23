@@ -56,7 +56,7 @@ Schema:
     };
 
     const controller = new AbortController();
-    const timeout = setTimeout(() => controller.abort(), 25000);
+    const timeout = setTimeout(() => controller.abort(), 35000);
 
     try {
       const res = await fetch(url, {
@@ -77,7 +77,15 @@ Schema:
       const content = data.choices?.[0]?.message?.content;
       if (!content) throw new Error('Empty response from OpenRouter');
 
-      return JSON.parse(content) as CropScanResult;
+      const parsed = JSON.parse(content) as CropScanResult;
+      if (typeof parsed.crop_confidence === 'number' && parsed.crop_confidence <= 1 && parsed.crop_confidence > 0) {
+        parsed.crop_confidence = Math.round(parsed.crop_confidence * 100);
+      }
+      if (typeof parsed.disease_confidence === 'number' && parsed.disease_confidence <= 1 && parsed.disease_confidence > 0) {
+        parsed.disease_confidence = Math.round(parsed.disease_confidence * 100);
+      }
+
+      return parsed;
     } finally {
       clearTimeout(timeout);
     }
