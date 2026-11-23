@@ -16,7 +16,45 @@ import {
   Camera,
   Cpu,
   BadgeCheck,
+  FlaskConical,
+  TrendingUp,
+  CloudSun,
+  Sprout,
+  Landmark,
 } from 'lucide-react';
+
+const SERVICE_THEMES: Record<
+  string,
+  {
+    bgGrad: string;
+    icon: React.ComponentType<{ className?: string }>;
+  }
+> = {
+  scan: {
+    bgGrad: 'from-emerald-900 via-emerald-800 to-teal-950',
+    icon: Scan,
+  },
+  fertilizer: {
+    bgGrad: 'from-blue-900 via-indigo-900 to-slate-950',
+    icon: FlaskConical,
+  },
+  mandi: {
+    bgGrad: 'from-amber-900 via-yellow-900 to-stone-950',
+    icon: TrendingUp,
+  },
+  weather: {
+    bgGrad: 'from-cyan-900 via-sky-900 to-slate-950',
+    icon: CloudSun,
+  },
+  farms: {
+    bgGrad: 'from-green-900 via-emerald-900 to-teal-950',
+    icon: Sprout,
+  },
+  schemes: {
+    bgGrad: 'from-purple-950 via-indigo-950 to-emerald-950',
+    icon: Landmark,
+  },
+};
 
 export default function LandingPage() {
   const { language } = useTranslation();
@@ -614,36 +652,51 @@ export default function LandingPage() {
 
         {/* Fluid, Elevated Commercial Cards (No Hard Aggressive Box Borders) */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {displayedServices.map((srv) => (
-            <Link key={srv.id} href={srv.href} className="group block h-full">
-              <div className="h-full rounded-3xl bg-white shadow-[0_4px_24px_rgba(0,0,0,0.04)] hover:shadow-[0_16px_36px_rgba(0,0,0,0.08)] transition-all duration-300 flex flex-col justify-between overflow-hidden hover:-translate-y-1 border border-black/[0.03]">
-                {/* Visual Header with Real Agricultural Photo Backdrop */}
-                <div className="relative h-44 w-full overflow-hidden bg-cream-100">
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img
-                    src={srv.image}
-                    alt={srv.title}
-                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/25 to-transparent" />
+          {displayedServices.map((srv) => {
+            const theme = SERVICE_THEMES[srv.id];
+            const AmbientIcon = theme?.icon || Scan;
 
-                  {/* Service Badge & Tag */}
-                  <div className="absolute top-3 left-3 right-3 flex items-center justify-between">
-                    <span
-                      className={`inline-flex items-center px-3 py-1 rounded-full text-[11px] font-bold shadow-xs backdrop-blur-md bg-white/90 text-emerald-950`}
-                    >
-                      {srv.badge}
-                    </span>
-                    <span className="text-[10px] font-bold text-white bg-black/50 px-2.5 py-0.5 rounded-md backdrop-blur-sm">
-                      {srv.tag}
-                    </span>
+            return (
+              <Link key={srv.id} href={srv.href} className="group block h-full">
+                <div className="h-full rounded-3xl bg-white shadow-[0_4px_24px_rgba(0,0,0,0.04)] hover:shadow-[0_16px_36px_rgba(0,0,0,0.08)] transition-all duration-300 flex flex-col justify-between overflow-hidden hover:-translate-y-1 border border-black/[0.03]">
+                  {/* Visual Header with Thematic Gradient & Graceful Photo Layer */}
+                  <div className={`relative h-44 w-full overflow-hidden bg-gradient-to-br ${theme?.bgGrad || 'from-emerald-900 to-teal-950'}`}>
+                    {/* Thematic Ambient Agriculture Watermark Motif */}
+                    <div className="absolute right-[-10px] bottom-[-15px] opacity-20 pointer-events-none select-none text-white">
+                      <AmbientIcon className="w-32 h-32 transform rotate-12" />
+                    </div>
+
+                    {/* Photo backdrop: gracefully layers on top; if blocked or slow, fallback is already beautiful */}
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img
+                      src={srv.image}
+                      alt=""
+                      aria-hidden="true"
+                      loading="lazy"
+                      onError={(e) => {
+                        e.currentTarget.style.display = 'none';
+                      }}
+                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 opacity-75"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/35 to-black/10" />
+
+                    {/* Service Badge & Tag */}
+                    <div className="absolute top-3 left-3 right-3 flex items-center justify-between z-10">
+                      <span
+                        className="inline-flex items-center px-3 py-1 rounded-full text-[11px] font-bold shadow-xs backdrop-blur-md bg-white/95 text-emerald-950"
+                      >
+                        {srv.badge}
+                      </span>
+                      <span className="text-[10px] font-bold text-white bg-black/60 px-2.5 py-0.5 rounded-md backdrop-blur-md border border-white/10">
+                        {srv.tag}
+                      </span>
+                    </div>
+
+                    {/* Title over photo/gradient */}
+                    <h3 className="absolute bottom-3 left-3 right-3 text-lg font-bold text-white drop-shadow-md leading-snug z-10">
+                      {srv.title}
+                    </h3>
                   </div>
-
-                  {/* Title over photo gradient */}
-                  <h3 className="absolute bottom-3 left-3 right-3 text-lg font-bold text-white drop-shadow-sm leading-snug">
-                    {srv.title}
-                  </h3>
-                </div>
 
                 {/* Card Description Body */}
                 <div className="p-5 flex-1 flex flex-col justify-between space-y-4">
@@ -664,7 +717,8 @@ export default function LandingPage() {
                 </div>
               </div>
             </Link>
-          ))}
+          );
+        })}
         </div>
       </section>
 
