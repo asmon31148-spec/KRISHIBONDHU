@@ -14,6 +14,12 @@ export class GroqVisionAdapter implements AiProviderAdapter {
       model = 'qwen/qwen3.8-27b';
     }
     const lang = request.language || 'en';
+    const langRule =
+      lang === 'bn'
+        ? 'STRICT LANGUAGE REQUIREMENT: Output ALL textual JSON fields (crop_name, disease_name, uncertainty_reason, symptoms, affected_parts, ai_explanation, treatment_organic, treatment_chemical, prevention_advice, expert_advice, regional_context) strictly in fluent, natural, respectful Bengali (বাংলা). Do NOT mix English sentences or English words. Write Bengali names and terms (e.g. ধান, আলু, বেগুন, ব্লাস্ট রোগ, ট্রাইকোডার্মা).'
+        : lang === 'hi'
+        ? 'STRICT LANGUAGE REQUIREMENT: Output ALL textual JSON fields strictly in fluent, natural Hindi (हिन्दी). Do NOT mix English sentences.'
+        : 'Output ALL textual JSON fields in plain, clear English.';
 
     const systemPrompt = `You are an expert plant pathologist. Analyze the crop leaf photo and return strictly valid JSON matching this schema:
 {
@@ -34,7 +40,8 @@ export class GroqVisionAdapter implements AiProviderAdapter {
   "expert_advice": string,
   "regional_context": string
 }
-Strict honesty: If unclear, blurry, or not a plant, mark is_uncertain: true. Language requested: ${lang}`;
+Strict honesty: If unclear, blurry, or not a plant, mark is_uncertain: true.
+${langRule}`;
 
     const url = 'https://api.groq.com/openai/v1/chat/completions';
     const body = {

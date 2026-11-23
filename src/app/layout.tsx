@@ -4,6 +4,7 @@ import './globals.css';
 import { I18nProvider } from '@/i18n/context';
 import { AuthProvider } from '@/context/AuthContext';
 import { ToastProvider } from '@/components/ui/Toast';
+import { GoogleTranslator } from '@/components/i18n/GoogleTranslator';
 import { Navbar } from '@/components/layout/Navbar';
 import { Sidebar } from '@/components/layout/Sidebar';
 import { MobileNav } from '@/components/layout/MobileNav';
@@ -42,6 +43,7 @@ export default function RootLayout({
     <html lang="en" className="overflow-x-clip" suppressHydrationWarning>
       <body className={`${plusJakarta.variable} bg-cream-50 text-brand-dark min-h-screen flex flex-col font-sans overflow-x-clip selection:bg-brand-mint selection:text-brand-forest`}>
         <I18nProvider>
+          <GoogleTranslator />
           <AuthProvider>
             <ToastProvider>
               <Navbar />

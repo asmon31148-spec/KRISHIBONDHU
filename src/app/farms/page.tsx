@@ -68,34 +68,90 @@ interface SoilRecord {
   tested_by: string | null;
 }
 
-const COMMON_CROP_NAMES = [
-  'Rice (Aman / Winter Paddy)',
-  'Rice (Boro / Summer Paddy)',
-  'Potato (Kufri Jyoti / Pukhraj)',
-  'Jute (Tossa / White)',
-  'Brinjal (Muktakeshi / Pusa Purple)',
-  'Mustard (Sarson)',
-  'Chilli (Bullet / Suryamukhi)',
-  'Tomato',
-  'Cauliflower',
-  'Cabbage',
-  'Onion',
-  'Wheat',
-  'Maize',
-  'Lentil / Pulses (Masoor)',
-];
+const COMMON_CROP_NAMES_I18N: Record<'en' | 'bn' | 'hi', { value: string; label: string }[]> = {
+  bn: [
+    { value: 'Rice (Aman / Winter Paddy)', label: 'ধান (আমন ধান)' },
+    { value: 'Rice (Boro / Summer Paddy)', label: 'ধান (বোরো ধান)' },
+    { value: 'Potato (Kufri Jyoti / Pukhraj)', label: 'আলু (জ্যোতি / পুখরাজ)' },
+    { value: 'Jute (Tossa / White)', label: 'পাট (তোষা / সাদা)' },
+    { value: 'Brinjal (Muktakeshi / Pusa Purple)', label: 'বেগুন (মুক্তকেশী)' },
+    { value: 'Mustard (Sarson)', label: 'সরিষা (রাই / তোড়িয়া)' },
+    { value: 'Chilli (Bullet / Suryamukhi)', label: 'কাঁচা লঙ্কা (বুলেট / সূর্যমুখী)' },
+    { value: 'Tomato', label: 'টমেটো' },
+    { value: 'Cauliflower', label: 'ফুলকপি' },
+    { value: 'Cabbage', label: 'বাঁধাকপি' },
+    { value: 'Onion', label: 'পেঁয়াজ' },
+    { value: 'Wheat', label: 'গম' },
+    { value: 'Maize', label: 'ভুট্টা' },
+    { value: 'Lentil / Pulses (Masoor)', label: 'মসুর ডাল' },
+  ],
+  hi: [
+    { value: 'Rice (Aman / Winter Paddy)', label: 'धान (खरीफ)' },
+    { value: 'Rice (Boro / Summer Paddy)', label: 'धान (बोरो)' },
+    { value: 'Potato (Kufri Jyoti / Pukhraj)', label: 'आलू (पुखराज / ज्योति)' },
+    { value: 'Jute (Tossa / White)', label: 'जूट / पटसन' },
+    { value: 'Brinjal (Muktakeshi / Pusa Purple)', label: 'बैंगन' },
+    { value: 'Mustard (Sarson)', label: 'सरसों' },
+    { value: 'Chilli (Bullet / Suryamukhi)', label: 'हरी मिर्च' },
+    { value: 'Tomato', label: 'टमाटर' },
+    { value: 'Cauliflower', label: 'फूलगोभी' },
+    { value: 'Cabbage', label: 'पत्तागोभी' },
+    { value: 'Onion', label: 'प्याज' },
+    { value: 'Wheat', label: 'गेहूं' },
+    { value: 'Maize', label: 'मक्का' },
+    { value: 'Lentil / Pulses (Masoor)', label: 'मसूर दाल' },
+  ],
+  en: [
+    { value: 'Rice (Aman / Winter Paddy)', label: 'Rice (Aman / Winter Paddy)' },
+    { value: 'Rice (Boro / Summer Paddy)', label: 'Rice (Boro / Summer Paddy)' },
+    { value: 'Potato (Kufri Jyoti / Pukhraj)', label: 'Potato (Kufri Jyoti / Pukhraj)' },
+    { value: 'Jute (Tossa / White)', label: 'Jute (Tossa / White)' },
+    { value: 'Brinjal (Muktakeshi / Pusa Purple)', label: 'Brinjal (Muktakeshi / Pusa Purple)' },
+    { value: 'Mustard (Sarson)', label: 'Mustard (Sarson)' },
+    { value: 'Chilli (Bullet / Suryamukhi)', label: 'Chilli (Bullet / Suryamukhi)' },
+    { value: 'Tomato', label: 'Tomato' },
+    { value: 'Cauliflower', label: 'Cauliflower' },
+    { value: 'Cabbage', label: 'Cabbage' },
+    { value: 'Onion', label: 'Onion' },
+    { value: 'Wheat', label: 'Wheat' },
+    { value: 'Maize', label: 'Maize' },
+    { value: 'Lentil / Pulses (Masoor)', label: 'Lentil / Pulses (Masoor)' },
+  ],
+};
 
-const IRRIGATION_TYPES = [
-  'Canal / River lift',
-  'Shallow Tube Well (STW)',
-  'Deep Tube Well (DTW)',
-  'Drip Irrigation',
-  'Sprinkler',
-  'Rainfed / Seasonal',
-];
+const IRRIGATION_TYPES_I18N: Record<'en' | 'bn' | 'hi', { value: string; label: string }[]> = {
+  bn: [
+    { value: 'Shallow Tube Well (STW)', label: 'অগভীর নলকূপ (STW)' },
+    { value: 'Deep Tube Well (DTW)', label: 'গভীর নলকূপ (DTW)' },
+    { value: 'Canal / River lift', label: 'খাল বা নদীর জল' },
+    { value: 'Drip Irrigation', label: 'ড্রিপ সেচ' },
+    { value: 'Sprinkler', label: 'স্প্রিংকলার সেচ' },
+    { value: 'Rainfed / Seasonal', label: 'বৃষ্টির জলের উপর নির্ভরশীল' },
+  ],
+  hi: [
+    { value: 'Shallow Tube Well (STW)', label: 'उथला नलकूप (STW)' },
+    { value: 'Deep Tube Well (DTW)', label: 'गहरा नलकूप (DTW)' },
+    { value: 'Canal / River lift', label: 'नहर या नदी का पानी' },
+    { value: 'Drip Irrigation', label: 'ड्रिप सिंचाई' },
+    { value: 'Sprinkler', label: 'फव्वारा सिंचाई' },
+    { value: 'Rainfed / Seasonal', label: 'वर्षा आधारित' },
+  ],
+  en: [
+    { value: 'Shallow Tube Well (STW)', label: 'Shallow Tube Well (STW)' },
+    { value: 'Deep Tube Well (DTW)', label: 'Deep Tube Well (DTW)' },
+    { value: 'Canal / River lift', label: 'Canal / River lift' },
+    { value: 'Drip Irrigation', label: 'Drip Irrigation' },
+    { value: 'Sprinkler', label: 'Sprinkler' },
+    { value: 'Rainfed / Seasonal', label: 'Rainfed / Seasonal' },
+  ],
+};
 
 export default function FarmsPage() {
   const { t, language } = useTranslation();
+  const activeLang = (language as 'en' | 'bn' | 'hi') || 'en';
+  const cropList = COMMON_CROP_NAMES_I18N[activeLang] || COMMON_CROP_NAMES_I18N.en;
+  const irrigationList = IRRIGATION_TYPES_I18N[activeLang] || IRRIGATION_TYPES_I18N.en;
+
   const { user, isGuest } = useAuth();
   const toast = useToast();
 
@@ -120,7 +176,7 @@ export default function FarmsPage() {
   const [isCropModalOpen, setIsCropModalOpen] = useState(false);
   const [editingCrop, setEditingCrop] = useState<Crop | null>(null);
   const [targetFarmIdForCrop, setTargetFarmIdForCrop] = useState<string>('');
-  const [cropName, setCropName] = useState(COMMON_CROP_NAMES[0]);
+  const [cropName, setCropName] = useState(cropList[0]?.value || 'Rice (Aman / Winter Paddy)');
   const [cropVariety, setCropVariety] = useState('');
   const [cropCategory, setCropCategory] = useState('Cereal');
   const [cropArea, setCropArea] = useState('');
@@ -290,14 +346,14 @@ export default function FarmsPage() {
     }
     setEditingCrop(null);
     setTargetFarmIdForCrop(farmId);
-    setCropName(COMMON_CROP_NAMES[0]);
+    setCropName(cropList[0]?.value || 'Rice (Aman / Winter Paddy)');
     setCropVariety('');
     setCropCategory('Cereal');
     setCropArea('1.0');
     setCropAreaUnit('bigha');
     setPlantingDate(new Date().toISOString().split('T')[0]);
     setExpectedHarvestDate('');
-    setIrrigationType('Shallow Tube Well (STW)');
+    setIrrigationType(irrigationList[0]?.value || 'Shallow Tube Well (STW)');
     setHealthStatus('healthy');
     setIsCropModalOpen(true);
   };
@@ -470,10 +526,55 @@ export default function FarmsPage() {
           size="md"
           onClick={handleOpenAddFarm}
           leftIcon={<Plus className="w-4 h-4" />}
-          className="shadow-sm"
+          className="shadow-sm font-bold"
         >
-          {t('farms.addFarm')}
+          {activeLang === 'bn' ? '+ নতুন জমি যোগ করুন' : activeLang === 'hi' ? '+ नया खेत जोड़ें' : t('farms.addFarm')}
         </Button>
+      </div>
+
+      {/* Visual Farmer Overview Stats */}
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4">
+        <div className="p-4 rounded-2xl bg-white border border-cream-200/90 shadow-2xs flex items-center gap-3.5">
+          <div className="w-12 h-12 rounded-xl bg-brand-forest/10 flex items-center justify-center text-brand-forest shrink-0">
+            <Warehouse className="w-6 h-6" />
+          </div>
+          <div>
+            <span className="text-xs font-semibold text-brand-dark/60 block">
+              {activeLang === 'bn' ? 'মোট জমি (প্লট)' : activeLang === 'hi' ? 'कुल खेत (प्लॉट)' : 'Total Farm Plots'}
+            </span>
+            <span className="text-xl sm:text-2xl font-extrabold text-brand-dark">
+              {farms.length} {activeLang === 'bn' ? 'টি প্লট' : activeLang === 'hi' ? 'खेत' : 'Plots'}
+            </span>
+          </div>
+        </div>
+
+        <div className="p-4 rounded-2xl bg-white border border-cream-200/90 shadow-2xs flex items-center gap-3.5">
+          <div className="w-12 h-12 rounded-xl bg-emerald-50 flex items-center justify-center text-emerald-600 shrink-0">
+            <Sprout className="w-6 h-6" />
+          </div>
+          <div>
+            <span className="text-xs font-semibold text-brand-dark/60 block">
+              {activeLang === 'bn' ? 'বপন করা চলতি ফসল' : activeLang === 'hi' ? 'सक्रिय फसलें' : 'Active Sown Crops'}
+            </span>
+            <span className="text-xl sm:text-2xl font-extrabold text-emerald-700">
+              {crops.length} {activeLang === 'bn' ? 'টি ফসল' : activeLang === 'hi' ? 'फसलें' : 'Crops'}
+            </span>
+          </div>
+        </div>
+
+        <div className="p-4 rounded-2xl bg-white border border-cream-200/90 shadow-2xs flex items-center gap-3.5">
+          <div className="w-12 h-12 rounded-xl bg-blue-50 flex items-center justify-center text-blue-600 shrink-0">
+            <FlaskConical className="w-6 h-6" />
+          </div>
+          <div>
+            <span className="text-xs font-semibold text-brand-dark/60 block">
+              {activeLang === 'bn' ? 'মাটির পরীক্ষা রেকর্ড' : activeLang === 'hi' ? 'मृदा परीक्षण रिपोर्ट' : 'Soil Test Records'}
+            </span>
+            <span className="text-xl sm:text-2xl font-extrabold text-blue-700">
+              {soilRecords.length} {activeLang === 'bn' ? 'টি রিপোর্ট' : activeLang === 'hi' ? 'रिपोर्ट' : 'Reports'}
+            </span>
+          </div>
+        </div>
       </div>
 
       {/* Farms List */}
@@ -534,9 +635,9 @@ export default function FarmsPage() {
                         size="sm"
                         onClick={() => handleOpenAddCrop(farm.id)}
                         leftIcon={<Plus className="w-3.5 h-3.5" />}
-                        className="text-xs bg-white text-brand-forest border-brand-forest/20 hover:bg-cream-100"
+                        className="text-xs bg-white text-brand-forest border-brand-forest/20 hover:bg-cream-100 font-bold"
                       >
-                        Add Crop
+                        {activeLang === 'bn' ? '+ ফসল যোগ' : activeLang === 'hi' ? '+ फसल जोड़ें' : '+ Crop'}
                       </Button>
                       <button
                         onClick={() => handleOpenEditFarm(farm)}
@@ -565,11 +666,11 @@ export default function FarmsPage() {
                       <div className="flex items-center gap-2">
                         <FlaskConical className="w-4 h-4 text-brand-leaf" />
                         <span className="text-xs font-bold uppercase tracking-wider text-brand-dark/80">
-                          Soil Health Test
+                          {activeLang === 'bn' ? 'মাটির পুষ্টি পরীক্ষা' : activeLang === 'hi' ? 'मिट्टी की जांच' : 'Soil Health Test'}
                         </span>
                         {plotSoil && (
                           <span className="text-[11px] text-brand-dark/60">
-                            (Tested: {new Date(plotSoil.test_date).toLocaleDateString()})
+                            ({activeLang === 'bn' ? 'তারিখ:' : activeLang === 'hi' ? 'दिनांक:' : 'Tested:'} {new Date(plotSoil.test_date).toLocaleDateString()})
                           </span>
                         )}
                       </div>
@@ -577,32 +678,46 @@ export default function FarmsPage() {
                         onClick={() => handleOpenAddSoil(farm.id)}
                         className="text-xs font-bold text-brand-forest hover:text-brand-leaf flex items-center gap-1 transition-colors"
                       >
-                        {plotSoil ? 'Update Test' : '+ Record Test'}
+                        {plotSoil
+                          ? (activeLang === 'bn' ? 'আপডেট' : activeLang === 'hi' ? 'अपडेट' : 'Update Test')
+                          : (activeLang === 'bn' ? '+ রিপোর্ট লিখুন' : activeLang === 'hi' ? '+ रिपोर्ट जोड़ें' : '+ Record Test')}
                       </button>
                     </div>
 
                     {plotSoil ? (
                       <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 text-xs">
                         <div className="p-2 bg-white rounded-lg border border-cream-200">
-                          <span className="text-[10px] text-brand-dark/60 block font-semibold">Nitrogen (N)</span>
+                          <span className="text-[10px] text-brand-dark/60 block font-semibold">
+                            {activeLang === 'bn' ? 'নাইট্রোজেন (N)' : activeLang === 'hi' ? 'नाइट्रोजन (N)' : 'Nitrogen (N)'}
+                          </span>
                           <span className="font-bold text-brand-dark text-sm">{plotSoil.nitrogen} kg/ha</span>
                         </div>
                         <div className="p-2 bg-white rounded-lg border border-cream-200">
-                          <span className="text-[10px] text-brand-dark/60 block font-semibold">Phosphorus (P)</span>
+                          <span className="text-[10px] text-brand-dark/60 block font-semibold">
+                            {activeLang === 'bn' ? 'ফসফরাস (P)' : activeLang === 'hi' ? 'फास्फोरस (P)' : 'Phosphorus (P)'}
+                          </span>
                           <span className="font-bold text-brand-dark text-sm">{plotSoil.phosphorus} kg/ha</span>
                         </div>
                         <div className="p-2 bg-white rounded-lg border border-cream-200">
-                          <span className="text-[10px] text-brand-dark/60 block font-semibold">Potassium (K)</span>
+                          <span className="text-[10px] text-brand-dark/60 block font-semibold">
+                            {activeLang === 'bn' ? 'পটাশিয়াম (K)' : activeLang === 'hi' ? 'पोटेशियम (K)' : 'Potassium (K)'}
+                          </span>
                           <span className="font-bold text-brand-dark text-sm">{plotSoil.potassium} kg/ha</span>
                         </div>
                         <div className="p-2 bg-white rounded-lg border border-cream-200">
-                          <span className="text-[10px] text-brand-dark/60 block font-semibold">Soil pH</span>
+                          <span className="text-[10px] text-brand-dark/60 block font-semibold">
+                            {activeLang === 'bn' ? 'মাটির পিএইচ (pH)' : activeLang === 'hi' ? 'मिट्टी pH' : 'Soil pH'}
+                          </span>
                           <span className="font-bold text-brand-dark text-sm">{plotSoil.ph || '6.5'}</span>
                         </div>
                       </div>
                     ) : (
                       <p className="text-xs text-brand-dark/70">
-                        No soil test recorded yet for this plot. Record your Soil Health Card N-P-K data to get tailored fertilizer dosages.
+                        {activeLang === 'bn'
+                          ? 'এই জমির কোনো মাটির পরীক্ষা এখনো রেকর্ড করা হয়নি। সঠিক সারের মাত্রার জন্য সয়েল হেলথ কার্ডের তথ্য যোগ করুন।'
+                          : activeLang === 'hi'
+                          ? 'इस खेत के लिए अभी मिट्टी की जांच दर्ज नहीं है। सटीक खाद की मात्रा के लिए सॉइल हेल्थ कार्ड का डेटा जोड़ें।'
+                          : 'No soil test recorded yet for this plot. Record your Soil Health Card N-P-K data to get tailored fertilizer dosages.'}
                       </p>
                     )}
                   </div>
@@ -613,20 +728,24 @@ export default function FarmsPage() {
                       <div className="flex items-center gap-2">
                         <Sprout className="w-4 h-4 text-emerald-600" />
                         <h3 className="text-sm font-bold text-brand-dark">
-                          Crops on this Plot ({plotCrops.length})
+                          {activeLang === 'bn' ? 'এই জমির চলতি ফসল' : activeLang === 'hi' ? 'इस खेत की फसलें' : 'Crops on this Plot'} ({plotCrops.length})
                         </h3>
                       </div>
                       <button
                         onClick={() => handleOpenAddCrop(farm.id)}
                         className="text-xs font-semibold text-brand-forest hover:text-brand-leaf flex items-center gap-1"
                       >
-                        + Add Crop
+                        {activeLang === 'bn' ? '+ ফসল' : activeLang === 'hi' ? '+ फसल' : '+ Add Crop'}
                       </button>
                     </div>
 
                     {plotCrops.length === 0 ? (
                       <div className="p-4 rounded-xl border border-dashed border-cream-300 text-center text-xs text-brand-dark/60 bg-cream-50/40">
-                        No active crops planted on this plot. Click <span className="font-bold text-brand-forest cursor-pointer" onClick={() => handleOpenAddCrop(farm.id)}>Add Crop</span> to begin tracking.
+                        {activeLang === 'bn'
+                          ? 'এই জমিতে এখনও কোনো ফসল যোগ করা হয়নি। ফসল যোগ করতে চাপুন।'
+                          : activeLang === 'hi'
+                          ? 'इस खेत में अभी कोई फसल नहीं जोड़ी गई है। फसल जोड़ने के लिए क्लिक करें।'
+                          : 'No active crops planted on this plot. Click Add Crop to begin tracking.'}
                       </div>
                     ) : (
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
@@ -642,7 +761,7 @@ export default function FarmsPage() {
                                 </h4>
                                 {crop.variety && (
                                   <span className="text-xs text-brand-dark/70 font-medium block">
-                                    Variety: {crop.variety}
+                                    {activeLang === 'bn' ? 'জাত:' : activeLang === 'hi' ? 'किस्म:' : 'Variety:'} {crop.variety}
                                   </span>
                                 )}
                               </div>
@@ -655,16 +774,20 @@ export default function FarmsPage() {
                                     : 'bg-red-100 text-red-800'
                                 }`}
                               >
-                                {crop.health_status.replace('_', ' ')}
+                                {crop.health_status === 'healthy'
+                                  ? (activeLang === 'bn' ? 'সুস্থ ফসল' : activeLang === 'hi' ? 'स्वस्थ' : 'Healthy')
+                                  : crop.health_status === 'needs_attention'
+                                  ? (activeLang === 'bn' ? 'নজর প্রয়োজন' : activeLang === 'hi' ? 'सावधानी' : 'Attention')
+                                  : (activeLang === 'bn' ? 'রোগাক্রান্ত' : activeLang === 'hi' ? 'रोगग्रस्त' : 'Diseased')}
                               </span>
                             </div>
 
                             <div className="grid grid-cols-2 gap-1 text-[11px] text-brand-dark/70 pt-1 border-t border-cream-200/80">
                               <div>
-                                <span className="text-brand-dark/50">Planted:</span> {new Date(crop.planting_date).toLocaleDateString()}
+                                <span className="text-brand-dark/50">{activeLang === 'bn' ? 'বপন:' : activeLang === 'hi' ? 'बुवाई:' : 'Planted:'}</span> {new Date(crop.planting_date).toLocaleDateString()}
                               </div>
                               <div>
-                                <span className="text-brand-dark/50">Area:</span> {crop.area} {crop.area_unit}
+                                <span className="text-brand-dark/50">{activeLang === 'bn' ? 'পরিমাপ:' : activeLang === 'hi' ? 'क्षेत्रफल:' : 'Area:'}</span> {crop.area} {crop.area_unit}
                               </div>
                               {crop.irrigation_type && (
                                 <div className="col-span-2 text-[10px] truncate text-brand-dark/60">
@@ -839,9 +962,9 @@ export default function FarmsPage() {
               onChange={(e) => setCropName(e.target.value)}
               className="block w-full rounded-xl border border-cream-300 bg-white px-3.5 py-2.5 text-sm text-brand-dark focus:outline-none focus:ring-2 focus:ring-brand-emerald min-h-[44px]"
             >
-              {COMMON_CROP_NAMES.map((name) => (
-                <option key={name} value={name}>
-                  {name}
+              {cropList.map((item) => (
+                <option key={item.value} value={item.value}>
+                  {item.label}
                 </option>
               ))}
             </select>
@@ -906,9 +1029,9 @@ export default function FarmsPage() {
               onChange={(e) => setIrrigationType(e.target.value)}
               className="block w-full rounded-xl border border-cream-300 bg-white px-3.5 py-2.5 text-sm text-brand-dark focus:outline-none focus:ring-2 focus:ring-brand-emerald min-h-[44px]"
             >
-              {IRRIGATION_TYPES.map((irr) => (
-                <option key={irr} value={irr}>
-                  {irr}
+              {irrigationList.map((irr) => (
+                <option key={irr.value} value={irr.value}>
+                  {irr.label}
                 </option>
               ))}
             </select>

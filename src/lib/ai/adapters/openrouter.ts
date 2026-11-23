@@ -14,8 +14,14 @@ export class OpenRouterVisionAdapter implements AiProviderAdapter {
       model = 'nvidia/nemotron-3.5-super-vl:free';
     }
     const lang = request.language || 'en';
+    const langRule =
+      lang === 'bn'
+        ? 'STRICT REQUIREMENT: Output ALL textual JSON values strictly in fluent Bengali (বাংলা). Never mix English.'
+        : lang === 'hi'
+        ? 'STRICT REQUIREMENT: Output ALL textual JSON values strictly in fluent Hindi (हिन्दी). Never mix English.'
+        : 'Output in clear English.';
 
-    const systemPrompt = `You are a plant pathologist. Return strictly JSON crop diagnosis. Language: ${lang}.
+    const systemPrompt = `You are a plant pathologist. Return strictly JSON crop diagnosis. ${langRule}
 If not a plant or blurry, set is_uncertain: true.
 Schema:
 {

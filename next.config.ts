@@ -2,11 +2,12 @@ import type { NextConfig } from "next";
 
 const cspHeader = `
   default-src 'self';
-  script-src 'self' 'unsafe-inline' 'unsafe-eval';
-  style-src 'self' 'unsafe-inline';
-  img-src 'self' blob: data: https://*.supabase.co https://images.unsplash.com;
-  font-src 'self' data:;
-  connect-src 'self' https://*.supabase.co wss://*.supabase.co https://api.open-meteo.com https://api.data.gov.in;
+  script-src 'self' 'unsafe-inline' 'unsafe-eval' https://translate.google.com https://translate.googleapis.com;
+  style-src 'self' 'unsafe-inline' https://translate.googleapis.com;
+  img-src 'self' blob: data: https://*.supabase.co https://images.unsplash.com https://translate.google.com https://www.google.com https://www.gstatic.com;
+  font-src 'self' data: https://fonts.gstatic.com;
+  connect-src 'self' https://*.supabase.co wss://*.supabase.co https://api.open-meteo.com https://api.data.gov.in https://translate.googleapis.com;
+  frame-src 'self' https://translate.google.com;
   frame-ancestors 'none';
   base-uri 'self';
   form-action 'self';

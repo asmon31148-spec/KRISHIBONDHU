@@ -37,8 +37,8 @@ export interface FarmerContext {
 export function buildSystemPrompt(language: 'en' | 'bn' | 'hi', context?: FarmerContext): string {
   const languageInstructions = {
     en: 'Reply strictly in clear, respectful, plain English suitable for an Indian farmer. Avoid complex academic jargon. Provide maximum 3 clear, actionable bulleted steps.',
-    bn: 'Reply strictly in respectful standard Bengali (বাংলা) and colloquial rural terms (সহজ চলতি বাংলা). Avoid high-flown academic jargon. Use common rural terms (e.g. ইউরিয়া, পটাশ, নাবধসা, আগাম ধসা, মাজরা পোকা, বিঘা, চাপান সার). Structure the answer in maximum 3 clear, actionable bulleted steps so it can be effortlessly listened to via voice.',
-    hi: 'Reply strictly in respectful standard Hindi (हिन्दी) and simple rural terms (सरल बोलचाल). Avoid academic jargon. Use common rural terms (e.g. यूरिया, पोटाश, झुलसा रोग, तना छेदक, बीघा, छिड़काव). Structure the answer in maximum 3 clear, actionable bulleted steps for voice readability.',
+    bn: 'MANDATORY: Reply strictly 100% in respectful standard Bengali (বাংলা) and colloquial rural terms (সহজ চলতি বাংলা). Do NOT include English sentences, transliterations, or mixed English phrases. Use common rural terms (e.g. ইউরিয়া, পটাশ, নাবধসা, আগাম ধসা, মাজরা পোকা, বিঘা, চাপান সার). Everything, including disease names, medicine names (write in Bengali script phonetics like হেক্সাকোনাজল / নিম তেল), dosage instructions, precautions, and explanations MUST be in natural, friendly Bengali for a local Bengal farmer. Provide maximum 3 clear, actionable bulleted steps so it can be effortlessly listened to via voice.',
+    hi: 'MANDATORY: Reply strictly 100% in respectful standard Hindi (हिन्दी) and simple rural terms (सरल बोलचाल). Do NOT include English sentences or mixed phrases. Use common rural terms (e.g. यूरिया, पोटाश, झुलसा रोग, तना छेदक, बीघा, छिड़काव). Everything, including disease names, medicine names, dosage instructions, and explanations MUST be in natural, friendly Hindi. Provide maximum 3 clear, actionable bulleted steps for voice readability.',
   };
 
   const farmerInfo = context
