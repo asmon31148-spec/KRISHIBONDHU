@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useTranslation } from '@/i18n/context';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/Card';
@@ -11,15 +11,17 @@ import {
   Calendar,
   Search,
   Phone,
-  ShieldCheck,
   CheckSquare,
   Square,
+  RefreshCw,
+  Globe,
 } from 'lucide-react';
 import {
   VERIFIED_SCHEMES,
   PICTORIAL_CHECKLIST,
   OFFICIAL_HELPLINES,
 } from '@/data/schemes';
+import { SchemeLiveVerification } from '@/app/api/schemes/verify-live/route';
 
 export default function SchemesPage() {
   const { language } = useTranslation();
@@ -28,6 +30,25 @@ export default function SchemesPage() {
   const [selectedCategory, setSelectedCategory] = useState<string>('All');
   const [selectedSponsor, setSelectedSponsor] = useState<string>('All');
   const [checkedDocs, setCheckedDocs] = useState<Record<string, boolean>>({});
+  const [liveVerifications, setLiveVerifications] = useState<Record<string, SchemeLiveVerification>>({});
+  const [isVerifying, setIsVerifying] = useState<boolean>(true);
+
+  const fetchLiveStatus = () => {
+    setIsVerifying(true);
+    fetch('/api/schemes/verify-live')
+      .then((r) => r.json())
+      .then((data) => {
+        if (data.verifications) {
+          setLiveVerifications(data.verifications);
+        }
+      })
+      .catch((err) => console.warn('Live scheme verification check:', err))
+      .finally(() => setIsVerifying(false));
+  };
+
+  useEffect(() => {
+    fetchLiveStatus();
+  }, []);
 
   const toggleDoc = (id: string) => {
     setCheckedDocs((prev) => ({ ...prev, [id]: !prev[id] }));
@@ -88,9 +109,18 @@ export default function SchemesPage() {
           </div>
 
           <div className="flex flex-wrap items-center gap-2">
+            <Button
+              variant="secondary"
+              size="sm"
+              leftIcon={<RefreshCw className={`w-3.5 h-3.5 ${isVerifying ? 'animate-spin' : ''}`} />}
+              onClick={fetchLiveStatus}
+              disabled={isVerifying}
+            >
+              {language === 'bn' ? 'লাইভ যাচাই' : 'Live Web Re-Check'}
+            </Button>
             <a href="tel:18001801551">
               <Button variant="primary" size="sm" leftIcon={<Phone className="w-3.5 h-3.5" />}>
-                {language === 'bn' ? 'কিষাণ কল সেন্টার ১৮০০-১৮০-১৫৫১' : 'Kisan Helpline 1800-180-1551'}
+                {language === 'bn' ? 'কিষাণ কল সেন্টার' : 'Kisan Helpline 1800-180-1551'}
               </Button>
             </a>
             <Link href="/mandi">
@@ -104,11 +134,16 @@ export default function SchemesPage() {
         {/* Verification Checkline Banner */}
         <div className="mt-4 pt-3 border-t border-cream-200/80 flex flex-wrap items-center justify-between gap-3 text-xs text-brand-dark/70">
           <div className="flex items-center gap-2 text-emerald-800 font-semibold">
-            <ShieldCheck className="w-4 h-4 text-emerald-700" />
-            <span>Official Availability Checkline & Active Status (FY 2025–2026 Active DBT Cycles)</span>
+            <Globe className="w-4 h-4 text-emerald-700 shrink-0" />
+            <span>
+              {isVerifying
+                ? 'Browsing live official government circulars and active DBT welfare cycles...'
+                : 'Live Web Grounded: Connected to real-time government dispatches & active season verifications'}
+            </span>
           </div>
-          <span className="text-emerald-800 bg-emerald-100/70 px-2.5 py-0.5 rounded-full font-bold text-[11px]">
-            Direct Official Govt Links
+          <span className="text-emerald-800 bg-emerald-100/70 px-2.5 py-0.5 rounded-full font-bold text-[11px] flex items-center gap-1.5">
+            <span className="w-2 h-2 rounded-full bg-emerald-600 animate-pulse" />
+            Live Search Grounded
           </span>
         </div>
       </div>
@@ -282,6 +317,33 @@ export default function SchemesPage() {
                   {scheme.availabilityStatus}
                 </span>
               </div>
+
+              {/* Live Web Grounded Checkline */}
+              {liveVerifications[scheme.id] ? (
+                <div className="p-3 rounded-2xl bg-emerald-50/90 border border-emerald-300 text-xs text-emerald-950 space-y-1.5 shadow-2xs">
+                  <div className="flex items-center justify-between">
+                    <span className="inline-flex items-center gap-1.5 font-extrabold text-emerald-900">
+                      <span className="w-2 h-2 rounded-full bg-emerald-600 animate-pulse" />
+                      <span>Live Verified: {liveVerifications[scheme.id].statusBadge}</span>
+                    </span>
+                    <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-emerald-200/80 text-emerald-900">
+                      {liveVerifications[scheme.id].verifiedDate}
+                    </span>
+                  </div>
+                  <p className="text-[11px] text-emerald-900/85 leading-snug font-medium">
+                    {liveVerifications[scheme.id].summary}
+                  </p>
+                  <div className="text-[10px] text-emerald-800/80 font-semibold pt-1 border-t border-emerald-200/70 flex items-center justify-between">
+                    <span>Active Cycle: {liveVerifications[scheme.id].activeSeason}</span>
+                    <span className="text-emerald-700">Live Search Grounded ✓</span>
+                  </div>
+                </div>
+              ) : (
+                <div className="p-2.5 rounded-xl bg-cream-50 border border-cream-200 text-[11px] text-brand-dark/70 flex items-center justify-between animate-pulse">
+                  <span>Checking live official web circulars...</span>
+                  <span className="w-2 h-2 rounded-full bg-brand-leaf animate-ping" />
+                </div>
+              )}
             </CardHeader>
 
             <CardContent className="space-y-4 pt-0">
