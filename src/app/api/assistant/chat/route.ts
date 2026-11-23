@@ -4,7 +4,7 @@ import { createServerSupabaseClient } from '@/lib/supabase/server';
 
 export async function POST(req: NextRequest) {
   try {
-    const { messages, language = 'en', conversationId } = await req.json();
+    const { messages, language = 'en', conversationId, cropContext } = await req.json();
 
     if (!messages || !Array.isArray(messages) || messages.length === 0) {
       return NextResponse.json({ error: 'Messages array is required.' }, { status: 400 });
@@ -37,12 +37,28 @@ export async function POST(req: NextRequest) {
               village: profile.village || undefined,
               crops: profile.primary_crops || undefined,
               soilType: profile.soil_type || undefined,
+              activeCropIssue: cropContext || undefined,
+            };
+          } else if (cropContext) {
+            farmerContext = {
+              activeCropIssue: cropContext,
             };
           }
+        } else if (cropContext) {
+          farmerContext = {
+            activeCropIssue: cropContext,
+          };
         }
+      } else if (cropContext) {
+        farmerContext = {
+          activeCropIssue: cropContext,
+        };
       }
     } catch (authErr) {
       console.warn('Chat user lookup skipped:', authErr);
+      if (cropContext) {
+        farmerContext = { activeCropIssue: cropContext };
+      }
     }
 
     // Generate response from AI model

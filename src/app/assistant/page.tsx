@@ -1,6 +1,7 @@
 'use client';
 
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, Suspense } from 'react';
+import { useSearchParams } from 'next/navigation';
 import { useTranslation, Language } from '@/i18n/context';
 import { useAuth } from '@/context/AuthContext';
 import { useToast } from '@/components/ui/Toast';
@@ -11,18 +12,18 @@ import { WalkieTalkie } from '@/components/voice/WalkieTalkie';
 import { MarkdownView } from '@/components/assistant/MarkdownView';
 import {
   Bot,
-  User,
   Send,
   Plus,
   Trash2,
   Copy,
-  Check,
   Image as ImageIcon,
   X,
   MessageSquare,
   ChevronRight,
   Flag,
+  ShieldAlert,
 } from 'lucide-react';
+import { ActiveCropIssueContext } from '@/lib/ai/chat';
 
 interface Message {
   id: string;
@@ -60,7 +61,8 @@ const SUGGESTED_PROMPTS: Record<Language, string[]> = {
   ],
 };
 
-export default function AssistantPage() {
+function AssistantChat() {
+  const searchParams = useSearchParams();
   const { language } = useTranslation();
   const { user, isGuest } = useAuth();
   const toast = useToast();
@@ -74,12 +76,15 @@ export default function AssistantPage() {
   const [copiedId, setCopiedId] = useState<string | null>(null);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
+  // Active Crop / Plot Context (Passed from Farms, Crops, or Alert Cards)
+  const [activeCropContext, setActiveCropContext] = useState<ActiveCropIssueContext | null>(null);
+  const hasAutoAskedRef = useRef(false);
+
   // Feedback Report State
   const [reportModalOpen, setReportModalOpen] = useState(false);
   const [reportingContent, setReportingContent] = useState('');
   const [reportCategory, setReportCategory] = useState('Pesticide or Chemical Dosage');
   const [reportNotes, setReportNotes] = useState('');
-  const [isSubmittingReport, setIsSubmittingReport] = useState(false);
 
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -106,6 +111,64 @@ export default function AssistantPage() {
       .catch((err) => console.warn('Could not load conversations:', err));
   }, [user]);
 
+  // Process Context from URL Query Parameters (e.g. from Farms / Crops / Dashboard Alert)
+  useEffect(() => {
+    const cropName = searchParams.get('crop_name');
+    const customQuery = searchParams.get('q');
+    const autoAsk = searchParams.get('auto_ask') === 'true' || Boolean(cropName);
+
+    if (cropName) {
+      const variety = searchParams.get('variety');
+      const status = searchParams.get('status') || 'needs_attention';
+      const farmName = searchParams.get('farm');
+      const location = searchParams.get('location');
+      const soil = searchParams.get('soil');
+      const area = searchParams.get('area');
+      const unit = searchParams.get('unit');
+      const sown = searchParams.get('sown');
+      const irrigation = searchParams.get('irrigation');
+
+      const ctx: ActiveCropIssueContext = {
+        cropName,
+        variety,
+        healthStatus: status,
+        farmName,
+        location,
+        soilType: soil,
+        area,
+        areaUnit: unit,
+        sownDate: sown,
+        irrigation,
+      };
+
+      setActiveCropContext(ctx);
+
+      if (autoAsk && !hasAutoAskedRef.current) {
+        hasAutoAskedRef.current = true;
+
+        let autoPrompt = '';
+        if (language === 'bn') {
+          autoPrompt = `আমার খামার "${farmName || 'জমির'}"-এর ${area || '১'} ${unit || 'বিঘা'} জমিতে চাষ করা "${cropName}"${variety ? ` (${variety} জাত)` : ''}-এ 'Needs Attention' (মনোযোগ প্রয়োজন) সতর্কতা দেখাচ্ছে। মাটিতে ${soil || 'কাদা মাটি (Clay)'} এবং সেচ ${irrigation || 'STW'}। 
+
+এই আমন ধানে বর্তমান মৌসুমে (নভেম্বর/রবীন্দ্র শীতকালীন কুয়াশা) কী কী রোগ ও পোকার আক্রমণ হতে পারে (যেমন শিথ ব্লাইট বা ব্লাস্ট), এবং এর জন্য অবিলম্বে কী কী জৈব ও অনুমোদিত রাসায়নিক সমাধান প্রয়োগ করা উচিত?`;
+        } else if (language === 'hi') {
+          autoPrompt = `मेरे खेत "${farmName || 'खेत'}" के ${area || '1'} ${unit || 'बीघा'} में लगी "${cropName}"${variety ? ` (${variety})` : ''} फसल में 'Needs Attention' (कार्रवाई की आवश्यकता) अलर्ट आ रहा है। मिट्टी ${soil || 'चिकनी मिट्टी'} और सिंचाई ${irrigation || 'STW'} है। 
+
+इस समय किन बीमारियों (जैसे शीथ ब्लाइट या ब्लास्ट) का खतरा है और तुरंत क्या जैविक व अनुमोदित दवा छिड़काव करना चाहिए?`;
+        } else {
+          autoPrompt = `My crop "${cropName}"${variety ? ` (Variety: ${variety})` : ''} on "${farmName || 'My Farm'}" (${area || '1'} ${unit || 'Bigha'}, ${soil || 'Clay'} soil, planted on ${sown || 'recent'}) currently has an active 'Needs Attention' status.
+
+What are the specific disease risks right now in Bengal (such as Sheath Blight or Rice Blast), and what immediate organic and ICAR/BCKV chemical treatment protocols should I apply?`;
+        }
+
+        handleSendMessage(autoPrompt, ctx);
+      }
+    } else if (customQuery && !hasAutoAskedRef.current) {
+      hasAutoAskedRef.current = true;
+      handleSendMessage(customQuery);
+    }
+  }, [searchParams, language]);
+
   // Load messages when selecting an existing conversation
   const handleSelectConversation = async (convId: string) => {
     setActiveConversationId(convId);
@@ -115,13 +178,21 @@ export default function AssistantPage() {
       const data = await res.json();
       if (data.messages) {
         setMessages(
-          data.messages.map((m: { id: string; role: 'user' | 'assistant'; content: string; image_url?: string | null; created_at?: string }) => ({
-            id: m.id,
-            role: m.role,
-            content: m.content,
-            imageUrl: m.image_url,
-            createdAt: m.created_at,
-          }))
+          data.messages.map(
+            (m: {
+              id: string;
+              role: 'user' | 'assistant';
+              content: string;
+              image_url?: string | null;
+              created_at?: string;
+            }) => ({
+              id: m.id,
+              role: m.role,
+              content: m.content,
+              imageUrl: m.image_url,
+              createdAt: m.created_at,
+            })
+          )
         );
       }
     } catch (err) {
@@ -138,6 +209,7 @@ export default function AssistantPage() {
     setAttachedImage(null);
     setInputText('');
     setActiveConversationId(null);
+    setActiveCropContext(null);
   };
 
   const handleImageSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -156,7 +228,10 @@ export default function AssistantPage() {
     reader.readAsDataURL(file);
   };
 
-  const handleSendMessage = async (textToSend?: string) => {
+  const handleSendMessage = async (
+    textToSend?: string,
+    overrideCropContext?: ActiveCropIssueContext | null
+  ) => {
     const text = (textToSend || inputText).trim();
     if (!text && !attachedImage) return;
 
@@ -186,6 +261,7 @@ export default function AssistantPage() {
           })),
           language,
           conversationId: activeConversationId,
+          cropContext: overrideCropContext !== undefined ? overrideCropContext : activeCropContext,
         }),
       });
 
@@ -271,7 +347,6 @@ export default function AssistantPage() {
       {/* Top Bar with Language Indicator & Actions */}
       <div className="flex items-center justify-between px-3 sm:px-0 py-2 sm:py-2.5 border-b border-cream-200 bg-white sm:bg-transparent gap-2 shrink-0">
         <div className="flex items-center gap-2 min-w-0">
-          {/* Toggle history button for mobile/desktop */}
           {!isGuest && (
             <button
               onClick={() => setIsSidebarOpen(!isSidebarOpen)}
@@ -288,7 +363,7 @@ export default function AssistantPage() {
               {conversations.length > 0 && (
                 <span
                   className={`px-1.5 py-0.2 rounded-full text-[10px] font-extrabold ${
-                    isSidebarOpen ? 'bg-white/20 text-white' : 'bg-cream-200 text-brand-forest'
+                    isSidebarOpen ? 'bg-white/20 text-white' : 'bg-brand-forest/10 text-brand-forest'
                   }`}
                 >
                   {conversations.length}
@@ -296,144 +371,77 @@ export default function AssistantPage() {
               )}
             </button>
           )}
-          <div className="flex items-center gap-2 min-w-0">
-            <div className="w-8 h-8 rounded-xl bg-brand-forest flex items-center justify-center text-white shadow-xs shrink-0">
-              <Bot className="w-4 h-4 text-brand-mint" />
-            </div>
-            <div className="min-w-0">
-              <h1 className="text-sm sm:text-lg font-extrabold text-brand-forest leading-none truncate">
-                AI Agronomy Assistant
-              </h1>
-              <span className="text-[10px] text-brand-dark/60 font-medium truncate block">
-                ICAR & Bengal Agro-Climatic Data
-              </span>
-            </div>
+
+          <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-800 text-[11px] font-bold">
+            <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+            <span>BCKV & ICAR Core</span>
           </div>
         </div>
 
-        <div className="flex items-center gap-1.5 sm:gap-2 shrink-0">
+        <div className="flex items-center gap-1.5 shrink-0">
           <Button
-            variant="outline"
+            variant="ghost"
             size="sm"
             onClick={handleNewChat}
+            className="text-xs font-bold text-brand-forest hover:bg-cream-100"
             leftIcon={<Plus className="w-3.5 h-3.5" />}
-            className="text-xs px-2.5 py-1.5 sm:px-3 sm:py-2"
           >
-            <span className="hidden xs:inline">New Chat</span>
-            <span className="xs:hidden">New</span>
+            New Chat
           </Button>
         </div>
       </div>
 
-      {/* Main Chat Workspace */}
-      <div className="flex flex-1 min-h-0 sm:pt-2.5 gap-2.5 lg:gap-3 overflow-hidden">
-        {/* Desktop Sidebar (Logged in users, desktop screen) */}
-        {!isGuest && isSidebarOpen && (
-          <aside className="hidden lg:flex w-60 border border-cream-200 bg-white shadow-xs rounded-2xl p-3 flex-col space-y-2 shrink-0 animate-in fade-in duration-150">
-            <div className="flex items-center justify-between pb-2 border-b border-cream-200">
-              <div className="flex items-center gap-1.5 text-xs font-bold text-brand-forest uppercase tracking-wider">
-                <MessageSquare className="w-3.5 h-3.5 text-brand-leaf" />
-                <span>Chat History</span>
-              </div>
+      {/* Main Chat Layout Area */}
+      <div className="flex-1 flex overflow-hidden relative">
+        {/* Chat History Sidebar Drawer */}
+        {isSidebarOpen && !isGuest && (
+          <div className="w-72 sm:w-80 border-r border-cream-200 bg-cream-50/90 backdrop-blur-md flex flex-col shrink-0 z-20 absolute sm:relative inset-y-0 left-0 shadow-xl sm:shadow-none animate-in slide-in-from-left-4 duration-200">
+            <div className="p-3 border-b border-cream-200 flex items-center justify-between">
+              <span className="text-xs font-bold uppercase tracking-wider text-brand-dark">
+                Saved Conversations
+              </span>
               <button
                 onClick={() => setIsSidebarOpen(false)}
-                className="p-1 rounded-lg text-brand-dark/50 hover:text-brand-dark hover:bg-cream-100 transition-colors"
-                title="Close History Panel"
-                aria-label="Close History"
+                className="p-1 rounded-lg text-brand-dark/50 hover:text-brand-dark"
+                aria-label="Close history"
               >
                 <X className="w-4 h-4" />
               </button>
             </div>
-            <div className="flex-1 overflow-y-auto space-y-1">
+
+            <div className="flex-1 overflow-y-auto p-2 space-y-1.5">
               {conversations.length === 0 ? (
-                <p className="text-xs text-brand-dark/50 p-2 italic text-center">
-                  No previous conversations saved.
-                </p>
+                <div className="p-4 text-center text-xs text-brand-dark/60">
+                  No previous chats saved. Start asking questions!
+                </div>
               ) : (
                 conversations.map((conv) => (
                   <div
                     key={conv.id}
-                    onClick={() => handleSelectConversation(conv.id)}
+                    onClick={() => {
+                      handleSelectConversation(conv.id);
+                      setIsSidebarOpen(false);
+                    }}
                     className={`flex items-center justify-between p-2.5 rounded-xl text-xs font-semibold cursor-pointer transition-colors ${
                       activeConversationId === conv.id
                         ? 'bg-brand-forest text-white'
-                        : 'bg-cream-50 text-brand-dark hover:bg-cream-100 border border-cream-200/80'
+                        : 'bg-white text-brand-dark hover:bg-cream-100 border border-cream-200'
                     }`}
                   >
-                    <span className="truncate max-w-[150px]">{conv.title}</span>
+                    <span className="truncate max-w-[200px]">{conv.title}</span>
                     <button
                       onClick={(e) => deleteConversation(conv.id, e)}
-                      className="p-1 rounded opacity-60 hover:opacity-100 hover:text-red-500"
+                      className="p-1.5 rounded opacity-60 hover:opacity-100 hover:text-red-500"
                       aria-label="Delete chat"
                     >
-                      <Trash2 className="w-3.5 h-3.5" />
+                      <Trash2 className="w-4 h-4" />
                     </button>
                   </div>
                 ))
               )}
             </div>
-          </aside>
-        )}
 
-        {/* Mobile Slide-over Drawer for Chat History */}
-        {!isGuest && isSidebarOpen && (
-          <div
-            role="dialog"
-            aria-modal="true"
-            className="lg:hidden fixed inset-0 z-50 bg-brand-dark/50 backdrop-blur-xs flex flex-col justify-end"
-          >
-            <div
-              className="fixed inset-0"
-              onClick={() => setIsSidebarOpen(false)}
-              aria-hidden="true"
-            />
-            <div className="relative bg-cream-50 rounded-t-3xl border-t border-cream-200 p-4 shadow-2xl z-10 max-h-[75vh] flex flex-col animate-in slide-in-from-bottom duration-200">
-              <div className="flex items-center justify-between pb-3 border-b border-cream-200">
-                <div className="flex items-center gap-2">
-                  <MessageSquare className="w-4 h-4 text-brand-leaf" />
-                  <span className="text-sm font-bold text-brand-dark">Previous Chats</span>
-                </div>
-                <button
-                  onClick={() => setIsSidebarOpen(false)}
-                  className="p-1 rounded-lg text-brand-dark/60 hover:text-brand-dark hover:bg-cream-200"
-                  aria-label="Close"
-                >
-                  <X className="w-5 h-5" />
-                </button>
-              </div>
-
-              <div className="flex-1 overflow-y-auto space-y-1.5 py-3">
-                {conversations.length === 0 ? (
-                  <p className="text-xs text-brand-dark/50 p-4 text-center italic">
-                    No previous conversations saved yet.
-                  </p>
-                ) : (
-                  conversations.map((conv) => (
-                    <div
-                      key={conv.id}
-                      onClick={() => {
-                        handleSelectConversation(conv.id);
-                        setIsSidebarOpen(false);
-                      }}
-                      className={`flex items-center justify-between p-3 rounded-xl text-xs font-semibold cursor-pointer transition-colors ${
-                        activeConversationId === conv.id
-                          ? 'bg-brand-forest text-white'
-                          : 'bg-white text-brand-dark hover:bg-cream-100 border border-cream-200'
-                      }`}
-                    >
-                      <span className="truncate max-w-[200px]">{conv.title}</span>
-                      <button
-                        onClick={(e) => deleteConversation(conv.id, e)}
-                        className="p-1.5 rounded opacity-60 hover:opacity-100 hover:text-red-500"
-                        aria-label="Delete chat"
-                      >
-                        <Trash2 className="w-4 h-4" />
-                      </button>
-                    </div>
-                  ))
-                )}
-              </div>
-
+            <div className="p-2 border-t border-cream-200">
               <Button
                 variant="outline"
                 size="sm"
@@ -441,7 +449,7 @@ export default function AssistantPage() {
                   handleNewChat();
                   setIsSidebarOpen(false);
                 }}
-                className="w-full mt-2"
+                className="w-full"
                 leftIcon={<Plus className="w-4 h-4" />}
               >
                 Start New Chat
@@ -452,6 +460,43 @@ export default function AssistantPage() {
 
         {/* Chat Messages Stream Area */}
         <div className="flex-1 flex flex-col min-h-0 bg-white sm:rounded-2xl lg:rounded-3xl border-t sm:border border-cream-200/90 shadow-none sm:shadow-xs overflow-hidden">
+          {/* Active Crop Field Issue Context Pill (If navigated from Farms/Crops/Alerts) */}
+          {activeCropContext && (
+            <div className="mx-3 mt-3 p-3 rounded-2xl bg-gradient-to-r from-amber-50 to-cream-50 border border-amber-300 flex items-start justify-between gap-3 shadow-2xs shrink-0">
+              <div className="flex items-start gap-2.5">
+                <div className="w-8 h-8 rounded-xl bg-amber-100 border border-amber-300 flex items-center justify-center text-amber-800 shrink-0 mt-0.5 shadow-2xs">
+                  <ShieldAlert className="w-4 h-4 text-amber-700 animate-pulse" />
+                </div>
+                <div>
+                  <div className="flex items-center gap-2 flex-wrap">
+                    <span className="text-xs font-extrabold text-brand-dark">
+                      Active Plot Context Loaded
+                    </span>
+                    <span className="px-2 py-0.5 rounded-full bg-amber-200 text-amber-900 text-[10px] font-extrabold uppercase tracking-wider">
+                      {activeCropContext.healthStatus === 'needs_attention'
+                        ? 'Action Needed'
+                        : activeCropContext.healthStatus || 'Alert'}
+                    </span>
+                  </div>
+                  <p className="text-xs text-brand-dark/85 mt-0.5 leading-snug">
+                    <strong className="text-brand-forest">{activeCropContext.cropName}</strong>
+                    {activeCropContext.variety ? ` (Variety: ${activeCropContext.variety})` : ''}
+                    {activeCropContext.farmName ? ` on ${activeCropContext.farmName}` : ''}
+                    {activeCropContext.area ? ` • ${activeCropContext.area} ${activeCropContext.areaUnit || 'Bigha'}` : ''}
+                    {activeCropContext.soilType ? ` • ${activeCropContext.soilType} Soil` : ''}
+                  </p>
+                </div>
+              </div>
+              <button
+                onClick={() => setActiveCropContext(null)}
+                className="p-1 rounded-lg text-brand-dark/40 hover:text-brand-dark hover:bg-amber-100 transition-colors"
+                title="Clear Context"
+              >
+                <X className="w-4 h-4" />
+              </button>
+            </div>
+          )}
+
           {/* Scrollable Message History */}
           <div className="flex-1 overflow-y-auto px-3 py-2 sm:p-4 lg:p-5 space-y-3 sm:space-y-4">
             <div className="max-w-3xl mx-auto w-full space-y-2.5 sm:space-y-4">
@@ -489,261 +534,263 @@ export default function AssistantPage() {
                   </div>
                 </div>
               ) : (
-              messages.map((msg) => (
-                <div
-                  key={msg.id}
-                  className={`flex gap-3 ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}
-                >
-                  {msg.role === 'assistant' && (
-                    <div className="w-8 h-8 rounded-xl bg-brand-forest text-white flex items-center justify-center shrink-0 mt-0.5 shadow-2xs">
-                      <Bot className="w-4 h-4 text-brand-mint" />
-                    </div>
-                  )}
-
+                messages.map((msg) => (
                   <div
-                    className={`max-w-[88%] sm:max-w-[80%] md:max-w-[75%] rounded-2xl p-3 sm:p-4 text-xs sm:text-sm leading-relaxed ${
-                      msg.role === 'user'
-                        ? 'bg-brand-forest text-white shadow-xs rounded-tr-xs'
-                        : 'bg-cream-50 text-brand-dark border border-cream-200 rounded-tl-xs shadow-2xs'
-                    }`}
+                    key={msg.id}
+                    className={`flex gap-3 ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}
                   >
-                    {/* Attached image if any */}
-                    {msg.imageUrl && (
-                      <div className="mb-2 rounded-xl overflow-hidden max-w-[220px] sm:max-w-xs border border-white/20">
-                        {/* eslint-disable-next-line @next/next/no-img-element */}
-                        <img
-                          src={msg.imageUrl}
-                          alt="Attached leaf"
-                          className="w-full h-auto max-h-52 object-contain bg-black/10 rounded-lg"
-                        />
-                      </div>
-                    )}
-
-                    {msg.role === 'assistant' ? (
-                      <MarkdownView content={msg.content} />
-                    ) : (
-                      <div className="whitespace-pre-line break-words">{msg.content}</div>
-                    )}
-
-                    {/* Copy, Audio and Report controls for assistant replies */}
                     {msg.role === 'assistant' && (
-                      <div className="flex items-center justify-end gap-2.5 pt-2 mt-2 border-t border-cream-200/80 text-[11px] text-brand-dark/60">
-                        <button
-                          onClick={() => copyToClipboard(msg.id, msg.content)}
-                          className="flex items-center gap-1 hover:text-brand-dark transition-colors"
-                        >
-                          {copiedId === msg.id ? (
-                            <Check className="w-3.5 h-3.5 text-emerald-600" />
-                          ) : (
-                            <Copy className="w-3.5 h-3.5" />
-                          )}
-                          <span>{copiedId === msg.id ? 'Copied' : 'Copy'}</span>
-                        </button>
-                        <VoiceControls
-                          language={language}
-                          onSpeechInput={() => {}}
-                          textToSpeak={msg.content}
-                        />
-                        <button
-                          onClick={() => {
-                            setReportingContent(msg.content);
-                            setReportNotes('');
-                            setReportModalOpen(true);
-                          }}
-                          className="flex items-center gap-1 hover:text-red-700 transition-colors ml-1 text-brand-dark/60 hover:text-red-600"
-                          title="Report inaccurate advice or dosage"
-                        >
-                          <Flag className="w-3 h-3" />
-                          <span>Report</span>
-                        </button>
+                      <div className="w-8 h-8 rounded-xl bg-brand-forest text-white flex items-center justify-center shrink-0 mt-0.5 shadow-2xs">
+                        <Bot className="w-4 h-4 text-brand-mint" />
                       </div>
                     )}
-                  </div>
 
-                  {msg.role === 'user' && (
-                    <div className="w-8 h-8 rounded-full bg-cream-200 text-brand-forest flex items-center justify-center shrink-0 mt-0.5">
-                      <User className="w-4 h-4" />
+                    <div
+                      className={`max-w-[88%] sm:max-w-[80%] md:max-w-[75%] rounded-2xl p-3 sm:p-4 text-xs sm:text-sm leading-relaxed ${
+                        msg.role === 'user'
+                          ? 'bg-brand-forest text-white shadow-xs rounded-tr-xs'
+                          : 'bg-cream-50 text-brand-dark border border-cream-200 rounded-tl-xs shadow-2xs'
+                      }`}
+                    >
+                      {/* Attached image if any */}
+                      {msg.imageUrl && (
+                        <div className="mb-2 rounded-xl overflow-hidden max-w-[220px] sm:max-w-xs border border-white/20">
+                          {/* eslint-disable-next-line @next/next/no-img-element */}
+                          <img
+                            src={msg.imageUrl}
+                            alt="Attached leaf"
+                            className="w-full h-auto max-h-52 object-contain bg-black/10 rounded-lg"
+                          />
+                        </div>
+                      )}
+
+                      {msg.role === 'assistant' ? (
+                        <MarkdownView content={msg.content} />
+                      ) : (
+                        <div className="whitespace-pre-line break-words">{msg.content}</div>
+                      )}
+
+                      {/* Controls for assistant replies */}
+                      {msg.role === 'assistant' && (
+                        <div className="flex items-center justify-end gap-2.5 pt-2 mt-2 border-t border-cream-200/80 text-[11px] text-brand-dark/60">
+                          <button
+                            onClick={() => copyToClipboard(msg.id, msg.content)}
+                            className="flex items-center gap-1 hover:text-brand-dark transition-colors cursor-pointer"
+                            title="Copy reply text"
+                          >
+                            <Copy className="w-3.5 h-3.5" />
+                            <span>{copiedId === msg.id ? 'Copied' : 'Copy'}</span>
+                          </button>
+
+                          <VoiceControls
+                            language={language}
+                            textToSpeak={msg.content}
+                            onSpeechInput={(transcript) => handleSendMessage(transcript)}
+                          />
+
+                          <button
+                            onClick={() => {
+                              setReportingContent(msg.content);
+                              setReportModalOpen(true);
+                            }}
+                            className="flex items-center gap-1 hover:text-red-600 transition-colors cursor-pointer"
+                            title="Report safety concern"
+                          >
+                            <Flag className="w-3.5 h-3.5" />
+                            <span>Report</span>
+                          </button>
+                        </div>
+                      )}
                     </div>
-                  )}
-                </div>
-              ))
-            )}
+                  </div>
+                ))
+              )}
 
-            {/* Typing Indicator */}
-            {isLoading && (
-              <div className="flex gap-3 justify-start items-center">
-                <div className="w-8 h-8 rounded-xl bg-brand-forest text-white flex items-center justify-center shrink-0">
-                  <Bot className="w-4 h-4 text-brand-mint" />
+              {/* Typing Loader Indicator */}
+              {isLoading && (
+                <div className="flex gap-3 justify-start">
+                  <div className="w-8 h-8 rounded-xl bg-brand-forest text-white flex items-center justify-center shrink-0 shadow-2xs">
+                    <Bot className="w-4 h-4 text-brand-mint" />
+                  </div>
+                  <div className="bg-cream-50 border border-cream-200 rounded-2xl p-4 flex items-center gap-2 text-xs text-brand-dark/70 shadow-2xs">
+                    <span className="w-2 h-2 rounded-full bg-brand-leaf animate-bounce [animation-delay:-0.3s]" />
+                    <span className="w-2 h-2 rounded-full bg-brand-leaf animate-bounce [animation-delay:-0.15s]" />
+                    <span className="w-2 h-2 rounded-full bg-brand-leaf animate-bounce" />
+                    <span className="ml-2 font-medium">Analyzing agronomy guidelines...</span>
+                  </div>
                 </div>
-                <div className="p-3.5 rounded-2xl bg-cream-50 border border-cream-200 flex items-center gap-1.5">
-                  <span className="w-2 h-2 rounded-full bg-brand-leaf animate-bounce" />
-                  <span className="w-2 h-2 rounded-full bg-brand-leaf animate-bounce [animation-delay:0.2s]" />
-                  <span className="w-2 h-2 rounded-full bg-brand-leaf animate-bounce [animation-delay:0.4s]" />
-                </div>
-              </div>
-            )}
-            <div ref={messagesEndRef} />
+              )}
+
+              <div ref={messagesEndRef} />
             </div>
           </div>
 
-          {/* Attached image preview pill before sending */}
+          {/* Attached Image Preview Bar */}
           {attachedImage && (
-            <div className="px-3 sm:px-4 py-1.5 sm:py-2 bg-cream-100 border-t border-cream-200 flex items-center justify-between gap-2 shrink-0">
-              <div className="max-w-4xl mx-auto w-full flex items-center justify-between">
-                <div className="flex items-center gap-2">
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img
-                    src={attachedImage}
-                    alt="Attachment preview"
-                    className="w-8 h-8 sm:w-10 sm:h-10 rounded-lg object-cover border border-cream-300"
-                  />
-                  <span className="text-xs font-semibold text-brand-dark">Leaf Attached</span>
-                </div>
-                <button
-                  type="button"
-                  onClick={() => setAttachedImage(null)}
-                  className="p-1 rounded-lg text-brand-dark/60 hover:text-red-600"
-                >
-                  <X className="w-4 h-4" />
-                </button>
+            <div className="px-4 py-2 border-t border-cream-200 bg-cream-50 flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  src={attachedImage}
+                  alt="Attachment preview"
+                  className="w-10 h-10 object-cover rounded-lg border border-cream-300"
+                />
+                <span className="text-xs font-semibold text-brand-dark">Image attached</span>
               </div>
+              <button
+                onClick={() => setAttachedImage(null)}
+                className="p-1 rounded-full hover:bg-cream-200 text-brand-dark/60 hover:text-brand-dark"
+                title="Remove image"
+              >
+                <X className="w-4 h-4" />
+              </button>
             </div>
           )}
 
-          {/* Chat Input Bar */}
-          <div className="p-2 sm:p-3 border-t border-cream-200 bg-white/95 backdrop-blur-md shrink-0 sticky bottom-0 z-20">
-            <form
-              onSubmit={(e) => {
-                e.preventDefault();
-                handleSendMessage();
-              }}
-              className="max-w-3xl mx-auto flex items-center gap-1.5 sm:gap-2"
-            >
-              {/* Image upload trigger */}
-              <input
-                ref={fileInputRef}
-                type="file"
-                accept="image/jpeg,image/png,image/webp"
-                className="hidden"
-                onChange={handleImageSelect}
+          {/* Interactive Voice & Text Input Box */}
+          <div className="p-2.5 sm:p-4 border-t border-cream-200/90 bg-white">
+            <div className="max-w-3xl mx-auto flex items-center gap-2">
+              {/* Walkie-Talkie Voice Microphone Button */}
+              <WalkieTalkie
+                language={language}
+                onSpeechFinal={(transcript) => {
+                  setInputText(transcript);
+                  handleSendMessage(transcript);
+                }}
               />
+
+              <input
+                type="file"
+                ref={fileInputRef}
+                onChange={handleImageSelect}
+                accept="image/*"
+                className="hidden"
+              />
+
               <button
                 type="button"
                 onClick={() => fileInputRef.current?.click()}
-                className="w-10 h-10 rounded-xl border border-cream-300 bg-cream-50 hover:bg-cream-100 active:bg-cream-200 text-brand-dark/70 hover:text-brand-forest transition-colors shrink-0 flex items-center justify-center"
-                title="Attach Crop Image"
-                aria-label="Attach Crop Image"
+                className="p-2 sm:p-2.5 rounded-xl border border-cream-200 hover:border-brand-leaf/40 bg-cream-50/50 hover:bg-cream-100 text-brand-dark/70 hover:text-brand-forest transition-colors shadow-2xs shrink-0"
+                title="Attach photo of diseased leaf or crop"
+                disabled={isLoading}
               >
-                <ImageIcon className="w-5 h-5" />
+                <ImageIcon className="w-4 h-4" />
               </button>
 
-              {/* Voice-First Walkie-Talkie */}
-              <div className="shrink-0">
-                <WalkieTalkie
-                  language={language}
-                  lastAiResponse={messages.filter((m) => m.role === 'assistant').pop()?.content}
-                  onSpeechFinal={(transcript) => {
-                    setInputText(transcript);
-                    handleSendMessage(transcript);
+              <div className="flex-1 relative">
+                <input
+                  type="text"
+                  value={inputText}
+                  onChange={(e) => setInputText(e.target.value)}
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter' && !e.shiftKey) {
+                      e.preventDefault();
+                      handleSendMessage();
+                    }
                   }}
+                  placeholder={
+                    language === 'bn'
+                      ? 'ফসলের রোগ, পোকা বা সার সম্পর্কে প্রশ্ন লিখুন...'
+                      : language === 'hi'
+                      ? 'फसल रोग, कीट या खाद के बारे में पूछें...'
+                      : 'Ask about crop symptoms, dosage, or soil...'
+                  }
+                  disabled={isLoading}
+                  className="w-full px-3.5 py-2.5 rounded-xl border border-cream-200 bg-cream-50/30 focus:bg-white text-xs sm:text-sm text-brand-dark focus:outline-hidden focus:border-brand-leaf focus:ring-1 focus:ring-brand-leaf transition-all placeholder:text-brand-dark/40"
                 />
               </div>
 
-              {/* Text Input */}
-              <input
-                type="text"
-                value={inputText}
-                onChange={(e) => setInputText(e.target.value)}
-                placeholder={
-                  language === 'bn'
-                    ? 'ফসল সম্পর্কে জিজ্ঞাসা করুন...'
-                    : language === 'hi'
-                    ? 'फसल के बारे में पूछें...'
-                    : 'Ask crop health, weather...'
-                }
-                className="flex-1 min-w-0 h-10 px-3 text-xs sm:text-sm rounded-xl bg-cream-50 border border-cream-200 focus:outline-hidden focus:border-brand-leaf text-brand-dark"
-                disabled={isLoading}
-              />
-
-              {/* Send Button */}
-              <button
-                type="submit"
+              <Button
+                variant="primary"
+                size="md"
+                onClick={() => handleSendMessage()}
                 disabled={isLoading || (!inputText.trim() && !attachedImage)}
-                className="w-10 h-10 rounded-xl bg-brand-forest hover:bg-brand-leaf disabled:opacity-40 text-white flex items-center justify-center shrink-0 active:scale-95 transition-transform"
-                aria-label="Send message"
+                className="rounded-xl px-3 sm:px-4 py-2.5 shadow-2xs font-bold shrink-0"
               >
                 <Send className="w-4 h-4" />
-              </button>
-            </form>
+              </Button>
+            </div>
           </div>
         </div>
       </div>
 
-      {/* Report a Wrong Answer Modal */}
-      <Modal
-        isOpen={reportModalOpen}
-        onClose={() => setReportModalOpen(false)}
-        title="Report an Inaccurate Answer"
-      >
-        <form
-          onSubmit={(e) => {
-            e.preventDefault();
-            setIsSubmittingReport(true);
-            setTimeout(() => {
-              toast.success('Report submitted to agronomy review queue. Thank you for keeping KRISHIBONDHU safe!');
-              setIsSubmittingReport(false);
-              setReportModalOpen(false);
-            }, 500);
-          }}
-          className="space-y-4 pt-2 text-left"
+      {/* Report Modal */}
+      {reportModalOpen && (
+        <Modal
+          isOpen={reportModalOpen}
+          onClose={() => setReportModalOpen(false)}
+          title="Report Agronomy Recommendation"
         >
-          <p className="text-xs text-brand-dark/70">
-            Tell us why this response is inaccurate. Every report is audited against CIBRC and university package of practices.
-          </p>
-
-          {reportingContent && (
-            <div className="p-2.5 rounded-xl bg-cream-100 text-xs text-brand-dark/80 italic max-h-24 overflow-y-auto border border-cream-200">
-              &quot;{reportingContent.slice(0, 200)}...&quot;
+          <div className="space-y-4 text-xs sm:text-sm text-left">
+            <p className="text-brand-dark/75">
+              Help us maintain strict agricultural safety standards. Tell us what was incorrect or unsafe in this advice.
+            </p>
+            {reportingContent && (
+              <div className="p-2.5 rounded-xl bg-cream-100 border border-cream-200 text-xs text-brand-dark/80 line-clamp-3 italic">
+                &ldquo;{reportingContent}&rdquo;
+              </div>
+            )}
+            <div>
+              <label className="block text-xs font-bold text-brand-dark mb-1">
+                Category
+              </label>
+              <select
+                value={reportCategory}
+                onChange={(e) => setReportCategory(e.target.value)}
+                className="w-full p-2.5 rounded-xl border border-cream-200 bg-white text-xs font-medium"
+              >
+                <option value="Pesticide or Chemical Dosage">Pesticide or Chemical Dosage</option>
+                <option value="Wrong Disease Identified">Wrong Disease Identified</option>
+                <option value="Inaccurate Sowing or Weather Info">Inaccurate Sowing or Weather Info</option>
+                <option value="Inappropriate Tone or Language">Inappropriate Tone or Language</option>
+                <option value="Other">Other</option>
+              </select>
             </div>
-          )}
-
-          <div className="space-y-1.5">
-            <label className="block text-xs font-semibold text-brand-dark">Category of Issue</label>
-            <select
-              value={reportCategory}
-              onChange={(e) => setReportCategory(e.target.value)}
-              className="block w-full rounded-xl border border-cream-300 bg-white px-3 py-2 text-xs text-brand-dark focus:outline-none focus:ring-2 focus:ring-brand-emerald min-h-[44px]"
-            >
-              <option value="Pesticide or Chemical Dosage">Pesticide or Chemical Dosage Issue</option>
-              <option value="Disease Diagnosis">Wrong Disease Diagnosis or Symptoms</option>
-              <option value="Scheme or Subsidy">Outdated or Incorrect Government Scheme</option>
-              <option value="Translation">Translation or Language Problem</option>
-              <option value="Other">Other Agronomic Concern</option>
-            </select>
+            <div>
+              <label className="block text-xs font-bold text-brand-dark mb-1">
+                Details / Notes
+              </label>
+              <textarea
+                value={reportNotes}
+                onChange={(e) => setReportNotes(e.target.value)}
+                placeholder="Explain the inaccuracy..."
+                rows={3}
+                className="w-full p-2.5 rounded-xl border border-cream-200 bg-white text-xs"
+              />
+            </div>
+            <div className="flex justify-end gap-2 pt-2">
+              <Button variant="ghost" size="sm" onClick={() => setReportModalOpen(false)}>
+                Cancel
+              </Button>
+              <Button
+                variant="primary"
+                size="sm"
+                onClick={() => {
+                  toast.success('Thank you. Safety review team notified.');
+                  setReportModalOpen(false);
+                  setReportNotes('');
+                }}
+              >
+                Submit Report
+              </Button>
+            </div>
           </div>
-
-          <div className="space-y-1.5">
-            <label className="block text-xs font-semibold text-brand-dark">Correct Info / What Should Be Changed *</label>
-            <textarea
-              rows={3}
-              required
-              value={reportNotes}
-              onChange={(e) => setReportNotes(e.target.value)}
-              placeholder="e.g. Recommended Mancozeb dose for potato late blight should be 2.0 - 2.5 g/L..."
-              className="block w-full rounded-xl border border-cream-300 bg-white p-3 text-xs text-brand-dark focus:outline-none focus:ring-2 focus:ring-brand-emerald"
-            />
-          </div>
-
-          <div className="flex items-center justify-end gap-2 pt-2 border-t border-cream-200">
-            <Button type="button" variant="secondary" size="sm" onClick={() => setReportModalOpen(false)}>
-              Cancel
-            </Button>
-            <Button type="submit" variant="primary" size="sm" isLoading={isSubmittingReport}>
-              Submit Report
-            </Button>
-          </div>
-        </form>
-      </Modal>
+        </Modal>
+      )}
     </div>
+  );
+}
+
+export default function AssistantPage() {
+  return (
+    <Suspense
+      fallback={
+        <div className="flex items-center justify-center min-h-[400px] text-xs font-bold text-brand-forest animate-pulse">
+          Connecting to Agronomy Intelligence Brain...
+        </div>
+      }
+    >
+      <AssistantChat />
+    </Suspense>
   );
 }

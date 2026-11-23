@@ -11,6 +11,19 @@ export interface ChatMessageParam {
   imageUrl?: string | null;
 }
 
+export interface ActiveCropIssueContext {
+  cropName: string;
+  variety?: string | null;
+  healthStatus?: string | null;
+  farmName?: string | null;
+  location?: string | null;
+  soilType?: string | null;
+  area?: string | number | null;
+  areaUnit?: string | null;
+  sownDate?: string | null;
+  irrigation?: string | null;
+}
+
 export interface FarmerContext {
   name?: string;
   state?: string;
@@ -18,6 +31,7 @@ export interface FarmerContext {
   village?: string;
   crops?: string[];
   soilType?: string;
+  activeCropIssue?: ActiveCropIssueContext | null;
 }
 
 export function buildSystemPrompt(language: 'en' | 'bn' | 'hi', context?: FarmerContext): string {
@@ -37,10 +51,26 @@ FARMER PROFILE CONTEXT:
 `
     : 'User is exploring as a Guest Farmer.';
 
+  const cropIssuePrompt = context?.activeCropIssue
+    ? `
+ACTIVE CROP INQUIRY & FIELD HEALTH ALERT UNDER ATTENTION:
+- Crop: ${context.activeCropIssue.cropName} ${context.activeCropIssue.variety ? `(Variety: ${context.activeCropIssue.variety})` : ''}
+- Registered Plot: ${context.activeCropIssue.farmName || 'Primary Farm'} (${context.activeCropIssue.location || 'West Bengal'})
+- Land Parcel Area: ${context.activeCropIssue.area || '1'} ${context.activeCropIssue.areaUnit || 'Bigha'}
+- Soil & Irrigation: ${context.activeCropIssue.soilType || 'Regional soil'}, ${context.activeCropIssue.irrigation || 'STW / Canal'}
+- Current Flagged Health Status: ${context.activeCropIssue.healthStatus ? context.activeCropIssue.healthStatus.toUpperCase() : 'NEEDS ATTENTION'}
+- Sowing Date: ${context.activeCropIssue.sownDate || 'Recent winter sowing'}
+
+SPECIAL ADVISORY DIRECTIVE:
+The farmer navigated to you directly from their Farm Plot management screen regarding this active alert. Immediately address this specific crop and plot in your response. Explain why this crop is flagged (for Aman Rice Swarna variety in Bengal winter, address high humidity fungal risks such as Sheath Blight, Blast, and False Smut). Provide clear, numbered steps starting with immediate organic bio-control (Pseudomonas fluorescens / Trichoderma or Neem), followed by ICAR/BCKV approved chemical emergency sprays (e.g. Hexaconazole 5% EC or Validamycin 3% L with exact doses per liter).
+`
+    : '';
+
   return `
 You are "Krishibondhu AI" (কৃষিবন্ধু), an empathetic, highly skilled agricultural advisor and plant pathologist dedicated to empowering Indian farmers, with specialized knowledge of West Bengal and eastern India agro-climatic zones.
 
 ${farmerInfo}
+${cropIssuePrompt}
 
 YOUR AREAS OF EXPERTISE:
 1. Crop Diseases & Pest Control: Symptom identification, organic/biological management first, followed by certified chemical dosages with strict safety instructions.

@@ -264,40 +264,46 @@ export default function DashboardPage() {
         </div>
       </div>
 
-      {/* High-Priority Actionable Crop Alert (Clickable redirect to Crops view) */}
-      {attentionCropsCount > 0 && (
-        <Link
-          href="/crops"
-          className="group block p-4 sm:p-5 rounded-2xl bg-amber-500/10 border-2 border-amber-500/40 hover:border-amber-500 hover:bg-amber-500/15 transition-all shadow-xs cursor-pointer"
-        >
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-            <div className="flex items-start sm:items-center gap-3.5">
-              <div className="w-11 h-11 rounded-xl bg-amber-500/20 text-amber-800 flex items-center justify-center shrink-0 animate-pulse">
-                <AlertTriangle className="w-6 h-6" />
-              </div>
-              <div>
-                <div className="flex items-center gap-2">
-                  <span className="text-xs font-black uppercase tracking-wider text-amber-900">
-                    Active Crop Health Alert
-                  </span>
-                  <span className="px-2 py-0.5 rounded-full bg-amber-200 text-amber-900 text-[11px] font-bold">
-                    {attentionCropsCount} Plot Requires Immediate Attention
-                  </span>
+      {/* High-Priority Actionable Crop Alert (Clickable redirect directly to AI Assistant with plot context) */}
+      {attentionCropsCount > 0 && (() => {
+        const attCrop = crops.find((c) => c.health_status !== 'healthy') || crops[0];
+        const attFarm = farms.find((f) => f.id === (attCrop as any).farm_id) || farms[0];
+        const aiHref = `/assistant?crop_id=${attCrop.id}&crop_name=${encodeURIComponent(attCrop.name)}&variety=${encodeURIComponent(attCrop.variety || '')}&status=${attCrop.health_status}&farm=${encodeURIComponent(attFarm?.name || 'Primary Farm')}&soil=${encodeURIComponent(attFarm?.soil_type || 'Clay')}&area=${attCrop.area}&unit=${encodeURIComponent(attCrop.area_unit)}&sown=${encodeURIComponent(attCrop.planting_date)}&auto_ask=true`;
+
+        return (
+          <Link
+            href={aiHref}
+            className="group block p-4 sm:p-5 rounded-2xl bg-amber-500/10 border-2 border-amber-500/40 hover:border-amber-500 hover:bg-amber-500/15 transition-all shadow-xs cursor-pointer"
+          >
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+              <div className="flex items-start sm:items-center gap-3.5">
+                <div className="w-11 h-11 rounded-xl bg-amber-500/20 text-amber-800 flex items-center justify-center shrink-0 animate-pulse">
+                  <AlertTriangle className="w-6 h-6" />
                 </div>
-                <p className="text-xs sm:text-sm font-semibold text-brand-dark mt-1">
-                  {crops.find((c) => c.health_status !== 'healthy')?.name || 'Crop'} 
-                  {crops.find((c) => c.health_status !== 'healthy')?.variety ? ` (${crops.find((c) => c.health_status !== 'healthy')?.variety})` : ''} 
-                  {' '}has reported symptoms or pathogen susceptibility in your registered plot.
-                </p>
+                <div>
+                  <div className="flex items-center gap-2">
+                    <span className="text-xs font-black uppercase tracking-wider text-amber-900">
+                      Active Crop Health Alert
+                    </span>
+                    <span className="px-2 py-0.5 rounded-full bg-amber-200 text-amber-900 text-[11px] font-bold">
+                      {attentionCropsCount} Plot Requires Immediate Attention
+                    </span>
+                  </div>
+                  <p className="text-xs sm:text-sm font-semibold text-brand-dark mt-1">
+                    {attCrop.name}
+                    {attCrop.variety ? ` (${attCrop.variety})` : ''}
+                    {' '}has an active health warning. Tap to get instant ICAR/BCKV diagnosis and remedies.
+                  </p>
+                </div>
+              </div>
+              <div className="flex items-center gap-1.5 text-xs font-bold text-amber-900 group-hover:translate-x-1 transition-transform self-end sm:self-auto shrink-0 bg-white/90 px-3.5 py-2 rounded-xl border border-amber-300 shadow-2xs">
+                <span>Ask AI Treatment</span>
+                <ArrowRight className="w-4 h-4 text-amber-800" />
               </div>
             </div>
-            <div className="flex items-center gap-1.5 text-xs font-bold text-amber-900 group-hover:translate-x-1 transition-transform self-end sm:self-auto shrink-0 bg-white/90 px-3.5 py-2 rounded-xl border border-amber-300 shadow-2xs">
-              <span>View Treatment & Remedies</span>
-              <ArrowRight className="w-4 h-4 text-amber-800" />
-            </div>
-          </div>
-        </Link>
-      )}
+          </Link>
+        );
+      })()}
 
       {/* Feature Highlight Cards (Directly matching Soil Health Card Government Portal layout) */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">

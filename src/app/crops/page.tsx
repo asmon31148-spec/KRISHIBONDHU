@@ -21,6 +21,7 @@ import {
   Trash2,
   TrendingUp,
   CheckCircle2,
+  ArrowRight,
 } from 'lucide-react';
 import { formatLandArea, LandUnit } from '@/lib/units';
 
@@ -453,14 +454,23 @@ export default function CropsPage() {
                 )}
 
                 {/* Crop Action Buttons */}
-                <div className="flex items-center justify-between pt-2 border-t border-cream-200 gap-2">
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={() => handleOpenCondition(crop)}
-                  >
-                    {t('crops.updateCondition')}
-                  </Button>
+                <div className="flex items-center justify-between pt-2 border-t border-cream-200 gap-2 flex-wrap">
+                  <div className="flex items-center gap-2">
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => handleOpenCondition(crop)}
+                    >
+                      {t('crops.updateCondition')}
+                    </Button>
+                    <Link
+                      href={`/assistant?crop_id=${crop.id}&crop_name=${encodeURIComponent(crop.name)}&variety=${encodeURIComponent(crop.variety || '')}&status=${crop.health_status}&farm=${encodeURIComponent(crop.farms?.name || 'Primary Plot')}&area=${crop.area}&unit=${encodeURIComponent(crop.area_unit)}&sown=${encodeURIComponent(crop.planting_date)}&irrigation=${encodeURIComponent(crop.irrigation_type || '')}&auto_ask=true`}
+                      className="inline-flex items-center gap-1 px-2.5 py-1.5 rounded-xl bg-emerald-50 hover:bg-emerald-100 text-brand-forest font-bold text-xs border border-emerald-200 shadow-2xs transition-colors"
+                    >
+                      <span>Ask AI</span>
+                      <ArrowRight className="w-3 h-3" />
+                    </Link>
+                  </div>
 
                   <Link href={`/yield?crop_id=${crop.id}`}>
                     <Button
