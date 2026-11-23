@@ -264,52 +264,55 @@ export default function AssistantPage() {
   const currentSuggestions = SUGGESTED_PROMPTS[language] || SUGGESTED_PROMPTS.en;
 
   return (
-    <div className="flex flex-col h-[calc(100vh-140px)] w-full text-left relative">
+    <div className="flex flex-col h-[calc(100dvh-115px)] sm:h-[calc(100dvh-130px)] lg:h-[calc(100vh-140px)] w-full text-left relative overflow-hidden">
       {/* Top Bar with Language Indicator & Actions */}
-      <div className="flex items-center justify-between pb-3 border-b border-cream-200 gap-3">
-        <div className="flex items-center gap-2">
-          {/* Toggle sidebar button for mobile/desktop */}
+      <div className="flex items-center justify-between pb-2.5 sm:pb-3 border-b border-cream-200 gap-2 shrink-0">
+        <div className="flex items-center gap-2 min-w-0">
+          {/* Toggle history button for mobile/desktop */}
           {!isGuest && (
             <button
               onClick={() => setIsSidebarOpen(!isSidebarOpen)}
-              className="p-1.5 rounded-xl border border-cream-200 bg-white hover:bg-cream-100 text-brand-dark/70 transition-colors"
+              className="p-1.5 sm:p-2 rounded-xl border border-cream-200 bg-white hover:bg-cream-100 text-brand-dark/70 transition-colors shrink-0"
               aria-label="Toggle history"
+              title="Chat History"
             >
               <MessageSquare className="w-4 h-4 text-brand-leaf" />
             </button>
           )}
-          <div className="flex items-center gap-2">
-            <div className="w-8 h-8 rounded-xl bg-brand-forest flex items-center justify-center text-white shadow-xs">
+          <div className="flex items-center gap-2 min-w-0">
+            <div className="w-8 h-8 rounded-xl bg-brand-forest flex items-center justify-center text-white shadow-xs shrink-0">
               <Bot className="w-4 h-4 text-brand-mint" />
             </div>
-            <div>
-              <h1 className="text-base sm:text-lg font-extrabold text-brand-forest leading-none">
+            <div className="min-w-0">
+              <h1 className="text-sm sm:text-lg font-extrabold text-brand-forest leading-none truncate">
                 AI Agronomy Assistant
               </h1>
-              <span className="text-[10px] text-brand-dark/60 font-medium">
-                Trained on ICAR & Bengal Agro-Climatic Data
+              <span className="text-[10px] text-brand-dark/60 font-medium truncate block">
+                ICAR & Bengal Agro-Climatic Data
               </span>
             </div>
           </div>
         </div>
 
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-1.5 sm:gap-2 shrink-0">
           <Button
             variant="outline"
             size="sm"
             onClick={handleNewChat}
             leftIcon={<Plus className="w-3.5 h-3.5" />}
+            className="text-xs px-2.5 py-1.5 sm:px-3 sm:py-2"
           >
-            New Chat
+            <span className="hidden xs:inline">New Chat</span>
+            <span className="xs:hidden">New</span>
           </Button>
         </div>
       </div>
 
       {/* Main Chat Workspace */}
-      <div className="flex flex-1 min-h-0 pt-3 gap-4">
-        {/* Conversations History Sidebar (Logged in users) */}
+      <div className="flex flex-1 min-h-0 pt-2.5 sm:pt-3 gap-3 lg:gap-4 overflow-hidden">
+        {/* Desktop Sidebar (Logged in users, desktop screen) */}
         {!isGuest && isSidebarOpen && (
-          <aside className="w-64 border-r border-cream-200 pr-3 flex flex-col space-y-2 bg-cream-50/50 rounded-2xl p-2 shrink-0">
+          <aside className="hidden lg:flex w-64 border-r border-cream-200 pr-3 flex-col space-y-2 bg-cream-50/50 rounded-2xl p-2 shrink-0">
             <span className="text-xs font-bold text-brand-forest uppercase tracking-wider px-2 py-1">
               Chat History
             </span>
@@ -342,6 +345,81 @@ export default function AssistantPage() {
               )}
             </div>
           </aside>
+        )}
+
+        {/* Mobile Slide-over Drawer for Chat History */}
+        {!isGuest && isSidebarOpen && (
+          <div
+            role="dialog"
+            aria-modal="true"
+            className="lg:hidden fixed inset-0 z-50 bg-brand-dark/50 backdrop-blur-xs flex flex-col justify-end"
+          >
+            <div
+              className="fixed inset-0"
+              onClick={() => setIsSidebarOpen(false)}
+              aria-hidden="true"
+            />
+            <div className="relative bg-cream-50 rounded-t-3xl border-t border-cream-200 p-4 shadow-2xl z-10 max-h-[75vh] flex flex-col animate-in slide-in-from-bottom duration-200">
+              <div className="flex items-center justify-between pb-3 border-b border-cream-200">
+                <div className="flex items-center gap-2">
+                  <MessageSquare className="w-4 h-4 text-brand-leaf" />
+                  <span className="text-sm font-bold text-brand-dark">Previous Chats</span>
+                </div>
+                <button
+                  onClick={() => setIsSidebarOpen(false)}
+                  className="p-1 rounded-lg text-brand-dark/60 hover:text-brand-dark hover:bg-cream-200"
+                  aria-label="Close"
+                >
+                  <X className="w-5 h-5" />
+                </button>
+              </div>
+
+              <div className="flex-1 overflow-y-auto space-y-1.5 py-3">
+                {conversations.length === 0 ? (
+                  <p className="text-xs text-brand-dark/50 p-4 text-center italic">
+                    No previous conversations saved yet.
+                  </p>
+                ) : (
+                  conversations.map((conv) => (
+                    <div
+                      key={conv.id}
+                      onClick={() => {
+                        handleSelectConversation(conv.id);
+                        setIsSidebarOpen(false);
+                      }}
+                      className={`flex items-center justify-between p-3 rounded-xl text-xs font-semibold cursor-pointer transition-colors ${
+                        activeConversationId === conv.id
+                          ? 'bg-brand-forest text-white'
+                          : 'bg-white text-brand-dark hover:bg-cream-100 border border-cream-200'
+                      }`}
+                    >
+                      <span className="truncate max-w-[200px]">{conv.title}</span>
+                      <button
+                        onClick={(e) => deleteConversation(conv.id, e)}
+                        className="p-1.5 rounded opacity-60 hover:opacity-100 hover:text-red-500"
+                        aria-label="Delete chat"
+                      >
+                        <Trash2 className="w-4 h-4" />
+                      </button>
+                    </div>
+                  ))
+                )}
+              </div>
+
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => {
+                  handleNewChat();
+                  setIsSidebarOpen(false);
+                }}
+                className="w-full mt-2"
+                leftIcon={<Plus className="w-4 h-4" />}
+              >
+                Start New Chat
+              </Button>
+            </div>
+          </div>
         )}
 
         {/* Chat Messages Stream Area */}
@@ -468,15 +546,15 @@ export default function AssistantPage() {
 
           {/* Attached image preview pill before sending */}
           {attachedImage && (
-            <div className="px-4 py-2 bg-cream-100 border-t border-cream-200 flex items-center justify-between gap-2">
+            <div className="px-3 sm:px-4 py-1.5 sm:py-2 bg-cream-100 border-t border-cream-200 flex items-center justify-between gap-2 shrink-0">
               <div className="flex items-center gap-2">
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img
                   src={attachedImage}
                   alt="Attachment preview"
-                  className="w-10 h-10 rounded-lg object-cover border border-cream-300"
+                  className="w-8 h-8 sm:w-10 sm:h-10 rounded-lg object-cover border border-cream-300"
                 />
-                <span className="text-xs font-semibold text-brand-dark">Leaf Photo Attached</span>
+                <span className="text-xs font-semibold text-brand-dark">Leaf Attached</span>
               </div>
               <button
                 type="button"
@@ -489,13 +567,13 @@ export default function AssistantPage() {
           )}
 
           {/* Chat Input Bar */}
-          <div className="p-3 sm:p-4 border-t border-cream-200 bg-cream-50/60">
+          <div className="p-2 sm:p-3.5 border-t border-cream-200 bg-white/95 backdrop-blur-md shrink-0">
             <form
               onSubmit={(e) => {
                 e.preventDefault();
                 handleSendMessage();
               }}
-              className="flex items-center gap-2"
+              className="flex items-center gap-1.5 sm:gap-2"
             >
               {/* Image upload trigger */}
               <input
@@ -508,19 +586,21 @@ export default function AssistantPage() {
               <button
                 type="button"
                 onClick={() => fileInputRef.current?.click()}
-                className="p-2.5 rounded-xl border border-cream-300 bg-white hover:bg-cream-100 text-brand-dark/70 hover:text-brand-forest transition-colors shrink-0"
+                className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl border border-cream-300 bg-cream-50 hover:bg-cream-100 text-brand-dark/70 hover:text-brand-forest transition-colors shrink-0 flex items-center justify-center"
                 title="Attach Crop Image"
               >
-                <ImageIcon className="w-5 h-5" />
+                <ImageIcon className="w-4 h-4 sm:w-5 sm:h-5" />
               </button>
 
               {/* Voice Input (Speech-to-Text) */}
-              <VoiceControls
-                language={language}
-                onSpeechInput={(transcript) => {
-                  setInputText((prev) => (prev ? `${prev} ${transcript}` : transcript));
-                }}
-              />
+              <div className="shrink-0">
+                <VoiceControls
+                  language={language}
+                  onSpeechInput={(transcript) => {
+                    setInputText((prev) => (prev ? `${prev} ${transcript}` : transcript));
+                  }}
+                />
+              </div>
 
               {/* Text Input */}
               <input
@@ -529,24 +609,24 @@ export default function AssistantPage() {
                 onChange={(e) => setInputText(e.target.value)}
                 placeholder={
                   language === 'bn'
-                    ? 'আপনার প্রশ্ন এখানে লিখুন বা বলুন...'
+                    ? 'ফসল সম্পর্কে জিজ্ঞাসা করুন...'
                     : language === 'hi'
-                    ? 'अपना प्रश्न यहाँ लिखें या बोलें...'
-                    : 'Ask about crop health, fertilizers, weather...'
+                    ? 'फसल के बारे में पूछें...'
+                    : 'Ask crop health, weather...'
                 }
-                className="flex-1 rounded-xl border border-cream-300 bg-white px-3.5 py-2.5 text-xs sm:text-sm text-brand-dark focus:outline-none focus:ring-2 focus:ring-brand-emerald min-h-[44px]"
+                className="flex-1 min-w-0 px-3 sm:px-4 py-2 sm:py-2.5 rounded-xl border border-cream-300 bg-cream-50/50 text-xs sm:text-sm text-brand-dark placeholder:text-brand-dark/40 focus:outline-none focus:ring-2 focus:ring-brand-forest/20 focus:border-brand-forest focus:bg-white min-h-[40px] sm:min-h-[44px]"
+                disabled={isLoading}
               />
 
               {/* Send Button */}
-              <Button
+              <button
                 type="submit"
-                variant="primary"
-                size="md"
                 disabled={isLoading || (!inputText.trim() && !attachedImage)}
-                className="shrink-0"
+                className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-brand-forest hover:bg-brand-leaf disabled:bg-cream-300 disabled:cursor-not-allowed text-white flex items-center justify-center shrink-0 transition-colors shadow-xs"
+                title="Send Message"
               >
                 <Send className="w-4 h-4" />
-              </Button>
+              </button>
             </form>
           </div>
         </div>

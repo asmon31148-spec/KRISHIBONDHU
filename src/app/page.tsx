@@ -26,55 +26,55 @@ export default function LandingPage() {
   const { isGuest } = useAuth();
 
   return (
-    <div className="space-y-12 sm:space-y-16 w-full">
+    <div className="space-y-6 sm:space-y-12 w-full text-left">
       {/* Pilot Warning / Academic Notice */}
-      <div className="flex items-center gap-2 p-3.5 bg-cream-100 border border-cream-200 rounded-2xl text-xs sm:text-sm text-brand-dark/80">
+      <div className="flex items-center gap-2 p-3 sm:p-3.5 bg-cream-100 border border-cream-200 rounded-2xl text-xs sm:text-sm text-brand-dark/80">
         <AlertCircle className="w-4 h-4 text-brand-harvest shrink-0" />
-        <span className="flex-1">{t('landing.pilotNotice')}</span>
+        <span className="flex-1 leading-snug">{t('landing.pilotNotice')}</span>
         <div className="hidden sm:block">
           <LanguageSelector variant="inline" />
         </div>
       </div>
 
       {/* Hero Section */}
-      <section className="relative overflow-hidden rounded-3xl bg-gradient-to-b from-brand-forest/5 via-cream-100/60 to-white border border-cream-200/90 p-6 sm:p-10 lg:p-12 xl:p-14 w-full shadow-xs">
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 xl:gap-12 items-center">
-          <div className="lg:col-span-7 xl:col-span-7 space-y-6 text-left">
-            <Badge variant="forest" size="md">
+      <section className="relative overflow-hidden rounded-3xl bg-gradient-to-b from-brand-forest/5 via-cream-100/60 to-white border border-cream-200/90 p-4 sm:p-8 lg:p-12 xl:p-14 w-full shadow-xs">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-8 xl:gap-12 items-center">
+          <div className="lg:col-span-7 xl:col-span-7 space-y-4 sm:space-y-6 text-left">
+            <Badge variant="forest" size="sm">
               <Sparkles className="w-3.5 h-3.5 text-brand-harvest" />
               <span>{t('landing.heroBadge')}</span>
             </Badge>
 
-            <h1 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-brand-forest tracking-tight leading-[1.15]">
+            <h1 className="text-2xl sm:text-4xl lg:text-5xl font-extrabold text-brand-forest tracking-tight leading-[1.2]">
               {t('landing.heroTitle')}
             </h1>
 
-            <p className="text-sm sm:text-base lg:text-lg text-brand-dark/80 leading-relaxed max-w-2xl">
+            <p className="text-xs sm:text-base lg:text-lg text-brand-dark/80 leading-relaxed max-w-2xl">
               {t('landing.heroDescription')}
             </p>
 
-            <div className="flex flex-wrap items-center gap-3 pt-2">
-              <Link href="/scan">
-                <Button variant="primary" size="lg" leftIcon={<ScanLine className="w-5 h-5" />}>
+            <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2.5 sm:gap-3 pt-1 sm:pt-2 w-full">
+              <Link href="/scan" className="w-full sm:w-auto">
+                <Button variant="primary" size="lg" leftIcon={<ScanLine className="w-5 h-5" />} className="w-full justify-center">
                   {t('landing.scanNow')}
                 </Button>
               </Link>
-              <Link href="/assistant">
-                <Button variant="secondary" size="lg" leftIcon={<Bot className="w-5 h-5 text-brand-leaf" />}>
+              <Link href="/assistant" className="w-full sm:w-auto">
+                <Button variant="secondary" size="lg" leftIcon={<Bot className="w-5 h-5 text-brand-leaf" />} className="w-full justify-center">
                   {t('landing.askAssistant')}
                 </Button>
               </Link>
             </div>
 
-            <p className="text-xs text-brand-dark/60 flex items-center gap-1.5">
-              <ShieldCheck className="w-4 h-4 text-emerald-600" />
+            <p className="text-[11px] sm:text-xs text-brand-dark/60 flex items-center gap-1.5">
+              <ShieldCheck className="w-4 h-4 text-emerald-600 shrink-0" />
               <span>{t('landing.guestNote')}</span>
             </p>
           </div>
 
           {/* Hero Visual Card */}
-          <div className="lg:col-span-5 xl:col-span-5 relative w-full h-full min-h-[300px] sm:min-h-[360px] lg:min-h-[400px] flex">
-            <div className="relative w-full rounded-2xl overflow-hidden shadow-md border-2 border-white bg-cream-100 flex flex-col justify-end p-6 text-white">
+          <div className="lg:col-span-5 xl:col-span-5 relative w-full h-full min-h-[220px] sm:min-h-[320px] lg:min-h-[400px] flex">
+            <div className="relative w-full rounded-2xl overflow-hidden shadow-md border-2 border-white bg-cream-100 flex flex-col justify-end p-4 sm:p-6 text-white">
               {/* Real Agriculture Landscape Photography (Attributed Unsplash open agritech photograph) */}
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
@@ -85,15 +85,15 @@ export default function LandingPage() {
               />
               <div className="absolute inset-0 bg-gradient-to-t from-brand-dark/95 via-brand-dark/40 to-transparent" />
               
-              <div className="relative z-10 space-y-1.5">
-                <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-900/85 backdrop-blur-xs text-[11px] font-semibold text-emerald-200 border border-emerald-500/30">
-                  <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400" />
+              <div className="relative z-10 space-y-1">
+                <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-emerald-900/85 backdrop-blur-xs text-[10px] sm:text-[11px] font-semibold text-emerald-200 border border-emerald-500/30">
+                  <CheckCircle2 className="w-3 h-3 text-emerald-400" />
                   <span>Verified ICAR & BCKV Knowledge Core</span>
                 </div>
-                <h4 className="text-base sm:text-lg font-bold text-white leading-snug">
+                <h4 className="text-sm sm:text-lg font-bold text-white leading-snug">
                   Rice, Potato, Jute & Vegetable Disease Identification
                 </h4>
-                <p className="text-xs text-gray-200">
+                <p className="text-[11px] sm:text-xs text-gray-200">
                   Bengal agro-climatic zone calibration
                 </p>
               </div>

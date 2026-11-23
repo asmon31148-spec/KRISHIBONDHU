@@ -15,6 +15,13 @@ import {
   Trash2,
   Lock,
   Globe,
+  Sparkles,
+  CloudSun,
+  Bot,
+  CheckCircle2,
+  PhoneCall,
+  ArrowRight,
+  ShieldCheck,
 } from 'lucide-react';
 
 export default function ProfilePage() {
@@ -151,29 +158,181 @@ export default function ProfilePage() {
 
   if (isGuest) {
     return (
-      <div className="max-w-md mx-auto py-12 text-center space-y-4">
-        <div className="w-14 h-14 rounded-2xl bg-amber-100 text-brand-harvest flex items-center justify-center mx-auto">
-          <User className="w-7 h-7" />
+      <div className="max-w-xl mx-auto py-3 sm:py-8 space-y-4 sm:space-y-6 text-left">
+        {/* Farmer Guest Card */}
+        <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-brand-forest via-brand-forest/95 to-brand-leaf p-5 sm:p-7 text-white shadow-md">
+          <div className="flex items-start justify-between gap-3">
+            <div className="flex items-center gap-3">
+              <div className="w-12 h-12 sm:w-14 sm:h-14 rounded-2xl bg-white/15 backdrop-blur-md border border-white/20 flex items-center justify-center text-white shrink-0">
+                <User className="w-6 h-6 sm:w-7 sm:h-7 text-brand-mint" />
+              </div>
+              <div>
+                <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-amber-400/20 text-amber-300 border border-amber-400/30 text-[10px] sm:text-xs font-semibold mb-1">
+                  <span className="w-1.5 h-1.5 rounded-full bg-amber-400 animate-pulse" />
+                  Guest Mode Active
+                </div>
+                <h2 className="text-lg sm:text-2xl font-extrabold text-white leading-tight">
+                  Farmer Guest Profile
+                </h2>
+                <p className="text-xs text-white/75 mt-0.5">
+                  Using local device session
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <div className="mt-4 pt-4 border-t border-white/15 flex flex-col sm:flex-row gap-2.5">
+            <button
+              onClick={() => router.push('/auth/signup')}
+              className="w-full py-3 px-4 rounded-xl bg-white text-brand-forest font-bold text-xs sm:text-sm hover:bg-cream-100 transition-colors shadow-sm flex items-center justify-center gap-2"
+            >
+              <span>Create Free Account</span>
+              <ArrowRight className="w-4 h-4 text-brand-leaf" />
+            </button>
+            <button
+              onClick={() => router.push('/auth/login')}
+              className="w-full py-3 px-4 rounded-xl bg-white/10 hover:bg-white/20 border border-white/25 text-white font-semibold text-xs sm:text-sm transition-colors flex items-center justify-center gap-1.5"
+            >
+              <span>Sign In with Existing Account</span>
+            </button>
+          </div>
         </div>
-        <h2 className="text-xl font-bold text-brand-forest">
-          Guest Farmer Profile
-        </h2>
-        <p className="text-xs sm:text-sm text-brand-dark/70 leading-relaxed">
-          You are currently in guest mode. Create a free account to save your farm locations, crops, and diagnostic history.
-        </p>
-        <div className="pt-2">
-          <Button variant="primary" onClick={() => router.push('/auth/signup')}>
-            {t('nav.saveAccount')}
-          </Button>
+
+        {/* Why Create an Account (Benefits) */}
+        <div className="bg-white rounded-3xl border border-cream-200/90 p-4 sm:p-6 shadow-2xs space-y-3">
+          <div className="flex items-center gap-2 pb-2 border-b border-cream-200">
+            <Sparkles className="w-4 h-4 text-brand-harvest" />
+            <h3 className="text-xs sm:text-sm font-bold text-brand-forest uppercase tracking-wider">
+              Why save your farmer profile?
+            </h3>
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5 pt-1">
+            <div className="p-3 rounded-2xl bg-cream-50 border border-cream-200/80 flex sm:flex-col items-center sm:items-start gap-3">
+              <div className="w-8 h-8 rounded-xl bg-brand-forest/10 flex items-center justify-center text-brand-forest shrink-0">
+                <CheckCircle2 className="w-4 h-4 text-brand-leaf" />
+              </div>
+              <div>
+                <h4 className="text-xs font-bold text-brand-dark">Cloud Sync</h4>
+                <p className="text-[11px] text-brand-dark/70 leading-snug mt-0.5">
+                  Access crop diagnoses and farm records on both mobile & PC.
+                </p>
+              </div>
+            </div>
+
+            <div className="p-3 rounded-2xl bg-cream-50 border border-cream-200/80 flex sm:flex-col items-center sm:items-start gap-3">
+              <div className="w-8 h-8 rounded-xl bg-amber-500/10 flex items-center justify-center text-amber-700 shrink-0">
+                <CloudSun className="w-4 h-4 text-brand-harvest" />
+              </div>
+              <div>
+                <h4 className="text-xs font-bold text-brand-dark">District Alerts</h4>
+                <p className="text-[11px] text-brand-dark/70 leading-snug mt-0.5">
+                  Personalized spray advisories tailored to your specific district.
+                </p>
+              </div>
+            </div>
+
+            <div className="p-3 rounded-2xl bg-cream-50 border border-cream-200/80 flex sm:flex-col items-center sm:items-start gap-3">
+              <div className="w-8 h-8 rounded-xl bg-emerald-500/10 flex items-center justify-center text-emerald-700 shrink-0">
+                <Bot className="w-4 h-4 text-brand-leaf" />
+              </div>
+              <div>
+                <h4 className="text-xs font-bold text-brand-dark">Saved Chat History</h4>
+                <p className="text-[11px] text-brand-dark/70 leading-snug mt-0.5">
+                  Never lose agronomic remedies, dosage charts, or AI advice.
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Quick App Preferences (Language & Support) */}
+        <div className="bg-white rounded-3xl border border-cream-200/90 p-4 sm:p-6 shadow-2xs space-y-4">
+          <div className="flex items-center gap-2 pb-2 border-b border-cream-200">
+            <Globe className="w-4 h-4 text-brand-leaf" />
+            <h3 className="text-xs sm:text-sm font-bold text-brand-forest uppercase tracking-wider">
+              Language & Settings
+            </h3>
+          </div>
+
+          <div className="space-y-1.5">
+            <label className="text-xs font-semibold text-brand-dark/80 block">
+              App Language / ভাষা / भाषा
+            </label>
+            <div className="grid grid-cols-3 gap-2">
+              <button
+                type="button"
+                onClick={() => setLanguage('en')}
+                className={`py-2 px-3 rounded-xl text-xs font-bold transition-all border ${
+                  language === 'en'
+                    ? 'bg-brand-forest text-white border-brand-forest shadow-xs'
+                    : 'bg-cream-50 text-brand-dark/80 border-cream-200 hover:bg-cream-100'
+                }`}
+              >
+                English
+              </button>
+              <button
+                type="button"
+                onClick={() => setLanguage('bn')}
+                className={`py-2 px-3 rounded-xl text-xs font-bold transition-all border ${
+                  language === 'bn'
+                    ? 'bg-brand-forest text-white border-brand-forest shadow-xs'
+                    : 'bg-cream-50 text-brand-dark/80 border-cream-200 hover:bg-cream-100'
+                }`}
+              >
+                বাংলা
+              </button>
+              <button
+                type="button"
+                onClick={() => setLanguage('hi')}
+                className={`py-2 px-3 rounded-xl text-xs font-bold transition-all border ${
+                  language === 'hi'
+                    ? 'bg-brand-forest text-white border-brand-forest shadow-xs'
+                    : 'bg-cream-50 text-brand-dark/80 border-cream-200 hover:bg-cream-100'
+                }`}
+              >
+                हिन्दी
+              </button>
+            </div>
+          </div>
+        </div>
+
+        {/* Agricultural Helpline Contacts (Call directly from mobile) */}
+        <div className="bg-cream-100/80 rounded-3xl border border-cream-200 p-4 sm:p-5 shadow-2xs space-y-2.5">
+          <div className="flex items-center gap-2">
+            <PhoneCall className="w-4 h-4 text-brand-forest" />
+            <h4 className="text-xs font-bold text-brand-forest uppercase tracking-wider">
+              Emergency Farmer Helplines
+            </h4>
+          </div>
+          <p className="text-[11px] text-brand-dark/70">
+            Tap to call free government agricultural experts directly from your phone:
+          </p>
+          <div className="flex flex-col sm:flex-row gap-2 pt-1">
+            <a
+              href="tel:18001801551"
+              className="flex-1 p-2.5 rounded-xl bg-white border border-cream-200 hover:border-brand-leaf/40 text-brand-dark flex items-center justify-between text-xs font-semibold shadow-2xs"
+            >
+              <span>Kisan Call Centre (Toll Free)</span>
+              <span className="font-bold text-brand-forest">1800-180-1551</span>
+            </a>
+            <a
+              href="tel:1551"
+              className="sm:w-36 p-2.5 rounded-xl bg-white border border-cream-200 hover:border-brand-leaf/40 text-brand-dark flex items-center justify-between text-xs font-semibold shadow-2xs"
+            >
+              <span>Short Code</span>
+              <span className="font-bold text-brand-forest">1551</span>
+            </a>
+          </div>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="space-y-6 w-full text-left">
+    <div className="space-y-4 sm:space-y-6 w-full text-left pt-1 sm:pt-2">
       <div>
-        <h1 className="text-2xl sm:text-3xl font-extrabold text-brand-forest">
+        <h1 className="text-xl sm:text-3xl font-extrabold text-brand-forest leading-tight">
           {t('profile.title')}
         </h1>
         <p className="text-xs sm:text-sm text-brand-dark/70 mt-1">

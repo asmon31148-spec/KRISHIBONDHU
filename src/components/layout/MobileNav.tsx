@@ -107,7 +107,7 @@ export function MobileNav() {
       {/* Persistent Bottom Bar */}
       <nav
         aria-label="Mobile navigation"
-        className="lg:hidden fixed bottom-0 left-0 right-0 z-40 bg-cream-50/98 backdrop-blur-md border-t border-cream-200/90 px-2 py-1.5 shadow-lg flex items-center justify-around"
+        className="lg:hidden fixed bottom-0 left-0 right-0 z-40 bg-cream-50/98 backdrop-blur-md border-t border-cream-200/90 px-1 py-1 pb-[max(0.35rem,env(safe-area-inset-bottom))] shadow-lg flex items-center justify-around"
       >
         {mainTabs.map((tab) => {
           const isActive = pathname === tab.href;
@@ -116,7 +116,7 @@ export function MobileNav() {
             <Link
               key={tab.href}
               href={tab.href}
-              className={`flex flex-col items-center justify-center min-w-[56px] min-h-[48px] py-1 px-2 rounded-xl text-[10px] font-semibold transition-colors ${
+              className={`flex flex-col items-center justify-center min-w-[52px] min-h-[44px] py-0.5 px-1 rounded-xl text-[10px] font-semibold transition-colors ${
                 isActive
                   ? 'text-brand-forest font-bold'
                   : 'text-brand-dark/60 hover:text-brand-dark'
@@ -129,7 +129,7 @@ export function MobileNav() {
               >
                 <Icon className="w-5 h-5" />
               </div>
-              <span className="truncate max-w-[64px]">{tab.label}</span>
+              <span className="truncate max-w-[58px] leading-tight">{tab.label}</span>
             </Link>
           );
         })}
@@ -138,12 +138,12 @@ export function MobileNav() {
         <button
           type="button"
           onClick={() => setIsMoreOpen(true)}
-          className="flex flex-col items-center justify-center min-w-[56px] min-h-[48px] py-1 px-2 rounded-xl text-[10px] font-semibold text-brand-dark/60 hover:text-brand-dark"
+          className="flex flex-col items-center justify-center min-w-[52px] min-h-[44px] py-0.5 px-1 rounded-xl text-[10px] font-semibold text-brand-dark/60 hover:text-brand-dark"
         >
           <div className="p-1 rounded-lg text-brand-dark/70">
             <Menu className="w-5 h-5" />
           </div>
-          <span>{t('nav.more')}</span>
+          <span className="leading-tight">{t('nav.more')}</span>
         </button>
       </nav>
     </>

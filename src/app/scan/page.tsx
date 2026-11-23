@@ -194,35 +194,35 @@ export default function CropScannerPage() {
   };
 
   return (
-    <div className="space-y-8 w-full text-left">
+    <div className="space-y-4 sm:space-y-8 w-full text-left pt-1 sm:pt-2">
       <div>
         <div className="flex items-center gap-2">
-          <Badge variant="forest" size="md">
+          <Badge variant="forest" size="sm">
             Flagship Diagnosis
           </Badge>
-          <span className="text-xs text-brand-dark/60">• Real Multimodal AI Vision</span>
+          <span className="text-[11px] sm:text-xs text-brand-dark/60">• Real Multimodal AI Vision</span>
         </div>
-        <h1 className="text-2xl sm:text-3xl font-extrabold text-brand-forest mt-1.5">
+        <h1 className="text-xl sm:text-3xl font-extrabold text-brand-forest mt-1 leading-tight">
           AI Crop Disease Scanner
         </h1>
-        <p className="text-xs sm:text-sm text-brand-dark/70 mt-1">
+        <p className="text-xs sm:text-sm text-brand-dark/70 mt-1 leading-relaxed">
           Take or upload a close-up photo of any affected leaf. Our agronomist vision model detects the pathogen, severity, and verified organic and chemical treatments.
         </p>
       </div>
 
       {/* Main Scanner Section */}
       {!scanResult ? (
-        <div className="space-y-6">
-          <Card className="border-2 border-dashed border-cream-300 bg-white shadow-sm overflow-hidden">
-            <CardContent className="p-6 sm:p-10 flex flex-col items-center justify-center text-center space-y-4">
+        <div className="space-y-4 sm:space-y-6">
+          <Card className="border-2 border-dashed border-cream-300 bg-white shadow-xs overflow-hidden">
+            <CardContent className="p-4 sm:p-8 flex flex-col items-center justify-center text-center space-y-3 sm:space-y-4">
               {imagePreview ? (
-                <div className="space-y-4 w-full flex flex-col items-center">
+                <div className="space-y-3 sm:space-y-4 w-full flex flex-col items-center">
                   <div className="relative max-w-sm rounded-2xl overflow-hidden border-2 border-brand-leaf/30 shadow-md">
                     {/* eslint-disable-next-line @next/next/no-img-element */}
                     <img
                       src={imagePreview}
                       alt="Crop leaf preview"
-                      className="w-full h-auto max-h-80 object-cover"
+                      className="w-full h-auto max-h-72 sm:max-h-80 object-cover"
                     />
                     {!isScanning && (
                       <button
@@ -235,27 +235,27 @@ export default function CropScannerPage() {
                     )}
                   </div>
 
-                  {/* Honest Progress Bar during analysis */}
+                  {/* Progress Bar during analysis */}
                   {isScanning ? (
-                    <div className="w-full max-w-md space-y-2 p-4 rounded-2xl bg-cream-50 border border-cream-200">
+                    <div className="w-full max-w-md space-y-2 p-3 sm:p-4 rounded-2xl bg-cream-50 border border-cream-200">
                       <div className="flex items-center justify-between text-xs font-bold text-brand-forest">
-                        <span>{stepLabel}</span>
-                        <span>{scanStep}%</span>
+                        <span className="truncate pr-2">{stepLabel}</span>
+                        <span className="shrink-0">{scanStep}%</span>
                       </div>
-                      <div className="h-3 w-full bg-cream-200 rounded-full overflow-hidden">
+                      <div className="h-2.5 sm:h-3 w-full bg-cream-200 rounded-full overflow-hidden">
                         <div
                           className="h-full bg-brand-forest transition-all duration-500 ease-out"
                           style={{ width: `${scanStep}%` }}
                         />
                       </div>
-                      <div className="flex items-center justify-between pt-1">
-                        <p className="text-[11px] text-brand-dark/60 italic">
-                          Please do not refresh the page while the model analyzes the leaf.
+                      <div className="flex items-center justify-between pt-1 gap-2">
+                        <p className="text-[10px] sm:text-[11px] text-brand-dark/60 italic">
+                          Analyzing leaf symptoms...
                         </p>
                         <button
                           type="button"
                           onClick={handleCancelScan}
-                          className="text-xs text-red-600 hover:underline font-semibold flex items-center gap-1"
+                          className="text-xs text-red-600 hover:underline font-semibold flex items-center gap-1 shrink-0"
                         >
                           <StopCircle className="w-3.5 h-3.5" />
                           Cancel
@@ -263,28 +263,34 @@ export default function CropScannerPage() {
                       </div>
                     </div>
                   ) : (
-                    <div className="flex flex-wrap items-center justify-center gap-3 pt-2">
+                    <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-center gap-2.5 sm:gap-3 pt-2 w-full max-w-sm">
                       <Button
                         variant="primary"
-                        size="lg"
+                        size="md"
                         onClick={runAnalysis}
-                        leftIcon={<ScanLine className="w-5 h-5 text-brand-mint" />}
+                        leftIcon={<ScanLine className="w-4 h-4 text-brand-mint" />}
+                        className="w-full sm:w-auto py-2.5 font-bold"
                       >
                         Analyze Leaf Now
                       </Button>
-                      <Button variant="secondary" size="lg" onClick={handleRetake}>
+                      <Button
+                        variant="secondary"
+                        size="md"
+                        onClick={handleRetake}
+                        className="w-full sm:w-auto py-2.5"
+                      >
                         Retake Photo
                       </Button>
                     </div>
                   )}
                 </div>
               ) : (
-                <div className="space-y-4 max-w-md mx-auto">
-                  <div className="w-16 h-16 rounded-3xl bg-brand-forest/10 border border-brand-forest/20 flex items-center justify-center text-brand-forest mx-auto">
-                    <Camera className="w-8 h-8 text-brand-leaf" />
+                <div className="space-y-3 sm:space-y-4 max-w-md mx-auto w-full">
+                  <div className="w-12 h-12 sm:w-16 sm:h-16 rounded-2xl sm:rounded-3xl bg-brand-forest/10 border border-brand-forest/20 flex items-center justify-center text-brand-forest mx-auto">
+                    <Camera className="w-6 h-6 sm:w-8 sm:h-8 text-brand-leaf" />
                   </div>
                   <div className="space-y-1">
-                    <h3 className="text-lg font-bold text-brand-dark">
+                    <h3 className="text-base sm:text-lg font-bold text-brand-dark">
                       Capture or Select a Leaf Photo
                     </h3>
                     <p className="text-xs text-brand-dark/70">
@@ -309,20 +315,22 @@ export default function CropScannerPage() {
                     onChange={handleFileChange}
                   />
 
-                  <div className="flex flex-wrap items-center justify-center gap-3 pt-2">
+                  <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-center gap-2 sm:gap-3 pt-2 w-full">
                     <Button
                       variant="primary"
-                      size="lg"
+                      size="md"
                       onClick={() => cameraInputRef.current?.click()}
-                      leftIcon={<Camera className="w-5 h-5" />}
+                      leftIcon={<Camera className="w-4 h-4" />}
+                      className="w-full sm:w-auto py-3 font-bold"
                     >
                       Take Camera Photo
                     </Button>
                     <Button
                       variant="secondary"
-                      size="lg"
+                      size="md"
                       onClick={() => fileInputRef.current?.click()}
-                      leftIcon={<Upload className="w-5 h-5 text-brand-leaf" />}
+                      leftIcon={<Upload className="w-4 h-4 text-brand-leaf" />}
+                      className="w-full sm:w-auto py-3 font-semibold"
                     >
                       Upload from Gallery
                     </Button>
@@ -333,21 +341,21 @@ export default function CropScannerPage() {
           </Card>
 
           {/* Photo Taking Tips for Reliable Diagnosis */}
-          <div className="p-4 sm:p-5 rounded-2xl bg-cream-100 border border-cream-200 space-y-3">
+          <div className="p-3.5 sm:p-5 rounded-2xl bg-cream-100 border border-cream-200 space-y-2.5 sm:space-y-3">
             <h4 className="text-xs font-bold uppercase tracking-wider text-brand-forest flex items-center gap-1.5">
               <Sun className="w-4 h-4 text-brand-harvest" />
               Guidelines for 100% Reliable Detection
             </h4>
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs text-brand-dark/80">
-              <div className="p-3 bg-white rounded-xl border border-cream-200 shadow-2xs">
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 sm:gap-3 text-xs text-brand-dark/80">
+              <div className="p-2.5 sm:p-3 bg-white rounded-xl border border-cream-200 shadow-2xs">
                 <span className="font-bold block text-brand-dark mb-0.5">1. Close-Up Leaf View</span>
-                Hold camera 10-15 cm away so lesion spots and fungus fungal spores are sharply focused.
+                Hold camera 10-15 cm away so lesion spots and fungus spores are sharply focused.
               </div>
-              <div className="p-3 bg-white rounded-xl border border-cream-200 shadow-2xs">
+              <div className="p-2.5 sm:p-3 bg-white rounded-xl border border-cream-200 shadow-2xs">
                 <span className="font-bold block text-brand-dark mb-0.5">2. Natural Daytime Light</span>
                 Avoid harsh shadows, excessive flash, or dark night captures. Natural sunlight works best.
               </div>
-              <div className="p-3 bg-white rounded-xl border border-cream-200 shadow-2xs">
+              <div className="p-2.5 sm:p-3 bg-white rounded-xl border border-cream-200 shadow-2xs">
                 <span className="font-bold block text-brand-dark mb-0.5">3. Single Affected Leaf</span>
                 Isolate one leaf rather than the whole field for exact symptom categorization.
               </div>
