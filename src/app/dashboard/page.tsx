@@ -20,6 +20,10 @@ import {
   MapPin,
   Calendar,
   Sparkles,
+  ShieldCheck,
+  FileText,
+  Activity,
+  ArrowRight,
 } from 'lucide-react';
 import { formatLandArea, LandUnit } from '@/lib/units';
 
@@ -143,42 +147,154 @@ export default function DashboardPage() {
 
   return (
     <div className="space-y-8 w-full text-left">
-      {/* Welcome Banner */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 p-6 rounded-3xl bg-gradient-to-r from-brand-forest via-brand-leaf to-brand-forest text-white shadow-md">
-        <div className="space-y-1">
-          <div className="flex items-center gap-2 text-xs text-brand-mint font-semibold">
-            <Calendar className="w-3.5 h-3.5" />
-            <span>{todayDate}</span>
-            <span>•</span>
-            <MapPin className="w-3.5 h-3.5" />
-            <span>{locationDisplay}</span>
-          </div>
-          <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight">
-            {t('dashboard.welcome', { name: farmerName })}
-          </h1>
-          <p className="text-xs sm:text-sm text-white/80 max-w-xl">
-            {t('dashboard.welcomeSubtitle')}
-          </p>
-        </div>
+      {/* Prestigious Panoramic Agricultural Hero Banner (Inspired by Government of India Soil Health Card Portal) */}
+      <div className="relative overflow-hidden rounded-3xl bg-brand-forest shadow-lg border border-brand-leaf/20 text-white">
+        {/* Background Panoramic Crop Photography with Forest Gradient Overlay */}
+        <div 
+          className="absolute inset-0 bg-cover bg-center opacity-25 mix-blend-luminosity"
+          style={{
+            backgroundImage: `url('https://images.unsplash.com/photo-1595974482597-4b8da8879bc5?auto=format&fit=crop&w=1600&q=80')`
+          }}
+        />
+        <div className="absolute inset-0 bg-gradient-to-r from-brand-forest via-brand-forest/90 to-brand-leaf/80" />
 
-        <div className="flex flex-wrap items-center gap-2">
-          <Link href="/scan">
-            <Button variant="amber" size="md" leftIcon={<ScanLine className="w-4 h-4" />}>
-              {t('nav.scan')}
-            </Button>
-          </Link>
-          <Link href="/assistant">
-            <Button variant="secondary" size="md" leftIcon={<Bot className="w-4 h-4 text-brand-leaf" />}>
-              {t('nav.assistant')}
-            </Button>
-          </Link>
+        {/* Hero Content */}
+        <div className="relative p-6 sm:p-8 lg:p-10 space-y-5">
+          {/* Official Authority Badge */}
+          <div className="flex flex-wrap items-center gap-2">
+            <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/10 backdrop-blur-md border border-white/20 text-xs font-medium text-emerald-200">
+              <ShieldCheck className="w-3.5 h-3.5 text-emerald-300" />
+              <span>Government of West Bengal • ICAR & BCKV Knowledge Core</span>
+            </span>
+            <div className="flex items-center gap-1.5 text-xs text-white/70">
+              <Calendar className="w-3.5 h-3.5" />
+              <span>{todayDate}</span>
+              <span>•</span>
+              <MapPin className="w-3.5 h-3.5" />
+              <span>{locationDisplay}</span>
+            </div>
+          </div>
+
+          {/* Prestige Headline with Serif Accent */}
+          <div className="space-y-2 max-w-3xl">
+            <h1 className="text-2xl sm:text-3xl lg:text-4xl font-extrabold tracking-tight text-white leading-tight">
+              Empowering Bengal Farmers With{' '}
+              <span className="font-serif italic text-emerald-300 font-normal">Real-Time Agronomy</span>{' '}
+              For Sustainable Yields
+            </h1>
+            <p className="text-xs sm:text-sm text-white/85 leading-relaxed">
+              Welcome back, <strong className="text-white font-semibold">{farmerName}</strong>. 
+              Access localized disease diagnosis, balanced N-P-K nutrient guidance, 
+              weather pathogen warnings, and official government welfare dispatches.
+            </p>
+          </div>
+
+          {/* Action Buttons */}
+          <div className="flex flex-wrap items-center gap-3 pt-1">
+            <Link href="/scan">
+              <Button 
+                variant="amber" 
+                size="md" 
+                leftIcon={<ScanLine className="w-4 h-4" />}
+                className="shadow-md hover:shadow-lg transition-shadow"
+              >
+                Scan Crop Leaf Now
+              </Button>
+            </Link>
+            <Link href="/assistant">
+              <Button 
+                variant="secondary" 
+                size="md" 
+                leftIcon={<Bot className="w-4 h-4 text-brand-leaf" />}
+                className="bg-white/90 hover:bg-white text-brand-forest border-none shadow-md"
+              >
+                Ask AI Agronomist
+              </Button>
+            </Link>
+            <Link href="/schemes">
+              <Button 
+                variant="ghost" 
+                size="md" 
+                leftIcon={<FileText className="w-4 h-4 text-emerald-200" />}
+                className="text-white hover:bg-white/10 border border-white/20"
+              >
+                Government Schemes
+              </Button>
+            </Link>
+          </div>
         </div>
       </div>
 
-      {/* Overview Stat Cards (Derived strictly from real DB records) */}
+      {/* Feature Highlight Cards (Directly matching Soil Health Card Government Portal layout) */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        {/* Highlight 1: Soil Insights & NPK */}
+        <Link 
+          href="/soil" 
+          className="group block p-5 rounded-2xl bg-white border border-cream-200 hover:border-brand-leaf/40 hover:shadow-md transition-all"
+        >
+          <div className="flex items-start gap-4">
+            <div className="w-12 h-12 rounded-xl bg-emerald-50 border border-emerald-100 flex items-center justify-center text-emerald-700 shrink-0 group-hover:scale-105 transition-transform">
+              <Sprout className="w-6 h-6" />
+            </div>
+            <div className="space-y-1">
+              <h3 className="text-sm font-bold text-brand-dark group-hover:text-brand-forest flex items-center gap-1.5 transition-colors">
+                <span>Soil Insights & N-P-K Guide</span>
+                <ArrowRight className="w-3.5 h-3.5 opacity-0 -translate-x-1 group-hover:opacity-100 group-hover:translate-x-0 transition-all text-brand-leaf" />
+              </h3>
+              <p className="text-xs text-brand-dark/70 leading-relaxed">
+                Balanced nutrient schedules & organic amendments tailored to Bengal alluvial, red, and clay soils.
+              </p>
+            </div>
+          </div>
+        </Link>
+
+        {/* Highlight 2: Pathogen & Weather Surveillance */}
+        <Link 
+          href="/weather" 
+          className="group block p-5 rounded-2xl bg-white border border-cream-200 hover:border-brand-leaf/40 hover:shadow-md transition-all"
+        >
+          <div className="flex items-start gap-4">
+            <div className="w-12 h-12 rounded-xl bg-amber-50 border border-amber-100 flex items-center justify-center text-amber-700 shrink-0 group-hover:scale-105 transition-transform">
+              <Activity className="w-6 h-6" />
+            </div>
+            <div className="space-y-1">
+              <h3 className="text-sm font-bold text-brand-dark group-hover:text-brand-forest flex items-center gap-1.5 transition-colors">
+                <span>Pathogen & Weather Radar</span>
+                <ArrowRight className="w-3.5 h-3.5 opacity-0 -translate-x-1 group-hover:opacity-100 group-hover:translate-x-0 transition-all text-brand-leaf" />
+              </h3>
+              <p className="text-xs text-brand-dark/70 leading-relaxed">
+                Active alerts for Potato Late Blight, Rice Sheath Blight & high-humidity fungal risk across your district.
+              </p>
+            </div>
+          </div>
+        </Link>
+
+        {/* Highlight 3: Schemes & Welfare Tracker */}
+        <Link 
+          href="/schemes" 
+          className="group block p-5 rounded-2xl bg-white border border-cream-200 hover:border-brand-leaf/40 hover:shadow-md transition-all"
+        >
+          <div className="flex items-start gap-4">
+            <div className="w-12 h-12 rounded-xl bg-sky-50 border border-sky-100 flex items-center justify-center text-sky-700 shrink-0 group-hover:scale-105 transition-transform">
+              <ShieldCheck className="w-6 h-6" />
+            </div>
+            <div className="space-y-1">
+              <h3 className="text-sm font-bold text-brand-dark group-hover:text-brand-forest flex items-center gap-1.5 transition-colors">
+                <span>Welfare & Subsidies (FY 2025–26)</span>
+                <ArrowRight className="w-3.5 h-3.5 opacity-0 -translate-x-1 group-hover:opacity-100 group-hover:translate-x-0 transition-all text-brand-leaf" />
+              </h3>
+              <p className="text-xs text-brand-dark/70 leading-relaxed">
+                Check active status for Krishak Bandhu, PM-KISAN, and direct beneficiary status lookup portals.
+              </p>
+            </div>
+          </div>
+        </Link>
+      </div>
+
+      {/* Overview Stat Cards (Derived strictly from real DB records with color top accents) */}
       <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
         {/* Total Farms */}
-        <Card>
+        <Card className="border-t-4 border-t-brand-forest hover:shadow-md transition-shadow">
           <CardContent className="p-4 sm:p-5 flex items-center justify-between">
             <div>
               <p className="text-xs font-semibold text-brand-dark/70">
@@ -187,6 +303,7 @@ export default function DashboardPage() {
               <h3 className="text-2xl font-black text-brand-forest mt-1">
                 {farms.length}
               </h3>
+              <p className="text-[11px] text-brand-dark/50 mt-0.5">Registered plots</p>
             </div>
             <div className="w-10 h-10 rounded-xl bg-brand-forest/10 flex items-center justify-center text-brand-forest">
               <Warehouse className="w-5 h-5" />
@@ -195,7 +312,7 @@ export default function DashboardPage() {
         </Card>
 
         {/* Total Crops */}
-        <Card>
+        <Card className="border-t-4 border-t-brand-leaf hover:shadow-md transition-shadow">
           <CardContent className="p-4 sm:p-5 flex items-center justify-between">
             <div>
               <p className="text-xs font-semibold text-brand-dark/70">
@@ -204,15 +321,16 @@ export default function DashboardPage() {
               <h3 className="text-2xl font-black text-brand-forest mt-1">
                 {crops.length}
               </h3>
+              <p className="text-[11px] text-brand-dark/50 mt-0.5">Sown varieties</p>
             </div>
-            <div className="w-10 h-10 rounded-xl bg-brand-forest/10 flex items-center justify-center text-brand-forest">
+            <div className="w-10 h-10 rounded-xl bg-brand-leaf/10 flex items-center justify-center text-brand-leaf">
               <Sprout className="w-5 h-5" />
             </div>
           </CardContent>
         </Card>
 
         {/* Total Scans */}
-        <Card>
+        <Card className="border-t-4 border-t-brand-amber hover:shadow-md transition-shadow">
           <CardContent className="p-4 sm:p-5 flex items-center justify-between">
             <div>
               <p className="text-xs font-semibold text-brand-dark/70">
@@ -221,15 +339,16 @@ export default function DashboardPage() {
               <h3 className="text-2xl font-black text-brand-forest mt-1">
                 {scans.length}
               </h3>
+              <p className="text-[11px] text-brand-dark/50 mt-0.5">Leaves analyzed</p>
             </div>
-            <div className="w-10 h-10 rounded-xl bg-brand-forest/10 flex items-center justify-center text-brand-forest">
+            <div className="w-10 h-10 rounded-xl bg-amber-500/10 flex items-center justify-center text-amber-700">
               <ScanLine className="w-5 h-5" />
             </div>
           </CardContent>
         </Card>
 
         {/* Crop Health Overview */}
-        <Card>
+        <Card className="border-t-4 border-t-emerald-600 hover:shadow-md transition-shadow">
           <CardContent className="p-4 sm:p-5 flex items-center justify-between">
             <div>
               <p className="text-xs font-semibold text-brand-dark/70">
@@ -245,6 +364,9 @@ export default function DashboardPage() {
                   </Badge>
                 )}
               </div>
+              <p className="text-[11px] text-brand-dark/50 mt-0.5">
+                {attentionCropsCount === 0 ? 'All crops optimal' : 'Requires attention'}
+              </p>
             </div>
             <div className="w-10 h-10 rounded-xl bg-emerald-50 flex items-center justify-center text-emerald-700">
               <CheckCircle2 className="w-5 h-5" />
@@ -255,20 +377,24 @@ export default function DashboardPage() {
 
       {/* Quick Actions Row */}
       <div className="space-y-3">
-        <h2 className="text-base font-bold text-brand-dark">
-          {t('dashboard.quickActions')}
-        </h2>
+        <div className="flex items-center justify-between">
+          <h2 className="text-base font-bold text-brand-dark">
+            {t('dashboard.quickActions')}
+          </h2>
+          <span className="text-xs text-brand-dark/50 font-medium">1-Tap Farmer Tools</span>
+        </div>
         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-3">
           <Link
             href="/scan"
             className="flex flex-col items-center justify-center p-4 rounded-2xl bg-white border border-cream-200/90 hover:border-brand-leaf/40 hover:shadow-xs transition-all text-center group"
           >
-            <div className="w-10 h-10 rounded-xl bg-brand-forest/10 text-brand-forest flex items-center justify-center mb-2 group-hover:scale-105 transition-transform">
+            <div className="w-10 h-10 rounded-xl bg-emerald-50 text-emerald-700 flex items-center justify-center mb-2 group-hover:scale-105 transition-transform">
               <ScanLine className="w-5 h-5" />
             </div>
             <span className="text-xs font-bold text-brand-dark">
               {t('nav.scan')}
             </span>
+            <span className="text-[10px] text-brand-dark/50 mt-0.5">AI Leaf Diagnosis</span>
           </Link>
 
           <Link
@@ -281,42 +407,46 @@ export default function DashboardPage() {
             <span className="text-xs font-bold text-brand-dark">
               {t('nav.assistant')}
             </span>
+            <span className="text-[10px] text-brand-dark/50 mt-0.5">Ask Agronomist</span>
           </Link>
 
           <Link
             href="/crops"
             className="flex flex-col items-center justify-center p-4 rounded-2xl bg-white border border-cream-200/90 hover:border-brand-leaf/40 hover:shadow-xs transition-all text-center group"
           >
-            <div className="w-10 h-10 rounded-xl bg-brand-forest/10 text-brand-forest flex items-center justify-center mb-2 group-hover:scale-105 transition-transform">
+            <div className="w-10 h-10 rounded-xl bg-lime-50 text-lime-700 flex items-center justify-center mb-2 group-hover:scale-105 transition-transform">
               <Sprout className="w-5 h-5" />
             </div>
             <span className="text-xs font-bold text-brand-dark">
               {t('crops.addCrop')}
             </span>
+            <span className="text-[10px] text-brand-dark/50 mt-0.5">Track Sowing</span>
           </Link>
 
           <Link
             href="/weather"
             className="flex flex-col items-center justify-center p-4 rounded-2xl bg-white border border-cream-200/90 hover:border-brand-leaf/40 hover:shadow-xs transition-all text-center group"
           >
-            <div className="w-10 h-10 rounded-xl bg-brand-forest/10 text-brand-forest flex items-center justify-center mb-2 group-hover:scale-105 transition-transform">
+            <div className="w-10 h-10 rounded-xl bg-amber-50 text-amber-700 flex items-center justify-center mb-2 group-hover:scale-105 transition-transform">
               <CloudSun className="w-5 h-5" />
             </div>
             <span className="text-xs font-bold text-brand-dark">
               {t('nav.weather')}
             </span>
+            <span className="text-[10px] text-brand-dark/50 mt-0.5">Pathogen Index</span>
           </Link>
 
           <Link
             href="/news"
-            className="flex flex-col items-center justify-center p-4 rounded-2xl bg-white border border-cream-200/90 hover:border-brand-leaf/40 hover:shadow-xs transition-all text-center group"
+            className="flex flex-col items-center justify-center p-4 rounded-2xl bg-white border border-cream-200/90 hover:border-brand-leaf/40 hover:shadow-xs transition-all text-center group col-span-2 sm:col-span-1"
           >
-            <div className="w-10 h-10 rounded-xl bg-brand-forest/10 text-brand-forest flex items-center justify-center mb-2 group-hover:scale-105 transition-transform">
+            <div className="w-10 h-10 rounded-xl bg-sky-50 text-sky-700 flex items-center justify-center mb-2 group-hover:scale-105 transition-transform">
               <Newspaper className="w-5 h-5" />
             </div>
             <span className="text-xs font-bold text-brand-dark">
               {t('nav.news')}
             </span>
+            <span className="text-[10px] text-brand-dark/50 mt-0.5">Live Dispatches</span>
           </Link>
         </div>
       </div>

@@ -9,7 +9,10 @@ export class OpenRouterVisionAdapter implements AiProviderAdapter {
       throw new Error('OpenRouter API key is not configured.');
     }
 
-    const model = process.env.OPENROUTER_VISION_MODEL || 'openrouter/free';
+    let model = process.env.OPENROUTER_VISION_MODEL || 'nvidia/nemotron-3.5-super-vl:free';
+    if (!model || model === 'openrouter/free') {
+      model = 'nvidia/nemotron-3.5-super-vl:free';
+    }
     const lang = request.language || 'en';
 
     const systemPrompt = `You are a plant pathologist. Return strictly JSON crop diagnosis. Language: ${lang}.
