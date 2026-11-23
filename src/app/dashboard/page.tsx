@@ -671,13 +671,21 @@ export default function DashboardPage() {
         </div>
       </div>
 
-      {/* Main Grid: My Farm & Active Crops vs Recent Activity */}
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
-        {/* Left Column: My Farm & Active Crops (7 cols) */}
-        <div className="lg:col-span-7 space-y-6">
-          {/* Farm Plots Overview Card */}
-          <Card className="border border-cream-300 shadow-xs overflow-hidden">
-            <CardHeader className="flex flex-row items-center justify-between pb-3.5 border-b border-cream-200 bg-cream-50/50">
+      {/* ======================================================== */}
+      {/* SECTION 1: MY FARM PLOTS & ACTIVE SOWN CROPS (EQUAL 50/50 SPLIT) */}
+      {/* ======================================================== */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 items-stretch">
+        {/* Left Card: Registered Farm Plots */}
+        <Card className="border border-cream-300 shadow-xs overflow-hidden flex flex-col justify-between bg-white relative">
+          {/* Subtle agricultural background watermark */}
+          <div 
+            className="absolute right-0 bottom-0 w-48 h-48 bg-contain bg-no-repeat bg-bottom-right opacity-[0.04] pointer-events-none"
+            style={{
+              backgroundImage: `url('https://images.unsplash.com/photo-1500937386664-56d1dfef3854?auto=format&fit=crop&w=400&q=80')`
+            }}
+          />
+          <div>
+            <CardHeader className="flex flex-row items-center justify-between pb-3.5 border-b border-cream-200 bg-cream-50/60">
               <div className="flex items-center gap-2.5">
                 <div className="w-8 h-8 rounded-xl bg-brand-forest/10 flex items-center justify-center text-brand-forest">
                   <Warehouse className="w-4 h-4" />
@@ -689,16 +697,15 @@ export default function DashboardPage() {
                   <span className="text-[11px] text-brand-dark/60">Registered Land Parcels</span>
                 </div>
               </div>
-              <div className="flex items-center gap-2">
-                <Link
-                  href="/farms"
-                  className="inline-flex items-center gap-1 px-3 py-1.5 rounded-xl bg-brand-forest text-white text-xs font-bold hover:bg-brand-forest/90 transition-colors shadow-2xs"
-                >
-                  <Plus className="w-3.5 h-3.5" />
-                  <span>Add Plot</span>
-                </Link>
-              </div>
+              <Link
+                href="/farms"
+                className="inline-flex items-center gap-1 px-3 py-1.5 rounded-xl bg-brand-forest text-white text-xs font-bold hover:bg-brand-forest/90 transition-colors shadow-2xs"
+              >
+                <Plus className="w-3.5 h-3.5" />
+                <span>Add Plot</span>
+              </Link>
             </CardHeader>
+
             <CardContent className="p-4 sm:p-5 space-y-3">
               {farms.length === 0 ? (
                 <EmptyState
@@ -714,7 +721,7 @@ export default function DashboardPage() {
                     <Link
                       key={farm.id}
                       href="/farms"
-                      className="group block p-4 rounded-2xl bg-white border border-cream-200/90 hover:border-brand-leaf hover:shadow-xs transition-all cursor-pointer"
+                      className="group block p-4 rounded-2xl bg-cream-50/40 border border-cream-200/90 hover:border-brand-leaf hover:bg-white hover:shadow-xs transition-all cursor-pointer"
                     >
                       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
                         <div className="flex items-start gap-3.5">
@@ -751,22 +758,31 @@ export default function DashboardPage() {
                       </div>
                     </Link>
                   ))}
-
-                  {/* Contextual Soil Pro-Tip */}
-                  <div className="p-3.5 rounded-xl bg-gradient-to-r from-cream-100 to-emerald-50/50 border border-cream-200 flex items-start gap-2.5 text-xs text-brand-dark/80">
-                    <Lightbulb className="w-4 h-4 text-brand-harvest shrink-0 mt-0.5" />
-                    <p className="leading-relaxed">
-                      <strong>Soil Health Tip:</strong> Clay soils in the Gangetic Delta retain moisture but compact easily. Apply well-decomposed FYM (গোবর সার) @ 1.5 tons/bigha to improve soil aeration and microbial activity.
-                    </p>
-                  </div>
                 </div>
               )}
             </CardContent>
-          </Card>
+          </div>
 
-          {/* Active Sown Crops Overview Card */}
-          <Card className="border border-cream-300 shadow-xs overflow-hidden">
-            <CardHeader className="flex flex-row items-center justify-between pb-3.5 border-b border-cream-200 bg-cream-50/50">
+          {/* Contextual Soil Pro-Tip at bottom */}
+          <div className="p-4 m-4 sm:m-5 rounded-2xl bg-gradient-to-r from-cream-100 to-emerald-50/60 border border-cream-200 flex items-start gap-2.5 text-xs text-brand-dark/85 shadow-2xs">
+            <Lightbulb className="w-4 h-4 text-brand-harvest shrink-0 mt-0.5" />
+            <p className="leading-relaxed">
+              <strong>Soil Health Tip:</strong> Clay soils in the Gangetic Delta retain moisture but compact easily. Apply well-decomposed FYM (গোবর সার) @ 1.5 tons/bigha to improve soil aeration and microbial activity.
+            </p>
+          </div>
+        </Card>
+
+        {/* Right Card: Active Sown Crops */}
+        <Card className="border border-cream-300 shadow-xs overflow-hidden flex flex-col justify-between bg-white relative">
+          {/* Subtle agricultural background watermark */}
+          <div 
+            className="absolute right-0 bottom-0 w-48 h-48 bg-contain bg-no-repeat bg-bottom-right opacity-[0.04] pointer-events-none"
+            style={{
+              backgroundImage: `url('https://images.unsplash.com/photo-1595974482597-4b8da8879bc5?auto=format&fit=crop&w=400&q=80')`
+            }}
+          />
+          <div>
+            <CardHeader className="flex flex-row items-center justify-between pb-3.5 border-b border-cream-200 bg-cream-50/60">
               <div className="flex items-center gap-2.5">
                 <div className="w-8 h-8 rounded-xl bg-brand-leaf/10 flex items-center justify-center text-brand-leaf">
                   <Sprout className="w-4 h-4" />
@@ -778,16 +794,15 @@ export default function DashboardPage() {
                   <span className="text-[11px] text-brand-dark/60">Active Sowing & Field Health</span>
                 </div>
               </div>
-              <div className="flex items-center gap-2">
-                <Link
-                  href="/crops"
-                  className="inline-flex items-center gap-1 px-3 py-1.5 rounded-xl bg-brand-forest text-white text-xs font-bold hover:bg-brand-forest/90 transition-colors shadow-2xs"
-                >
-                  <Plus className="w-3.5 h-3.5" />
-                  <span>Add Crop</span>
-                </Link>
-              </div>
+              <Link
+                href="/crops"
+                className="inline-flex items-center gap-1 px-3 py-1.5 rounded-xl bg-brand-forest text-white text-xs font-bold hover:bg-brand-forest/90 transition-colors shadow-2xs"
+              >
+                <Plus className="w-3.5 h-3.5" />
+                <span>Add Crop</span>
+              </Link>
             </CardHeader>
+
             <CardContent className="p-4 sm:p-5 space-y-3">
               {crops.length === 0 ? (
                 <EmptyState
@@ -802,7 +817,7 @@ export default function DashboardPage() {
                   {crops.map((crop) => (
                     <div
                       key={crop.id}
-                      className="p-4 rounded-2xl bg-white border border-cream-200/90 shadow-2xs hover:border-brand-leaf transition-all space-y-3"
+                      className="p-4 rounded-2xl bg-cream-50/40 border border-cream-200/90 shadow-2xs hover:border-brand-leaf hover:bg-white transition-all space-y-3"
                     >
                       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
                         <div className="flex items-start gap-3.5">
@@ -863,21 +878,21 @@ export default function DashboardPage() {
                       <div className="pt-2.5 border-t border-cream-200/80 flex items-center gap-2 flex-wrap">
                         <Link
                           href="/fertilizer"
-                          className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-cream-50 hover:bg-emerald-50 text-brand-dark hover:text-brand-forest border border-cream-200 text-xs font-semibold transition-colors"
+                          className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-white hover:bg-emerald-50 text-brand-dark hover:text-brand-forest border border-cream-200 text-xs font-semibold transition-colors shadow-2xs"
                         >
                           <FlaskConical className="w-3.5 h-3.5 text-emerald-600" />
                           <span>Fertilizer Schedule</span>
                         </Link>
                         <Link
                           href="/scan"
-                          className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-cream-50 hover:bg-emerald-50 text-brand-dark hover:text-brand-forest border border-cream-200 text-xs font-semibold transition-colors"
+                          className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-white hover:bg-emerald-50 text-brand-dark hover:text-brand-forest border border-cream-200 text-xs font-semibold transition-colors shadow-2xs"
                         >
                           <ScanLine className="w-3.5 h-3.5 text-brand-forest" />
                           <span>Scan Leaf</span>
                         </Link>
                         <Link
                           href={`/yield?crop_id=${crop.id}`}
-                          className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-cream-50 hover:bg-emerald-50 text-brand-dark hover:text-brand-forest border border-cream-200 text-xs font-semibold transition-colors"
+                          className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-white hover:bg-emerald-50 text-brand-dark hover:text-brand-forest border border-cream-200 text-xs font-semibold transition-colors shadow-2xs"
                         >
                           <TrendingUp className="w-3.5 h-3.5 text-amber-600" />
                           <span>Harvest Yield Estimate</span>
@@ -888,163 +903,237 @@ export default function DashboardPage() {
                 </div>
               )}
             </CardContent>
-          </Card>
+          </div>
+
+          <div className="p-3 text-center border-t border-cream-200/80 bg-cream-50/30">
+            <Link
+              href="/crops"
+              className="text-xs font-bold text-brand-forest hover:underline inline-flex items-center gap-1"
+            >
+              <span>Manage All Crops & Sowing Records</span>
+              <ChevronRight className="w-3.5 h-3.5" />
+            </Link>
+          </div>
+        </Card>
+      </div>
+
+      {/* ======================================================== */}
+      {/* SECTION 2: RECENT CROP HEALTH DIAGNOSES (FULL-WIDTH SYMMETRICAL GRID) */}
+      {/* ======================================================== */}
+      <div className="space-y-4">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-1 border-b border-cream-200">
+          <div>
+            <h2 className="text-base sm:text-lg font-extrabold text-brand-dark flex items-center gap-2">
+              <ScanLine className="w-5 h-5 text-amber-600" />
+              <span>Recent Crop Health Diagnoses</span>
+            </h2>
+            <p className="text-xs text-brand-dark/65 mt-0.5">
+              Verified computer vision leaf scans, detected pathogens, and instant remedy plans
+            </p>
+          </div>
+          <div className="flex items-center gap-2">
+            <Link
+              href="/scan"
+              className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl bg-emerald-700 hover:bg-emerald-800 text-white text-xs font-bold transition-colors shadow-2xs"
+            >
+              <Plus className="w-3.5 h-3.5" />
+              <span>Scan New Leaf</span>
+            </Link>
+            <Link
+              href="/scans/history"
+              className="inline-flex items-center gap-1 px-3 py-1.5 rounded-xl bg-white border border-cream-200 text-brand-dark text-xs font-bold hover:border-brand-leaf transition-colors shadow-2xs"
+            >
+              <span>View All History</span>
+              <ChevronRight className="w-3.5 h-3.5" />
+            </Link>
+          </div>
         </div>
 
-        {/* Right Column: Recent Scans & Agronomic Insights (5 cols) */}
-        <div className="lg:col-span-5 space-y-6">
-          {/* Recent Leaf Disease Scans Card */}
-          <Card className="border border-cream-300 shadow-xs overflow-hidden">
-            <CardHeader className="flex flex-row items-center justify-between pb-3.5 border-b border-cream-200 bg-cream-50/50">
-              <div className="flex items-center gap-2">
-                <div className="w-8 h-8 rounded-xl bg-amber-500/10 flex items-center justify-center text-amber-700">
-                  <ScanLine className="w-4 h-4" />
-                </div>
-                <div>
-                  <CardTitle className="text-base font-bold text-brand-dark">
-                    {t('dashboard.recentScans')}
-                  </CardTitle>
-                  <span className="text-[11px] text-brand-dark/60">Multimodal Diagnosis Feed</span>
-                </div>
-              </div>
-              <Link
-                href="/scan"
-                className="inline-flex items-center gap-1 px-3 py-1.5 rounded-xl bg-emerald-700 hover:bg-emerald-800 text-white text-xs font-bold transition-colors shadow-2xs"
+        {scans.length === 0 ? (
+          <Card className="border border-cream-300 shadow-xs">
+            <CardContent className="p-8 text-center">
+              <EmptyState
+                icon={<ScanLine className="w-8 h-8 text-amber-600" />}
+                title={t('dashboard.noScansYet')}
+                description="Take a photo of diseased leaves to receive instant AI fungal identification and BCKV organic spray protocols."
+                actionLabel={t('dashboard.scanFirstCrop')}
+                onAction={() => (window.location.href = '/scan')}
+              />
+            </CardContent>
+          </Card>
+        ) : (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            {scans.map((scan) => (
+              <Card
+                key={scan.id}
+                className="group border border-cream-300 hover:border-brand-leaf/60 hover:shadow-md transition-all overflow-hidden flex flex-col justify-between bg-white"
               >
-                <Plus className="w-3.5 h-3.5" />
-                <span>New Scan</span>
-              </Link>
-            </CardHeader>
-            <CardContent className="p-4 sm:p-5">
-              {scans.length === 0 ? (
-                <EmptyState
-                  icon={<ScanLine className="w-6 h-6" />}
-                  title={t('dashboard.noScansYet')}
-                  description="Diagnose diseased leaves with multimodal AI vision to safeguard your harvest."
-                  actionLabel={t('dashboard.scanFirstCrop')}
-                  onAction={() => (window.location.href = '/scan')}
-                />
-              ) : (
-                <div className="space-y-3">
-                  {scans.map((scan) => (
-                    <Link
-                      key={scan.id}
-                      href="/scans/history"
-                      className="group flex items-center justify-between p-3.5 rounded-2xl bg-white border border-cream-200/90 hover:border-brand-leaf hover:shadow-xs transition-all cursor-pointer"
+                <CardContent className="p-4 space-y-3.5">
+                  {/* Top Bar: Crop Name + Severity Badge */}
+                  <div className="flex items-start justify-between gap-2">
+                    <div>
+                      <h4 className="text-sm font-extrabold text-brand-dark group-hover:text-brand-forest transition-colors">
+                        {scan.crop_name}
+                      </h4>
+                      <span className="text-[11px] text-brand-dark/55 block">
+                        {new Date(scan.created_at).toLocaleDateString('en-GB', {
+                          day: '2-digit',
+                          month: 'short',
+                          year: 'numeric',
+                        })}
+                      </span>
+                    </div>
+
+                    <Badge
+                      variant={
+                        scan.severity === 'healthy'
+                          ? 'emerald'
+                          : scan.severity === 'severe'
+                          ? 'red'
+                          : 'amber'
+                      }
+                      size="sm"
+                      className="font-bold capitalize shadow-2xs whitespace-nowrap"
                     >
-                      <div className="flex items-center gap-3.5 min-w-0 flex-1">
-                        <div className="w-14 h-14 min-w-[56px] min-h-[56px] max-w-[56px] max-h-[56px] rounded-2xl overflow-hidden shrink-0 border border-cream-200 bg-cream-100 shadow-2xs">
-                          {/* eslint-disable-next-line @next/next/no-img-element */}
-                          <img
-                            src={scan.image_url}
-                            alt={scan.crop_name}
-                            onError={(e) => {
-                              e.currentTarget.style.display = 'none';
-                            }}
-                            className="w-full h-full object-cover group-hover:scale-105 transition-transform"
-                          />
-                        </div>
-                        <div className="min-w-0 flex-1">
-                          <div className="flex items-center gap-1.5">
-                            <h4 className="text-xs sm:text-sm font-bold text-brand-dark group-hover:text-brand-forest transition-colors truncate">
-                              {scan.crop_name}
-                            </h4>
-                            <ChevronRight className="w-3.5 h-3.5 text-brand-leaf opacity-0 group-hover:opacity-100 transition-opacity shrink-0" />
-                          </div>
-                          <p className="text-xs font-semibold text-amber-900/90 truncate mt-0.5">
-                            {scan.disease_name || 'Healthy Crop'}
-                          </p>
-                          <span className="text-[10px] text-brand-dark/55 block truncate mt-0.5">
-                            High AI Confidence • Verified
-                          </span>
-                        </div>
-                      </div>
+                      {scan.severity} Risk
+                    </Badge>
+                  </div>
 
-                      <div className="shrink-0 ml-3">
-                        <Badge
-                          variant={
-                            scan.severity === 'healthy'
-                              ? 'emerald'
-                              : scan.severity === 'severe'
-                              ? 'red'
-                              : 'amber'
-                          }
-                          size="sm"
-                          className="font-bold capitalize shadow-2xs whitespace-nowrap"
-                        >
-                          {scan.severity}
-                        </Badge>
-                      </div>
+                  {/* Mid Row: Constrained $64x64px Thumbnail + Diagnosis Details */}
+                  <div className="flex items-center gap-3 p-2.5 rounded-2xl bg-cream-50/70 border border-cream-200/80">
+                    <div className="w-16 h-16 min-w-[64px] min-h-[64px] max-w-[64px] max-h-[64px] rounded-xl overflow-hidden shrink-0 border border-cream-300 bg-cream-100 shadow-2xs">
+                      {/* eslint-disable-next-line @next/next/no-img-element */}
+                      <img
+                        src={scan.image_url}
+                        alt={scan.crop_name}
+                        onError={(e) => {
+                          e.currentTarget.style.display = 'none';
+                        }}
+                        className="w-full h-full object-cover group-hover:scale-105 transition-transform"
+                      />
+                    </div>
+                    <div className="min-w-0 flex-1">
+                      <span className="text-[10px] font-bold text-amber-800 uppercase tracking-wider block">
+                        Detected Pathogen
+                      </span>
+                      <h5 className="text-xs sm:text-sm font-bold text-brand-dark truncate leading-tight mt-0.5">
+                        {scan.disease_name || 'Healthy Leaf Tissue'}
+                      </h5>
+                      <span className="inline-flex items-center gap-1 text-[10px] text-emerald-800 font-bold mt-1">
+                        <CheckCircle2 className="w-3 h-3 text-emerald-600" />
+                        <span>High Confidence • Verified</span>
+                      </span>
+                    </div>
+                  </div>
+
+                  {/* Bottom Action: View Treatment */}
+                  <div className="pt-2 border-t border-cream-200/80 flex items-center justify-between">
+                    <Link
+                      href="/scans/history"
+                      className="inline-flex items-center gap-1 text-xs font-bold text-brand-forest hover:text-emerald-800 transition-colors"
+                    >
+                      <span>View Organic Treatment</span>
+                      <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform" />
                     </Link>
-                  ))}
 
-                  <Link
-                    href="/scans/history"
-                    className="block text-center text-xs font-bold text-brand-forest hover:underline pt-1"
-                  >
-                    View All Diagnostics History →
-                  </Link>
-                </div>
-              )}
+                    <Link
+                      href="/assistant"
+                      className="text-[11px] font-semibold text-brand-dark/60 hover:text-brand-dark underline"
+                    >
+                      Ask AI
+                    </Link>
+                  </div>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+        )}
+      </div>
+
+      {/* ======================================================== */}
+      {/* SECTION 3: REGIONAL FIELD INTELLIGENCE & ADVISORIES (BALANCED 2-COLUMN) */}
+      {/* ======================================================== */}
+      <div className="space-y-4">
+        <div className="flex items-center justify-between pb-1 border-b border-cream-200">
+          <div>
+            <h2 className="text-base sm:text-lg font-extrabold text-brand-dark flex items-center gap-2">
+              <Sparkles className="w-5 h-5 text-brand-harvest" />
+              <span>Regional Field Intelligence & Advisories</span>
+            </h2>
+            <p className="text-xs text-brand-dark/65 mt-0.5">
+              Calibrated for South 24 Parganas, Hooghly, and Lower Gangetic Basin agro-climatic zones
+            </p>
+          </div>
+          <Badge variant="emerald" size="sm" className="hidden sm:inline-flex">
+            BCKV & ICAR Extension
+          </Badge>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+          {/* Directive 1: Winter Paddy & Potato Protocol */}
+          <Card className="border border-cream-300 bg-gradient-to-br from-cream-50 via-white to-emerald-50/40 shadow-xs overflow-hidden relative group">
+            {/* Background Agriculture Texture */}
+            <div 
+              className="absolute inset-0 bg-cover bg-center opacity-[0.03] group-hover:opacity-[0.06] transition-opacity pointer-events-none"
+              style={{
+                backgroundImage: `url('https://images.unsplash.com/photo-1595974482597-4b8da8879bc5?auto=format&fit=crop&w=600&q=80')`
+              }}
+            />
+            <CardContent className="p-5 space-y-3 relative">
+              <div className="flex items-center justify-between">
+                <span className="font-extrabold text-sm text-emerald-950 flex items-center gap-2">
+                  🌾 Boro Rice & Potato Seedling Protocol
+                </span>
+                <span className="text-[10px] px-2.5 py-0.5 rounded-full bg-emerald-100 text-emerald-900 font-extrabold">
+                  Seasonal Alert
+                </span>
+              </div>
+              <p className="text-xs text-brand-dark/80 leading-relaxed">
+                Maintain 2–3 cm shallow standing water in newly transplanted Boro rice plots. Protect potato seed beds from late evening winter fog to prevent early blight sporulation.
+              </p>
+              <div className="pt-2 border-t border-cream-200/80 flex items-center justify-between">
+                <Link
+                  href="/weather"
+                  className="inline-flex items-center gap-1.5 text-xs font-bold text-emerald-800 hover:text-emerald-950 hover:underline"
+                >
+                  <span>Check District Spray Window</span>
+                  <ArrowRight className="w-3.5 h-3.5" />
+                </Link>
+                <span className="text-[11px] text-brand-dark/50 font-medium">Safe Fog Window: 10 AM - 3 PM</span>
+              </div>
             </CardContent>
           </Card>
 
-          {/* Regional Agronomy Intelligence Card */}
-          <Card className="border border-cream-300 bg-gradient-to-br from-cream-50 via-white to-emerald-50/30 shadow-xs overflow-hidden">
-            <CardHeader className="pb-3 border-b border-cream-200">
-              <div className="flex items-center gap-2">
-                <Sparkles className="w-4 h-4 text-brand-harvest" />
-                <CardTitle className="text-base font-bold text-brand-dark">
-                  Regional Field Intelligence & Advisories
-                </CardTitle>
+          {/* Directive 2: Heavy Alluvial & Clay Nutrient Guidance */}
+          <Card className="border border-cream-300 bg-gradient-to-br from-cream-50 via-white to-amber-50/40 shadow-xs overflow-hidden relative group">
+            {/* Background Agriculture Texture */}
+            <div 
+              className="absolute inset-0 bg-cover bg-center opacity-[0.03] group-hover:opacity-[0.06] transition-opacity pointer-events-none"
+              style={{
+                backgroundImage: `url('https://images.unsplash.com/photo-1500937386664-56d1dfef3854?auto=format&fit=crop&w=600&q=80')`
+              }}
+            />
+            <CardContent className="p-5 space-y-3 relative">
+              <div className="flex items-center justify-between">
+                <span className="font-extrabold text-sm text-amber-950 flex items-center gap-2">
+                  🧪 Heavy Alluvial & Clay Nutrient Split
+                </span>
+                <span className="text-[10px] px-2.5 py-0.5 rounded-full bg-amber-100 text-amber-900 font-extrabold">
+                  Soil Guidance
+                </span>
               </div>
-              <span className="text-[11px] text-brand-dark/60 block mt-0.5">
-                Calibrated for South 24 Parganas & Lower Gangetic Basin
-              </span>
-            </CardHeader>
-            <CardContent className="p-4 sm:p-5 space-y-3.5 text-xs text-brand-dark/85">
-              {/* Directive 1 */}
-              <div className="p-3.5 rounded-xl bg-white border-l-4 border-l-emerald-600 border border-cream-200/90 shadow-2xs space-y-1.5">
-                <div className="flex items-center justify-between">
-                  <span className="font-bold text-emerald-900 flex items-center gap-1.5">
-                    🌾 Boro Rice & Potato Seedling Protocol
-                  </span>
-                  <span className="text-[10px] px-2 py-0.5 rounded-md bg-emerald-100 text-emerald-900 font-bold">
-                    Seasonal Alert
-                  </span>
-                </div>
-                <p className="leading-relaxed text-brand-dark/80">
-                  Maintain 2–3 cm shallow standing water in newly transplanted Boro rice plots. Protect potato seed beds from late evening winter fog to prevent early blight sporulation.
-                </p>
-                <Link
-                  href="/weather"
-                  className="inline-flex items-center gap-1 text-[11px] font-bold text-emerald-700 hover:text-emerald-900 pt-1 hover:underline"
-                >
-                  <span>Check District Spray Window</span>
-                  <ArrowRight className="w-3 h-3" />
-                </Link>
-              </div>
-
-              {/* Directive 2 */}
-              <div className="p-3.5 rounded-xl bg-white border-l-4 border-l-amber-500 border border-cream-200/90 shadow-2xs space-y-1.5">
-                <div className="flex items-center justify-between">
-                  <span className="font-bold text-amber-900 flex items-center gap-1.5">
-                    🧪 Heavy Alluvial & Clay Nutrient Split
-                  </span>
-                  <span className="text-[10px] px-2 py-0.5 rounded-md bg-amber-100 text-amber-900 font-bold">
-                    Soil Guidance
-                  </span>
-                </div>
-                <p className="leading-relaxed text-brand-dark/80">
-                  Heavy clay soil holds nitrogen longer but requires split potassium (MOP) top-dressing at 21 days after transplanting (active tillering) to fortify straw against sheath blight.
-                </p>
+              <p className="text-xs text-brand-dark/80 leading-relaxed">
+                Heavy clay soil holds nitrogen longer but requires split potassium (MOP) top-dressing at 21 days after transplanting (active tillering) to fortify straw against sheath blight.
+              </p>
+              <div className="pt-2 border-t border-cream-200/80 flex items-center justify-between">
                 <Link
                   href="/fertilizer"
-                  className="inline-flex items-center gap-1 text-[11px] font-bold text-amber-800 hover:text-amber-950 pt-1 hover:underline"
+                  className="inline-flex items-center gap-1.5 text-xs font-bold text-amber-900 hover:text-amber-950 hover:underline"
                 >
                   <span>Calculate Crop N-P-K Schedule</span>
-                  <ArrowRight className="w-3 h-3" />
+                  <ArrowRight className="w-3.5 h-3.5" />
                 </Link>
+                <span className="text-[11px] text-brand-dark/50 font-medium">Split Dosage: 50% Basal + 25% + 25%</span>
               </div>
             </CardContent>
           </Card>
