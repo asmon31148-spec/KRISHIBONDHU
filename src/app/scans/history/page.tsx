@@ -45,13 +45,25 @@ export default function ScanHistoryPage() {
   const [filterSeverity, setFilterSeverity] = useState<string>('all');
 
   const loadScans = useCallback(async () => {
-    if (!user) {
+    let localItems: ScanItem[] = [];
+    try {
+      const stored = localStorage.getItem('krishibondhu_recent_scans');
+      if (stored) {
+        localItems = JSON.parse(stored);
+      }
+    } catch {}
+
+    if (isGuest || !user) {
+      setScans(localItems);
+      setFilteredScans(localItems);
       setIsLoading(false);
       return;
     }
 
     const supabase = createClient();
     if (!supabase) {
+      setScans(localItems);
+      setFilteredScans(localItems);
       setIsLoading(false);
       return;
     }
@@ -62,18 +74,30 @@ export default function ScanHistoryPage() {
         .select('id, crop_name, severity, created_at, is_healthy, image_url, disease_name, disease_confidence, crop_confidence, symptoms, ai_explanation, treatment_organic, treatment_chemical')
         .eq('user_id', user.id)
         .order('created_at', { ascending: false })
-        .limit(10);
+        .limit(15);
 
       if (!error && data) {
-        setScans(data as ScanItem[]);
-        setFilteredScans(data as ScanItem[]);
+        // Merge with local items if any
+        const merged = [...(data as ScanItem[])];
+        for (const it of localItems) {
+          if (!merged.some((m) => m.id === it.id)) {
+            merged.push(it);
+          }
+        }
+        setScans(merged);
+        setFilteredScans(merged);
+      } else {
+        setScans(localItems);
+        setFilteredScans(localItems);
       }
     } catch (err) {
       console.error('Error loading scans:', err);
+      setScans(localItems);
+      setFilteredScans(localItems);
     } finally {
       setIsLoading(false);
     }
-  }, [user]);
+  }, [user, isGuest]);
 
   useEffect(() => {
     loadScans();
@@ -88,21 +112,26 @@ export default function ScanHistoryPage() {
     }
   };
 
-  if (isGuest) {
+  if (isGuest && scans.length === 0 && !isLoading) {
     return (
       <div className="max-w-md mx-auto py-12 text-center space-y-4">
-        <div className="w-14 h-14 rounded-2xl bg-amber-100 text-brand-harvest flex items-center justify-center mx-auto">
+        <div className="w-14 h-14 rounded-2xl bg-emerald-100 text-emerald-800 flex items-center justify-center mx-auto">
           <ScanLine className="w-7 h-7" />
         </div>
-        <h2 className="text-xl font-bold text-brand-forest">
-          Scan History (Account Required)
+        <h2 className="text-xl font-bold text-brand-dark">
+          কোনো স্ক্যান রেকর্ড পাওয়া যায়নি
         </h2>
         <p className="text-xs sm:text-sm text-brand-dark/70 leading-relaxed">
-          In guest mode, your scans are kept only during this session. Create a free farmer account to build a permanent pathology history.
+          পাতার ছবি তুললে আপনার পূর্ববর্তী রোগ পরীক্ষার রিপোর্ট এখানে জমা থাকবে।
         </p>
-        <div className="pt-2">
-          <Link href="/auth/signup">
+        <div className="pt-2 flex justify-center gap-3">
+          <Link href="/scan">
             <Button variant="primary">
+              প্রথম স্ক্যান করুন
+            </Button>
+          </Link>
+          <Link href="/auth/signup">
+            <Button variant="secondary">
               {t('nav.saveAccount')}
             </Button>
           </Link>

@@ -21,6 +21,7 @@ import {
   TrendingUp,
   FlaskConical,
   Scale,
+  History,
 } from 'lucide-react';
 
 export function Sidebar() {
@@ -31,6 +32,7 @@ export function Sidebar() {
   const navItems = [
     { label: t('nav.home'), href: isGuest ? '/' : '/dashboard', icon: Home },
     { label: t('nav.scan'), href: '/scan', icon: ScanLine },
+    { label: 'Scan History', href: '/scans/history', icon: History },
     { label: t('nav.assistant'), href: '/assistant', icon: Bot },
     { label: 'Yield & Profit', href: '/yield', icon: Scale },
     { label: 'Mandi Radar', href: '/mandi', icon: TrendingUp },

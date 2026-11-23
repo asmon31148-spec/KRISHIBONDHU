@@ -17,18 +17,28 @@ function loadYouTubeAPI(): Promise<any> {
   if (ytPromise) return ytPromise;
 
   ytPromise = new Promise((resolve) => {
-    const existing = document.querySelector('script[src*="youtube.com/iframe_api"]');
-    if (!existing) {
-      const tag = document.createElement('script');
-      tag.src = 'https://www.youtube.com/iframe_api';
-      document.head.appendChild(tag);
-    }
+    // Only load when browser is idle to prevent reload lag
+    const inject = () => {
+      const existing = document.querySelector('script[src*="youtube.com/iframe_api"]');
+      if (!existing) {
+        const tag = document.createElement('script');
+        tag.src = 'https://www.youtube.com/iframe_api';
+        tag.async = true;
+        document.head.appendChild(tag);
+      }
 
-    const prevReady = window.onYouTubeIframeAPIReady;
-    window.onYouTubeIframeAPIReady = () => {
-      if (typeof prevReady === 'function') prevReady();
-      resolve(window.YT);
+      const prevReady = window.onYouTubeIframeAPIReady;
+      window.onYouTubeIframeAPIReady = () => {
+        if (typeof prevReady === 'function') prevReady();
+        resolve(window.YT);
+      };
     };
+
+    if ('requestIdleCallback' in window) {
+      (window as any).requestIdleCallback(inject, { timeout: 2000 });
+    } else {
+      setTimeout(inject, 200);
+    }
   });
 
   return ytPromise;
@@ -73,6 +83,7 @@ export default function HeroVideoBackground({
           },
           events: {
             onReady: (e: any) => {
+              if (!isMountedRef.current) return;
               const p = e.target;
               try {
                 p.mute();
@@ -80,28 +91,28 @@ export default function HeroVideoBackground({
                 p.playVideo();
                 setIsReady(true);
 
-                if (loopTimerRef.current) clearInterval(loopTimerRef.current);
-                loopTimerRef.current = setInterval(() => {
-                  if (!p || typeof p.getCurrentTime !== 'function') return;
-                  const cur = p.getCurrentTime();
-                  if (cur >= endSeconds) {
-                    p.pauseVideo();
-                    p.seekTo(startSeconds, true);
-                    setTimeout(() => {
-                      if (isMountedRef.current && p.playVideo) p.playVideo();
-                    }, 50);
-                  }
-                }, 200);
-              } catch {
-                // Ignore player ready error
-              }
+                // Set timed loop without tight 200ms polling
+                const loopDurationMs = Math.max(5000, (endSeconds - startSeconds) * 1000);
+                const scheduleLoop = () => {
+                  if (loopTimerRef.current) clearTimeout(loopTimerRef.current);
+                  loopTimerRef.current = setTimeout(() => {
+                    if (!isMountedRef.current || !p) return;
+                    try {
+                      p.seekTo(startSeconds, true);
+                      scheduleLoop();
+                    } catch {}
+                  }, loopDurationMs);
+                };
+                scheduleLoop();
+              } catch {}
             },
             onStateChange: (e: any) => {
+              if (!isMountedRef.current) return;
               if (e.data === window.YT?.PlayerState?.ENDED) {
-                e.target.seekTo(startSeconds, true);
-                setTimeout(() => {
-                  if (isMountedRef.current && e.target.playVideo) e.target.playVideo();
-                }, 50);
+                try {
+                  e.target.seekTo(startSeconds, true);
+                  e.target.playVideo();
+                } catch {}
               }
             },
           },
@@ -113,27 +124,29 @@ export default function HeroVideoBackground({
 
     return () => {
       isMountedRef.current = false;
-      if (loopTimerRef.current) clearInterval(loopTimerRef.current);
+      if (loopTimerRef.current) clearTimeout(loopTimerRef.current);
       if (playerRef.current && typeof playerRef.current.destroy === 'function') {
-        playerRef.current.destroy();
+        try {
+          playerRef.current.destroy();
+        } catch {}
       }
     };
   }, [videoId, startSeconds, endSeconds]);
 
   return (
     <div className="absolute inset-0 overflow-hidden pointer-events-none select-none z-0">
-      {/* Photographic authentic farm background poster (visible immediately while video buffers) */}
+      {/* High performance photographic authentic farm backdrop (instant render, zero lag) */}
       <div 
-        className="absolute inset-0 bg-cover bg-center transition-opacity duration-1000 scale-105"
+        className="absolute inset-0 bg-cover bg-center transition-opacity duration-700 scale-102"
         style={{
-          backgroundImage: `url('https://images.unsplash.com/photo-1500937386664-56d1dfef3854?auto=format&fit=crop&w=1920&q=80')`,
-          opacity: isReady ? 0.2 : 0.85,
+          backgroundImage: `url('https://images.unsplash.com/photo-1500937386664-56d1dfef3854?auto=format&fit=crop&w=1400&q=75')`,
+          opacity: isReady ? 0.35 : 0.85,
         }}
       />
 
       {/* Video Container (scaled to cover 16:9 aspect ratio across any desktop/mobile screen) */}
       <div
-        className="absolute top-1/2 left-1/2 transition-opacity duration-1000"
+        className="absolute top-1/2 left-1/2 transition-opacity duration-700"
         style={{
           width: '177.78vh',
           height: '56.25vw',
@@ -148,7 +161,7 @@ export default function HeroVideoBackground({
 
       {/* Soft, authentic transparent overlay: NOT blurred to death, crisp & lively farming vibe */}
       <div className="absolute inset-0 bg-[#0c180e]/40" />
-      <div className="absolute inset-0 bg-gradient-to-t from-[#0c180e]/80 via-transparent to-[#0c180e]/50" />
+      <div className="absolute inset-0 bg-gradient-to-t from-[#0c180e]/85 via-transparent to-[#0c180e]/40" />
     </div>
   );
 }

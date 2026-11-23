@@ -5,7 +5,8 @@ import Link from 'next/link';
 import { useTranslation } from '@/i18n/context';
 import { useAuth } from '@/context/AuthContext';
 import { LanguageSelector } from '@/components/ui/LanguageSelector';
-import { Sprout, Bell, User as UserIcon } from 'lucide-react';
+import { BrandLogo } from '@/components/ui/BrandLogo';
+import { Bell, User as UserIcon } from 'lucide-react';
 import { Badge } from '@/components/ui/Badge';
 
 export function Navbar() {
@@ -13,22 +14,10 @@ export function Navbar() {
   const { user, profile, isGuest } = useAuth();
 
   return (
-    <header className="sticky top-0 z-40 w-full bg-cream-50/90 backdrop-blur-md border-b border-brand-forest/15 px-2.5 sm:px-6 lg:px-8 py-2 sm:py-2.5 transition-all shadow-[0_2px_10px_rgba(0,0,0,0.03)]">
+    <header className="sticky top-0 z-40 w-full bg-white/85 backdrop-blur-md border-b border-cream-200/90 px-3 sm:px-6 lg:px-8 py-2.5 transition-all shadow-xs">
       <div className="w-full max-w-[1536px] mx-auto flex items-center justify-between gap-2 sm:gap-3">
-        {/* Brand identity */}
-        <Link href="/" className="flex items-center gap-2 group shrink-0">
-          <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-xl bg-brand-forest flex items-center justify-center text-white shadow-xs group-hover:bg-brand-leaf transition-colors shrink-0">
-            <Sprout className="w-4 h-4 sm:w-5 sm:h-5 text-brand-mint" />
-          </div>
-          <div className="flex flex-col">
-            <span className="text-base sm:text-xl font-extrabold tracking-tight text-brand-forest group-hover:text-brand-leaf transition-colors leading-none">
-              {t('brand.name')}
-            </span>
-            <span className="hidden xs:block text-[9px] sm:text-xs font-medium text-brand-dark/60 tracking-wider uppercase mt-0.5">
-              Bengal Agritech
-            </span>
-          </div>
-        </Link>
+        {/* Commercial Brand Logo */}
+        <BrandLogo size="md" />
 
         {/* Right tools: Language selector, Status, Guest/User, Notifications */}
         <div className="flex items-center gap-1.5 sm:gap-3 shrink-0">
