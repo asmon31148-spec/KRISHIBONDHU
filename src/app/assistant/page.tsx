@@ -266,9 +266,9 @@ export default function AssistantPage() {
   const currentSuggestions = SUGGESTED_PROMPTS[language] || SUGGESTED_PROMPTS.en;
 
   return (
-    <div className="flex flex-col h-[calc(100dvh-145px)] sm:h-[calc(100dvh-155px)] lg:h-[calc(100vh-135px)] w-full text-left relative overflow-hidden">
+    <div className="flex flex-col h-[calc(100dvh-130px)] sm:h-[calc(100dvh-140px)] lg:h-[calc(100vh-125px)] w-full text-left relative overflow-hidden">
       {/* Top Bar with Language Indicator & Actions */}
-      <div className="flex items-center justify-between pb-2.5 sm:pb-3 border-b border-cream-200 gap-2 shrink-0">
+      <div className="flex items-center justify-between pb-2 sm:pb-2.5 border-b border-cream-200 gap-2 shrink-0">
         <div className="flex items-center gap-2 min-w-0">
           {/* Toggle history button for mobile/desktop */}
           {!isGuest && (
@@ -325,10 +325,10 @@ export default function AssistantPage() {
       </div>
 
       {/* Main Chat Workspace */}
-      <div className="flex flex-1 min-h-0 pt-2.5 sm:pt-3 gap-3 lg:gap-4 overflow-hidden">
+      <div className="flex flex-1 min-h-0 pt-2 sm:pt-2.5 gap-2.5 lg:gap-3 overflow-hidden">
         {/* Desktop Sidebar (Logged in users, desktop screen) */}
         {!isGuest && isSidebarOpen && (
-          <aside className="hidden lg:flex w-64 border border-cream-200 bg-white shadow-xs rounded-2xl p-3 flex-col space-y-2 shrink-0 animate-in fade-in duration-150">
+          <aside className="hidden lg:flex w-60 border border-cream-200 bg-white shadow-xs rounded-2xl p-3 flex-col space-y-2 shrink-0 animate-in fade-in duration-150">
             <div className="flex items-center justify-between pb-2 border-b border-cream-200">
               <div className="flex items-center gap-1.5 text-xs font-bold text-brand-forest uppercase tracking-wider">
                 <MessageSquare className="w-3.5 h-3.5 text-brand-leaf" />
@@ -452,10 +452,10 @@ export default function AssistantPage() {
         {/* Chat Messages Stream Area */}
         <div className="flex-1 flex flex-col min-h-0 bg-white rounded-2xl sm:rounded-3xl border border-cream-200/90 shadow-xs overflow-hidden">
           {/* Scrollable Message History */}
-          <div className="flex-1 overflow-y-auto p-2.5 sm:p-5 lg:p-6 space-y-4">
-            <div className="max-w-4xl mx-auto w-full space-y-3 sm:space-y-4">
+          <div className="flex-1 overflow-y-auto p-2.5 sm:p-4 lg:p-5 space-y-4">
+            <div className="max-w-3xl mx-auto w-full space-y-3 sm:space-y-4">
               {messages.length === 0 ? (
-                <div className="h-full flex flex-col items-center justify-center text-center p-3 sm:p-6 space-y-3 max-w-xl mx-auto">
+                <div className="flex flex-col items-center justify-center text-center p-3 sm:p-5 space-y-3 w-full">
                   <div className="w-11 h-11 sm:w-14 sm:h-14 rounded-2xl bg-brand-forest/10 border border-brand-forest/20 flex items-center justify-center text-brand-forest shrink-0">
                     <Bot className="w-5 h-5 sm:w-7 sm:h-7 text-brand-leaf" />
                   </div>
@@ -463,7 +463,7 @@ export default function AssistantPage() {
                     <h3 className="text-base sm:text-lg font-bold text-brand-dark">
                       How can I assist your farm today?
                     </h3>
-                    <p className="text-xs text-brand-dark/70 leading-relaxed max-w-sm">
+                    <p className="text-xs text-brand-dark/70 leading-relaxed max-w-md mx-auto">
                       Ask any question about crop diseases, pest remedies, fertilizer schedules, or government schemes.
                     </p>
                   </div>
@@ -473,7 +473,7 @@ export default function AssistantPage() {
                     <span className="text-[10px] font-bold text-brand-forest uppercase tracking-wider block text-center sm:text-left">
                       Suggested Questions
                     </span>
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-left">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-left w-full">
                       {currentSuggestions.map((prompt, idx) => (
                         <button
                           key={idx}
@@ -616,7 +616,7 @@ export default function AssistantPage() {
                 e.preventDefault();
                 handleSendMessage();
               }}
-              className="max-w-4xl mx-auto flex items-center gap-1.5 sm:gap-2"
+              className="max-w-3xl mx-auto flex items-center gap-1.5 sm:gap-2"
             >
               {/* Image upload trigger */}
               <input

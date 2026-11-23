@@ -9,6 +9,7 @@ import {
   Calendar,
   Search,
   IndianRupee,
+  Phone,
 } from 'lucide-react';
 
 interface Scheme {
@@ -18,6 +19,7 @@ interface Scheme {
   sponsor: 'West Bengal State Government' | 'Central Government (Govt of India)';
   category: 'Direct Income' | 'Crop Insurance' | 'Irrigation & Subsidies' | 'Credit & Loan' | 'Mechanization';
   benefitAmount: string;
+  helpline: string;
   eligibility: string[];
   documents: string[];
   officialUrl: string;
@@ -32,6 +34,7 @@ const SCHEMES: Scheme[] = [
     sponsor: 'West Bengal State Government',
     category: 'Direct Income',
     benefitAmount: '₹4,000 to ₹10,000 per year + ₹2 Lakh death insurance',
+    helpline: '8334904040 / 033-2214-5555',
     eligibility: [
       'All farmers cultivating land in West Bengal (including recorded Bhagchasi / Sharecroppers).',
       'Assistance is ₹10,000/year (two instalments of ₹5,000 in Kharif & Rabi) for 1 acre or more; pro-rata min ₹4,000/year.',
@@ -48,6 +51,7 @@ const SCHEMES: Scheme[] = [
     sponsor: 'West Bengal State Government',
     category: 'Crop Insurance',
     benefitAmount: '100% Free Crop Insurance (0% Farmer Premium)',
+    helpline: '1800-889-6888 (Toll-Free)',
     eligibility: [
       'Entire insurance premium is borne by the West Bengal State Government for all notified crops (Aman paddy, Aus paddy, Boro paddy, Jute, Maize, Pulses, Mustard).',
       'Farmers pay zero premium, except for potato and sugarcane where state subsidizes the majority share.',
@@ -64,6 +68,7 @@ const SCHEMES: Scheme[] = [
     sponsor: 'Central Government (Govt of India)',
     category: 'Direct Income',
     benefitAmount: '₹6,000 per year (3 instalments of ₹2,000)',
+    helpline: '155261 / 1800-11-5526 (Toll-Free)',
     eligibility: [
       'All landholding farmer families having cultivable landholding in their names.',
       'Transferred directly via DBT in 3 equal four-monthly payments.',
@@ -80,6 +85,7 @@ const SCHEMES: Scheme[] = [
     sponsor: 'Central Government (Govt of India)',
     category: 'Credit & Loan',
     benefitAmount: 'Short-term loans up to ₹3,00,000 at effective 4% interest',
+    helpline: '1800-180-1551 (Kisan Call Center)',
     eligibility: [
       'All farmers, individual/joint borrowers, tenant farmers, oral lessees and self-help groups (SHGs).',
       'Nominal interest rate of 7%, reduced to 4% p.a. for prompt repayment within 1 year.',
@@ -96,6 +102,7 @@ const SCHEMES: Scheme[] = [
     sponsor: 'Central Government (Govt of India)',
     category: 'Irrigation & Subsidies',
     benefitAmount: 'Up to 55% subsidy on Drip & Sprinkler Systems',
+    helpline: '1800-180-1551 (Kisan Call Center)',
     eligibility: [
       'Small and marginal farmers receive 55% financial assistance for micro-irrigation installation.',
       'Other farmers receive 45% financial assistance.',
@@ -112,6 +119,7 @@ const SCHEMES: Scheme[] = [
     sponsor: 'West Bengal State Government',
     category: 'Mechanization',
     benefitAmount: '40% to 80% subsidy on modern farm machinery',
+    helpline: '033-2358-0050 (Agri Directorate, WB)',
     eligibility: [
       'Financial Support for Purchase of Farm Machinery (FSSM): 50% subsidy for individual small/marginal farmers.',
       'Custom Hiring Centres (CHC): 40% subsidy (up to ₹20–40 Lakh) for Primary Agricultural Credit Societies (PACS) and Farmer Producer Companies (FPOs).',
@@ -256,6 +264,13 @@ export default function SchemesPage() {
                 <p className="text-[11px] text-brand-dark/80 leading-normal">
                   {scheme.documents.join(' • ')}
                 </p>
+              </div>
+
+              {/* Official Helpline */}
+              <div className="flex items-center gap-1.5 text-[11px] text-brand-dark/70 bg-cream-50/60 p-2 rounded-lg border border-cream-200/60">
+                <Phone className="w-3.5 h-3.5 text-brand-forest shrink-0" />
+                <span className="font-bold text-brand-forest">Helpline:</span>
+                <span className="font-medium">{scheme.helpline}</span>
               </div>
 
               {/* Footer with portal link and last updated */}

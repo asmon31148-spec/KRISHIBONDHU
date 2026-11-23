@@ -22,24 +22,32 @@ body {
   outline-offset: 2px;
 }
 
-/* Custom Sleek Scrollbars across the entire application */
+/* Custom Sleek Scrollbars across the entire application — replaces Windows default gray scrollbars */
+html,
+body,
+* {
+  scrollbar-width: thin !important;
+  scrollbar-color: #8DA399 transparent !important;
+}
+
+/* WebKit & Chromium (Chrome, Edge, Brave, Opera) */
 ::-webkit-scrollbar {
-  width: 6px;
-  height: 6px;
+  width: 6px !important;
+  height: 6px !important;
 }
 
 ::-webkit-scrollbar-track {
-  background: transparent;
+  background: transparent !important;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: rgba(27, 67, 50, 0.18);
-  border-radius: 9999px;
-  transition: background-color 0.2s ease;
+  background-color: #8DA399 !important;
+  border-radius: 9999px !important;
+  border: 1px solid transparent !important;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: rgba(27, 67, 50, 0.4);
+  background-color: #1B4332 !important;
 }
 
 ::-webkit-scrollbar-button {
@@ -49,13 +57,7 @@ body {
 }
 
 ::-webkit-scrollbar-corner {
-  background: transparent;
-}
-
-/* Firefox */
-* {
-  scrollbar-width: thin;
-  scrollbar-color: rgba(27, 67, 50, 0.2) transparent;
+  background: transparent !important;
 }
 
 /* Utility to completely hide scrollbar when desired */
