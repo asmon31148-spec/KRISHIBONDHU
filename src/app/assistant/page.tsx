@@ -92,13 +92,6 @@ export default function AssistantPage() {
     scrollToBottom();
   }, [messages, isLoading]);
 
-  // Open sidebar by default on desktop
-  useEffect(() => {
-    if (typeof window !== 'undefined' && window.innerWidth >= 768) {
-      setIsSidebarOpen(true);
-    }
-  }, []);
-
   // Load conversations list for signed-in users
   useEffect(() => {
     if (!user) return;
@@ -273,7 +266,7 @@ export default function AssistantPage() {
   const currentSuggestions = SUGGESTED_PROMPTS[language] || SUGGESTED_PROMPTS.en;
 
   return (
-    <div className="flex flex-col h-[calc(100dvh-145px)] sm:h-[calc(100dvh-155px)] lg:h-[calc(100vh-110px)] w-full text-left relative overflow-hidden">
+    <div className="flex flex-col h-[calc(100dvh-145px)] sm:h-[calc(100dvh-155px)] lg:h-[calc(100vh-135px)] w-full text-left relative overflow-hidden">
       {/* Top Bar with Language Indicator & Actions */}
       <div className="flex items-center justify-between pb-2.5 sm:pb-3 border-b border-cream-200 gap-2 shrink-0">
         <div className="flex items-center gap-2 min-w-0">
@@ -281,11 +274,25 @@ export default function AssistantPage() {
           {!isGuest && (
             <button
               onClick={() => setIsSidebarOpen(!isSidebarOpen)}
-              className="p-1.5 sm:p-2 rounded-xl border border-cream-200 bg-white hover:bg-cream-100 text-brand-dark/70 transition-colors shrink-0"
+              className={`inline-flex items-center gap-1.5 px-2.5 sm:px-3 py-1.5 rounded-xl border text-xs font-bold transition-all shrink-0 shadow-2xs ${
+                isSidebarOpen
+                  ? 'bg-brand-forest text-white border-brand-forest'
+                  : 'bg-white hover:bg-cream-100 text-brand-dark/80 hover:text-brand-forest border-cream-200'
+              }`}
+              title="Toggle Chat History"
               aria-label="Toggle history"
-              title="Chat History"
             >
-              <MessageSquare className="w-4 h-4 text-brand-leaf" />
+              <MessageSquare className="w-3.5 h-3.5" />
+              <span>History</span>
+              {conversations.length > 0 && (
+                <span
+                  className={`px-1.5 py-0.2 rounded-full text-[10px] font-extrabold ${
+                    isSidebarOpen ? 'bg-white/20 text-white' : 'bg-cream-200 text-brand-forest'
+                  }`}
+                >
+                  {conversations.length}
+                </span>
+              )}
             </button>
           )}
           <div className="flex items-center gap-2 min-w-0">
@@ -321,13 +328,24 @@ export default function AssistantPage() {
       <div className="flex flex-1 min-h-0 pt-2.5 sm:pt-3 gap-3 lg:gap-4 overflow-hidden">
         {/* Desktop Sidebar (Logged in users, desktop screen) */}
         {!isGuest && isSidebarOpen && (
-          <aside className="hidden lg:flex w-64 border-r border-cream-200 pr-3 flex-col space-y-2 bg-cream-50/50 rounded-2xl p-2 shrink-0">
-            <span className="text-xs font-bold text-brand-forest uppercase tracking-wider px-2 py-1">
-              Chat History
-            </span>
+          <aside className="hidden lg:flex w-64 border border-cream-200 bg-white shadow-xs rounded-2xl p-3 flex-col space-y-2 shrink-0 animate-in fade-in duration-150">
+            <div className="flex items-center justify-between pb-2 border-b border-cream-200">
+              <div className="flex items-center gap-1.5 text-xs font-bold text-brand-forest uppercase tracking-wider">
+                <MessageSquare className="w-3.5 h-3.5 text-brand-leaf" />
+                <span>Chat History</span>
+              </div>
+              <button
+                onClick={() => setIsSidebarOpen(false)}
+                className="p-1 rounded-lg text-brand-dark/50 hover:text-brand-dark hover:bg-cream-100 transition-colors"
+                title="Close History Panel"
+                aria-label="Close History"
+              >
+                <X className="w-4 h-4" />
+              </button>
+            </div>
             <div className="flex-1 overflow-y-auto space-y-1">
               {conversations.length === 0 ? (
-                <p className="text-xs text-brand-dark/50 p-2 italic">
+                <p className="text-xs text-brand-dark/50 p-2 italic text-center">
                   No previous conversations saved.
                 </p>
               ) : (
@@ -338,7 +356,7 @@ export default function AssistantPage() {
                     className={`flex items-center justify-between p-2.5 rounded-xl text-xs font-semibold cursor-pointer transition-colors ${
                       activeConversationId === conv.id
                         ? 'bg-brand-forest text-white'
-                        : 'bg-white text-brand-dark hover:bg-cream-100 border border-cream-200'
+                        : 'bg-cream-50 text-brand-dark hover:bg-cream-100 border border-cream-200/80'
                     }`}
                   >
                     <span className="truncate max-w-[150px]">{conv.title}</span>
