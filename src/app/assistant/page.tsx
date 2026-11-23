@@ -267,7 +267,7 @@ export default function AssistantPage() {
   const currentSuggestions = SUGGESTED_PROMPTS[language] || SUGGESTED_PROMPTS.en;
 
   return (
-    <div className="flex flex-col h-[calc(100dvh-54px-64px)] sm:h-[calc(100dvh-135px)] lg:h-[calc(100vh-100px)] -mx-2 -my-2 sm:mx-0 sm:my-0 w-[calc(100%+1rem)] sm:w-full bg-white sm:bg-transparent text-left relative overflow-hidden">
+    <div className="flex flex-col h-[calc(100dvh-56px-60px)] sm:h-[calc(100dvh-130px)] -mx-2 -mt-2 -mb-16 sm:mx-0 sm:my-0 w-[calc(100%+1rem)] sm:w-full bg-white sm:bg-transparent relative overflow-hidden text-left">
       {/* Top Bar with Language Indicator & Actions */}
       <div className="flex items-center justify-between px-3 sm:px-0 py-2 sm:py-2.5 border-b border-cream-200 bg-white sm:bg-transparent gap-2 shrink-0">
         <div className="flex items-center gap-2 min-w-0">
@@ -470,19 +470,19 @@ export default function AssistantPage() {
                   </div>
 
                   {/* Suggested Prompt Chips */}
-                  <div className="w-full space-y-1 sm:space-y-1.5 pt-1">
-                    <span className="text-[10px] font-bold text-brand-forest uppercase tracking-wider block text-center sm:text-left">
+                  <div className="w-full space-y-2 pt-1">
+                    <span className="text-[11px] font-bold text-brand-forest uppercase tracking-wider block text-left">
                       Suggested Questions
                     </span>
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-1.5 sm:gap-2 text-left w-full">
+                    <div className="grid grid-cols-1 gap-2 text-left w-full">
                       {currentSuggestions.map((prompt, idx) => (
                         <button
                           key={idx}
                           onClick={() => handleSendMessage(prompt)}
-                          className="p-2 sm:p-2.5 text-left rounded-xl bg-cream-50 hover:bg-cream-100 border border-cream-200 text-xs font-semibold text-brand-dark/85 transition-colors flex items-center justify-between group"
+                          className="p-3 text-left rounded-xl bg-cream-50 hover:bg-cream-100 border border-cream-200 text-xs font-semibold text-brand-dark/90 flex items-center justify-between gap-2.5 active:scale-[0.99] transition-transform"
                         >
-                          <span className="line-clamp-1 sm:line-clamp-2 leading-snug">{prompt}</span>
-                          <ChevronRight className="w-3.5 h-3.5 text-brand-leaf opacity-60 group-hover:opacity-100 shrink-0 ml-1.5 transition-opacity" />
+                          <span className="line-clamp-2 leading-relaxed flex-1">{prompt}</span>
+                          <ChevronRight className="w-4 h-4 text-brand-leaf opacity-70 shrink-0" />
                         </button>
                       ))}
                     </div>
@@ -611,7 +611,7 @@ export default function AssistantPage() {
           )}
 
           {/* Chat Input Bar */}
-          <div className="p-2 sm:p-3 border-t border-cream-200 bg-white/95 backdrop-blur-md shrink-0">
+          <div className="p-2 sm:p-3 border-t border-cream-200 bg-white/95 backdrop-blur-md shrink-0 sticky bottom-0 z-20">
             <form
               onSubmit={(e) => {
                 e.preventDefault();
@@ -630,19 +630,21 @@ export default function AssistantPage() {
               <button
                 type="button"
                 onClick={() => fileInputRef.current?.click()}
-                className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl border border-cream-300 bg-cream-50 hover:bg-cream-100 text-brand-dark/70 hover:text-brand-forest transition-colors shrink-0 flex items-center justify-center"
+                className="w-10 h-10 rounded-xl border border-cream-300 bg-cream-50 hover:bg-cream-100 active:bg-cream-200 text-brand-dark/70 hover:text-brand-forest transition-colors shrink-0 flex items-center justify-center"
                 title="Attach Crop Image"
+                aria-label="Attach Crop Image"
               >
-                <ImageIcon className="w-4 h-4 sm:w-5 sm:h-5" />
+                <ImageIcon className="w-5 h-5" />
               </button>
 
-              {/* Voice-First Walkie-Talkie (Speech-to-Text & Automatic Bengali/Hindi Readout) */}
+              {/* Voice-First Walkie-Talkie */}
               <div className="shrink-0">
                 <WalkieTalkie
                   language={language}
                   lastAiResponse={messages.filter((m) => m.role === 'assistant').pop()?.content}
                   onSpeechFinal={(transcript) => {
-                    setInputText((prev) => (prev ? `${prev} ${transcript}` : transcript));
+                    setInputText(transcript);
+                    handleSendMessage(transcript);
                   }}
                 />
               </div>
@@ -659,7 +661,7 @@ export default function AssistantPage() {
                     ? 'फसल के बारे में पूछें...'
                     : 'Ask crop health, weather...'
                 }
-                className="flex-1 min-w-0 px-3 sm:px-4 py-2 sm:py-2.5 rounded-xl border border-cream-300 bg-cream-50/50 text-xs sm:text-sm text-brand-dark placeholder:text-brand-dark/40 focus:outline-none focus:ring-2 focus:ring-brand-forest/20 focus:border-brand-forest focus:bg-white min-h-[40px] sm:min-h-[44px]"
+                className="flex-1 min-w-0 h-10 px-3 text-xs sm:text-sm rounded-xl bg-cream-50 border border-cream-200 focus:outline-hidden focus:border-brand-leaf text-brand-dark"
                 disabled={isLoading}
               />
 
@@ -667,8 +669,8 @@ export default function AssistantPage() {
               <button
                 type="submit"
                 disabled={isLoading || (!inputText.trim() && !attachedImage)}
-                className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-brand-forest hover:bg-brand-leaf disabled:bg-cream-300 disabled:cursor-not-allowed text-white flex items-center justify-center shrink-0 transition-colors shadow-xs"
-                title="Send Message"
+                className="w-10 h-10 rounded-xl bg-brand-forest hover:bg-brand-leaf disabled:opacity-40 text-white flex items-center justify-center shrink-0 active:scale-95 transition-transform"
+                aria-label="Send message"
               >
                 <Send className="w-4 h-4" />
               </button>

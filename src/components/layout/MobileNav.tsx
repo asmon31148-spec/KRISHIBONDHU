@@ -54,28 +54,32 @@ export function MobileNav() {
         <div
           role="dialog"
           aria-modal="true"
-          className="lg:hidden fixed inset-0 z-50 bg-brand-dark/60 backdrop-blur-xs flex flex-col justify-end"
+          className="lg:hidden fixed inset-0 z-[60] bg-brand-dark/70 backdrop-blur-xs flex flex-col justify-end animate-in fade-in duration-150"
         >
           <div
             className="fixed inset-0"
             onClick={() => setIsMoreOpen(false)}
             aria-hidden="true"
           />
-          <div className="relative bg-cream-50 rounded-t-3xl border-t border-cream-200 p-5 pb-[max(1.5rem,env(safe-area-inset-bottom))] shadow-2xl z-10 max-h-[80vh] overflow-y-auto animate-in slide-in-from-bottom duration-200">
-            <div className="flex items-center justify-between pb-3.5 border-b border-cream-200">
+          <div className="relative bg-cream-50 rounded-t-3xl border-t border-cream-200 p-4 pb-safe shadow-2xl z-10 max-h-[82vh] overflow-y-auto">
+            {/* Visual drag handle for tactile mobile feedback */}
+            <div className="w-12 h-1.5 bg-cream-300 rounded-full mx-auto mb-3" />
+
+            <div className="flex items-center justify-between pb-3 border-b border-cream-200">
               <span className="text-base font-bold text-brand-dark">
                 {t('nav.more')}
               </span>
               <button
                 onClick={() => setIsMoreOpen(false)}
-                className="p-1 rounded-lg text-brand-dark/60 hover:text-brand-dark hover:bg-cream-200"
+                className="p-1.5 rounded-full bg-cream-100 text-brand-dark/70 hover:text-brand-dark transition-colors"
                 aria-label="Close menu"
               >
                 <X className="w-5 h-5" />
               </button>
             </div>
 
-            <div className="grid grid-cols-2 gap-2.5 py-4">
+            {/* Ergonomic 2-column horizontal cards that do not bloat vertical space */}
+            <div className="grid grid-cols-2 gap-2.5 py-3">
               {moreItems.map((item) => {
                 const Icon = item.icon;
                 return (
@@ -83,22 +87,27 @@ export function MobileNav() {
                     key={item.href}
                     href={item.href}
                     onClick={() => setIsMoreOpen(false)}
-                    className="flex flex-col items-center justify-center p-3.5 rounded-2xl bg-white border border-cream-200 hover:border-brand-leaf/40 text-brand-dark transition-all text-center"
+                    className="flex items-center gap-2.5 p-3 rounded-xl bg-white border border-cream-200 shadow-2xs hover:border-brand-leaf/40 active:bg-cream-100 transition-colors"
                   >
-                    <Icon className="w-6 h-6 text-brand-leaf mb-2" />
-                    <span className="text-xs font-semibold">{item.label}</span>
+                    <div className="p-2 rounded-lg bg-cream-100 text-brand-leaf shrink-0">
+                      <Icon className="w-5 h-5" />
+                    </div>
+                    <span className="text-xs font-bold text-brand-dark text-left leading-tight">
+                      {item.label}
+                    </span>
                   </Link>
                 );
               })}
             </div>
 
+            {/* Logout button with clearance above the bottom edge */}
             {!isGuest && (
               <button
                 onClick={() => {
                   setIsMoreOpen(false);
                   signOut();
                 }}
-                className="w-full flex items-center justify-center gap-2 py-3 rounded-xl bg-red-50 text-red-700 font-semibold text-sm hover:bg-red-100 transition-colors"
+                className="w-full mt-2 mb-6 flex items-center justify-center gap-2 py-3 rounded-xl bg-red-50 text-red-700 font-semibold text-sm hover:bg-red-100 active:scale-[0.99] transition-all"
               >
                 <LogOut className="w-4 h-4" />
                 <span>{t('nav.logout')}</span>
