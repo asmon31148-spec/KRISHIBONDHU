@@ -1,12 +1,15 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createServerSupabaseClient } from '@/lib/supabase/server';
 
-// GET: Fetch user's chat conversations
-export async function GET() {
+// GET: Fetch user's chat conversations or messages for a specific conversation
+export async function GET(req: NextRequest) {
   try {
+    const { searchParams } = new URL(req.url);
+    const conversationId = searchParams.get('id');
+
     const supabase = await createServerSupabaseClient();
     if (!supabase) {
-      return NextResponse.json({ conversations: [] });
+      return NextResponse.json({ conversations: [], messages: [] });
     }
 
     const {
@@ -14,9 +17,23 @@ export async function GET() {
     } = await supabase.auth.getUser();
 
     if (!user) {
-      return NextResponse.json({ conversations: [] });
+      return NextResponse.json({ conversations: [], messages: [] });
     }
 
+    // If conversationId is specified, fetch all messages in that conversation
+    if (conversationId) {
+      const { data: messages, error: msgError } = await supabase
+        .from('chat_messages')
+        .select('*')
+        .eq('conversation_id', conversationId)
+        .eq('user_id', user.id)
+        .order('created_at', { ascending: true });
+
+      if (msgError) throw msgError;
+      return NextResponse.json({ messages: messages || [] });
+    }
+
+    // Otherwise, return all user conversations
     const { data, error } = await supabase
       .from('chat_conversations')
       .select('*')

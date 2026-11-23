@@ -52,30 +52,54 @@ export async function POST(req: NextRequest) {
       farmerContext
     );
 
-    // Save to database if user is authenticated and conversationId exists
-    if (supabase && userId && conversationId) {
-      const lastUserMsg = messages[messages.length - 1];
-      try {
-        await supabase.from('chat_messages').insert([
-          {
-            conversation_id: conversationId,
-            user_id: userId,
-            role: 'user',
-            content: lastUserMsg.content,
-            image_url: lastUserMsg.imageUrl || null,
-          },
-          {
-            conversation_id: conversationId,
-            user_id: userId,
-            role: 'assistant',
-            content: reply,
-          },
-        ]);
+    let activeConvId = conversationId;
 
-        await supabase
-          .from('chat_conversations')
-          .update({ updated_at: new Date().toISOString() })
-          .eq('id', conversationId);
+    // Automatically create conversation and persist messages if user is authenticated
+    if (supabase && userId) {
+      const lastUserMsg = messages[messages.length - 1];
+
+      try {
+        // If no conversationId was provided, auto-create a conversation
+        if (!activeConvId) {
+          const autoTitle =
+            lastUserMsg.content.trim().slice(0, 48) || 'Agricultural Inquiry';
+          const { data: newConv } = await supabase
+            .from('chat_conversations')
+            .insert({
+              user_id: userId,
+              title: autoTitle,
+              language,
+            })
+            .select()
+            .single();
+
+          if (newConv) {
+            activeConvId = newConv.id;
+          }
+        }
+
+        if (activeConvId) {
+          await supabase.from('chat_messages').insert([
+            {
+              conversation_id: activeConvId,
+              user_id: userId,
+              role: 'user',
+              content: lastUserMsg.content,
+              image_url: lastUserMsg.imageUrl || null,
+            },
+            {
+              conversation_id: activeConvId,
+              user_id: userId,
+              role: 'assistant',
+              content: reply,
+            },
+          ]);
+
+          await supabase
+            .from('chat_conversations')
+            .update({ updated_at: new Date().toISOString() })
+            .eq('id', activeConvId);
+        }
       } catch (dbErr) {
         console.warn('Failed to persist chat messages:', dbErr);
       }
@@ -84,6 +108,7 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({
       success: true,
       reply,
+      conversationId: activeConvId,
     });
   } catch (err: unknown) {
     const msg = err instanceof Error ? err.message : 'Chat assistant failed.';

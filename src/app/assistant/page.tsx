@@ -6,6 +6,7 @@ import { useAuth } from '@/context/AuthContext';
 import { useToast } from '@/components/ui/Toast';
 import { Button } from '@/components/ui/Button';
 import { VoiceControls } from '@/components/assistant/VoiceControls';
+import { MarkdownView } from '@/components/assistant/MarkdownView';
 import {
   Bot,
   User,
@@ -82,6 +83,13 @@ export default function AssistantPage() {
     scrollToBottom();
   }, [messages, isLoading]);
 
+  // Open sidebar by default on desktop
+  useEffect(() => {
+    if (typeof window !== 'undefined' && window.innerWidth >= 768) {
+      setIsSidebarOpen(true);
+    }
+  }, []);
+
   // Load conversations list for signed-in users
   useEffect(() => {
     if (!user) return;
@@ -95,33 +103,38 @@ export default function AssistantPage() {
       .catch((err) => console.warn('Could not load conversations:', err));
   }, [user]);
 
+  // Load messages when selecting an existing conversation
+  const handleSelectConversation = async (convId: string) => {
+    setActiveConversationId(convId);
+    setIsLoading(true);
+    try {
+      const res = await fetch(`/api/assistant/conversations?id=${convId}`);
+      const data = await res.json();
+      if (data.messages) {
+        setMessages(
+          data.messages.map((m: { id: string; role: 'user' | 'assistant'; content: string; image_url?: string | null; created_at?: string }) => ({
+            id: m.id,
+            role: m.role,
+            content: m.content,
+            imageUrl: m.image_url,
+            createdAt: m.created_at,
+          }))
+        );
+      }
+    } catch (err) {
+      console.warn('Error loading conversation messages:', err);
+      toast.error('Could not load chat messages.');
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   // Initialize new empty chat
-  const handleNewChat = async () => {
+  const handleNewChat = () => {
     setMessages([]);
     setAttachedImage(null);
     setInputText('');
-
-    if (user) {
-      try {
-        const res = await fetch('/api/assistant/conversations', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            title: `Chat ${new Date().toLocaleDateString()}`,
-            language,
-          }),
-        });
-        const data = await res.json();
-        if (data.conversation) {
-          setActiveConversationId(data.conversation.id);
-          setConversations((prev) => [data.conversation, ...prev]);
-        }
-      } catch (err) {
-        console.warn('Error creating conversation:', err);
-      }
-    } else {
-      setActiveConversationId(null);
-    }
+    setActiveConversationId(null);
   };
 
   const handleImageSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -177,6 +190,17 @@ export default function AssistantPage() {
 
       if (!res.ok || !data.success) {
         throw new Error(data.error || 'Chat assistant failed');
+      }
+
+      if (data.conversationId && data.conversationId !== activeConversationId) {
+        setActiveConversationId(data.conversationId);
+        // Refresh conversations list so new conversation appears in the sidebar
+        fetch('/api/assistant/conversations')
+          .then((r) => r.json())
+          .then((cData) => {
+            if (cData.conversations) setConversations(cData.conversations);
+          })
+          .catch(() => {});
       }
 
       const assistantMessage: Message = {
@@ -298,7 +322,7 @@ export default function AssistantPage() {
                 conversations.map((conv) => (
                   <div
                     key={conv.id}
-                    onClick={() => setActiveConversationId(conv.id)}
+                    onClick={() => handleSelectConversation(conv.id)}
                     className={`flex items-center justify-between p-2.5 rounded-xl text-xs font-semibold cursor-pointer transition-colors ${
                       activeConversationId === conv.id
                         ? 'bg-brand-forest text-white'
@@ -388,9 +412,11 @@ export default function AssistantPage() {
                       </div>
                     )}
 
-                    <div className="whitespace-pre-line break-words">
-                      {msg.content}
-                    </div>
+                    {msg.role === 'assistant' ? (
+                      <MarkdownView content={msg.content} />
+                    ) : (
+                      <div className="whitespace-pre-line break-words">{msg.content}</div>
+                    )}
 
                     {/* Copy and Audio controls for assistant replies */}
                     {msg.role === 'assistant' && (
