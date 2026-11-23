@@ -27,6 +27,8 @@ import {
   ChevronRight,
   TrendingUp,
   FlaskConical,
+  Plus,
+  Lightbulb,
 } from 'lucide-react';
 import { formatLandArea, LandUnit } from '@/lib/units';
 
@@ -57,6 +59,19 @@ interface ScanData {
   crop_confidence: number;
   image_url: string;
   created_at: string;
+}
+
+function getCropEmoji(name: string): string {
+  const n = name.toLowerCase();
+  if (n.includes('rice') || n.includes('paddy') || n.includes('dhan')) return '🌾';
+  if (n.includes('potato') || n.includes('alu')) return '🥔';
+  if (n.includes('jute') || n.includes('pat')) return '🌿';
+  if (n.includes('mustard') || n.includes('sarson')) return '🌼';
+  if (n.includes('brinjal') || n.includes('begun') || n.includes('eggplant')) return '🍆';
+  if (n.includes('chilli') || n.includes('lanka') || n.includes('mirch')) return '🌶️';
+  if (n.includes('tomato')) return '🍅';
+  if (n.includes('wheat') || n.includes('gom')) return '🌾';
+  return '🌱';
 }
 
 export default function DashboardPage() {
@@ -497,91 +512,161 @@ export default function DashboardPage() {
         </Link>
       </div>
 
-      {/* Quick Actions Row */}
+      {/* Quick Farmer Tools Row */}
       <div className="space-y-3">
         <div className="flex items-center justify-between">
-          <h2 className="text-base font-bold text-brand-dark">
-            {t('dashboard.quickActions')}
-          </h2>
-          <span className="text-xs text-brand-dark/50 font-medium">1-Tap Farmer Tools</span>
+          <div>
+            <h2 className="text-base sm:text-lg font-extrabold text-brand-dark flex items-center gap-2">
+              <Sparkles className="w-5 h-5 text-brand-harvest" />
+              <span>{t('dashboard.quickActions')}</span>
+            </h2>
+            <p className="text-xs text-brand-dark/65 mt-0.5">
+              1-Tap Verified Directives & Agronomy Calculators
+            </p>
+          </div>
+          <span className="hidden sm:inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-100/80 border border-emerald-300 text-xs font-bold text-emerald-900 shadow-2xs">
+            <span className="w-2 h-2 rounded-full bg-emerald-600 animate-pulse" />
+            <span>Active Season: Winter (Rabi & Boro)</span>
+          </span>
         </div>
-        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-3">
+
+        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-3 sm:gap-3.5">
+          {/* Tool 1: Scan Crop */}
           <Link
             href="/scan"
-            className="flex flex-col items-center justify-center p-3.5 sm:p-4 rounded-2xl bg-white border border-cream-200/90 hover:border-brand-leaf/40 hover:shadow-md transition-all text-center group cursor-pointer"
+            className="group relative flex flex-col items-center justify-between p-3.5 sm:p-4 rounded-2xl bg-gradient-to-b from-emerald-50/90 via-white to-emerald-50/30 border border-emerald-200/90 hover:border-emerald-500 hover:shadow-md active:scale-[0.98] transition-all text-center cursor-pointer shadow-2xs"
           >
-            <div className="w-11 h-11 rounded-xl bg-emerald-50 text-emerald-700 flex items-center justify-center mb-2 group-hover:scale-105 transition-transform shadow-2xs">
-              <ScanLine className="w-5 h-5" />
+            <div className="w-full flex justify-end">
+              <span className="text-[9px] font-extrabold px-1.5 py-0.5 rounded-md bg-emerald-100 text-emerald-900 uppercase tracking-wider">
+                Instant
+              </span>
             </div>
-            <span className="text-xs font-bold text-brand-dark group-hover:text-brand-forest">
-              {t('nav.scan')}
-            </span>
-            <span className="text-[10px] text-brand-dark/60 mt-0.5">AI Leaf Diagnosis</span>
+            <div className="w-12 h-12 rounded-2xl bg-emerald-600 text-white shadow-xs flex items-center justify-center my-1.5 group-hover:scale-105 transition-transform">
+              <ScanLine className="w-6 h-6" />
+            </div>
+            <div>
+              <span className="text-xs font-bold text-brand-dark group-hover:text-emerald-800 transition-colors block">
+                {t('nav.scan')}
+              </span>
+              <span className="text-[10px] text-brand-dark/65 mt-0.5 block leading-tight">
+                AI Leaf Diagnosis
+              </span>
+            </div>
           </Link>
 
+          {/* Tool 2: AI Assistant */}
           <Link
             href="/assistant"
-            className="flex flex-col items-center justify-center p-3.5 sm:p-4 rounded-2xl bg-white border border-cream-200/90 hover:border-brand-leaf/40 hover:shadow-md transition-all text-center group cursor-pointer"
+            className="group relative flex flex-col items-center justify-between p-3.5 sm:p-4 rounded-2xl bg-gradient-to-b from-teal-50/90 via-white to-teal-50/30 border border-teal-200/90 hover:border-teal-500 hover:shadow-md active:scale-[0.98] transition-all text-center cursor-pointer shadow-2xs"
           >
-            <div className="w-11 h-11 rounded-xl bg-brand-forest/10 text-brand-forest flex items-center justify-center mb-2 group-hover:scale-105 transition-transform shadow-2xs">
-              <Bot className="w-5 h-5" />
+            <div className="w-full flex justify-end">
+              <span className="text-[9px] font-extrabold px-1.5 py-0.5 rounded-md bg-teal-100 text-teal-900 uppercase tracking-wider">
+                Voice
+              </span>
             </div>
-            <span className="text-xs font-bold text-brand-dark group-hover:text-brand-forest">
-              {t('nav.assistant')}
-            </span>
-            <span className="text-[10px] text-brand-dark/60 mt-0.5">Voice Agronomist</span>
+            <div className="w-12 h-12 rounded-2xl bg-brand-forest text-white shadow-xs flex items-center justify-center my-1.5 group-hover:scale-105 transition-transform">
+              <Bot className="w-6 h-6 text-brand-mint" />
+            </div>
+            <div>
+              <span className="text-xs font-bold text-brand-dark group-hover:text-brand-forest transition-colors block">
+                {t('nav.assistant')}
+              </span>
+              <span className="text-[10px] text-brand-dark/65 mt-0.5 block leading-tight">
+                Walkie-Talkie (বাংলা)
+              </span>
+            </div>
           </Link>
 
+          {/* Tool 3: Mandi Radar */}
           <Link
             href="/mandi"
-            className="flex flex-col items-center justify-center p-3.5 sm:p-4 rounded-2xl bg-white border border-cream-200/90 hover:border-brand-leaf/40 hover:shadow-md transition-all text-center group cursor-pointer"
+            className="group relative flex flex-col items-center justify-between p-3.5 sm:p-4 rounded-2xl bg-gradient-to-b from-amber-50/90 via-white to-amber-50/30 border border-amber-200/90 hover:border-amber-500 hover:shadow-md active:scale-[0.98] transition-all text-center cursor-pointer shadow-2xs"
           >
-            <div className="w-11 h-11 rounded-xl bg-amber-50 text-amber-700 flex items-center justify-center mb-2 group-hover:scale-105 transition-transform shadow-2xs">
-              <TrendingUp className="w-5 h-5" />
+            <div className="w-full flex justify-end">
+              <span className="text-[9px] font-extrabold px-1.5 py-0.5 rounded-md bg-amber-100 text-amber-900 uppercase tracking-wider">
+                Live APMC
+              </span>
             </div>
-            <span className="text-xs font-bold text-brand-dark group-hover:text-amber-800">
-              Mandi Radar
-            </span>
-            <span className="text-[10px] text-brand-dark/60 mt-0.5">Live APMC Rates</span>
+            <div className="w-12 h-12 rounded-2xl bg-amber-500 text-white shadow-xs flex items-center justify-center my-1.5 group-hover:scale-105 transition-transform">
+              <TrendingUp className="w-6 h-6" />
+            </div>
+            <div>
+              <span className="text-xs font-bold text-brand-dark group-hover:text-amber-800 transition-colors block">
+                Mandi Radar
+              </span>
+              <span className="text-[10px] text-brand-dark/65 mt-0.5 block leading-tight">
+                Daily Auction Rates
+              </span>
+            </div>
           </Link>
 
+          {/* Tool 4: Fertilizer Calc */}
           <Link
             href="/fertilizer"
-            className="flex flex-col items-center justify-center p-3.5 sm:p-4 rounded-2xl bg-white border border-cream-200/90 hover:border-brand-leaf/40 hover:shadow-md transition-all text-center group cursor-pointer"
+            className="group relative flex flex-col items-center justify-between p-3.5 sm:p-4 rounded-2xl bg-gradient-to-b from-cyan-50/90 via-white to-cyan-50/30 border border-cyan-200/90 hover:border-cyan-500 hover:shadow-md active:scale-[0.98] transition-all text-center cursor-pointer shadow-2xs"
           >
-            <div className="w-11 h-11 rounded-xl bg-emerald-50 text-emerald-700 flex items-center justify-center mb-2 group-hover:scale-105 transition-transform shadow-2xs">
-              <FlaskConical className="w-5 h-5" />
+            <div className="w-full flex justify-end">
+              <span className="text-[9px] font-extrabold px-1.5 py-0.5 rounded-md bg-cyan-100 text-cyan-900 uppercase tracking-wider">
+                ICAR N-P-K
+              </span>
             </div>
-            <span className="text-xs font-bold text-brand-dark group-hover:text-brand-forest">
-              Fertilizer Calc
-            </span>
-            <span className="text-[10px] text-brand-dark/60 mt-0.5">ICAR N-P-K Doses</span>
+            <div className="w-12 h-12 rounded-2xl bg-cyan-700 text-white shadow-xs flex items-center justify-center my-1.5 group-hover:scale-105 transition-transform">
+              <FlaskConical className="w-6 h-6" />
+            </div>
+            <div>
+              <span className="text-xs font-bold text-brand-dark group-hover:text-cyan-800 transition-colors block">
+                Fertilizer Calc
+              </span>
+              <span className="text-[10px] text-brand-dark/65 mt-0.5 block leading-tight">
+                Exact Bag Doses
+              </span>
+            </div>
           </Link>
 
+          {/* Tool 5: Weather Directives */}
           <Link
             href="/weather"
-            className="flex flex-col items-center justify-center p-3.5 sm:p-4 rounded-2xl bg-white border border-cream-200/90 hover:border-brand-leaf/40 hover:shadow-md transition-all text-center group cursor-pointer"
+            className="group relative flex flex-col items-center justify-between p-3.5 sm:p-4 rounded-2xl bg-gradient-to-b from-sky-50/90 via-white to-sky-50/30 border border-sky-200/90 hover:border-sky-500 hover:shadow-md active:scale-[0.98] transition-all text-center cursor-pointer shadow-2xs"
           >
-            <div className="w-11 h-11 rounded-xl bg-sky-50 text-sky-700 flex items-center justify-center mb-2 group-hover:scale-105 transition-transform shadow-2xs">
-              <CloudSun className="w-5 h-5" />
+            <div className="w-full flex justify-end">
+              <span className="text-[9px] font-extrabold px-1.5 py-0.5 rounded-md bg-sky-100 text-sky-900 uppercase tracking-wider">
+                Radar
+              </span>
             </div>
-            <span className="text-xs font-bold text-brand-dark group-hover:text-sky-800">
-              {t('nav.weather')}
-            </span>
-            <span className="text-[10px] text-brand-dark/60 mt-0.5">Spray Windows</span>
+            <div className="w-12 h-12 rounded-2xl bg-sky-600 text-white shadow-xs flex items-center justify-center my-1.5 group-hover:scale-105 transition-transform">
+              <CloudSun className="w-6 h-6" />
+            </div>
+            <div>
+              <span className="text-xs font-bold text-brand-dark group-hover:text-sky-800 transition-colors block">
+                {t('nav.weather')}
+              </span>
+              <span className="text-[10px] text-brand-dark/65 mt-0.5 block leading-tight">
+                Spray Window Times
+              </span>
+            </div>
           </Link>
 
+          {/* Tool 6: Govt Schemes */}
           <Link
             href="/schemes"
-            className="flex flex-col items-center justify-center p-3.5 sm:p-4 rounded-2xl bg-white border border-cream-200/90 hover:border-brand-leaf/40 hover:shadow-md transition-all text-center group cursor-pointer"
+            className="group relative flex flex-col items-center justify-between p-3.5 sm:p-4 rounded-2xl bg-gradient-to-b from-lime-50/90 via-white to-lime-50/30 border border-lime-200/90 hover:border-lime-500 hover:shadow-md active:scale-[0.98] transition-all text-center cursor-pointer shadow-2xs"
           >
-            <div className="w-11 h-11 rounded-xl bg-lime-50 text-lime-700 flex items-center justify-center mb-2 group-hover:scale-105 transition-transform shadow-2xs">
-              <FileText className="w-5 h-5" />
+            <div className="w-full flex justify-end">
+              <span className="text-[9px] font-extrabold px-1.5 py-0.5 rounded-md bg-lime-100 text-lime-900 uppercase tracking-wider">
+                DBT
+              </span>
             </div>
-            <span className="text-xs font-bold text-brand-dark group-hover:text-lime-800">
-              Govt Schemes
-            </span>
-            <span className="text-[10px] text-brand-dark/60 mt-0.5">Track DBT Status</span>
+            <div className="w-12 h-12 rounded-2xl bg-lime-700 text-white shadow-xs flex items-center justify-center my-1.5 group-hover:scale-105 transition-transform">
+              <FileText className="w-6 h-6" />
+            </div>
+            <div>
+              <span className="text-xs font-bold text-brand-dark group-hover:text-lime-800 transition-colors block">
+                Govt Schemes
+              </span>
+              <span className="text-[10px] text-brand-dark/65 mt-0.5 block leading-tight">
+                Krishak Bandhu / BSB
+              </span>
+            </div>
           </Link>
         </div>
       </div>
@@ -590,18 +675,31 @@ export default function DashboardPage() {
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
         {/* Left Column: My Farm & Active Crops (7 cols) */}
         <div className="lg:col-span-7 space-y-6">
-          {/* Farm Plots Overview */}
-          <Card>
-            <CardHeader className="flex flex-row items-center justify-between pb-3">
-              <CardTitle className="text-base font-bold flex items-center gap-2">
-                <Warehouse className="w-4 h-4 text-brand-leaf" />
-                <span>{t('farms.title')}</span>
-              </CardTitle>
-              <Link href="/farms" className="text-xs font-semibold text-brand-leaf hover:underline">
-                {t('dashboard.viewAll')} →
-              </Link>
+          {/* Farm Plots Overview Card */}
+          <Card className="border border-cream-300 shadow-xs overflow-hidden">
+            <CardHeader className="flex flex-row items-center justify-between pb-3.5 border-b border-cream-200 bg-cream-50/50">
+              <div className="flex items-center gap-2.5">
+                <div className="w-8 h-8 rounded-xl bg-brand-forest/10 flex items-center justify-center text-brand-forest">
+                  <Warehouse className="w-4 h-4" />
+                </div>
+                <div>
+                  <CardTitle className="text-base font-bold text-brand-dark">
+                    {t('farms.title')}
+                  </CardTitle>
+                  <span className="text-[11px] text-brand-dark/60">Registered Land Parcels</span>
+                </div>
+              </div>
+              <div className="flex items-center gap-2">
+                <Link
+                  href="/farms"
+                  className="inline-flex items-center gap-1 px-3 py-1.5 rounded-xl bg-brand-forest text-white text-xs font-bold hover:bg-brand-forest/90 transition-colors shadow-2xs"
+                >
+                  <Plus className="w-3.5 h-3.5" />
+                  <span>Add Plot</span>
+                </Link>
+              </div>
             </CardHeader>
-            <CardContent>
+            <CardContent className="p-4 sm:p-5 space-y-3">
               {farms.length === 0 ? (
                 <EmptyState
                   icon={<Warehouse className="w-6 h-6" />}
@@ -612,45 +710,85 @@ export default function DashboardPage() {
                 />
               ) : (
                 <div className="space-y-3">
-                  {farms.slice(0, 3).map((farm) => (
+                  {farms.map((farm) => (
                     <Link
                       key={farm.id}
                       href="/farms"
-                      className="flex items-center justify-between p-3.5 rounded-xl bg-cream-50 border border-cream-200/90 hover:border-brand-leaf hover:bg-white hover:shadow-xs transition-all group cursor-pointer"
+                      className="group block p-4 rounded-2xl bg-white border border-cream-200/90 hover:border-brand-leaf hover:shadow-xs transition-all cursor-pointer"
                     >
-                      <div>
-                        <div className="flex items-center gap-1.5">
-                          <h4 className="text-sm font-bold text-brand-dark group-hover:text-brand-forest transition-colors">
-                            {farm.name}
-                          </h4>
-                          <ChevronRight className="w-3.5 h-3.5 text-brand-leaf opacity-0 group-hover:opacity-100 transition-opacity" />
+                      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                        <div className="flex items-start gap-3.5">
+                          <div className="w-12 h-12 rounded-2xl bg-emerald-50 border border-emerald-200 flex items-center justify-center text-emerald-800 shrink-0 group-hover:scale-105 transition-transform shadow-2xs">
+                            <Warehouse className="w-6 h-6" />
+                          </div>
+                          <div className="space-y-1">
+                            <div className="flex items-center gap-2 flex-wrap">
+                              <h4 className="text-sm font-bold text-brand-dark group-hover:text-brand-forest transition-colors">
+                                {farm.name}
+                              </h4>
+                              <span className="px-2 py-0.5 rounded-md bg-emerald-100 text-emerald-900 text-[10px] font-bold">
+                                {formatLandArea(farm.area, farm.area_unit as LandUnit)}
+                              </span>
+                            </div>
+                            <div className="flex items-center gap-3 text-xs text-brand-dark/70 flex-wrap">
+                              <span className="flex items-center gap-1">
+                                <MapPin className="w-3.5 h-3.5 text-brand-leaf" />
+                                {farm.location_name || 'South 24 Parganas, West Bengal'}
+                              </span>
+                              <span>•</span>
+                              <span className="flex items-center gap-1 font-medium text-amber-800 bg-amber-50 px-2 py-0.5 rounded-md border border-amber-200/70">
+                                <Sprout className="w-3 h-3" />
+                                {farm.soil_type ? `${farm.soil_type} Soil` : 'Clay Soil'}
+                              </span>
+                            </div>
+                          </div>
                         </div>
-                        <p className="text-xs text-brand-dark/70 mt-0.5">
-                          {farm.location_name || 'Location recorded'} • {formatLandArea(farm.area, farm.area_unit as LandUnit)}
-                        </p>
+
+                        <div className="flex items-center gap-1.5 text-xs font-bold text-brand-leaf group-hover:text-brand-forest group-hover:translate-x-1 transition-all self-end sm:self-center shrink-0">
+                          <span>Manage Plot</span>
+                          <ChevronRight className="w-4 h-4" />
+                        </div>
                       </div>
-                      <Badge variant="slate" size="sm">
-                        {farm.soil_type || 'Soil logged'}
-                      </Badge>
                     </Link>
                   ))}
+
+                  {/* Contextual Soil Pro-Tip */}
+                  <div className="p-3.5 rounded-xl bg-gradient-to-r from-cream-100 to-emerald-50/50 border border-cream-200 flex items-start gap-2.5 text-xs text-brand-dark/80">
+                    <Lightbulb className="w-4 h-4 text-brand-harvest shrink-0 mt-0.5" />
+                    <p className="leading-relaxed">
+                      <strong>Soil Health Tip:</strong> Clay soils in the Gangetic Delta retain moisture but compact easily. Apply well-decomposed FYM (গোবর সার) @ 1.5 tons/bigha to improve soil aeration and microbial activity.
+                    </p>
+                  </div>
                 </div>
               )}
             </CardContent>
           </Card>
 
-          {/* Active Crops */}
-          <Card>
-            <CardHeader className="flex flex-row items-center justify-between pb-3">
-              <CardTitle className="text-base font-bold flex items-center gap-2">
-                <Sprout className="w-4 h-4 text-brand-leaf" />
-                <span>{t('crops.title')}</span>
-              </CardTitle>
-              <Link href="/crops" className="text-xs font-semibold text-brand-leaf hover:underline">
-                {t('dashboard.viewAll')} →
-              </Link>
+          {/* Active Sown Crops Overview Card */}
+          <Card className="border border-cream-300 shadow-xs overflow-hidden">
+            <CardHeader className="flex flex-row items-center justify-between pb-3.5 border-b border-cream-200 bg-cream-50/50">
+              <div className="flex items-center gap-2.5">
+                <div className="w-8 h-8 rounded-xl bg-brand-leaf/10 flex items-center justify-center text-brand-leaf">
+                  <Sprout className="w-4 h-4" />
+                </div>
+                <div>
+                  <CardTitle className="text-base font-bold text-brand-dark">
+                    {t('crops.title')}
+                  </CardTitle>
+                  <span className="text-[11px] text-brand-dark/60">Active Sowing & Field Health</span>
+                </div>
+              </div>
+              <div className="flex items-center gap-2">
+                <Link
+                  href="/crops"
+                  className="inline-flex items-center gap-1 px-3 py-1.5 rounded-xl bg-brand-forest text-white text-xs font-bold hover:bg-brand-forest/90 transition-colors shadow-2xs"
+                >
+                  <Plus className="w-3.5 h-3.5" />
+                  <span>Add Crop</span>
+                </Link>
+              </div>
             </CardHeader>
-            <CardContent>
+            <CardContent className="p-4 sm:p-5 space-y-3">
               {crops.length === 0 ? (
                 <EmptyState
                   icon={<Sprout className="w-6 h-6" />}
@@ -661,46 +799,91 @@ export default function DashboardPage() {
                 />
               ) : (
                 <div className="space-y-3">
-                  {crops.slice(0, 4).map((crop) => (
-                    <Link
+                  {crops.map((crop) => (
+                    <div
                       key={crop.id}
-                      href="/crops"
-                      className="flex items-center justify-between p-3.5 rounded-xl bg-cream-50 border border-cream-200/90 hover:border-brand-leaf hover:bg-white hover:shadow-xs transition-all group cursor-pointer"
+                      className="p-4 rounded-2xl bg-white border border-cream-200/90 shadow-2xs hover:border-brand-leaf transition-all space-y-3"
                     >
-                      <div>
-                        <div className="flex items-center gap-1.5">
-                          <h4 className="text-sm font-bold text-brand-dark group-hover:text-brand-forest transition-colors">
-                            {crop.name}
-                          </h4>
-                          {crop.variety && (
-                            <span className="text-[11px] text-brand-dark/60">
-                              ({crop.variety})
-                            </span>
-                          )}
-                          <ChevronRight className="w-3.5 h-3.5 text-brand-leaf opacity-0 group-hover:opacity-100 transition-opacity" />
+                      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                        <div className="flex items-start gap-3.5">
+                          <div className="w-12 h-12 rounded-2xl bg-cream-100 border border-cream-300 flex items-center justify-center text-2xl shrink-0 shadow-2xs">
+                            {getCropEmoji(crop.name)}
+                          </div>
+                          <div className="space-y-1">
+                            <div className="flex items-center gap-2 flex-wrap">
+                              <h4 className="text-sm font-bold text-brand-dark">
+                                {crop.name}
+                              </h4>
+                              {crop.variety && (
+                                <span className="px-2 py-0.5 rounded-md bg-cream-100 text-brand-dark/70 text-[10px] font-semibold border border-cream-200">
+                                  {crop.variety}
+                                </span>
+                              )}
+                            </div>
+                            <div className="flex items-center gap-3 text-xs text-brand-dark/70 flex-wrap">
+                              <span className="flex items-center gap-1">
+                                <Calendar className="w-3.5 h-3.5 text-brand-leaf" />
+                                Sown: {crop.planting_date}
+                              </span>
+                              <span>•</span>
+                              <span>{formatLandArea(crop.area, crop.area_unit as LandUnit)}</span>
+                            </div>
+                          </div>
                         </div>
-                        <p className="text-xs text-brand-dark/70 mt-0.5">
-                          Sown: {crop.planting_date} • {formatLandArea(crop.area, crop.area_unit as LandUnit)}
-                        </p>
+
+                        {/* Health Status Pill */}
+                        <div className="self-start sm:self-center">
+                          <Badge
+                            variant={
+                              crop.health_status === 'healthy'
+                                ? 'emerald'
+                                : crop.health_status === 'needs_attention'
+                                ? 'amber'
+                                : 'red'
+                            }
+                            size="md"
+                            className="font-bold shadow-2xs flex items-center gap-1.5"
+                          >
+                            {crop.health_status === 'healthy' ? (
+                              <>
+                                <CheckCircle2 className="w-3.5 h-3.5" />
+                                <span>{t('crops.healthy')}</span>
+                              </>
+                            ) : (
+                              <>
+                                <AlertTriangle className="w-3.5 h-3.5 animate-pulse" />
+                                <span>{t('crops.needsAttention')} (Action Required)</span>
+                              </>
+                            )}
+                          </Badge>
+                        </div>
                       </div>
 
-                      <Badge
-                        variant={
-                          crop.health_status === 'healthy'
-                            ? 'emerald'
-                            : crop.health_status === 'needs_attention'
-                            ? 'amber'
-                            : 'red'
-                        }
-                        size="sm"
-                      >
-                        {crop.health_status === 'healthy'
-                          ? t('crops.healthy')
-                          : crop.health_status === 'needs_attention'
-                          ? t('crops.needsAttention')
-                          : t('crops.diseased')}
-                      </Badge>
-                    </Link>
+                      {/* 1-Tap Crop Action Shortcuts */}
+                      <div className="pt-2.5 border-t border-cream-200/80 flex items-center gap-2 flex-wrap">
+                        <Link
+                          href="/fertilizer"
+                          className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-cream-50 hover:bg-emerald-50 text-brand-dark hover:text-brand-forest border border-cream-200 text-xs font-semibold transition-colors"
+                        >
+                          <FlaskConical className="w-3.5 h-3.5 text-emerald-600" />
+                          <span>Fertilizer Schedule</span>
+                        </Link>
+                        <Link
+                          href="/scan"
+                          className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-cream-50 hover:bg-emerald-50 text-brand-dark hover:text-brand-forest border border-cream-200 text-xs font-semibold transition-colors"
+                        >
+                          <ScanLine className="w-3.5 h-3.5 text-brand-forest" />
+                          <span>Scan Leaf</span>
+                        </Link>
+                        <Link
+                          href={`/yield?crop_id=${crop.id}`}
+                          className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-cream-50 hover:bg-emerald-50 text-brand-dark hover:text-brand-forest border border-cream-200 text-xs font-semibold transition-colors"
+                        >
+                          <TrendingUp className="w-3.5 h-3.5 text-amber-600" />
+                          <span>Harvest Yield Estimate</span>
+                        </Link>
+                      </div>
+                    </div>
                   ))}
                 </div>
               )}
@@ -710,18 +893,29 @@ export default function DashboardPage() {
 
         {/* Right Column: Recent Scans & Agronomic Insights (5 cols) */}
         <div className="lg:col-span-5 space-y-6">
-          {/* Recent Disease Scans */}
-          <Card>
-            <CardHeader className="flex flex-row items-center justify-between pb-3">
-              <CardTitle className="text-base font-bold flex items-center gap-2">
-                <ScanLine className="w-4 h-4 text-brand-leaf" />
-                <span>{t('dashboard.recentScans')}</span>
-              </CardTitle>
-              <Link href="/scan" className="text-xs font-semibold text-brand-leaf hover:underline">
-                New Scan →
+          {/* Recent Leaf Disease Scans Card */}
+          <Card className="border border-cream-300 shadow-xs overflow-hidden">
+            <CardHeader className="flex flex-row items-center justify-between pb-3.5 border-b border-cream-200 bg-cream-50/50">
+              <div className="flex items-center gap-2">
+                <div className="w-8 h-8 rounded-xl bg-amber-500/10 flex items-center justify-center text-amber-700">
+                  <ScanLine className="w-4 h-4" />
+                </div>
+                <div>
+                  <CardTitle className="text-base font-bold text-brand-dark">
+                    {t('dashboard.recentScans')}
+                  </CardTitle>
+                  <span className="text-[11px] text-brand-dark/60">Multimodal Diagnosis Feed</span>
+                </div>
+              </div>
+              <Link
+                href="/scan"
+                className="inline-flex items-center gap-1 px-3 py-1.5 rounded-xl bg-emerald-700 hover:bg-emerald-800 text-white text-xs font-bold transition-colors shadow-2xs"
+              >
+                <Plus className="w-3.5 h-3.5" />
+                <span>New Scan</span>
               </Link>
             </CardHeader>
-            <CardContent>
+            <CardContent className="p-4 sm:p-5">
               {scans.length === 0 ? (
                 <EmptyState
                   icon={<ScanLine className="w-6 h-6" />}
@@ -736,68 +930,119 @@ export default function DashboardPage() {
                     <Link
                       key={scan.id}
                       href="/scans/history"
-                      className="flex items-center justify-between p-3 rounded-xl bg-cream-50 border border-cream-200/90 hover:border-brand-leaf hover:bg-white hover:shadow-xs transition-all group cursor-pointer"
+                      className="group flex items-center justify-between p-3.5 rounded-2xl bg-white border border-cream-200/90 hover:border-brand-leaf hover:shadow-xs transition-all cursor-pointer"
                     >
-                      <div className="flex items-center gap-3">
+                      <div className="flex items-center gap-3.5 min-w-0">
                         {/* eslint-disable-next-line @next/next/no-img-element */}
                         <img
                           src={scan.image_url}
                           alt={scan.crop_name}
-                          className="w-10 h-10 rounded-lg object-cover border border-cream-200 group-hover:scale-105 transition-transform"
+                          onError={(e) => {
+                            e.currentTarget.style.display = 'none';
+                          }}
+                          className="w-13 h-13 rounded-xl object-cover border border-cream-200 group-hover:scale-105 transition-transform shrink-0 shadow-2xs"
                         />
-                        <div>
+                        <div className="min-w-0">
                           <div className="flex items-center gap-1.5">
-                            <h4 className="text-xs font-bold text-brand-dark group-hover:text-brand-forest transition-colors">
+                            <h4 className="text-xs sm:text-sm font-bold text-brand-dark group-hover:text-brand-forest transition-colors truncate">
                               {scan.crop_name}
                             </h4>
-                            <ChevronRight className="w-3 h-3 text-brand-leaf opacity-0 group-hover:opacity-100 transition-opacity" />
+                            <ChevronRight className="w-3.5 h-3.5 text-brand-leaf opacity-0 group-hover:opacity-100 transition-opacity shrink-0" />
                           </div>
-                          <p className="text-[11px] text-brand-dark/70">
+                          <p className="text-xs font-semibold text-amber-900/90 truncate mt-0.5">
                             {scan.disease_name || 'Healthy Crop'}
                           </p>
+                          <span className="text-[10px] text-brand-dark/55 block">
+                            High AI Confidence • Verified
+                          </span>
                         </div>
                       </div>
-                      <Badge
-                        variant={
-                          scan.severity === 'healthy'
-                            ? 'emerald'
-                            : scan.severity === 'severe'
-                            ? 'red'
-                            : 'amber'
-                        }
-                        size="sm"
-                      >
-                        {scan.severity}
-                      </Badge>
+
+                      <div className="shrink-0 ml-2">
+                        <Badge
+                          variant={
+                            scan.severity === 'healthy'
+                              ? 'emerald'
+                              : scan.severity === 'severe'
+                              ? 'red'
+                              : 'amber'
+                          }
+                          size="sm"
+                          className="font-bold capitalize shadow-2xs"
+                        >
+                          {scan.severity}
+                        </Badge>
+                      </div>
                     </Link>
                   ))}
+
+                  <Link
+                    href="/scans/history"
+                    className="block text-center text-xs font-bold text-brand-forest hover:underline pt-1"
+                  >
+                    View All Diagnostics History →
+                  </Link>
                 </div>
               )}
             </CardContent>
           </Card>
 
-          {/* Regional Agronomy Insights Card */}
-          <Card className="bg-gradient-to-br from-cream-100/90 to-white border-cream-200">
-            <CardHeader className="pb-3">
+          {/* Regional Agronomy Intelligence Card */}
+          <Card className="border border-cream-300 bg-gradient-to-br from-cream-50 via-white to-emerald-50/30 shadow-xs overflow-hidden">
+            <CardHeader className="pb-3 border-b border-cream-200">
               <div className="flex items-center gap-2">
                 <Sparkles className="w-4 h-4 text-brand-harvest" />
                 <CardTitle className="text-base font-bold text-brand-dark">
-                  {t('dashboard.insightsTitle')}
+                  Regional Field Intelligence & Advisories
                 </CardTitle>
               </div>
+              <span className="text-[11px] text-brand-dark/60 block mt-0.5">
+                Calibrated for South 24 Parganas & Lower Gangetic Basin
+              </span>
             </CardHeader>
-            <CardContent className="space-y-3 text-xs leading-relaxed text-brand-dark/80">
-              <div className="p-3 rounded-xl bg-white border border-cream-200 shadow-2xs">
-                <span className="font-bold text-brand-forest block mb-1">
-                  🌾 Bengal Winter Season Advisory
-                </span>
-                Maintain 2-3 cm shallow water in newly transplanted Boro rice plots. Protect potato seed beds from late evening fog to prevent early blight sporulation.
+            <CardContent className="p-4 sm:p-5 space-y-3.5 text-xs text-brand-dark/85">
+              {/* Directive 1 */}
+              <div className="p-3.5 rounded-xl bg-white border-l-4 border-l-emerald-600 border border-cream-200/90 shadow-2xs space-y-1.5">
+                <div className="flex items-center justify-between">
+                  <span className="font-bold text-emerald-900 flex items-center gap-1.5">
+                    🌾 Boro Rice & Potato Seedling Protocol
+                  </span>
+                  <span className="text-[10px] px-2 py-0.5 rounded-md bg-emerald-100 text-emerald-900 font-bold">
+                    Seasonal Alert
+                  </span>
+                </div>
+                <p className="leading-relaxed text-brand-dark/80">
+                  Maintain 2–3 cm shallow standing water in newly transplanted Boro rice plots. Protect potato seed beds from late evening winter fog to prevent early blight sporulation.
+                </p>
+                <Link
+                  href="/weather"
+                  className="inline-flex items-center gap-1 text-[11px] font-bold text-emerald-700 hover:text-emerald-900 pt-1 hover:underline"
+                >
+                  <span>Check District Spray Window</span>
+                  <ArrowRight className="w-3 h-3" />
+                </Link>
               </div>
-              <div className="p-3 rounded-xl bg-white border border-cream-200 shadow-2xs">
-                <span className="font-bold text-brand-forest block mb-1">
-                  🧪 Soil Nutrient Management
-                </span>
-                Soil testing prevents costly fertilizer overuse. Log your official Soil Health Card parameters to generate customized dosage schedules.
+
+              {/* Directive 2 */}
+              <div className="p-3.5 rounded-xl bg-white border-l-4 border-l-amber-500 border border-cream-200/90 shadow-2xs space-y-1.5">
+                <div className="flex items-center justify-between">
+                  <span className="font-bold text-amber-900 flex items-center gap-1.5">
+                    🧪 Heavy Alluvial & Clay Nutrient Split
+                  </span>
+                  <span className="text-[10px] px-2 py-0.5 rounded-md bg-amber-100 text-amber-900 font-bold">
+                    Soil Guidance
+                  </span>
+                </div>
+                <p className="leading-relaxed text-brand-dark/80">
+                  Heavy clay soil holds nitrogen longer but requires split potassium (MOP) top-dressing at 21 days after transplanting (active tillering) to fortify straw against sheath blight.
+                </p>
+                <Link
+                  href="/fertilizer"
+                  className="inline-flex items-center gap-1 text-[11px] font-bold text-amber-800 hover:text-amber-950 pt-1 hover:underline"
+                >
+                  <span>Calculate Crop N-P-K Schedule</span>
+                  <ArrowRight className="w-3 h-3" />
+                </Link>
               </div>
             </CardContent>
           </Card>
