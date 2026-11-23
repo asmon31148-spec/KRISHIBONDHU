@@ -477,21 +477,28 @@ export function calculateYieldPrediction(
   let fidelityLabel = 'Indicative Regional Baseline';
   let fidelityDesc =
     'Prediction generated using verified regional multi-year ICAR research averages. Soil lab parameters were not provided and were NOT fabricated.';
-  let confidenceScore = 80;
+  // Dynamically calculate confidence score based on verified data points provided by farmer:
+  let confidenceScore = 48; // Base uncalibrated regional average (45-50%)
+
+  if (input.healthStatus) confidenceScore += 12;
+  if (input.irrigationType) confidenceScore += 10;
+  if (input.variety || input.plantingDate || input.growthStage) confidenceScore += 10;
+  if (input.weatherContext) confidenceScore += 5;
 
   if (input.hasSoilReport && input.ph && input.nitrogenKgHa) {
     fidelityLevel = 'high_precision';
     fidelityLabel = 'High Precision (Soil Lab Verified)';
     fidelityDesc =
       'Calibrated with measured soil test chemistry, irrigation source, and variety parameters.';
-    confidenceScore = 92;
+    confidenceScore += 15;
   } else if (input.variety && (input.plantingDate || input.growthStage)) {
     fidelityLevel = 'moderate_calibrated';
     fidelityLabel = 'Moderate Fidelity (Agronomic Calibrated)';
     fidelityDesc =
       'Calibrated using farmer field parameters, variety, and crop growth duration.';
-    confidenceScore = 85;
   }
+
+  confidenceScore = Math.min(95, Math.max(45, confidenceScore));
 
   // 7. Production Economics & Cultivation Expense Calculation
   const costItems = baseline.costSchedulePerBigha;

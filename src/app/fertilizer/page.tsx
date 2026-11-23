@@ -35,7 +35,7 @@ import {
   SoilTestOptions,
   CalculationResult,
 } from '@/lib/agronomy/fertilizer';
-import { WEST_BENGAL_DISTRICTS } from '@/lib/location/india';
+import { WEST_BENGAL_DISTRICTS, reverseGeocodeGPS } from '@/lib/location/india';
 
 const CATEGORIES: { id: 'all' | CropCategory | 'custom'; label_en: string; label_bn: string; count: number }[] = [
   { id: 'all', label_en: 'All Crops', label_bn: 'সকল ফসল', count: Object.keys(CROP_BASELINES).length },
@@ -82,6 +82,37 @@ export default function FertilizerCalculatorPage() {
     leachingRiskWarning: string | null;
   } | null>(null);
   const [isLoadingWeather, setIsLoadingWeather] = useState<boolean>(false);
+  const [isDetectingLocation, setIsDetectingLocation] = useState<boolean>(false);
+
+  const handleDetectGPS = useCallback(async () => {
+    if (typeof window === 'undefined' || !navigator.geolocation) return;
+    setIsDetectingLocation(true);
+    navigator.geolocation.getCurrentPosition(
+      async (pos) => {
+        try {
+          const lat = pos.coords.latitude;
+          const lon = pos.coords.longitude;
+          const geo = await reverseGeocodeGPS(lat, lon);
+          if (geo.district) {
+            setSelectedDistrict(geo.district);
+            if (geo.agroZone === 'red_laterite') {
+              setSoilTexture('sandy_laterite');
+            } else if (geo.agroZone === 'coastal_saline') {
+              setSoilTexture('coastal_saline');
+            }
+          }
+        } catch (err) {
+          console.warn('GPS geocode notice:', err);
+        } finally {
+          setIsDetectingLocation(false);
+        }
+      },
+      () => {
+        setIsDetectingLocation(false);
+      },
+      { timeout: 7000 }
+    );
+  }, []);
 
   // Steppers helpers
   const handleBighaChange = (delta: number) => {
@@ -289,6 +320,20 @@ export default function FertilizerCalculatorPage() {
                   </option>
                 ))}
               </select>
+              <button
+                type="button"
+                onClick={handleDetectGPS}
+                disabled={isDetectingLocation}
+                className="inline-flex items-center gap-1 px-2 py-0.5 rounded-lg bg-emerald-100 hover:bg-emerald-200 text-brand-forest font-bold text-[11px] transition-colors cursor-pointer"
+                title="Detect your district via browser GPS"
+              >
+                {isDetectingLocation ? (
+                  <RefreshCw className="w-3 h-3 animate-spin text-brand-forest" />
+                ) : (
+                  <MapPin className="w-3 h-3 text-brand-forest" />
+                )}
+                <span>{isDetectingLocation ? 'Locating...' : 'Auto-Detect GPS'}</span>
+              </button>
               {isLoadingWeather && <RefreshCw className="w-3 h-3 text-brand-forest animate-spin" />}
             </div>
 

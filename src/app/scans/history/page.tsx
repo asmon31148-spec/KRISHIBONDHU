@@ -59,10 +59,10 @@ export default function ScanHistoryPage() {
     try {
       const { data, error } = await supabase
         .from('crop_scans')
-        .select('*')
+        .select('id, crop_name, severity, created_at, is_healthy, image_url, disease_name, disease_confidence, crop_confidence, symptoms, ai_explanation, treatment_organic, treatment_chemical')
         .eq('user_id', user.id)
         .order('created_at', { ascending: false })
-        .limit(25);
+        .limit(10);
 
       if (!error && data) {
         setScans(data as ScanItem[]);

@@ -30,64 +30,6 @@ let cachedNews: NewsArticle[] = [];
 let lastFetchTime = 0;
 const NEWS_CACHE_TTL = 15 * 60 * 1000; // 15 minutes
 
-// Authentic, verified agricultural extension articles with documented archival timestamps and official source URLs
-const VERIFIED_AGRICULTURE_DISPATCHES: NewsArticle[] = [
-  {
-    id: 'pib-agri-1',
-    title: 'Ministry of Agriculture Announces Extension of PM-KISAN Scheme Benefits',
-    description: 'Direct Benefit Transfer (DBT) funds authorized for small and marginal landholding farmer families across India for upcoming Rabi sowing inputs.',
-    source: 'Press Information Bureau (PIB)',
-    sourceUrl: 'https://pib.gov.in/PressReleasePage.aspx?PRID=1969234',
-    publishedAt: '2026-11-20T11:30:00.000Z',
-    imageUrl: 'https://images.unsplash.com/photo-1595974482597-4b8da8879bc5?auto=format&fit=crop&w=600&q=80',
-    category: 'schemes',
-    language: 'en',
-  },
-  {
-    id: 'icar-advisory-2',
-    title: 'পশ্চিমবঙ্গে বোরো ধানের চারা রোপণ ও রোগ নিয়ন্ত্রণের নির্দেশিকা',
-    description: 'বিধানচন্দ্র কৃষি বিশ্ববিদ্যালয় ও আইসিএআর-এর যৌথ কৃষি পরামর্শ: অতিরিক্ত কুয়াশায় বোরো ধানের চারায় ট্রাইসাইক্লাজোল স্প্রে এবং জলের গভীরতা নিয়ন্ত্রণের পরামর্শ।',
-    source: 'ICAR-CRIJAF & BCKV Extension',
-    sourceUrl: 'https://icar.org.in',
-    publishedAt: '2026-11-18T09:15:00.000Z',
-    imageUrl: 'https://images.unsplash.com/photo-1500937386664-56d1dfef3854?auto=format&fit=crop&w=600&q=80',
-    category: 'technology',
-    language: 'bn',
-  },
-  {
-    id: 'wb-krishak-bandhu-3',
-    title: 'West Bengal Krishak Bandhu Scheme: Death Benefit and Seasonal Crop Assistance Disbursed',
-    description: 'Department of Agriculture, Govt of West Bengal distributes seasonal financial assistance of up to ₹10,000 per acre to registered farmers and sharecroppers.',
-    source: 'Dept of Agriculture, West Bengal',
-    sourceUrl: 'https://matirkatha.net',
-    publishedAt: '2026-11-15T14:00:00.000Z',
-    imageUrl: 'https://images.unsplash.com/photo-1586771107445-d3ca888129ff?auto=format&fit=crop&w=600&q=80',
-    category: 'schemes',
-    language: 'en',
-  },
-  {
-    id: 'fertilizer-subsidy-4',
-    title: 'खरीफ व रबी सीजन के लिए एनपीকে उर्वरक सब्सिडी दरों को केंद्रीय मंजूरी',
-    description: 'पोषक तत्व आधारित सब्सिडी (NBS) नीति के अंतर्गत यूरिया, डीएपी (DAP) और एमओपी (MOP) की कीमतों को स्थिर रखने हेतु विशेष बजटीय प्रावधान जारी।',
-    source: 'Ministry of Chemicals & Fertilizers',
-    sourceUrl: 'https://fert.nic.in',
-    publishedAt: '2026-11-12T16:45:00.000Z',
-    imageUrl: 'https://images.unsplash.com/photo-1628352081506-83c43123ed6d?auto=format&fit=crop&w=600&q=80',
-    category: 'fertilizer',
-    language: 'hi',
-  },
-  {
-    id: 'mandi-rates-5',
-    title: 'Eastern India Potato & Paddy Mandi Arrival Prices Reported by Agmarknet',
-    description: 'Wholesale prices across Sheoraphuli, Burdwan, and Tarakeswar wholesale markets indicate steady demand for fresh table potatoes and Aman paddy grains.',
-    source: 'Agmarknet Directorate of Marketing',
-    sourceUrl: 'https://agmarknet.gov.in',
-    publishedAt: '2026-11-10T08:00:00.000Z',
-    imageUrl: 'https://images.unsplash.com/photo-1518977676601-b53f82aba655?auto=format&fit=crop&w=600&q=80',
-    category: 'mandi',
-    language: 'en',
-  },
-];
 
 function categorizeArticle(title: string, desc: string): NewsArticle['category'] {
   const text = (title + ' ' + desc).toLowerCase();
@@ -211,14 +153,7 @@ export async function fetchAgricultureNews(
 
   // 3. Deduplicate by URL and prioritize live articles
   const seenUrls = new Set<string>();
-  const referenceDispatches: NewsArticle[] = VERIFIED_AGRICULTURE_DISPATCHES.map((art) => ({
-    ...art,
-    isArchival: true,
-  }));
-
-  // If live RSS feeds succeed with 4+ fresh articles, use live articles exclusively so users do not see old 2025 dates
-  const combined = liveArticles.length >= 4 ? liveArticles : [...liveArticles, ...referenceDispatches];
-  const uniqueArticles = combined.filter((art) => {
+  const uniqueArticles = liveArticles.filter((art) => {
     const norm = art.sourceUrl.toLowerCase().trim();
     if (seenUrls.has(norm)) return false;
     seenUrls.add(norm);

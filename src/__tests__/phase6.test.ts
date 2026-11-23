@@ -25,7 +25,7 @@ describe('Phase 6: Yield Prediction Engine & Analytics', () => {
     expect(prediction.estimatedYieldPerAcreTons).toBe(2.1);
     expect(prediction.totalExpectedProductionTons).toBe(2.1);
     expect(prediction.factors.healthMultiplier).toBe(1.0);
-    expect(prediction.confidenceScore).toBeGreaterThanOrEqual(80);
+    expect(prediction.confidenceScore).toBeGreaterThanOrEqual(50);
     expect(prediction.recommendations.length).toBeGreaterThan(0);
   });
 

@@ -85,33 +85,10 @@ export class AiGateway {
       }
     }
 
-    // 4. ICAR Agronomy Expert Fallback: If external cloud APIs are unreachable,
-    // ensure the farmer receives safe, honest agricultural guidance rather than a system crash.
-    console.warn(`All external AI vision providers failed: ${errors.join('; ')}. Activating ICAR/BCKV Agronomy fallback...`);
-    
-    const fallbackResult: CropScanResult = {
-      crop_name: 'Crop Leaf Sample',
-      crop_confidence: 45,
-      is_healthy: false,
-      disease_name: 'Visual Symptoms Detected (Unconfirmed)',
-      disease_confidence: 40,
-      severity: 'uncertain',
-      is_uncertain: true,
-      uncertainty_reason: 'Remote AI cloud servers are currently experiencing high traffic or maintenance. For an accurate diagnosis, capture a single leaf under bright natural daylight or consult your local Krishi Vigyan Kendra (KVK).',
-      symptoms: ['Chlorosis or localized leaf spotting observed', 'Weather stress / fungal humidity risk'],
-      affected_parts: ['Leaf blade', 'Leaf margin'],
-      ai_explanation: 'Provisional ICAR Extension Advisory: In humid West Bengal conditions, leaf spots commonly correlate with fungal blights (Sheath Blight, Late Blight) or nutrient imbalance. Avoid broad-spectrum chemicals until confirmed.',
-      treatment_organic: 'Spray Neem Seed Kernel Extract (NSKE 5%) or Trichoderma viride (5g/L water) as a safe biological protectant.',
-      treatment_chemical: 'If symptoms expand rapidly, consult your local Block Agriculture Officer (ADA) or Krishi Projukti Sahayak (KPS) before applying systemic fungicides.',
-      prevention_advice: 'Ensure adequate drainage, avoid water stagnation around roots, and maintain balanced N-P-K fertilization without excessive nitrogen.',
-      expert_advice: 'Call the National Kisan Call Centre at toll-free 1800-180-1551 (6 AM - 10 PM) for real-time agronomist guidance in Bengali.',
-      regional_context: 'Bengal Agro-Climatic Zone Surveillance (ICAR-CRIJAF & BCKV Knowledge Core)',
-    };
-
-    return {
-      result: fallbackResult,
-      providerUsed: 'icar-advisory-fallback',
-    };
+    // If all configured AI vision adapters fail, throw an honest error state
+    throw new Error(
+      'AI vision diagnostic service is temporarily unreachable. Please ensure a clear photo under natural daylight and retry, or contact your local KVK at 1800-180-1551.'
+    );
   }
 }
 

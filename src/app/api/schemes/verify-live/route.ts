@@ -87,8 +87,37 @@ function determineSchemeOperationalStatus(schemeId: string, now: Date = new Date
     } else {
       return {
         status: 'closed' as const,
-        statusBadge: 'Enrollment Window Closed for Season',
+        statusBadge: 'Inter-Season (Applications Open Ahead of Next Sowing)',
         season: 'Off-Season Verification Period',
+      };
+    }
+  }
+
+  if (schemeId === 'pmfby') {
+    // PMFBY Kharif cutoff: July 31st (months 5-6); Rabi cutoff: Dec 31st / Jan 15th (months 11-0)
+    if (month >= 5 && month <= 6) {
+      return {
+        status: 'active' as const,
+        statusBadge: 'Kharif Window Active (Cutoff: 31 July)',
+        season: 'Kharif Cultivation Window',
+      };
+    } else if (month === 11 || month === 0) {
+      return {
+        status: 'active' as const,
+        statusBadge: 'Rabi Window Active (Cutoff: 31 Dec)',
+        season: 'Rabi Cultivation Window',
+      };
+    } else if (month === 10) {
+      return {
+        status: 'review' as const,
+        statusBadge: 'Rabi Window Opening 1 Dec (Kharif Closed 31 July)',
+        season: 'Pre-Rabi Transition Phase',
+      };
+    } else {
+      return {
+        status: 'closed' as const,
+        statusBadge: 'Inter-Season (Applications Open Ahead of Next Sowing)',
+        season: 'Off-Season Verification Window',
       };
     }
   }

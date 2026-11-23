@@ -140,9 +140,16 @@ Return strictly valid JSON with this exact schema (no markdown, no code fences):
       }
     }
 
-    // Default to aman_paddy if still not found
+    // If no baseline could be found or analyzed, return an explicit error rather than silently defaulting to Aman Paddy
     if (!baseline) {
-      baseline = CROP_BASELINES.aman_paddy;
+      return NextResponse.json(
+        {
+          error: customCropName
+            ? `Could not verify authentic agronomic baseline for "${customCropName}". Please check the spelling or select a verified crop from the database.`
+            : 'Crop baseline not found. Please select a valid crop.',
+        },
+        { status: 404 }
+      );
     }
 
     const soilOptions: SoilTestOptions = {

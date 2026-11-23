@@ -140,38 +140,13 @@ export async function generateChatReply(
     }
   }
 
-  console.warn(`All AI chat providers failed: ${errors.join('; ')}. Returning grounded ICAR advisory.`);
-  
-  if (language === 'bn') {
-    return `**কৃষি বিজ্ঞান কেন্দ্র (ICAR-BCKV) সম্প্রসারণ পরামর্শ:**
-
-আপনার প্রশ্নের জন্য ধন্যবাদ। আমাদের দূরবর্তী এআই ক্লাউড পরিষেবাতে সাময়িক সংযোগ সমস্যা হচ্ছে।
-
-**তাৎক্ষণিক মাঠপর্যায়ের পরামর্শ:**
-- **রোগ ও পোকা নিয়ন্ত্রণ:** পাতার নিচের পিঠ ভালোভাবে পরীক্ষা করুন। কোনো তীব্র রাসায়নিক ব্যবহারের পূর্বে প্রাথমিক জৈব প্রতিরোধক হিসেবে নিম তেলের স্প্রে (NSKE ৫%) অথবা ট্রাইকোডার্মা ভিরিডি (৫ গ্রাম প্রতি লিটার জল) স্প্রে করতে পারেন।
-- **সার প্রয়োগ:** অতিরিক্ত ইউরিয়া সার প্রয়োগ করবেন না, কারণ এতে বাতাসে আর্দ্রতা বেশি থাকলে ধসা রোগ দ্রুত ছড়িয়ে পড়ে।
-- **সরাসরি বিজ্ঞানী সহায়তা:** বাংলা ভাষায় তাৎক্ষণিক সরকারি কৃষি পরামর্শের জন্য টোল-ফ্রি **কিষাণ কল সেন্টার ১৮০০-১৮০-১৫৫১** নম্বরে যোগাযোগ করুন (সকাল ৬টা থেকে রাত ১০টা পর্যন্ত)।`;
-  }
-
-  if (language === 'hi') {
-    return `**कृषि विज्ञान केंद्र (ICAR-BCKV) कृषि परामर्श:**
-
-आपके प्रश्न के लिए धन्यवाद। हमारे रिमोट एआई सर्वर में संक्षिप्त नेटवर्क समस्या आ रही है।
-
-**तात्कालिक क्षेत्रीय सलाह:**
-- **कीट व रोग प्रबंधन:** पत्तियों के निचले हिस्से की जाँच करें। किसी भी तेज रसायन के छिड़काव से पहले नीम अर्क (NSKE 5%) या ट्राइकोडर्मा विरिडी (5 ग्राम/लीटर पानी) का जैविक छिड़काव करें।
-- **उर्वरक प्रबंधन:** अत्यधिक यूरिया (नाइट्रोजन) के प्रयोग से बचें, क्योंकि इससे उच्च आर्द्रता में झुलसा रोग तेजी से फैलता है।
-- **सीधी कृषि वैज्ञानिक सहायता:** हिन्दी में प्रत्यक्ष सलाह के लिए राष्ट्रीय टोल-फ्री **किसान कॉल सेंटर 1800-180-1551** पर सुबह 6 से रात 10 बजे के बीच संपर्क करें।`;
-  }
-
-  return `**Krishi Vigyan Kendra (ICAR-BCKV) Agronomy Advisory:**
-
-Thank you for reaching out. Our remote AI cloud connection is currently experiencing brief maintenance.
-
-**Immediate Field Guidance:**
-- **For Pests & Disease Management:** Inspect leaf undersides for fungal mycelium or sap-sucking insects. As a safe initial biological protectant, spray **Neem Seed Kernel Extract (NSKE 5%)** or **Trichoderma viride** (5g per litre of water).
-- **Fertilizer Balancing:** Avoid excessive urea nitrogen application during humid or cloudy periods, as it accelerates foliar fungal blights.
-- **Direct Agronomist Help:** For real-time extension advice from agricultural scientists, call the toll-free **National Kisan Call Centre at 1800-180-1551** (6:00 AM – 10:00 PM daily).`;
+  throw new Error(
+    language === 'bn'
+      ? 'এআই কৃষি পরামর্শদাতার সাথে সংযোগ স্থাপন করা সম্ভব হয়নি। অনুগ্রহ করে কিছুক্ষণ পর আবার চেষ্টা করুন।'
+      : language === 'hi'
+      ? 'एआई कृषि सलाहकार से संपर्क नहीं हो सका। कृपया कुछ समय बाद पुनः प्रयास करें।'
+      : 'Unable to connect to agronomy AI service. Please retry shortly.'
+  );
 }
 
 async function generateGeminiChatReply(

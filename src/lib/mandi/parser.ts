@@ -113,14 +113,8 @@ export function parseAndFilterMandiRecords(
         trend = 'stable';
       }
     } else {
-      const midPoint = (min + max) / 2;
-      if (modal > midPoint + 30) {
-        trend = 'up';
-      } else if (modal < midPoint - 30) {
-        trend = 'down';
-      } else {
-        trend = 'stable';
-      }
+      // Without prior trade comparison, market is reported as stable
+      trend = 'stable';
     }
 
     if (modal > 0) {
