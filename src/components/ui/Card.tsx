@@ -11,7 +11,7 @@ export function Card({
     <div
       className={twMerge(
         clsx(
-          'rounded-2xl border border-cream-200/90 bg-white/95 shadow-xs transition-shadow',
+          'rounded-2xl border border-cream-200/90 dark:border-white/10 bg-white/95 dark:bg-[#13261D] shadow-xs transition-shadow',
           className
         )
       )}
@@ -45,7 +45,7 @@ export function CardTitle({
   return (
     <h3
       className={twMerge(
-        clsx('text-lg sm:text-xl font-bold leading-none tracking-tight text-brand-dark', className)
+        clsx('text-lg sm:text-xl font-bold leading-none tracking-tight text-brand-dark dark:text-[#EAF2EC]', className)
       )}
       {...props}
     >
@@ -61,7 +61,7 @@ export function CardDescription({
 }: React.HTMLAttributes<HTMLParagraphElement>) {
   return (
     <p
-      className={twMerge(clsx('text-xs sm:text-sm text-brand-dark/70 leading-relaxed', className))}
+      className={twMerge(clsx('text-xs sm:text-sm text-brand-dark/70 dark:text-white/60 leading-relaxed', className))}
       {...props}
     >
       {children}

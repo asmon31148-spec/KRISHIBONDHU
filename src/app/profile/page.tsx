@@ -198,46 +198,46 @@ export default function ProfilePage() {
         </div>
 
         {/* Why Create an Account (Benefits) */}
-        <div className="bg-white rounded-3xl border border-cream-200/90 p-4 sm:p-6 shadow-2xs space-y-3">
-          <div className="flex items-center gap-2 pb-2 border-b border-cream-200">
+        <div className="bg-white dark:bg-[#13261D] rounded-3xl border border-cream-200/90 dark:border-white/10 p-4 sm:p-6 shadow-2xs space-y-3">
+          <div className="flex items-center gap-2 pb-2 border-b border-cream-200 dark:border-white/10">
             <Sparkles className="w-4 h-4 text-brand-harvest" />
-            <h3 className="text-xs sm:text-sm font-bold text-brand-forest uppercase tracking-wider">
+            <h3 className="text-xs sm:text-sm font-bold text-brand-forest dark:text-emerald-400 uppercase tracking-wider">
               Why save your farmer profile?
             </h3>
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5 pt-1">
-            <div className="p-3 rounded-2xl bg-cream-50 border border-cream-200/80 flex sm:flex-col items-center sm:items-start gap-3">
-              <div className="w-8 h-8 rounded-xl bg-brand-forest/10 flex items-center justify-center text-brand-forest shrink-0">
-                <CheckCircle2 className="w-4 h-4 text-brand-leaf" />
+            <div className="p-3 rounded-2xl bg-cream-50 dark:bg-[#0B1711] border border-cream-200/80 dark:border-white/10 flex sm:flex-col items-center sm:items-start gap-3">
+              <div className="w-8 h-8 rounded-xl bg-brand-forest/10 flex items-center justify-center text-brand-forest dark:text-emerald-400 shrink-0">
+                <CheckCircle2 className="w-4 h-4 text-brand-leaf dark:text-emerald-400" />
               </div>
               <div>
-                <h4 className="text-xs font-bold text-brand-dark">Cloud Sync</h4>
-                <p className="text-[11px] text-brand-dark/70 leading-snug mt-0.5">
+                <h4 className="text-xs font-bold text-brand-dark dark:text-white">Cloud Sync</h4>
+                <p className="text-[11px] text-brand-dark/70 dark:text-white/60 leading-snug mt-0.5">
                   Access crop diagnoses and farm records on both mobile & PC.
                 </p>
               </div>
             </div>
 
-            <div className="p-3 rounded-2xl bg-cream-50 border border-cream-200/80 flex sm:flex-col items-center sm:items-start gap-3">
+            <div className="p-3 rounded-2xl bg-cream-50 dark:bg-[#0B1711] border border-cream-200/80 dark:border-white/10 flex sm:flex-col items-center sm:items-start gap-3">
               <div className="w-8 h-8 rounded-xl bg-amber-500/10 flex items-center justify-center text-amber-700 shrink-0">
                 <CloudSun className="w-4 h-4 text-brand-harvest" />
               </div>
               <div>
-                <h4 className="text-xs font-bold text-brand-dark">District Alerts</h4>
-                <p className="text-[11px] text-brand-dark/70 leading-snug mt-0.5">
+                <h4 className="text-xs font-bold text-brand-dark dark:text-white">District Alerts</h4>
+                <p className="text-[11px] text-brand-dark/70 dark:text-white/60 leading-snug mt-0.5">
                   Personalized spray advisories tailored to your specific district.
                 </p>
               </div>
             </div>
 
-            <div className="p-3 rounded-2xl bg-cream-50 border border-cream-200/80 flex sm:flex-col items-center sm:items-start gap-3">
-              <div className="w-8 h-8 rounded-xl bg-emerald-500/10 flex items-center justify-center text-emerald-700 shrink-0">
-                <Bot className="w-4 h-4 text-brand-leaf" />
+            <div className="p-3 rounded-2xl bg-cream-50 dark:bg-[#0B1711] border border-cream-200/80 dark:border-white/10 flex sm:flex-col items-center sm:items-start gap-3">
+              <div className="w-8 h-8 rounded-xl bg-emerald-500/10 flex items-center justify-center text-emerald-700 dark:text-emerald-400 shrink-0">
+                <Bot className="w-4 h-4 text-brand-leaf dark:text-emerald-400" />
               </div>
               <div>
-                <h4 className="text-xs font-bold text-brand-dark">Saved Chat History</h4>
-                <p className="text-[11px] text-brand-dark/70 leading-snug mt-0.5">
+                <h4 className="text-xs font-bold text-brand-dark dark:text-white">Saved Chat History</h4>
+                <p className="text-[11px] text-brand-dark/70 dark:text-white/60 leading-snug mt-0.5">
                   Never lose agronomic remedies, dosage charts, or AI advice.
                 </p>
               </div>
@@ -246,16 +246,16 @@ export default function ProfilePage() {
         </div>
 
         {/* Quick App Preferences (Language & Support) */}
-        <div className="bg-white rounded-3xl border border-cream-200/90 p-4 sm:p-6 shadow-2xs space-y-4">
-          <div className="flex items-center gap-2 pb-2 border-b border-cream-200">
-            <Globe className="w-4 h-4 text-brand-leaf" />
-            <h3 className="text-xs sm:text-sm font-bold text-brand-forest uppercase tracking-wider">
+        <div className="bg-white dark:bg-[#13261D] rounded-3xl border border-cream-200/90 dark:border-white/10 p-4 sm:p-6 shadow-2xs space-y-4">
+          <div className="flex items-center gap-2 pb-2 border-b border-cream-200 dark:border-white/10">
+            <Globe className="w-4 h-4 text-brand-leaf dark:text-emerald-400" />
+            <h3 className="text-xs sm:text-sm font-bold text-brand-forest dark:text-emerald-400 uppercase tracking-wider">
               Language & Settings
             </h3>
           </div>
 
           <div className="space-y-1.5">
-            <label className="text-xs font-semibold text-brand-dark/80 block">
+            <label className="text-xs font-semibold text-brand-dark/80 dark:text-white/80 block">
               App Language / ভাষা / भाषा
             </label>
             <div className="grid grid-cols-3 gap-2">
@@ -265,7 +265,7 @@ export default function ProfilePage() {
                 className={`py-2 px-3 rounded-xl text-xs font-bold transition-all border ${
                   language === 'en'
                     ? 'bg-brand-forest text-white border-brand-forest shadow-xs'
-                    : 'bg-cream-50 text-brand-dark/80 border-cream-200 hover:bg-cream-100'
+                    : 'bg-cream-50 dark:bg-white/10 text-brand-dark/80 dark:text-white/80 border-cream-200 dark:border-white/15 hover:bg-cream-100'
                 }`}
               >
                 English
@@ -276,7 +276,7 @@ export default function ProfilePage() {
                 className={`py-2 px-3 rounded-xl text-xs font-bold transition-all border ${
                   language === 'bn'
                     ? 'bg-brand-forest text-white border-brand-forest shadow-xs'
-                    : 'bg-cream-50 text-brand-dark/80 border-cream-200 hover:bg-cream-100'
+                    : 'bg-cream-50 dark:bg-white/10 text-brand-dark/80 dark:text-white/80 border-cream-200 dark:border-white/15 hover:bg-cream-100'
                 }`}
               >
                 বাংলা

@@ -114,23 +114,23 @@ export default function SchemesPage() {
   return (
     <div className="space-y-6 sm:space-y-8 w-full text-left max-w-full overflow-x-clip pb-12">
       {/* Page Header Banner */}
-      <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-cream-50 via-white to-emerald-50/50 border border-cream-300 shadow-xs p-6 sm:p-8">
+      <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-cream-50 via-white to-emerald-50/50 dark:from-[#13261D] dark:via-[#0F2018] dark:to-[#0B1711] border border-cream-300 dark:border-white/10 shadow-xs p-6 sm:p-8">
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
           <div className="space-y-2">
             <div className="flex items-center gap-2">
               <Badge variant="emerald" size="sm">
                 FY 2025–2026 Verified
               </Badge>
-              <span className="text-xs text-brand-dark/60">• Zero Middleman Guarantee</span>
+              <span className="text-xs text-brand-dark/60 dark:text-white/60">• Zero Middleman Guarantee</span>
             </div>
-            <h1 className="text-2xl sm:text-3xl font-extrabold text-brand-dark tracking-tight">
+            <h1 className="text-2xl sm:text-3xl font-extrabold text-brand-dark dark:text-[#EAF2EC] tracking-tight">
               {language === 'bn'
                 ? 'সরকারি কৃষি প্রকল্প ও বীমা ন্যাভিগেটর'
                 : language === 'hi'
                 ? 'सरकारी कृषि योजनाएं व बीमा नेविगेटर'
                 : 'Government Agricultural Schemes & Insurance Navigator'}
             </h1>
-            <p className="text-xs sm:text-sm text-brand-dark/75 max-w-xl">
+            <p className="text-xs sm:text-sm text-brand-dark/75 dark:text-white/60 max-w-xl">
               {language === 'bn'
                 ? 'দালালমুক্ত সরাসরি সরকারি সুবিধা। কৃষকবন্ধু, বাংলা শস্য বীমা, ও পিএম-কিষাণের সরাসরি স্ট্যাটাস ট্র্যাকার ও নথি চেকলিস্ট।'
                 : language === 'hi'
@@ -163,16 +163,16 @@ export default function SchemesPage() {
         </div>
 
         {/* Verification Checkline Banner */}
-        <div className="mt-4 pt-3 border-t border-cream-200/80 flex flex-wrap items-center justify-between gap-3 text-xs text-brand-dark/70">
-          <div className="flex items-center gap-2 text-emerald-800 font-semibold">
-            <Globe className="w-4 h-4 text-emerald-700 shrink-0" />
+        <div className="mt-4 pt-3 border-t border-cream-200/80 dark:border-white/10 flex flex-wrap items-center justify-between gap-3 text-xs text-brand-dark/70 dark:text-white/70">
+          <div className="flex items-center gap-2 text-emerald-800 dark:text-emerald-300 font-semibold">
+            <Globe className="w-4 h-4 text-emerald-700 dark:text-emerald-400 shrink-0" />
             <span>
               {isVerifying
                 ? 'Browsing live official government circulars and active DBT welfare cycles...'
                 : 'Live Web Grounded: Connected to real-time government dispatches & active season verifications'}
             </span>
           </div>
-          <span className="text-emerald-800 bg-emerald-100/70 px-2.5 py-0.5 rounded-full font-bold text-[11px] flex items-center gap-1.5">
+          <span className="text-emerald-800 dark:text-emerald-300 bg-emerald-100/70 dark:bg-emerald-950/60 px-2.5 py-0.5 rounded-full font-bold text-[11px] flex items-center gap-1.5">
             <span className="w-2 h-2 rounded-full bg-emerald-600 animate-pulse" />
             Live Search Grounded
           </span>
@@ -181,7 +181,7 @@ export default function SchemesPage() {
 
       {/* Interactive Pictorial Document Checklist */}
       <Card className="border-t-4 border-t-brand-forest shadow-xs">
-        <CardHeader className="pb-3 border-b border-cream-200">
+        <CardHeader className="pb-3 border-b border-cream-200 dark:border-white/10">
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
             <div className="flex items-center gap-2">
               <span className="w-6 h-6 rounded-full bg-brand-forest text-white flex items-center justify-center text-xs font-bold">
@@ -214,29 +214,29 @@ export default function SchemesPage() {
                   onClick={() => toggleDoc(doc.id)}
                   className={`p-4 rounded-2xl border transition-all cursor-pointer flex flex-col justify-between ${
                     isChecked
-                      ? 'border-emerald-500 bg-emerald-50/40 ring-1 ring-emerald-400 shadow-2xs'
-                      : 'border-cream-200 bg-white hover:border-brand-leaf/40'
+                      ? 'border-emerald-500 bg-emerald-50/40 dark:bg-emerald-950/40 ring-1 ring-emerald-400 shadow-2xs'
+                      : 'border-cream-200 dark:border-white/10 bg-white dark:bg-[#13261D] hover:border-brand-leaf/40'
                   }`}
                 >
                   <div>
                     <div className="flex items-center justify-between">
                       <span className="text-2xl">{doc.icon}</span>
-                      <button type="button" className="text-brand-forest">
+                      <button type="button" className="text-brand-forest dark:text-emerald-400">
                         {isChecked ? (
-                          <CheckSquare className="w-5 h-5 text-emerald-600" />
+                          <CheckSquare className="w-5 h-5 text-emerald-600 dark:text-emerald-400" />
                         ) : (
-                          <Square className="w-5 h-5 text-cream-400" />
+                          <Square className="w-5 h-5 text-cream-400 dark:text-white/30" />
                         )}
                       </button>
                     </div>
-                    <h4 className="text-xs sm:text-sm font-bold text-brand-dark mt-2">
+                    <h4 className="text-xs sm:text-sm font-bold text-brand-dark dark:text-white mt-2">
                       {language === 'bn' ? doc.title_bn : language === 'hi' ? doc.title_hi : doc.title_en}
                     </h4>
-                    <p className="text-[11px] text-brand-dark/70 mt-1 leading-snug">
+                    <p className="text-[11px] text-brand-dark/70 dark:text-white/60 mt-1 leading-snug">
                       {language === 'bn' ? doc.description_bn : language === 'hi' ? doc.description_hi : doc.description_en}
                     </p>
                   </div>
-                  <div className="mt-3 pt-2 border-t border-cream-200/80 text-[10px] font-bold text-brand-leaf">
+                  <div className="mt-3 pt-2 border-t border-cream-200/80 dark:border-white/10 text-[10px] font-bold text-brand-leaf dark:text-emerald-400">
                     {isChecked ? 'Ready in Folder ✓' : 'Click to Mark Ready'}
                   </div>
                 </div>

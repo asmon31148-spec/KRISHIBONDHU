@@ -15,12 +15,12 @@ export function Badge({
   ...props
 }: BadgeProps) {
   const variants = {
-    forest: 'bg-brand-forest/10 text-brand-forest border-brand-forest/20',
-    emerald: 'bg-emerald-50 text-emerald-800 border-emerald-200',
-    amber: 'bg-amber-50 text-amber-900 border-amber-200',
-    red: 'bg-red-50 text-red-800 border-red-200',
-    slate: 'bg-cream-100 text-brand-dark/80 border-cream-300',
-    outline: 'border border-brand-leaf/30 text-brand-leaf bg-transparent',
+    forest: 'bg-brand-forest/10 dark:bg-emerald-500/20 text-brand-forest dark:text-emerald-300 border-brand-forest/20 dark:border-emerald-500/30',
+    emerald: 'bg-emerald-50 dark:bg-emerald-950/60 text-emerald-800 dark:text-emerald-300 border-emerald-200 dark:border-emerald-500/30',
+    amber: 'bg-amber-50 dark:bg-amber-950/60 text-amber-900 dark:text-amber-300 border-amber-200 dark:border-amber-500/30',
+    red: 'bg-red-50 dark:bg-red-950/60 text-red-800 dark:text-red-300 border-red-200 dark:border-red-500/30',
+    slate: 'bg-cream-100 dark:bg-white/10 text-brand-dark/80 dark:text-white/80 border-cream-300 dark:border-white/20',
+    outline: 'border border-brand-leaf/30 dark:border-white/20 text-brand-leaf dark:text-emerald-400 bg-transparent',
   };
 
   const sizes = {

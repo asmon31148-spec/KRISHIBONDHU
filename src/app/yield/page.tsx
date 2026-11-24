@@ -324,23 +324,23 @@ function YieldPredictionContent() {
             • GPS Calibrated
           </span>
         </div>
-        <h1 className="text-xl sm:text-2xl lg:text-3xl font-extrabold text-[#143224] mt-1 tracking-tight">
+        <h1 className="text-xl sm:text-2xl lg:text-3xl font-extrabold text-[#143224] dark:text-[#EAF2EC] mt-1 tracking-tight">
           Crop Yield Prediction & Economics
         </h1>
-        <p className="text-xs sm:text-sm text-brand-dark/75 mt-1 max-w-3xl leading-relaxed">
+        <p className="text-xs sm:text-sm text-brand-dark/75 dark:text-white/60 mt-1 max-w-3xl leading-relaxed">
           Estimate expected harvest tonnage, cultivation expenses, and market revenue ranges calibrated to your district.
         </p>
       </div>
 
       {/* Sleek Scenario Selector Tabs (Scenario A vs Scenario B) */}
-      <div className="grid grid-cols-2 gap-2 p-1 rounded-xl bg-cream-100 border border-cream-300 max-w-xl">
+      <div className="grid grid-cols-2 gap-2 p-1 rounded-xl bg-cream-100 dark:bg-white/10 border border-cream-300 dark:border-white/15 max-w-xl">
         <button
           type="button"
           onClick={() => setScenario('pre_cultivation')}
           className={`flex items-center justify-center gap-2 py-2 px-3 rounded-lg text-xs font-bold transition-all cursor-pointer ${
             scenario === 'pre_cultivation'
               ? 'bg-[#143224] text-white shadow-xs'
-              : 'text-brand-dark/70 hover:text-brand-dark hover:bg-white/60'
+              : 'text-brand-dark/70 dark:text-white/70 hover:text-brand-dark dark:hover:text-white hover:bg-white/60 dark:hover:bg-white/10'
           }`}
         >
           <Sparkles className="w-3.5 h-3.5 text-[#D9822B]" />
@@ -353,7 +353,7 @@ function YieldPredictionContent() {
           className={`flex items-center justify-center gap-2 py-2 px-3 rounded-lg text-xs font-bold transition-all cursor-pointer ${
             scenario === 'in_season'
               ? 'bg-[#143224] text-white shadow-xs'
-              : 'text-brand-dark/70 hover:text-brand-dark hover:bg-white/60'
+              : 'text-brand-dark/70 dark:text-white/70 hover:text-brand-dark dark:hover:text-white hover:bg-white/60 dark:hover:bg-white/10'
           }`}
         >
           <TrendingUp className="w-3.5 h-3.5 text-[#D9822B]" />

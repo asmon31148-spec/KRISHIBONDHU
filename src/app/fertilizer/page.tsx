@@ -263,26 +263,26 @@ export default function FertilizerCalculatorPage() {
   return (
     <div className="space-y-6 sm:space-y-8 w-full text-left">
       {/* Header Banner */}
-      <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-cream-50 via-white to-emerald-50/50 border border-cream-300 shadow-xs p-6 sm:p-8">
+      <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-cream-50 via-white to-emerald-50/50 dark:from-[#13261D] dark:via-[#0F2018] dark:to-[#0B1711] border border-cream-300 dark:border-white/10 shadow-xs p-6 sm:p-8">
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
           <div className="space-y-2">
             <div className="flex flex-wrap items-center gap-2">
               <Badge variant="emerald" size="sm" className="shadow-2xs">
                 ICAR & BCKV Validated
               </Badge>
-              <span className="text-xs text-brand-dark/70 font-semibold">• Bengal Package of Practices</span>
-              <span className="text-[11px] font-bold text-emerald-800 bg-emerald-100/90 px-2.5 py-0.5 rounded-md">
+              <span className="text-xs text-brand-dark/70 dark:text-white/60 font-semibold">• Bengal Package of Practices</span>
+              <span className="text-[11px] font-bold text-emerald-800 dark:text-emerald-300 bg-emerald-100/90 dark:bg-emerald-950/60 px-2.5 py-0.5 rounded-md">
                 30+ Crops & Real Field Physics
               </span>
             </div>
-            <h1 className="text-2xl sm:text-3xl font-extrabold text-brand-dark tracking-tight">
+            <h1 className="text-2xl sm:text-3xl font-extrabold text-brand-dark dark:text-[#EAF2EC] tracking-tight">
               {language === 'bn'
                 ? 'বিজ্ঞানভিত্তিক সার ক্যালকুলেটর ও পুষ্টিবিজ্ঞান'
                 : language === 'hi'
                 ? 'वैज्ञानिक उर्वरक मात्रा व पोषण कैलकुलेटर'
                 : 'Scientific Fertilizer Dosage & Crop Nutrition Calculator'}
             </h1>
-            <p className="text-xs sm:text-sm text-brand-dark/75 max-w-2xl">
+            <p className="text-xs sm:text-sm text-brand-dark/75 dark:text-white/60 max-w-2xl">
               {language === 'bn'
                 ? 'বিধানচন্দ্র কৃষি বিশ্ববিদ্যালয় (BCKV) ও আইসিএআর অনুমোদিত সারের মাত্রা। মাটির গুণাগুণ (STCR), জৈব সারের সুবিধা এবং বৃষ্টিপাতের পূর্বাভাস মিলিয়ে সঠিক সারের হিসাব করুন যাতে এক পয়সাও অপচয় না হয়।'
                 : 'Exact ICAR & BCKV nutrient recommendations tailored with Soil Test Crop Response (STCR), Organic FYM deductions, and live weather leaching alerts so you never over-spend on dealer chemicals.'}
@@ -338,9 +338,9 @@ export default function FertilizerCalculatorPage() {
             </div>
 
             {weatherAlert && (
-              <div className="flex items-center gap-1.5 text-brand-dark/80 bg-white/80 px-2.5 py-0.5 rounded-lg border border-cream-200">
+              <div className="flex items-center gap-1.5 text-brand-dark/80 dark:text-white/80 bg-white/80 dark:bg-white/10 px-2.5 py-0.5 rounded-lg border border-cream-200 dark:border-white/10">
                 {weatherAlert.rainExpectedNext48h ? (
-                  <CloudRain className="w-3.5 h-3.5 text-blue-600" />
+                  <CloudRain className="w-3.5 h-3.5 text-blue-600 dark:text-blue-400" />
                 ) : (
                   <Sun className="w-3.5 h-3.5 text-amber-500" />
                 )}
@@ -352,8 +352,8 @@ export default function FertilizerCalculatorPage() {
           </div>
 
           <div className="flex items-center gap-2">
-            <ShieldCheck className="w-4 h-4 text-emerald-700" />
-            <span className="font-semibold text-emerald-900">
+            <ShieldCheck className="w-4 h-4 text-emerald-700 dark:text-emerald-400" />
+            <span className="font-semibold text-emerald-900 dark:text-emerald-300">
               {language === 'bn' ? '১ বিঘা = ২০ কাঠা = ০.১৩৩৮ হেক্টর' : '1 Bigha = 20 Katha = 0.1338 Hectares'}
             </span>
           </div>
@@ -373,7 +373,7 @@ export default function FertilizerCalculatorPage() {
         <div className="lg:col-span-7 space-y-6">
           {/* Step 1: Crop Selection with Categories & Search */}
           <Card>
-            <CardHeader className="pb-3 border-b border-cream-200">
+            <CardHeader className="pb-3 border-b border-cream-200 dark:border-white/10">
               <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
                 <CardTitle className="text-sm sm:text-base font-bold flex items-center gap-2">
                   <span className="w-6 h-6 rounded-full bg-brand-forest text-white flex items-center justify-center text-xs">
@@ -384,18 +384,18 @@ export default function FertilizerCalculatorPage() {
 
                 {/* Instant Crop Search */}
                 <div className="relative w-full sm:w-60">
-                  <Search className="w-3.5 h-3.5 absolute left-2.5 top-1/2 -translate-y-1/2 text-brand-dark/40" />
+                  <Search className="w-3.5 h-3.5 absolute left-2.5 top-1/2 -translate-y-1/2 text-brand-dark/40 dark:text-white/40" />
                   <input
                     type="text"
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
                     placeholder={language === 'bn' ? 'ফসলের নাম খুঁজুন (যেমন আলু, সরিষা)...' : 'Search crop (e.g. Potato, Rice, Mustard)...'}
-                    className="w-full pl-8 pr-3 py-1.5 rounded-xl text-xs bg-cream-50 border border-cream-300 focus:bg-white focus:outline-none focus:ring-1 focus:ring-brand-forest text-brand-dark placeholder:text-brand-dark/40"
+                    className="w-full pl-8 pr-3 py-1.5 rounded-xl text-xs bg-cream-50 dark:bg-white/5 border border-cream-300 dark:border-white/15 focus:bg-white dark:focus:bg-[#13261D] focus:outline-none focus:ring-1 focus:ring-brand-forest text-brand-dark dark:text-white placeholder:text-brand-dark/40 dark:placeholder:text-white/40"
                   />
                   {searchQuery && (
                     <button
                       onClick={() => setSearchQuery('')}
-                      className="absolute right-2.5 top-1/2 -translate-y-1/2 text-xs text-brand-dark/50 hover:text-brand-dark"
+                      className="absolute right-2.5 top-1/2 -translate-y-1/2 text-xs text-brand-dark/50 dark:text-white/50 hover:text-brand-dark dark:hover:text-white"
                     >
                       ✕
                     </button>
@@ -417,7 +417,7 @@ export default function FertilizerCalculatorPage() {
                       className={`px-3 py-1 rounded-xl text-xs font-bold whitespace-nowrap transition-all cursor-pointer ${
                         isActive
                           ? 'bg-brand-forest text-white shadow-2xs'
-                          : 'bg-cream-100/80 hover:bg-cream-200 text-brand-dark/75'
+                          : 'bg-cream-100/80 dark:bg-white/10 hover:bg-cream-200 dark:hover:bg-white/20 text-brand-dark/75 dark:text-white/80'
                       }`}
                     >
                       {language === 'bn' ? cat.label_bn : cat.label_en}

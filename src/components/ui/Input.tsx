@@ -37,7 +37,7 @@ export const Input = React.forwardRef<HTMLInputElement, InputProps>(
         {label && (
           <label
             htmlFor={inputId}
-            className="block text-xs sm:text-sm font-semibold text-brand-dark/90 tracking-wide"
+            className="block text-xs sm:text-sm font-semibold text-brand-dark/90 dark:text-white/90 tracking-wide"
           >
             {label}
             {props.required && <span className="text-red-600 ml-1" aria-hidden="true">*</span>}
@@ -45,7 +45,7 @@ export const Input = React.forwardRef<HTMLInputElement, InputProps>(
         )}
         <div className="relative rounded-xl shadow-xs">
           {leftIcon && (
-            <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-brand-dark/50">
+            <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-brand-dark/50 dark:text-white/40">
               {leftIcon}
             </div>
           )}
@@ -60,13 +60,13 @@ export const Input = React.forwardRef<HTMLInputElement, InputProps>(
             }
             className={twMerge(
               clsx(
-                'block w-full rounded-xl border bg-white px-3.5 py-2.5 text-sm sm:text-base text-brand-dark placeholder:text-brand-dark/40 transition-colors focus:outline-none focus:ring-2 focus:ring-brand-emerald focus:border-brand-emerald min-h-[44px]',
+                'block w-full rounded-xl border bg-white dark:bg-[#13261D] px-3.5 py-2.5 text-sm sm:text-base text-brand-dark dark:text-white placeholder:text-brand-dark/40 dark:placeholder:text-white/40 transition-colors focus:outline-none focus:ring-2 focus:ring-brand-emerald focus:border-brand-emerald min-h-[44px]',
                 leftIcon && 'pl-10',
                 isPassword && 'pr-11',
                 error
-                  ? 'border-red-500 focus:ring-red-500 focus:border-red-500 bg-red-50/20'
-                  : 'border-cream-300 hover:border-brand-leaf/40',
-                disabled && 'bg-cream-100 cursor-not-allowed opacity-60',
+                  ? 'border-red-500 focus:ring-red-500 focus:border-red-500 bg-red-50/20 dark:bg-red-950/20'
+                  : 'border-cream-300 dark:border-white/15 hover:border-brand-leaf/40 dark:hover:border-white/30',
+                disabled && 'bg-cream-100 dark:bg-white/5 cursor-not-allowed opacity-60',
                 className
               )
             )}
