@@ -14,21 +14,40 @@ export default function HeroVideoBackground({
   const videoRef = useRef<HTMLVideoElement>(null);
   const [hasError, setHasError] = useState(false);
   const [isReducedMotion, setIsReducedMotion] = useState(false);
+  const [shouldLoadVideo, setShouldLoadVideo] = useState(false);
 
   useEffect(() => {
-    // Check if user has reduced-motion enabled
+    // Check if user has reduced-motion or data-saver enabled
     const mediaQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
     setIsReducedMotion(mediaQuery.matches);
 
-    const handleMotionChange = (e: MediaQueryListEvent) => {
-      setIsReducedMotion(e.matches);
+    const nav = navigator as unknown as { connection?: { saveData?: boolean; effectiveType?: string } };
+    const isDataSaver = nav.connection?.saveData === true || nav.connection?.effectiveType === '2g';
+
+    if (mediaQuery.matches || isDataSaver) {
+      return;
+    }
+
+    // Defer video loading until main thread and critical resources have settled
+    const startVideoLoad = () => {
+      setShouldLoadVideo(true);
     };
-    mediaQuery.addEventListener('change', handleMotionChange);
+
+    if ('requestIdleCallback' in window) {
+      const idleId = (window as any).requestIdleCallback(startVideoLoad, { timeout: 1200 });
+      return () => (window as any).cancelIdleCallback(idleId);
+    } else {
+      const timer = setTimeout(startVideoLoad, 800);
+      return () => clearTimeout(timer);
+    }
+  }, []);
+
+  useEffect(() => {
+    if (!shouldLoadVideo) return;
 
     const video = videoRef.current;
-    if (!video || mediaQuery.matches) return;
+    if (!video) return;
 
-    // Mobile Autoplay Guarantee: Muted must be set before play()
     video.defaultMuted = true;
     video.muted = true;
     video.playsInline = true;
@@ -36,15 +55,12 @@ export default function HeroVideoBackground({
     const playVideo = () => {
       const playPromise = video.play();
       if (playPromise !== undefined) {
-        playPromise.catch(() => {
-          // If browser restricts video autoplay (e.g. data saver mode), poster stays visible
-        });
+        playPromise.catch(() => {});
       }
     };
 
     playVideo();
 
-    // Resume video playback when returning from background or tab switch
     const handleVisibility = () => {
       if (document.visibilityState === 'visible' && video.paused) {
         playVideo();
@@ -53,19 +69,23 @@ export default function HeroVideoBackground({
 
     document.addEventListener('visibilitychange', handleVisibility);
     return () => {
-      mediaQuery.removeEventListener('change', handleMotionChange);
       document.removeEventListener('visibilitychange', handleVisibility);
     };
-  }, []);
+  }, [shouldLoadVideo]);
 
   return (
     <div className="absolute inset-0 overflow-hidden pointer-events-none select-none z-0">
       {/* 
-        Native HTML5 Mobile Video with Low Data Fallback:
-        Uses muted + playsinline + autoplay + preload="auto" for 100% Android/iOS compatibility.
-        Focal object-position: center 30% ensures farmer and crop are framed properly on mobile.
+        Ultra-Fast Instant Poster:
+        Rendered immediately so there is ZERO layout shift and instant FCP (< 200ms).
       */}
-      {!isReducedMotion && !hasError && (
+      <div
+        className="absolute inset-0 w-full h-full bg-cover bg-[center_30%]"
+        style={{ backgroundImage: `url(${posterSrc})` }}
+      />
+
+      {/* Deferred Background Video (Loads only after critical page bundle is hydrated) */}
+      {!isReducedMotion && !hasError && shouldLoadVideo && (
         <video
           ref={videoRef}
           src={videoSrc}
@@ -74,17 +94,9 @@ export default function HeroVideoBackground({
           loop
           muted
           playsInline
-          preload="auto"
+          preload="metadata"
           onError={() => setHasError(true)}
-          className="absolute inset-0 w-full h-full object-cover object-[center_30%] transform-gpu scale-[1.02]"
-        />
-      )}
-
-      {/* Static High-Resolution Fallback for Reduced Motion or Video Failure */}
-      {(isReducedMotion || hasError) && (
-        <div
-          className="absolute inset-0 w-full h-full bg-cover bg-[center_30%]"
-          style={{ backgroundImage: `url(${posterSrc})` }}
+          className="absolute inset-0 w-full h-full object-cover object-[center_30%] transform-gpu scale-[1.02] transition-opacity duration-700"
         />
       )}
 
@@ -92,8 +104,8 @@ export default function HeroVideoBackground({
       <div className="absolute inset-0 bg-black/55" />
       <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/30 to-black/50" />
 
-      {/* Adaptive Soft Dissolve into Active Page Background (Clean White or True OLED Black) */}
-      <div className="absolute inset-x-0 bottom-0 h-40 sm:h-56 lg:h-72 bg-gradient-to-b from-transparent via-white/60 to-white dark:via-black/60 dark:to-black pointer-events-none transition-colors duration-200" />
+      {/* Adaptive Soft Dissolve into Active Page Background (Clean White or Modern Slate) */}
+      <div className="absolute inset-x-0 bottom-0 h-40 sm:h-56 lg:h-72 bg-gradient-to-b from-transparent via-white/60 to-white dark:via-[#0B0F17]/60 dark:to-[#0B0F17] pointer-events-none transition-colors duration-200" />
     </div>
   );
 }

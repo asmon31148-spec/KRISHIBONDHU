@@ -10,7 +10,14 @@ export async function GET(req: NextRequest) {
     const locationName = searchParams.get('location') || 'Burdwan, West Bengal';
 
     const weather = await fetchLiveWeather(lat, lon, locationName);
-    return NextResponse.json({ success: true, data: weather });
+    return NextResponse.json(
+      { success: true, data: weather },
+      {
+        headers: {
+          'Cache-Control': 'public, s-maxage=300, stale-while-revalidate=600',
+        },
+      }
+    );
   } catch (err: unknown) {
     const msg = err instanceof Error ? err.message : 'Weather service error';
     console.error('Weather route error:', err);

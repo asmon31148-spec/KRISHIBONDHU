@@ -159,19 +159,26 @@ export async function GET(req: NextRequest) {
   const finalDate = latestDateFound || dateFromRecords;
   const isAnyToday = parsedRecords.some((r) => r.is_today);
 
-  return NextResponse.json({
-    success: true,
-    source: activeSource,
-    district: districtParam,
-    commodity: commodityParam,
-    records: parsedRecords,
-    totalBengalRecords: rawRecords.length,
-    lastTradeDate: finalDate,
-    statusMessage:
-      parsedRecords.length === 0
-        ? 'Mandi Closed / Awaiting Daily Upload'
-        : isAnyToday
-        ? 'Live Today'
-        : `Verified Official APMC Trade Rates (${finalDate || 'Today'})`,
-  });
+  return NextResponse.json(
+    {
+      success: true,
+      source: activeSource,
+      district: districtParam,
+      commodity: commodityParam,
+      records: parsedRecords,
+      totalBengalRecords: rawRecords.length,
+      lastTradeDate: finalDate,
+      statusMessage:
+        parsedRecords.length === 0
+          ? 'Mandi Closed / Awaiting Daily Upload'
+          : isAnyToday
+          ? 'Live Today'
+          : `Verified Official APMC Trade Rates (${finalDate || 'Today'})`,
+    },
+    {
+      headers: {
+        'Cache-Control': forceFresh ? 'no-store, max-age=0' : 'public, s-maxage=300, stale-while-revalidate=600',
+      },
+    }
+  );
 }

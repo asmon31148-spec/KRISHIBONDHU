@@ -163,11 +163,18 @@ export async function GET(request: NextRequest) {
         timestamp: now,
       };
 
-      return NextResponse.json({
-        success: true,
-        source: 'live_web',
-        verification,
-      });
+      return NextResponse.json(
+        {
+          success: true,
+          source: 'live_web',
+          verification,
+        },
+        {
+          headers: {
+            'Cache-Control': 'public, s-maxage=1800, stale-while-revalidate=3600',
+          },
+        }
+      );
     }
 
     // Return all schemes
@@ -209,12 +216,19 @@ export async function GET(request: NextRequest) {
       })
     );
 
-    return NextResponse.json({
-      success: true,
-      source: forceRefresh ? 'live_web_refresh' : 'live_web',
-      verifiedDate: todayStr,
-      verifications: allVerifications,
-    });
+    return NextResponse.json(
+      {
+        success: true,
+        source: forceRefresh ? 'live_web_refresh' : 'live_web',
+        verifiedDate: todayStr,
+        verifications: allVerifications,
+      },
+      {
+        headers: {
+          'Cache-Control': forceRefresh ? 'no-store, max-age=0' : 'public, s-maxage=1800, stale-while-revalidate=3600',
+        },
+      }
+    );
   } catch (err) {
     console.error('Error during scheme verification:', err);
     return NextResponse.json({ error: 'Failed to verify scheme portal' }, { status: 500 });

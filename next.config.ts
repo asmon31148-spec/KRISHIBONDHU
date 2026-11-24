@@ -50,11 +50,24 @@ const securityHeaders = [
 
 const nextConfig: NextConfig = {
   reactStrictMode: true,
+  compress: true,
+  experimental: {
+    optimizePackageImports: ['lucide-react', 'recharts'],
+  },
   async headers() {
     return [
       {
         source: '/(.*)',
         headers: securityHeaders,
+      },
+      {
+        source: '/(icons/:path*|brand-logo.png|favicon.ico|apple-touch-icon.png|icon-192.png|icon-512.png|videos/:path*)',
+        headers: [
+          {
+            key: 'Cache-Control',
+            value: 'public, max-age=31536000, immutable',
+          },
+        ],
       },
     ];
   },
