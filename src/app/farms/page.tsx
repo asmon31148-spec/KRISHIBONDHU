@@ -1,33 +1,25 @@
 'use client';
 
 import React, { useState, useEffect, useCallback } from 'react';
-import Link from 'next/link';
 import { useTranslation } from '@/i18n/context';
 import { useAuth } from '@/context/AuthContext';
 import { useToast } from '@/components/ui/Toast';
 import { createClient } from '@/lib/supabase/client';
-import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/Card';
 import { Button } from '@/components/ui/Button';
 import { Input } from '@/components/ui/Input';
 import { Modal } from '@/components/ui/Modal';
-import { Badge } from '@/components/ui/Badge';
 import { EmptyState } from '@/components/ui/EmptyState';
 import { GuestSavePrompt } from '@/components/auth/GuestSavePrompt';
+import { LivingFarmCanvas } from '@/components/farms/LivingFarmCanvas';
 import {
   Warehouse,
   Plus,
-  MapPin,
-  Edit2,
-  Trash2,
   Compass,
   Sprout,
   FlaskConical,
-  ArrowRight,
-  Scale,
 } from 'lucide-react';
-import { formatLandArea, LandUnit } from '@/lib/units';
 
-interface Farm {
+export interface Farm {
   id: string;
   name: string;
   location_name: string | null;
@@ -39,7 +31,7 @@ interface Farm {
   created_at: string;
 }
 
-interface Crop {
+export interface Crop {
   id: string;
   name: string;
   variety: string | null;
@@ -55,7 +47,7 @@ interface Crop {
   created_at: string;
 }
 
-interface SoilRecord {
+export interface SoilRecord {
   id: string;
   farm_id: string | null;
   nitrogen: number;
@@ -593,256 +585,19 @@ export default function FarmsPage() {
           onAction={handleOpenAddFarm}
         />
       ) : (
-        <div className="space-y-6">
-          {farms.map((farm) => {
-            const plotCrops = crops.filter((c) => c.farm_id === farm.id);
-            const plotSoil = soilRecords.find((s) => s.farm_id === farm.id);
-
-            return (
-              <Card key={farm.id} className="border border-cream-200/90 shadow-xs hover:border-brand-leaf/40 transition-all overflow-hidden bg-white/95">
-                {/* Plot Header */}
-                <CardHeader className="bg-cream-50/80 border-b border-cream-200/70 p-4 sm:p-5">
-                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-                    <div className="space-y-1">
-                      <div className="flex items-center gap-2 flex-wrap">
-                        <CardTitle className="text-lg sm:text-xl font-bold text-brand-dark">
-                          {farm.name}
-                        </CardTitle>
-                        <Badge variant="outline" className="text-xs font-semibold bg-white border-brand-forest/20 text-brand-forest">
-                          {formatLandArea(farm.area, farm.area_unit as LandUnit, activeLang)}
-                        </Badge>
-                        <Badge variant="outline" className="text-xs capitalize bg-white text-brand-dark/80">
-                          {farm.soil_type || 'Alluvial'} Soil
-                        </Badge>
-                      </div>
-                      <div className="flex items-center gap-3 text-xs text-brand-dark/70 flex-wrap">
-                        <span className="flex items-center gap-1">
-                          <MapPin className="w-3.5 h-3.5 text-brand-leaf shrink-0" />
-                          {farm.location_name || 'Location recorded'}
-                        </span>
-                        {farm.latitude && farm.longitude && (
-                          <span className="flex items-center gap-1 text-emerald-700">
-                            <Compass className="w-3.5 h-3.5 shrink-0" />
-                            GPS: {farm.latitude.toFixed(3)}, {farm.longitude.toFixed(3)}
-                          </span>
-                        )}
-                      </div>
-                    </div>
-
-                    <div className="flex items-center gap-1.5 self-end sm:self-center">
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        onClick={() => handleOpenAddCrop(farm.id)}
-                        leftIcon={<Plus className="w-3.5 h-3.5" />}
-                        className="text-xs bg-white text-brand-forest border-brand-forest/20 hover:bg-cream-100 font-bold"
-                      >
-                        {activeLang === 'bn' ? '+ ফসল যোগ' : activeLang === 'hi' ? '+ फसल जोड़ें' : '+ Crop'}
-                      </Button>
-                      <button
-                        onClick={() => handleOpenEditFarm(farm)}
-                        className="p-2 rounded-xl text-brand-dark/60 hover:text-brand-dark hover:bg-cream-100 transition-colors"
-                        aria-label="Edit plot"
-                        title="Edit plot"
-                      >
-                        <Edit2 className="w-4 h-4" />
-                      </button>
-                      <button
-                        onClick={() => handleDeleteFarm(farm.id)}
-                        className="p-2 rounded-xl text-red-500 hover:text-red-700 hover:bg-red-50 transition-colors"
-                        aria-label="Delete plot"
-                        title="Delete plot"
-                      >
-                        <Trash2 className="w-4 h-4" />
-                      </button>
-                    </div>
-                  </div>
-                </CardHeader>
-
-                <CardContent className="p-4 sm:p-5 space-y-5">
-                  {/* Soil Health Section for this Plot */}
-                  <div className="p-3.5 sm:p-4 rounded-xl bg-cream-50/70 border border-cream-200/80">
-                    <div className="flex items-center justify-between mb-2.5">
-                      <div className="flex items-center gap-2">
-                        <FlaskConical className="w-4 h-4 text-brand-leaf" />
-                        <span className="text-xs font-bold uppercase tracking-wider text-brand-dark/80">
-                          {activeLang === 'bn' ? 'মাটির পুষ্টি পরীক্ষা' : activeLang === 'hi' ? 'मिट्टी की जांच' : 'Soil Health Test'}
-                        </span>
-                        {plotSoil && (
-                          <span className="text-[11px] text-brand-dark/60">
-                            ({activeLang === 'bn' ? 'তারিখ:' : activeLang === 'hi' ? 'दिनांक:' : 'Tested:'} {new Date(plotSoil.test_date).toLocaleDateString()})
-                          </span>
-                        )}
-                      </div>
-                      <button
-                        onClick={() => handleOpenAddSoil(farm.id)}
-                        className="text-xs font-bold text-brand-forest hover:text-brand-leaf flex items-center gap-1 transition-colors"
-                      >
-                        {plotSoil
-                          ? (activeLang === 'bn' ? 'আপডেট' : activeLang === 'hi' ? 'अपडेट' : 'Update Test')
-                          : (activeLang === 'bn' ? '+ রিপোর্ট লিখুন' : activeLang === 'hi' ? '+ रिपोर्ट जोड़ें' : '+ Record Test')}
-                      </button>
-                    </div>
-
-                    {plotSoil ? (
-                      <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 text-xs">
-                        <div className="p-2 bg-white rounded-lg border border-cream-200">
-                          <span className="text-[10px] text-brand-dark/60 block font-semibold">
-                            {activeLang === 'bn' ? 'নাইট্রোজেন (N)' : activeLang === 'hi' ? 'नाइट्रोजन (N)' : 'Nitrogen (N)'}
-                          </span>
-                          <span className="font-bold text-brand-dark text-sm">{plotSoil.nitrogen} kg/ha</span>
-                        </div>
-                        <div className="p-2 bg-white rounded-lg border border-cream-200">
-                          <span className="text-[10px] text-brand-dark/60 block font-semibold">
-                            {activeLang === 'bn' ? 'ফসফরাস (P)' : activeLang === 'hi' ? 'फास्फोरस (P)' : 'Phosphorus (P)'}
-                          </span>
-                          <span className="font-bold text-brand-dark text-sm">{plotSoil.phosphorus} kg/ha</span>
-                        </div>
-                        <div className="p-2 bg-white rounded-lg border border-cream-200">
-                          <span className="text-[10px] text-brand-dark/60 block font-semibold">
-                            {activeLang === 'bn' ? 'পটাশিয়াম (K)' : activeLang === 'hi' ? 'पोटेशियम (K)' : 'Potassium (K)'}
-                          </span>
-                          <span className="font-bold text-brand-dark text-sm">{plotSoil.potassium} kg/ha</span>
-                        </div>
-                        <div className="p-2 bg-white rounded-lg border border-cream-200">
-                          <span className="text-[10px] text-brand-dark/60 block font-semibold">
-                            {activeLang === 'bn' ? 'মাটির পিএইচ (pH)' : activeLang === 'hi' ? 'मिट्टी pH' : 'Soil pH'}
-                          </span>
-                          <span className="font-bold text-brand-dark text-sm">{plotSoil.ph || '6.5'}</span>
-                        </div>
-                      </div>
-                    ) : (
-                      <p className="text-xs text-brand-dark/70">
-                        {activeLang === 'bn'
-                          ? 'এই জমির কোনো মাটির পরীক্ষা এখনো রেকর্ড করা হয়নি। সঠিক সারের মাত্রার জন্য সয়েল হেলথ কার্ডের তথ্য যোগ করুন।'
-                          : activeLang === 'hi'
-                          ? 'इस खेत के लिए अभी मिट्टी की जांच दर्ज नहीं है। सटीक खाद की मात्रा के लिए सॉइल हेल्थ कार्ड का डेटा जोड़ें।'
-                          : 'No soil test recorded yet for this plot. Record your Soil Health Card N-P-K data to get tailored fertilizer dosages.'}
-                      </p>
-                    )}
-                  </div>
-
-                  {/* Crops Growing on this Plot */}
-                  <div>
-                    <div className="flex items-center justify-between mb-3">
-                      <div className="flex items-center gap-2">
-                        <Sprout className="w-4 h-4 text-emerald-600" />
-                        <h3 className="text-sm font-bold text-brand-dark">
-                          {activeLang === 'bn' ? 'এই জমির চলতি ফসল' : activeLang === 'hi' ? 'इस खेत की फसलें' : 'Crops on this Plot'} ({plotCrops.length})
-                        </h3>
-                      </div>
-                      <button
-                        onClick={() => handleOpenAddCrop(farm.id)}
-                        className="text-xs font-semibold text-brand-forest hover:text-brand-leaf flex items-center gap-1"
-                      >
-                        {activeLang === 'bn' ? '+ ফসল' : activeLang === 'hi' ? '+ फसल' : '+ Add Crop'}
-                      </button>
-                    </div>
-
-                    {plotCrops.length === 0 ? (
-                      <div className="p-4 rounded-xl border border-dashed border-cream-300 text-center text-xs text-brand-dark/60 bg-cream-50/40">
-                        {activeLang === 'bn'
-                          ? 'এই জমিতে এখনও কোনো ফসল যোগ করা হয়নি। ফসল যোগ করতে চাপুন।'
-                          : activeLang === 'hi'
-                          ? 'इस खेत में अभी कोई फसल नहीं जोड़ी गई है। फसल जोड़ने के लिए क्लिक करें।'
-                          : 'No active crops planted on this plot. Click Add Crop to begin tracking.'}
-                      </div>
-                    ) : (
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                        {plotCrops.map((crop) => (
-                          <div
-                            key={crop.id}
-                            className="p-3 sm:p-3.5 rounded-xl border border-cream-200 bg-cream-50/50 hover:bg-cream-50 hover:border-brand-leaf/40 transition-colors flex flex-col justify-between gap-2.5"
-                          >
-                            <div className="flex items-start justify-between gap-2">
-                              <div>
-                                <h4 className="text-sm font-bold text-brand-dark">
-                                  {crop.name}
-                                </h4>
-                                {crop.variety && (
-                                  <span className="text-xs text-brand-dark/70 font-medium block">
-                                    {activeLang === 'bn' ? 'জাত:' : activeLang === 'hi' ? 'किस्म:' : 'Variety:'} {crop.variety}
-                                  </span>
-                                )}
-                              </div>
-                              <span
-                                className={`text-[10px] font-bold px-2 py-0.5 rounded-full capitalize shrink-0 ${
-                                  crop.health_status === 'healthy'
-                                    ? 'bg-emerald-100 text-emerald-800'
-                                    : crop.health_status === 'needs_attention'
-                                    ? 'bg-amber-100 text-amber-800'
-                                    : 'bg-red-100 text-red-800'
-                                }`}
-                              >
-                                {crop.health_status === 'healthy'
-                                  ? (activeLang === 'bn' ? 'সুস্থ ফসল' : activeLang === 'hi' ? 'स्वस्थ' : 'Healthy')
-                                  : crop.health_status === 'needs_attention'
-                                  ? (activeLang === 'bn' ? 'নজর প্রয়োজন' : activeLang === 'hi' ? 'सावधानी' : 'Attention')
-                                  : (activeLang === 'bn' ? 'রোগাক্রান্ত' : activeLang === 'hi' ? 'रोगग्रस्त' : 'Diseased')}
-                              </span>
-                            </div>
-
-                            <div className="grid grid-cols-2 gap-1 text-[11px] text-brand-dark/70 pt-1 border-t border-cream-200/80">
-                              <div>
-                                <span className="text-brand-dark/50">{activeLang === 'bn' ? 'বপন:' : activeLang === 'hi' ? 'बुवाई:' : 'Planted:'}</span> {new Date(crop.planting_date).toLocaleDateString()}
-                              </div>
-                              <div>
-                                <span className="text-brand-dark/50">{activeLang === 'bn' ? 'পরিমাপ:' : activeLang === 'hi' ? 'क्षेत्रफल:' : 'Area:'}</span> {crop.area} {crop.area_unit}
-                              </div>
-                              {crop.irrigation_type && (
-                                <div className="col-span-2 text-[10px] truncate text-brand-dark/60">
-                                  💧 {crop.irrigation_type}
-                                </div>
-                              )}
-                            </div>
-
-                            <div className="flex flex-wrap items-center justify-between gap-2 pt-1 text-xs">
-                              <div className="flex flex-wrap items-center gap-2">
-                                <Link
-                                  href={`/assistant?crop_id=${crop.id}&crop_name=${encodeURIComponent(crop.name)}&variety=${encodeURIComponent(crop.variety || '')}&status=${crop.health_status}&farm=${encodeURIComponent(farm.name)}&location=${encodeURIComponent(farm.location_name || 'West Bengal')}&soil=${encodeURIComponent(farm.soil_type || 'Clay')}&area=${crop.area}&unit=${encodeURIComponent(crop.area_unit)}&sown=${encodeURIComponent(crop.planting_date)}&irrigation=${encodeURIComponent(crop.irrigation_type || 'STW')}&auto_ask=true`}
-                                  className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-emerald-50 hover:bg-emerald-100 text-brand-forest font-bold transition-all text-[11px] shadow-2xs border border-emerald-200/80 active:scale-95"
-                                >
-                                  <span>{language === 'bn' ? 'এআই পরামর্শ' : language === 'hi' ? 'एआई सलाह' : 'Ask AI Advice'}</span>
-                                  <ArrowRight className="w-3 h-3 text-emerald-700" />
-                                </Link>
-
-                                <Link
-                                  href={`/yield?crop_id=${crop.id}`}
-                                  className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-amber-50 hover:bg-amber-100 text-amber-900 font-bold transition-all text-[11px] shadow-2xs border border-amber-200/80 active:scale-95"
-                                  title="Calculate harvest yield and production economics"
-                                >
-                                  <Scale className="w-3 h-3 text-amber-700" />
-                                  <span>{language === 'bn' ? 'ফলন ও লাভ' : language === 'hi' ? 'उपज व लाभ' : 'Yield & Profit'}</span>
-                                </Link>
-                              </div>
-
-                              <div className="flex items-center gap-1">
-                                <button
-                                  onClick={() => handleOpenEditCrop(crop)}
-                                  className="p-1 rounded-md text-brand-dark/60 hover:text-brand-dark hover:bg-cream-200"
-                                  title="Edit Crop"
-                                >
-                                  <Edit2 className="w-3.5 h-3.5" />
-                                </button>
-                                <button
-                                  onClick={() => handleDeleteCrop(crop.id)}
-                                  className="p-1 rounded-md text-red-500 hover:text-red-700 hover:bg-red-50"
-                                  title="Delete Crop"
-                                >
-                                  <Trash2 className="w-3.5 h-3.5" />
-                                </button>
-                              </div>
-                            </div>
-                          </div>
-                        ))}
-                      </div>
-                    )}
-                  </div>
-                </CardContent>
-              </Card>
-            );
-          })}
-        </div>
+        <LivingFarmCanvas
+          farms={farms}
+          crops={crops}
+          soils={soilRecords}
+          activeLang={activeLang}
+          onAddFarm={handleOpenAddFarm}
+          onEditFarm={handleOpenEditFarm}
+          onDeleteFarm={handleDeleteFarm}
+          onAddCrop={handleOpenAddCrop}
+          onEditCrop={handleOpenEditCrop}
+          onDeleteCrop={handleDeleteCrop}
+          onAddSoil={handleOpenAddSoil}
+        />
       )}
 
       {/* Add / Edit Farm Modal */}
