@@ -49,6 +49,8 @@ export default function LandingPage() {
   const [weatherData, setWeatherData] = useState<any>(null);
   const [isWeatherLoading, setIsWeatherLoading] = useState(true);
   const [latestUserScan, setLatestUserScan] = useState<SavedUserScan | null>(null);
+  const [mobilePulseTab, setMobilePulseTab] = useState<'mandi' | 'weather'>('mandi');
+  const [isSchemesExpanded, setIsSchemesExpanded] = useState(false);
 
   useEffect(() => {
     // 1. Fetch authentic live Mandi prices from government gateway
@@ -307,22 +309,22 @@ export default function LandingPage() {
               <span>{content.heroTag}</span>
             </div>
 
-            {/* Monumental High-Contrast Headline */}
-            <h1 className="text-3xl sm:text-5xl lg:text-[3.25rem] font-extrabold text-white tracking-tight leading-[1.14] whitespace-pre-line drop-shadow-md">
+            {/* Monumental High-Contrast Headline (Fluid Typography) */}
+            <h1 className="text-[clamp(1.75rem,5.5vw,3.25rem)] font-extrabold text-white tracking-tight leading-[1.16] whitespace-pre-line drop-shadow-md">
               {content.headline}
             </h1>
 
-            {/* Grounded, Readable Editorial Copy */}
-            <p className="text-sm sm:text-base lg:text-lg text-emerald-50/90 leading-relaxed max-w-xl font-medium drop-shadow-sm">
+            {/* Grounded, Readable Editorial Copy (Fluid Typography) */}
+            <p className="text-[clamp(0.875rem,2.2vw,1.125rem)] text-emerald-50/90 leading-relaxed max-w-xl font-medium drop-shadow-sm">
               {content.subtext}
             </p>
 
-            {/* Clear Visual Hierarchy Action Buttons */}
-            <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3.5 pt-2">
+            {/* Clear Visual Hierarchy Action Buttons with >=44px Touch Targets */}
+            <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 pt-1">
               <Link href="/scan" className="w-full sm:w-auto">
                 <button
                   type="button"
-                  className="w-full sm:w-auto inline-flex items-center justify-center gap-2.5 px-6 py-4 rounded-2xl bg-emerald-500 hover:bg-emerald-400 text-[#0c180e] font-extrabold text-base shadow-[0_4px_20px_rgba(16,185,129,0.35)] hover:-translate-y-0.5 active:translate-y-0 transition-all cursor-pointer"
+                  className="w-full sm:w-auto inline-flex items-center justify-center gap-2.5 px-6 py-3.5 sm:py-4 rounded-2xl bg-emerald-500 hover:bg-emerald-400 text-[#0c180e] font-extrabold text-sm sm:text-base shadow-[0_4px_20px_rgba(16,185,129,0.35)] hover:-translate-y-0.5 active:translate-y-0 transition-all cursor-pointer min-h-[48px]"
                 >
                   <ScanLine className="w-5 h-5 text-[#0c180e]" />
                   <span>{content.primaryCTA}</span>
@@ -333,7 +335,7 @@ export default function LandingPage() {
               <Link href="/assistant" className="w-full sm:w-auto">
                 <button
                   type="button"
-                  className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-4 rounded-2xl bg-black/40 hover:bg-black/60 text-white font-bold text-base border border-white/25 backdrop-blur-md shadow-[0_2px_8px_rgba(0,0,0,0.2)] hover:-translate-y-0.5 active:translate-y-0 transition-all cursor-pointer"
+                  className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-3.5 sm:py-4 rounded-2xl bg-black/40 hover:bg-black/60 text-white font-bold text-sm sm:text-base border border-white/25 backdrop-blur-md shadow-[0_2px_8px_rgba(0,0,0,0.2)] hover:-translate-y-0.5 active:translate-y-0 transition-all cursor-pointer min-h-[48px]"
                 >
                   <Bot className="w-5 h-5 text-emerald-400" />
                   <span>{content.secondaryCTA}</span>
@@ -480,7 +482,7 @@ export default function LandingPage() {
               CARD B (1-Column Span): Live Mandi / Market Prices
               Connected to real Government Agmarknet feed
              ---------------------------------------------------- */}
-          <div className="rounded-3xl bg-white/95 border border-[#143224]/12 shadow-[0_4px_24px_rgba(20,50,36,0.04)] hover:shadow-[0_12px_32px_rgba(20,50,36,0.08)] transition-all p-6 sm:p-7 flex flex-col justify-between space-y-5 text-left group">
+          <div className="hidden md:flex rounded-3xl bg-white/95 border border-[#143224]/12 shadow-[0_4px_24px_rgba(20,50,36,0.04)] hover:shadow-[0_12px_32px_rgba(20,50,36,0.08)] transition-all p-6 sm:p-7 flex-col justify-between space-y-5 text-left group">
             <div className="space-y-3">
               <div className="flex items-center justify-between">
                 <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-[#FDF5EC] text-[#D9822B] border border-[#D9822B]/20">
@@ -552,7 +554,7 @@ export default function LandingPage() {
               CARD C (1-Column Span): Micro-Climate & Soil Forecast
               Connected to live Open-Meteo Weather API
              ---------------------------------------------------- */}
-          <div className="rounded-3xl bg-white/95 border border-[#143224]/12 shadow-[0_4px_24px_rgba(20,50,36,0.04)] hover:shadow-[0_12px_32px_rgba(20,50,36,0.08)] transition-all p-6 sm:p-7 flex flex-col justify-between space-y-5 text-left group">
+          <div className="hidden md:flex rounded-3xl bg-white/95 border border-[#143224]/12 shadow-[0_4px_24px_rgba(20,50,36,0.04)] hover:shadow-[0_12px_32px_rgba(20,50,36,0.08)] transition-all p-6 sm:p-7 flex-col justify-between space-y-5 text-left group">
             <div className="space-y-3">
               <div className="flex items-center justify-between">
                 <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-[#EAF2EC] text-[#143224] border border-[#143224]/12">
@@ -644,6 +646,131 @@ export default function LandingPage() {
           </div>
 
           {/* ----------------------------------------------------
+              MOBILE COMPACT SEGMENTED AGRI-PULSE HUB (<768px only)
+              Eliminates vertical bloat on small screens
+              ---------------------------------------------------- */}
+          <div className="block md:hidden rounded-3xl bg-white/95 border border-[#143224]/12 shadow-xs p-5 space-y-4 text-left">
+            <div className="flex items-center p-1 bg-cream-100 rounded-2xl">
+              <button
+                type="button"
+                onClick={() => setMobilePulseTab('mandi')}
+                className={`flex-1 py-2 rounded-xl text-xs font-bold transition-all flex items-center justify-center gap-1.5 min-h-[44px] cursor-pointer ${
+                  mobilePulseTab === 'mandi'
+                    ? 'bg-[#143224] text-white shadow-2xs'
+                    : 'text-brand-dark/70 hover:text-brand-dark'
+                }`}
+              >
+                <TrendingUp className="w-3.5 h-3.5 text-[#D9822B]" />
+                <span>{content.cardBTag}</span>
+              </button>
+              <button
+                type="button"
+                onClick={() => setMobilePulseTab('weather')}
+                className={`flex-1 py-2 rounded-xl text-xs font-bold transition-all flex items-center justify-center gap-1.5 min-h-[44px] cursor-pointer ${
+                  mobilePulseTab === 'weather'
+                    ? 'bg-[#143224] text-white shadow-2xs'
+                    : 'text-brand-dark/70 hover:text-brand-dark'
+                }`}
+              >
+                <CloudSun className="w-3.5 h-3.5 text-[#D9822B]" />
+                <span>{content.cardCTag}</span>
+              </button>
+            </div>
+
+            {/* Mobile View: Mandi */}
+            {mobilePulseTab === 'mandi' && (
+              <div className="space-y-3 animate-in fade-in duration-200">
+                <div className="flex items-center justify-between">
+                  <h3 className="text-base font-bold text-[#143224]">{content.cardBTitle}</h3>
+                  <span className="text-[10px] font-bold text-emerald-800 bg-emerald-100 px-2 py-0.5 rounded-full flex items-center gap-1">
+                    <span className="w-1.5 h-1.5 rounded-full bg-emerald-600 animate-pulse" />
+                    <span>Live</span>
+                  </span>
+                </div>
+                <div className="space-y-2">
+                  {isMandiLoading ? (
+                    <div className="space-y-2 py-2">
+                      <div className="h-10 rounded-xl bg-cream-200/60 animate-pulse" />
+                      <div className="h-10 rounded-xl bg-cream-200/60 animate-pulse" />
+                    </div>
+                  ) : mandiRates.length > 0 ? (
+                    mandiRates.map((item, idx) => (
+                      <div key={idx} className="p-2.5 rounded-xl bg-[#F9F7F2] border border-[#143224]/8 flex items-center justify-between text-xs">
+                        <div>
+                          <span className="font-bold text-[#143224] block">{item.commodity}</span>
+                          <span className="text-[11px] text-[#5E7367]">{item.market}</span>
+                        </div>
+                        <div className="text-right">
+                          <span className="font-extrabold text-[#143224] block">₹{item.modal_price.toLocaleString('en-IN')}/q</span>
+                          <span className="text-[10px] text-[#5E7367]">{item.arrival_date}</span>
+                        </div>
+                      </div>
+                    ))
+                  ) : (
+                    <div className="p-3 rounded-xl bg-[#F9F7F2] text-center text-xs text-[#5E7367]">
+                      {content.cardBEmpty}
+                    </div>
+                  )}
+                </div>
+                <Link href="/mandi" className="block pt-1">
+                  <button type="button" className="w-full py-2.5 rounded-xl bg-white border border-[#143224]/18 text-xs font-bold text-[#143224] flex items-center justify-center gap-1.5 min-h-[44px] cursor-pointer">
+                    <span>{content.cardBBtn}</span>
+                    <ArrowRight className="w-3.5 h-3.5" />
+                  </button>
+                </Link>
+              </div>
+            )}
+
+            {/* Mobile View: Weather */}
+            {mobilePulseTab === 'weather' && (
+              <div className="space-y-3 animate-in fade-in duration-200">
+                <div className="flex items-center justify-between">
+                  <h3 className="text-base font-bold text-[#143224]">{content.cardCTitle}</h3>
+                  <span className="text-[10px] font-bold text-emerald-800 bg-emerald-100 px-2 py-0.5 rounded-full">Open-Meteo</span>
+                </div>
+                {isWeatherLoading ? (
+                  <div className="h-14 rounded-xl bg-cream-200/60 animate-pulse" />
+                ) : weatherData?.current ? (
+                  <div className="space-y-2.5">
+                    <div className="grid grid-cols-3 gap-2">
+                      <div className="p-2 rounded-xl bg-[#EAF2EC] border border-[#143224]/10 text-center">
+                        <span className="text-[10px] font-bold text-[#5E7367] block">{content.cardCTemp}</span>
+                        <span className="text-base font-extrabold text-[#143224] block">{Math.round(weatherData.current.temperature)}°C</span>
+                      </div>
+                      <div className="p-2 rounded-xl bg-[#F9F7F2] border border-[#143224]/10 text-center">
+                        <span className="text-[10px] font-bold text-[#5E7367] block">{content.cardCHumidity}</span>
+                        <span className="text-base font-extrabold text-[#143224] block">{weatherData.current.relativeHumidity}%</span>
+                      </div>
+                      <div className="p-2 rounded-xl bg-[#F9F7F2] border border-[#143224]/10 text-center">
+                        <span className="text-[10px] font-bold text-[#5E7367] block">{content.cardCWind}</span>
+                        <span className="text-base font-extrabold text-[#143224] block">{Math.round(weatherData.current.windSpeed)} km/h</span>
+                      </div>
+                    </div>
+                    {weatherData.agronomicInsights?.sprayCondition && (
+                      <div className="p-2.5 rounded-xl bg-[#FDF5EC] border border-[#D9822B]/20 flex items-start gap-2">
+                        <AlertTriangle className="w-3.5 h-3.5 text-[#D9822B] shrink-0 mt-0.5" />
+                        <p className="text-xs text-[#2D2319] leading-snug font-medium">
+                          {weatherData.agronomicInsights.sprayCondition.reason}
+                        </p>
+                      </div>
+                    )}
+                  </div>
+                ) : (
+                  <div className="p-3 rounded-xl bg-[#F9F7F2] text-center text-xs text-[#5E7367]">
+                    Live weather updating...
+                  </div>
+                )}
+                <Link href="/weather" className="block pt-1">
+                  <button type="button" className="w-full py-2.5 rounded-xl bg-white border border-[#143224]/18 text-xs font-bold text-[#143224] flex items-center justify-center gap-1.5 min-h-[44px] cursor-pointer">
+                    <span>{content.cardCBtn}</span>
+                    <ArrowRight className="w-3.5 h-3.5" />
+                  </button>
+                </Link>
+              </div>
+            )}
+          </div>
+
+          {/* ----------------------------------------------------
               CARD D (Large 2-Column Span): Government Schemes & Subsidies Tracker
               Verified Direct Official Portals
              ---------------------------------------------------- */}
@@ -688,7 +815,7 @@ export default function LandingPage() {
                 <div className="text-[11px] font-bold text-[#D9822B] pt-0.5">banglashasyabima.net</div>
               </div>
 
-              <div className="p-3.5 rounded-2xl bg-[#F9F7F2] border border-[#143224]/8 space-y-1">
+              <div className={`p-3.5 rounded-2xl bg-[#F9F7F2] border border-[#143224]/8 space-y-1 ${!isSchemesExpanded ? 'hidden sm:block' : 'block'}`}>
                 <div className="flex items-center justify-between">
                   <span className="font-extrabold text-sm text-[#143224]">PM-Kisan Samman Nidhi</span>
                   <span className="text-[10px] font-bold text-blue-800 bg-blue-100 px-2 py-0.5 rounded-md">Central DBT</span>
@@ -697,7 +824,7 @@ export default function LandingPage() {
                 <div className="text-[11px] font-bold text-[#D9822B] pt-0.5">pmkisan.gov.in</div>
               </div>
 
-              <div className="p-3.5 rounded-2xl bg-[#F9F7F2] border border-[#143224]/8 space-y-1">
+              <div className={`p-3.5 rounded-2xl bg-[#F9F7F2] border border-[#143224]/8 space-y-1 ${!isSchemesExpanded ? 'hidden sm:block' : 'block'}`}>
                 <div className="flex items-center justify-between">
                   <span className="font-extrabold text-sm text-[#143224]">Farm Mechanization Subsidies</span>
                   <span className="text-[10px] font-bold text-amber-800 bg-amber-100 px-2 py-0.5 rounded-md">50% Subsidy</span>
@@ -705,6 +832,17 @@ export default function LandingPage() {
                 <p className="text-xs text-[#384D41] font-medium">50% financial subsidy on power sprayers, solar pumps, and tillers through Matir Katha portal.</p>
                 <div className="text-[11px] font-bold text-[#D9822B] pt-0.5">matirkatha.gov.in</div>
               </div>
+            </div>
+
+            {/* Mobile View More Schemes Toggle */}
+            <div className="block sm:hidden text-center pt-1">
+              <button
+                type="button"
+                onClick={() => setIsSchemesExpanded(!isSchemesExpanded)}
+                className="text-xs font-bold text-emerald-800 underline p-2 min-h-[44px] cursor-pointer"
+              >
+                {isSchemesExpanded ? '▲ Show Fewer Schemes' : '▼ View 2 More Active Schemes'}
+              </button>
             </div>
 
             {/* Action Bar */}
