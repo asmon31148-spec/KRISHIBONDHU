@@ -21,7 +21,6 @@ import {
   Sparkles,
   ShieldCheck,
   FileText,
-  Activity,
   ArrowRight,
   AlertTriangle,
   ChevronRight,
@@ -29,9 +28,23 @@ import {
   FlaskConical,
   Plus,
   Lightbulb,
-  Scale,
+  LineChart as AnalyticsIcon,
+  Printer,
 } from 'lucide-react';
-import { formatLandArea, LandUnit } from '@/lib/units';
+import {
+  BarChart,
+  Bar,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  ResponsiveContainer,
+  PieChart,
+  Pie,
+  Cell,
+  Legend,
+} from 'recharts';
+import { formatLandArea, convertLandArea, LandUnit } from '@/lib/units';
 
 interface FarmData {
   id: string;
@@ -62,6 +75,29 @@ interface ScanData {
   created_at: string;
 }
 
+interface YieldMetric {
+  id: string;
+  crop_name: string;
+  total_expected_production_tons: number;
+  actual_harvest_yield_tons: number | null;
+  prediction_date: string;
+}
+
+interface ScanMetric {
+  id: string;
+  crop_name: string;
+  severity: string;
+  created_at: string;
+}
+
+const SEVERITY_COLORS: Record<string, string> = {
+  healthy: '#10B981', // Emerald
+  mild: '#F59E0B', // Amber
+  moderate: '#F97316', // Orange
+  severe: '#EF4444', // Red
+  uncertain: '#64748B', // Slate
+};
+
 function getCropEmoji(name: string): string {
   const n = name.toLowerCase();
   if (n.includes('rice') || n.includes('paddy') || n.includes('dhan')) return '🌾';
@@ -82,6 +118,8 @@ export default function DashboardPage() {
   const [farms, setFarms] = useState<FarmData[]>([]);
   const [crops, setCrops] = useState<CropData[]>([]);
   const [scans, setScans] = useState<ScanData[]>([]);
+  const [yields, setYields] = useState<YieldMetric[]>([]);
+  const [allScans, setAllScans] = useState<ScanMetric[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
@@ -116,7 +154,7 @@ export default function DashboardPage() {
 
         if (cropsData) setCrops(cropsData as CropData[]);
 
-        // Fetch user's recent scans
+        // Fetch user's recent scans for list
         const { data: scansData } = await supabase
           .from('crop_scans')
           .select('*')
@@ -125,6 +163,22 @@ export default function DashboardPage() {
           .limit(5);
 
         if (scansData) setScans(scansData as ScanData[]);
+
+        // Fetch user's yield predictions for analytics
+        const { data: yieldsData } = await supabase
+          .from('yield_predictions')
+          .select('id, crop_name, total_expected_production_tons, actual_harvest_yield_tons, prediction_date')
+          .eq('user_id', user.id);
+
+        if (yieldsData) setYields(yieldsData as YieldMetric[]);
+
+        // Fetch all scans for analytics distribution
+        const { data: allScansData } = await supabase
+          .from('crop_scans')
+          .select('id, crop_name, severity, created_at')
+          .eq('user_id', user.id);
+
+        if (allScansData) setAllScans(allScansData as ScanMetric[]);
       } catch (err) {
         console.error('Error fetching dashboard records:', err);
       } finally {
@@ -149,6 +203,51 @@ export default function DashboardPage() {
     month: 'short',
     year: 'numeric',
   }).format(new Date());
+
+  const handlePrint = () => {
+    window.print();
+  };
+
+  // 1. Severity Distribution
+  const severityCounts: Record<string, number> = {};
+  (allScans.length > 0 ? allScans : scans).forEach((s) => {
+    const sev = s.severity || 'healthy';
+    severityCounts[sev] = (severityCounts[sev] || 0) + 1;
+  });
+
+  const severityPieData = Object.entries(severityCounts).map(([sev, count]) => ({
+    name: sev.charAt(0).toUpperCase() + sev.slice(1),
+    value: count,
+    color: SEVERITY_COLORS[sev] || '#64748B',
+  }));
+
+  // 2. Crop Land Allocation normalized to Bigha
+  const cropAreaData = crops.map((c) => {
+    const rawUnit = (c.area_unit?.toLowerCase() || 'bigha') as LandUnit;
+    const validUnit: LandUnit = ['acres', 'bigha', 'katha', 'hectares'].includes(rawUnit) ? rawUnit : 'bigha';
+    const normalizedBigha = convertLandArea(c.area, validUnit, 'bigha');
+    return {
+      name: c.name.split(' ')[0],
+      area: Math.round(normalizedBigha * 10) / 10,
+      originalArea: `${c.area} ${c.area_unit || 'Bigha'}`,
+    };
+  });
+
+  // 3. Yield Prediction vs Actual Harvest
+  const yieldComparisonData = yields.map((y, idx) => {
+    const baseName = y.crop_name.split(' ')[0];
+    const duplicates = yields.filter((other) => other.crop_name.split(' ')[0] === baseName);
+    const label = duplicates.length > 1 ? `${baseName} (Plot ${idx + 1})` : baseName;
+    return {
+      crop: label,
+      predicted: y.total_expected_production_tons,
+      actual: y.actual_harvest_yield_tons || 0,
+      isPending: !y.actual_harvest_yield_tons || y.actual_harvest_yield_tons === 0,
+    };
+  });
+
+  const totalProjectedTons = yields.reduce((acc, curr) => acc + (curr.total_expected_production_tons || 0), 0);
+  const totalCultivatedAreaBigha = cropAreaData.reduce((acc, curr) => acc + curr.area, 0);
 
   if (isLoading) {
     return (
@@ -226,26 +325,35 @@ export default function DashboardPage() {
                   Ask AI Agronomist
                 </Button>
               </Link>
-              <Link href="/yield">
+              <Link href="/scan">
                 <Button 
                   variant="primary" 
                   size="md" 
-                  leftIcon={<Scale className="w-4 h-4 text-emerald-200" />}
-                  className="bg-emerald-800 hover:bg-emerald-900 text-white shadow-md font-bold"
+                  leftIcon={<ScanLine className="w-4 h-4 text-emerald-200" />}
+                  className="bg-[#143224] hover:bg-[#1E4733] text-white shadow-md font-bold"
                 >
-                  Yield & Profit Calc
+                  + New Leaf Scan
                 </Button>
               </Link>
-              <Link href="/schemes">
+              <Link href="/assistant">
                 <Button 
                   variant="secondary" 
                   size="md" 
-                  leftIcon={<FileText className="w-4 h-4 text-brand-leaf" />}
+                  leftIcon={<Bot className="w-4 h-4 text-brand-leaf" />}
                   className="border-cream-300 hover:border-brand-leaf text-brand-dark font-medium"
                 >
-                  Govt Schemes
+                  Ask Agronomy AI
                 </Button>
               </Link>
+              <Button 
+                variant="outline" 
+                size="md" 
+                onClick={handlePrint}
+                leftIcon={<Printer className="w-4 h-4 text-[#143224]" />}
+                className="print:hidden border-[#143224]/15 hover:bg-white text-brand-dark font-semibold shadow-2xs"
+              >
+                Print Farm Report
+              </Button>
             </div>
           </div>
 
@@ -316,86 +424,151 @@ export default function DashboardPage() {
         );
       })()}
 
-      {/* Feature Highlight Cards (Directly matching Soil Health Card Government Portal layout) */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        {/* Highlight 1: Soil Insights & NPK */}
-        <Link 
-          href="/fertilizer" 
-          className="group block p-5 rounded-2xl bg-gradient-to-br from-emerald-50/60 to-white border border-emerald-200/80 hover:border-emerald-500 hover:shadow-md transition-all cursor-pointer"
-        >
-          <div className="flex items-start gap-4">
-            <div className="w-12 h-12 rounded-xl bg-emerald-100/80 border border-emerald-200 flex items-center justify-center text-emerald-800 shrink-0 group-hover:scale-105 transition-transform shadow-2xs">
-              <Sprout className="w-6 h-6" />
-            </div>
-            <div className="space-y-1">
-              <div className="flex items-center justify-between">
-                <span className="text-[10px] font-bold uppercase tracking-wider text-emerald-800 bg-emerald-100 px-2 py-0.5 rounded-md">
-                  Nutrient Schedules
-                </span>
-                <ArrowRight className="w-3.5 h-3.5 text-emerald-600 opacity-0 -translate-x-1 group-hover:opacity-100 group-hover:translate-x-0 transition-all" />
-              </div>
-              <h3 className="text-sm font-bold text-brand-dark group-hover:text-brand-forest transition-colors pt-1">
-                Soil Insights & N-P-K Guide
-              </h3>
-              <p className="text-xs text-brand-dark/70 leading-relaxed">
-                Balanced nutrient schedules & organic amendments tailored to Bengal alluvial, red, and clay soils.
-              </p>
-            </div>
+      {/* ========================================================
+          FARM PRODUCTION ANALYTICS & HISTORICAL TRENDS (UNIFIED)
+         ======================================================== */}
+      <section id="analytics" className="space-y-4 pt-2">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+          <div>
+            <h2 className="text-lg sm:text-xl font-black text-[#143224] flex items-center gap-2">
+              <AnalyticsIcon className="w-5 h-5 text-[#D9822B]" />
+              <span>Farm Analytics & Production Intelligence</span>
+            </h2>
+            <p className="text-xs text-[#5E7367] mt-0.5 font-medium">
+              Multi-season harvest projections, pathogen severity distribution, and land allocation benchmarks.
+            </p>
           </div>
-        </Link>
 
-        {/* Highlight 2: Pathogen & Weather Surveillance */}
-        <Link 
-          href="/weather" 
-          className="group block p-5 rounded-2xl bg-gradient-to-br from-amber-50/60 to-white border border-amber-200/80 hover:border-amber-500 hover:shadow-md transition-all cursor-pointer"
-        >
-          <div className="flex items-start gap-4">
-            <div className="w-12 h-12 rounded-xl bg-amber-100/80 border border-amber-200 flex items-center justify-center text-amber-800 shrink-0 group-hover:scale-105 transition-transform shadow-2xs">
-              <Activity className="w-6 h-6" />
-            </div>
-            <div className="space-y-1">
-              <div className="flex items-center justify-between">
-                <span className="text-[10px] font-bold uppercase tracking-wider text-amber-800 bg-amber-100 px-2 py-0.5 rounded-md">
-                  Live District Surveillance
-                </span>
-                <ArrowRight className="w-3.5 h-3.5 text-amber-600 opacity-0 -translate-x-1 group-hover:opacity-100 group-hover:translate-x-0 transition-all" />
-              </div>
-              <h3 className="text-sm font-bold text-brand-dark group-hover:text-amber-800 transition-colors pt-1">
-                Pathogen & Weather Radar
-              </h3>
-              <p className="text-xs text-brand-dark/70 leading-relaxed">
-                Active alerts for Potato Late Blight, Rice Sheath Blight & high-humidity fungal risk across your district.
-              </p>
-            </div>
-          </div>
-        </Link>
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={handlePrint}
+            leftIcon={<Printer className="w-3.5 h-3.5 text-[#143224]" />}
+            className="print:hidden border-[#143224]/15 hover:bg-white text-xs font-bold text-[#143224] shadow-2xs self-start sm:self-auto"
+          >
+            Print Report
+          </Button>
+        </div>
 
-        {/* Highlight 3: Schemes & Welfare Tracker */}
-        <Link 
-          href="/schemes" 
-          className="group block p-5 rounded-2xl bg-gradient-to-br from-sky-50/60 to-white border border-sky-200/80 hover:border-sky-500 hover:shadow-md transition-all cursor-pointer"
-        >
-          <div className="flex items-start gap-4">
-            <div className="w-12 h-12 rounded-xl bg-sky-100/80 border border-sky-200 flex items-center justify-center text-sky-800 shrink-0 group-hover:scale-105 transition-transform shadow-2xs">
-              <ShieldCheck className="w-6 h-6" />
-            </div>
-            <div className="space-y-1">
-              <div className="flex items-center justify-between">
-                <span className="text-[10px] font-bold uppercase tracking-wider text-sky-800 bg-sky-100 px-2 py-0.5 rounded-md">
-                  FY 2025–26 Verified
-                </span>
-                <ArrowRight className="w-3.5 h-3.5 text-sky-600 opacity-0 -translate-x-1 group-hover:opacity-100 group-hover:translate-x-0 transition-all" />
-              </div>
-              <h3 className="text-sm font-bold text-brand-dark group-hover:text-sky-800 transition-colors pt-1">
-                Welfare & Subsidies Portal
-              </h3>
-              <p className="text-xs text-brand-dark/70 leading-relaxed">
-                Direct beneficiary status tracker for Krishak Bandhu, PM-KISAN, and BSB crop insurance.
+        {/* 3 Analytics Visualizations */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+          {/* Chart 1: Disease Severity Breakdown */}
+          <Card className="p-5 space-y-3 bg-white/95 border border-[#143224]/10 shadow-xs">
+            <div className="space-y-0.5">
+              <CardTitle className="text-sm sm:text-base font-bold text-[#143224]">
+                Crop Disease Severity Distribution
+              </CardTitle>
+              <p className="text-xs text-[#5E7367]">
+                Categorizes all leaf diagnostic scans by ICAR pathogen severity tiers.
               </p>
             </div>
-          </div>
-        </Link>
-      </div>
+
+            {severityPieData.length === 0 ? (
+              <div className="h-56 flex items-center justify-center text-xs text-[#5E7367] italic">
+                No disease scans recorded yet. Scan a leaf to view health distribution.
+              </div>
+            ) : (
+              <div className="h-60 w-full">
+                <ResponsiveContainer width="100%" height="100%">
+                  <PieChart>
+                    <Pie
+                      data={severityPieData}
+                      dataKey="value"
+                      nameKey="name"
+                      cx="50%"
+                      cy="50%"
+                      outerRadius={75}
+                      innerRadius={45}
+                      paddingAngle={3}
+                    >
+                      {severityPieData.map((entry, index) => (
+                        <Cell key={`cell-${index}`} fill={entry.color} />
+                      ))}
+                    </Pie>
+                    <Tooltip />
+                    <Legend />
+                  </PieChart>
+                </ResponsiveContainer>
+              </div>
+            )}
+          </Card>
+
+          {/* Chart 2: Cultivated Area Breakdown */}
+          <Card className="p-5 space-y-3 bg-white/95 border border-[#143224]/10 shadow-xs">
+            <div className="space-y-0.5">
+              <CardTitle className="text-sm sm:text-base font-bold text-[#143224]">
+                Land Allocation by Cultivated Crop (Bigha)
+              </CardTitle>
+              <p className="text-xs text-[#5E7367]">
+                Normalized cultivated area distribution across all your registered farm plots.
+              </p>
+            </div>
+
+            {cropAreaData.length === 0 ? (
+              <div className="h-56 flex items-center justify-center text-xs text-[#5E7367] italic">
+                No active crops registered yet. Add crops to view land allocation.
+              </div>
+            ) : (
+              <div className="h-60 w-full">
+                <ResponsiveContainer width="100%" height="100%">
+                  <BarChart data={cropAreaData}>
+                    <CartesianGrid strokeDasharray="3 3" stroke="#f0efe9" />
+                    <XAxis dataKey="name" tick={{ fontSize: 11 }} />
+                    <YAxis tick={{ fontSize: 11 }} />
+                    <Tooltip formatter={(value: any) => [`${value} Bigha`, 'Area']} />
+                    <Bar dataKey="area" fill="#143224" radius={[6, 6, 0, 0]} />
+                  </BarChart>
+                </ResponsiveContainer>
+              </div>
+            )}
+          </Card>
+
+          {/* Chart 3: Predicted vs Actual Harvest Yields (Full-Width) */}
+          <Card className="p-5 space-y-3 lg:col-span-2 bg-white/95 border border-[#143224]/10 shadow-xs">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+              <div className="space-y-0.5">
+                <CardTitle className="text-sm sm:text-base font-bold text-[#143224]">
+                  Predicted vs Actual Harvest Production (Tons)
+                </CardTitle>
+                <p className="text-xs text-[#5E7367]">
+                  Compares estimated ICAR model projections with verified farmer recorded harvests.
+                </p>
+              </div>
+              <span className="text-xs font-bold text-[#D9822B] px-3 py-1 rounded-full bg-amber-50 border border-amber-200/60 self-start sm:self-auto">
+                Projected Total: {totalProjectedTons.toFixed(1)} Tons
+              </span>
+            </div>
+
+            {yieldComparisonData.length === 0 ? (
+              <div className="h-56 flex items-center justify-center text-xs text-[#5E7367] italic">
+                Calculate crop yield in Yield & Profit tool to generate multi-season harvest benchmarks.
+              </div>
+            ) : (
+              <div className="space-y-3">
+                <div className="h-64 w-full">
+                  <ResponsiveContainer width="100%" height="100%">
+                    <BarChart data={yieldComparisonData}>
+                      <CartesianGrid strokeDasharray="3 3" stroke="#f0efe9" />
+                      <XAxis dataKey="crop" tick={{ fontSize: 11 }} />
+                      <YAxis tick={{ fontSize: 11 }} />
+                      <Tooltip />
+                      <Legend />
+                      <Bar dataKey="predicted" fill="#D9822B" name="Predicted (Tons)" radius={[6, 6, 0, 0]} />
+                      <Bar dataKey="actual" fill="#143224" name="Actual Harvest (Tons)" radius={[6, 6, 0, 0]} />
+                    </BarChart>
+                  </ResponsiveContainer>
+                </div>
+                {yieldComparisonData.some((d) => d.isPending) && (
+                  <p className="text-[11px] text-[#2D2319]/80 bg-[#F9F7F2] border border-[#143224]/10 rounded-xl p-2.5 flex items-center gap-2 font-medium">
+                    <span className="text-[#D9822B] font-bold">ℹ️</span>
+                    <span>Zero actual harvest indicates active crops currently in mid-season growth. Final verified yield will record automatically upon season harvest logging.</span>
+                  </p>
+                )}
+              </div>
+            )}
+          </Card>
+        </div>
+      </section>
 
       {/* Overview Stat Cards (Derived strictly from real DB records, 100% Clickable with meaningful redirects) */}
       <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">

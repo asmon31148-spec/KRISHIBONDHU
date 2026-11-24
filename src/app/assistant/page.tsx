@@ -19,7 +19,6 @@ import {
   Image as ImageIcon,
   X,
   MessageSquare,
-  ChevronRight,
   Flag,
   ShieldAlert,
 } from 'lucide-react';

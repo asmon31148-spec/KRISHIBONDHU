@@ -15,8 +15,6 @@ import {
   X,
   CloudSun,
   Newspaper,
-  LineChart,
-  BookOpen,
   FileText,
   LogOut,
   TrendingUp,
@@ -48,8 +46,6 @@ export function MobileNav() {
     { label: t('nav.weather'), href: '/weather', icon: CloudSun },
     { label: t('nav.news'), href: '/news', icon: Newspaper },
     { label: t('nav.schemes'), href: '/schemes', icon: FileText },
-    { label: t('nav.analytics'), href: '/analytics', icon: LineChart },
-    { label: t('nav.sources'), href: '/sources', icon: BookOpen },
   ];
 
   return (
