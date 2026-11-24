@@ -22,51 +22,50 @@ body {
   outline-offset: 2px;
 }
 
-/* Custom Sleek Scrollbars across the entire application — replaces Windows default gray scrollbars */
+/* =========================================================================
+   UNIVERSAL INVISIBLE SCROLLBARS (Zero gray bars, full momentum scrolling)
+   ========================================================================= */
 html,
 body,
 * {
-  scrollbar-width: thin !important;
-  scrollbar-color: #8DA399 transparent !important;
+  scrollbar-width: none !important; /* Firefox */
+  -ms-overflow-style: none !important; /* IE 10+ and Edge Legacy */
 }
 
-/* WebKit & Chromium (Chrome, Edge, Brave, Opera) */
+/* Chrome, Edge, Safari, Opera, iOS/Android WebViews */
+*::-webkit-scrollbar,
 ::-webkit-scrollbar {
-  width: 6px !important;
-  height: 6px !important;
-}
-
-::-webkit-scrollbar-track {
-  background: transparent !important;
-}
-
-::-webkit-scrollbar-thumb {
-  background-color: #8DA399 !important;
-  border-radius: 9999px !important;
-  border: 1px solid transparent !important;
-}
-
-::-webkit-scrollbar-thumb:hover {
-  background-color: #1B4332 !important;
-}
-
-::-webkit-scrollbar-button {
   display: none !important;
   width: 0 !important;
   height: 0 !important;
-}
-
-::-webkit-scrollbar-corner {
   background: transparent !important;
 }
 
-/* Utility to completely hide scrollbar when desired */
-.no-scrollbar::-webkit-scrollbar {
-  display: none;
+::-webkit-scrollbar-track,
+::-webkit-scrollbar-thumb,
+::-webkit-scrollbar-button,
+::-webkit-scrollbar-corner {
+  display: none !important;
+  background: transparent !important;
 }
-.no-scrollbar {
-  -ms-overflow-style: none;
-  scrollbar-width: none;
+
+/* Ensure smooth native momentum touch scrolling everywhere */
+html,
+body {
+  -webkit-overflow-scrolling: touch;
+}
+
+/* Utility classes to completely hide scrollbar on inner scrolling containers */
+.no-scrollbar,
+.scrollbar-none {
+  scrollbar-width: none !important;
+  -ms-overflow-style: none !important;
+}
+.no-scrollbar::-webkit-scrollbar,
+.scrollbar-none::-webkit-scrollbar {
+  display: none !important;
+  width: 0 !important;
+  height: 0 !important;
 }
 
 @keyframes floatSway {
