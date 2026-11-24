@@ -1,8 +1,7 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import Link from 'next/link';
-import { useTheme } from '@/context/ThemeContext';
 import {
   Sprout,
   ShieldCheck,
@@ -14,16 +13,13 @@ import {
   CheckCircle2,
   ScanLine,
   Bot,
-  Info,
-  Calendar,
-  Sparkles,
 } from 'lucide-react';
 
 export interface UnifiedFarmAnalyticsProps {
   yieldData: Array<{ crop: string; predicted: number; actual: number; isPending?: boolean }>;
   totalProjectedTons: number;
   severityData: Array<{ name: string; value: number; color: string }>;
-  landData: Array<{ name: string; area: number }>;
+  landData?: Array<{ name: string; area: number }>;
   soilSummary?: { nRate: string; pRate: string; kRate: string; phRate: string } | null;
   cropCount?: number;
   attentionCropsCount?: number;
@@ -35,16 +31,9 @@ export function UnifiedFarmAnalytics({
   yieldData,
   totalProjectedTons,
   severityData,
-  landData,
-  soilSummary,
-  cropCount = 2,
-  attentionCropsCount = 0,
-  totalLandBigha = 5.0,
   district = 'South 24 Parganas, West Bengal',
 }: UnifiedFarmAnalyticsProps) {
   const [unitMode, setUnitMode] = useState<'tons' | 'quintals'>('tons');
-  const { resolvedTheme } = useTheme();
-  const isDark = resolvedTheme === 'dark';
 
   const multiplier = unitMode === 'quintals' ? 10 : 1;
   const unitLabel = unitMode === 'quintals' ? 'Quintals' : 'Tons';
@@ -80,12 +69,48 @@ export function UnifiedFarmAnalytics({
   const estimatedRevenue = Math.round(totalPredicted * 10 * 2350); // ~₹2,350/quintal APMC rate
 
   // Disease counts from scans
-  const healthyCount = severityData.find((s) => s.name.toLowerCase() === 'healthy')?.value ?? 1;
-  const mildCount = severityData.find((s) => s.name.toLowerCase() === 'mild')?.value ?? 0;
-  const moderateCount = severityData.find((s) => s.name.toLowerCase() === 'moderate')?.value ?? 3;
-  const severeCount = severityData.find((s) => s.name.toLowerCase() === 'severe')?.value ?? 1;
+  const hasRealScans = severityData.length > 0;
+  const healthyCount = hasRealScans
+    ? (severityData.find((s) => s.name.toLowerCase() === 'healthy')?.value ?? 0)
+    : 1;
+  const mildCount = hasRealScans
+    ? (severityData.find((s) => s.name.toLowerCase() === 'mild')?.value ?? 0)
+    : 0;
+  const moderateCount = hasRealScans
+    ? (severityData.find((s) => s.name.toLowerCase() === 'moderate')?.value ?? 0)
+    : 3;
+  const severeCount = hasRealScans
+    ? (severityData.find((s) => s.name.toLowerCase() === 'severe')?.value ?? 0)
+    : 1;
   const totalScans = healthyCount + mildCount + moderateCount + severeCount;
-  const healthPercentage = totalScans > 0 ? Math.round((healthyCount / totalScans) * 100) : 20;
+  const healthPercentage = totalScans > 0 ? Math.round((healthyCount / totalScans) * 100) : 100;
+
+  // Derive dynamic crop health card styling
+  let healthStatusLabel = 'All Clear';
+  let healthStatusSub = 'Foliage looking healthy';
+  let healthBadgeBg = 'bg-emerald-100 dark:bg-emerald-950/60 text-emerald-800 dark:text-emerald-300';
+  let healthAccentColor = 'bg-emerald-500';
+  let healthTextColor = 'text-emerald-600 dark:text-emerald-400';
+
+  if (severeCount > 0) {
+    healthStatusLabel = 'Critical Alert';
+    healthStatusSub = `${severeCount} leaf with severe blight; spray needed`;
+    healthBadgeBg = 'bg-red-100 dark:bg-red-950/60 text-red-800 dark:text-red-300';
+    healthAccentColor = 'bg-red-500';
+    healthTextColor = 'text-red-600 dark:text-red-400';
+  } else if (moderateCount > 0) {
+    healthStatusLabel = 'Needs Attention';
+    healthStatusSub = `${moderateCount} leaves show fungal spots / gray mold`;
+    healthBadgeBg = 'bg-orange-100 dark:bg-orange-950/60 text-orange-800 dark:text-orange-300';
+    healthAccentColor = 'bg-orange-500';
+    healthTextColor = 'text-orange-600 dark:text-orange-400';
+  } else if (mildCount > 0) {
+    healthStatusLabel = 'Mild Spots';
+    healthStatusSub = `${mildCount} leaf with minor discoloration`;
+    healthBadgeBg = 'bg-amber-100 dark:bg-amber-950/60 text-amber-800 dark:text-amber-300';
+    healthAccentColor = 'bg-amber-500';
+    healthTextColor = 'text-amber-600 dark:text-amber-400';
+  }
 
   // Simple, intuitive soil health indicators (Replacing the confusing spiderweb chart!)
   const soilNutrients = [
@@ -203,7 +228,7 @@ export function UnifiedFarmAnalytics({
             <span className="text-xs font-bold text-brand-dark/70 dark:text-white/70 uppercase tracking-wider">
               🌿 Crop Health
             </span>
-            <span className="px-2 py-0.5 rounded-full text-[10px] font-extrabold bg-orange-100 dark:bg-orange-950/60 text-orange-800 dark:text-orange-300">
+            <span className={`px-2 py-0.5 rounded-full text-[10px] font-extrabold ${healthBadgeBg}`}>
               {totalScans} Leaf Scans
             </span>
           </div>
@@ -211,13 +236,13 @@ export function UnifiedFarmAnalytics({
             <span className="text-3xl font-black text-[#143224] dark:text-[#EAF2EC] tracking-tight">
               {healthPercentage}%
             </span>
-            <span className="text-xs font-bold text-orange-600 dark:text-orange-400">Needs Attention</span>
+            <span className={`text-xs font-bold ${healthTextColor}`}>{healthStatusLabel}</span>
           </div>
           <div className="mt-2 flex items-center gap-1.5 text-xs font-medium text-brand-dark/70 dark:text-white/70">
-            <AlertTriangle className="w-3.5 h-3.5 text-orange-500 shrink-0" />
-            <span className="truncate">3 plots have spots • 1 needs spray</span>
+            <AlertTriangle className={`w-3.5 h-3.5 ${healthTextColor} shrink-0`} />
+            <span className="truncate">{healthStatusSub}</span>
           </div>
-          <div className="absolute bottom-0 left-0 right-0 h-1 bg-orange-500" />
+          <div className={`absolute bottom-0 left-0 right-0 h-1 ${healthAccentColor}`} />
         </div>
 
         {/* Card 4: Soil Health */}
