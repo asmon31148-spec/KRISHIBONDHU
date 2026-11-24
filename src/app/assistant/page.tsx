@@ -40,24 +40,104 @@ interface Conversation {
   created_at: string;
 }
 
-const SUGGESTED_PROMPTS: Record<Language, string[]> = {
+interface SuggestedCard {
+  icon: string;
+  tag: string;
+  title: string;
+  desc: string;
+  prompt: string;
+}
+
+const SUGGESTED_CARDS: Record<Language, SuggestedCard[]> = {
   bn: [
-    'আলুর নাবী ধসা রোগ নিয়ন্ত্রণের সেরা উপায় কী?',
-    'বোরো ধানের চারা রোপণের সঠিক সময় ও সেচ পদ্ধতি',
-    'পশ্চিমবঙ্গ কৃষক বন্ধু প্রকল্পে আবেদনের নিয়ম কী?',
-    'বেগুন গাছে ডগা ও ফল ছিদ্রকারী পোকার জৈব দমন',
+    {
+      icon: '🥔',
+      tag: 'রোগ নির্ণয়',
+      title: 'আলুর নাবী ধসা রোগ',
+      desc: 'লক্ষণ, আবহাওয়া সতর্কতা ও সঠিক ওষুধ স্প্রে মাত্রা',
+      prompt: 'আলুর নাবী ধসা রোগ নিয়ন্ত্রণের সেরা উপায় কী?',
+    },
+    {
+      icon: '🌾',
+      tag: 'সারের হিসাব',
+      title: 'বোরো ধানের এন-পি-কে মাত্রা',
+      desc: 'বিঘা প্রতি ইউরিয়া, ডিএপি ও পটাশ প্রয়োগের সময়সূচি',
+      prompt: 'বোরো ধানের চারা রোপণের সঠিক সময় ও সারের সেচ পদ্ধতি কী?',
+    },
+    {
+      icon: '🏛️',
+      tag: 'সরকারি অনুদান',
+      title: 'কৃষকবন্ধু ও পিএম কিষান',
+      desc: 'ডিবিটি অনুদানের যোগ্যতা, প্রয়োজনীয় নথি ও যাচাই',
+      prompt: 'পশ্চিমবঙ্গ কৃষক বন্ধু প্রকল্পে আবেদনের নিয়ম ও সুবিধা কী?',
+    },
+    {
+      icon: '🍆',
+      tag: 'জৈব প্রতিকার',
+      title: 'বেগুনের ডগা ও ফল ছিদ্রকারী',
+      desc: 'নিম তেল ও ফেরোমোন ফাঁদ দিয়ে কার্যকর জৈব দমন',
+      prompt: 'বেগুন গাছে ডগা ও ফল ছিদ্রকারী পোকার জৈব দমন পদ্ধতি কী?',
+    },
   ],
   hi: [
-    'आलू में पिछेती झुलसा रोग का जैविक उपचार क्या है?',
-    'धान की फसल में यूरिया और डीएपी डालने का सही समय',
-    'पीएम किसान सम्मान निधि की पात्रता और लाभ',
-    'गेहूं की अच्छी पैदावार के लिए पहली सिंचाई कब करें?',
+    {
+      icon: '🥔',
+      tag: 'रोग पहचान',
+      title: 'आलू में पिछेती झुलसा',
+      desc: 'लक्षण, मौसम चेतावनी व स्वीकृत फफूंदनाशी उपचार',
+      prompt: 'आलू में पिछेती झुलसा रोग का जैविक उपचार क्या है?',
+    },
+    {
+      icon: '🌾',
+      tag: 'खाद प्रबंधन',
+      title: 'धान में एन-पी-के मात्रा',
+      desc: 'यूरिया, डीएपी व पोटाश की वैज्ञानिक समय सारिणी',
+      prompt: 'धान की फसल में यूरिया और डीएपी डालने का सही समय और मात्रा बताएं',
+    },
+    {
+      icon: '🏛️',
+      tag: 'सरकारी योजनाएं',
+      title: 'पीएम किसान सम्मान निधि',
+      desc: 'पात्रता, ई-केवाईसी प्रक्रिया व किस्त की स्थिति',
+      prompt: 'पीएम किसान सम्मान निधि की पात्रता और लाभ की जानकारी दें',
+    },
+    {
+      icon: '🍆',
+      tag: 'जैविक कीट नियंत्रण',
+      title: 'बैंगन फल व तना छेदक',
+      desc: 'नीम तेल व फेरोमोन ट्रैप से जैविक रोकथाम',
+      prompt: 'बैंगन में तना व फल छेदक कीट की रोकथाम के जैविक उपाय क्या हैं?',
+    },
   ],
   en: [
-    'How do I identify and treat Late Blight in potato crops?',
-    'Recommended fertilizer N-P-K schedule for winter rice',
-    'Government schemes available for West Bengal farmers',
-    'Organic bio-pesticides for brinjal shoot and fruit borer',
+    {
+      icon: '🥔',
+      tag: 'Disease Diagnosis',
+      title: 'Potato Late Blight',
+      desc: 'Symptoms, weather triggers, & ICAR fungicide dosages',
+      prompt: 'How do I identify and treat Late Blight in potato crops?',
+    },
+    {
+      icon: '🌾',
+      tag: 'Fertilizer Balance',
+      title: 'Winter Rice N-P-K Schedule',
+      desc: 'Exact basal & top-dress split dosages per Bigha',
+      prompt: 'Recommended fertilizer N-P-K schedule for winter rice',
+    },
+    {
+      icon: '🏛️',
+      tag: 'Government Schemes',
+      title: 'Krishak Bandhu & PM-Kisan',
+      desc: 'DBT cash support eligibility & required documents',
+      prompt: 'Government schemes available for West Bengal farmers',
+    },
+    {
+      icon: '🍆',
+      tag: 'Bio Pest Control',
+      title: 'Brinjal Shoot & Fruit Borer',
+      desc: 'Neem-based organic remedies & pheromone traps',
+      prompt: 'Organic bio-pesticides for brinjal shoot and fruit borer',
+    },
   ],
 };
 
@@ -343,29 +423,31 @@ What are the specific disease, pest, or nutrient risks for this crop in West Ben
     }
   };
 
-  const currentSuggestions = SUGGESTED_PROMPTS[language] || SUGGESTED_PROMPTS.en;
+  const currentSuggestions = SUGGESTED_CARDS[language] || SUGGESTED_CARDS.en;
 
   return (
     <div className="flex flex-col h-full w-full bg-white relative overflow-hidden text-left">
       {/* Top Bar with Clean Header & History Controls */}
-      <div className="flex items-center justify-between px-3 sm:px-4 py-2 sm:py-2.5 border-b border-cream-200 bg-white gap-2 shrink-0">
-        <div className="flex items-center gap-2 min-w-0">
+      <div className="flex items-center justify-between px-3 sm:px-4 h-[50px] border-b border-[#143224]/10 bg-[#F9F7F2]/80 backdrop-blur-md gap-2 shrink-0">
+        <div className="flex items-center gap-2.5 min-w-0">
           {!isGuest && (
             <button
               onClick={() => setIsSidebarOpen(!isSidebarOpen)}
-              className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl border text-xs font-bold transition-all shrink-0 shadow-2xs ${
+              className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl border text-xs font-bold transition-all shrink-0 cursor-pointer ${
                 isSidebarOpen
-                  ? 'bg-cream-100 text-brand-dark border-cream-300 hover:bg-cream-200'
-                  : 'bg-white hover:bg-cream-100 text-brand-dark/80 hover:text-brand-forest border-cream-200'
+                  ? 'bg-[#143224] text-white border-[#143224] shadow-xs'
+                  : 'bg-white hover:bg-[#EAF2EC] text-[#143224] border-[#143224]/15 shadow-2xs'
               }`}
               title={isSidebarOpen ? 'Hide History Panel' : 'Show Saved Conversations'}
               aria-label="Toggle history"
             >
-              <MessageSquare className="w-3.5 h-3.5 text-brand-forest" />
+              <MessageSquare className={`w-3.5 h-3.5 ${isSidebarOpen ? 'text-[#D9822B]' : 'text-[#1E4733]'}`} />
               <span>{isSidebarOpen ? 'Hide History' : 'History'}</span>
               {conversations.length > 0 && (
                 <span
-                  className="px-1.5 py-0.2 rounded-full text-[10px] font-extrabold bg-brand-forest/10 text-brand-forest"
+                  className={`px-1.5 py-0.2 rounded-full text-[10px] font-extrabold ${
+                    isSidebarOpen ? 'bg-white/20 text-white' : 'bg-[#143224]/10 text-[#143224]'
+                  }`}
                 >
                   {conversations.length}
                 </span>
@@ -373,9 +455,9 @@ What are the specific disease, pest, or nutrient risks for this crop in West Ben
             </button>
           )}
 
-          <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-800 text-[11px] font-bold">
+          <div className="flex items-center gap-1.5 px-3 py-1 rounded-xl bg-white border border-[#143224]/10 text-[#143224] text-xs font-bold shadow-2xs">
             <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
-            <span>BCKV & ICAR Agronomy Core</span>
+            <span>BCKV & ICAR Agronomy AI</span>
           </div>
         </div>
 
@@ -384,8 +466,8 @@ What are the specific disease, pest, or nutrient risks for this crop in West Ben
             variant="ghost"
             size="sm"
             onClick={handleNewChat}
-            className="text-xs font-bold text-brand-forest hover:bg-cream-100"
-            leftIcon={<Plus className="w-3.5 h-3.5" />}
+            className="text-xs font-bold text-[#143224] hover:bg-[#EAF2EC] rounded-xl"
+            leftIcon={<Plus className="w-3.5 h-3.5 text-[#D9822B]" />}
           >
             New Chat
           </Button>
@@ -502,33 +584,65 @@ What are the specific disease, pest, or nutrient risks for this crop in West Ben
           <div className="flex-1 overflow-y-auto px-3 py-2 sm:p-4 lg:p-5 space-y-3 sm:space-y-4">
             <div className="max-w-3xl mx-auto w-full space-y-2.5 sm:space-y-4">
               {messages.length === 0 ? (
-                <div className="flex flex-col items-center justify-center text-center p-2 sm:p-5 space-y-2 sm:space-y-3 w-full">
-                  <div className="w-10 h-10 sm:w-14 sm:h-14 rounded-2xl bg-brand-forest/10 border border-brand-forest/20 flex items-center justify-center text-brand-forest shrink-0">
-                    <Bot className="w-5 h-5 sm:w-7 sm:h-7 text-brand-leaf" />
-                  </div>
-                  <div className="space-y-0.5">
-                    <h3 className="text-sm sm:text-lg font-bold text-brand-dark">
-                      How can I assist your farm today?
+                <div className="flex flex-col items-center justify-center text-center p-3 sm:p-6 space-y-4 sm:space-y-6 w-full my-auto">
+                  <div className="space-y-2">
+                    <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#EAF2EC] border border-[#143224]/15 text-[#143224] text-xs font-bold">
+                      <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+                      <span>
+                        {language === 'bn'
+                          ? 'আইসিএআর ও বিসিকেভি সমন্বিত কৃষি বুদ্ধিমত্তা'
+                          : language === 'hi'
+                          ? 'आईसीएआर एवं बीसीकेवी प्रमाणित कृषि बुद्धिमत्ता'
+                          : 'ICAR & BCKV Certified Agronomy AI'}
+                      </span>
+                    </div>
+                    <h3 className="text-xl sm:text-2xl font-black text-[#143224] tracking-tight">
+                      {language === 'bn'
+                        ? 'আজ আপনার খামারে কীভাবে সাহায্য করতে পারি?'
+                        : language === 'hi'
+                        ? 'आज आपके खेत के लिए क्या सहायता चाहिए?'
+                        : 'How can I assist your farm today?'}
                     </h3>
-                    <p className="text-[11px] sm:text-xs text-brand-dark/70 leading-relaxed max-w-md mx-auto">
-                      Ask any question about crop diseases, pest remedies, fertilizer schedules, or government schemes.
+                    <p className="text-xs sm:text-sm text-[#5E7367] max-w-lg mx-auto font-medium">
+                      {language === 'bn'
+                        ? 'ফসলের রোগ নির্ণয়, অনুমোদিত ওষুধের মাত্রা, সারের হিসাব বা সরকারি প্রকল্পের তথ্য জানুন।'
+                        : language === 'hi'
+                        ? 'फसल रोग, दवा की सटीक मात्रा, खाद का अनुपात या सरकारी योजनाओं के बारे में पूछें।'
+                        : 'Ask about leaf diseases, approved chemical/bio dosages, fertilizer schedules, or government subsidies.'}
                     </p>
                   </div>
 
-                  {/* Suggested Prompt Chips */}
-                  <div className="w-full space-y-2 pt-1">
-                    <span className="text-[11px] font-bold text-brand-forest uppercase tracking-wider block text-left">
-                      Suggested Questions
+                  {/* 2x2 Bento Query Cards */}
+                  <div className="w-full space-y-2.5">
+                    <span className="text-[11px] font-bold text-[#143224] uppercase tracking-wider block text-left">
+                      {language === 'bn'
+                        ? 'জনপ্রিয় প্রশ্নসমূহ'
+                        : language === 'hi'
+                        ? 'लोकप्रिय प्रश्न'
+                        : 'Recommended Queries'}
                     </span>
-                    <div className="grid grid-cols-1 gap-2 text-left w-full">
-                      {currentSuggestions.map((prompt, idx) => (
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-left w-full">
+                      {currentSuggestions.map((card, idx) => (
                         <button
                           key={idx}
-                          onClick={() => handleSendMessage(prompt)}
-                          className="p-3 text-left rounded-xl bg-cream-50 hover:bg-cream-100 border border-cream-200 text-xs font-semibold text-brand-dark/90 flex items-center justify-between gap-2.5 active:scale-[0.99] transition-transform"
+                          type="button"
+                          onClick={() => handleSendMessage(card.prompt)}
+                          className="p-3.5 rounded-2xl bg-white hover:bg-[#F9F7F2] border border-[#143224]/10 hover:border-[#143224]/30 shadow-[0_2px_8px_rgba(20,50,36,0.03)] hover:shadow-[0_4px_16px_rgba(20,50,36,0.08)] flex flex-col justify-between gap-2 text-left cursor-pointer transition-all hover:-translate-y-0.5 active:translate-y-0 group"
                         >
-                          <span className="line-clamp-2 leading-relaxed flex-1">{prompt}</span>
-                          <ChevronRight className="w-4 h-4 text-brand-leaf opacity-70 shrink-0" />
+                          <div className="flex items-center justify-between gap-2 w-full">
+                            <span className="text-xl shrink-0">{card.icon}</span>
+                            <span className="text-[10px] font-bold text-[#D9822B] px-2 py-0.5 rounded-full bg-amber-50 border border-amber-200/60 uppercase tracking-wider">
+                              {card.tag}
+                            </span>
+                          </div>
+                          <div>
+                            <h4 className="text-xs sm:text-sm font-bold text-[#143224] group-hover:text-[#D9822B] transition-colors leading-snug">
+                              {card.title}
+                            </h4>
+                            <p className="text-[11px] text-[#5E7367] mt-0.5 line-clamp-2 leading-relaxed">
+                              {card.desc}
+                            </p>
+                          </div>
                         </button>
                       ))}
                     </div>
@@ -648,37 +762,30 @@ What are the specific disease, pest, or nutrient risks for this crop in West Ben
             </div>
           )}
 
-          {/* Interactive Voice & Text Input Box */}
-          <div className="p-2.5 sm:p-4 border-t border-cream-200/90 bg-white/95 backdrop-blur-md sticky bottom-0 z-10">
-            <div className="max-w-3xl mx-auto flex items-center gap-2">
-              {/* Walkie-Talkie Voice Microphone Button */}
-              <WalkieTalkie
-                language={language}
-                onSpeechFinal={(transcript) => {
-                  setInputText(transcript);
-                  handleSendMessage(transcript);
-                }}
-              />
+          {/* Unified Modern Agronomy Chat Capsule */}
+          <div className="p-3 sm:p-4 border-t border-[#143224]/10 bg-white/95 backdrop-blur-md shrink-0">
+            <div className="max-w-3xl mx-auto space-y-1.5">
+              <div className="flex items-center gap-1.5 sm:gap-2 p-1.5 sm:p-2 rounded-2xl bg-[#F9F7F2] border border-[#143224]/15 shadow-[0_2px_12px_rgba(20,50,36,0.04)] focus-within:border-[#143224]/35 focus-within:bg-white focus-within:shadow-[0_4px_16px_rgba(20,50,36,0.08)] transition-all">
+                {/* Photo Attachment Input & Trigger */}
+                <input
+                  type="file"
+                  ref={fileInputRef}
+                  onChange={handleImageSelect}
+                  accept="image/*"
+                  className="hidden"
+                />
 
-              <input
-                type="file"
-                ref={fileInputRef}
-                onChange={handleImageSelect}
-                accept="image/*"
-                className="hidden"
-              />
+                <button
+                  type="button"
+                  onClick={() => fileInputRef.current?.click()}
+                  className="p-2 sm:p-2.5 rounded-xl text-[#143224]/70 hover:text-[#143224] hover:bg-white transition-colors shrink-0 cursor-pointer"
+                  title="Attach photo of diseased leaf or crop"
+                  disabled={isLoading}
+                >
+                  <ImageIcon className="w-4 h-4 text-[#1E4733]" />
+                </button>
 
-              <button
-                type="button"
-                onClick={() => fileInputRef.current?.click()}
-                className="p-2 sm:p-2.5 rounded-xl border border-cream-200 hover:border-brand-leaf/40 bg-cream-50/50 hover:bg-cream-100 text-brand-dark/70 hover:text-brand-forest transition-colors shadow-2xs shrink-0"
-                title="Attach photo of diseased leaf or crop"
-                disabled={isLoading}
-              >
-                <ImageIcon className="w-4 h-4" />
-              </button>
-
-              <div className="flex-1 relative">
+                {/* Text Input */}
                 <input
                   type="text"
                   value={inputText}
@@ -697,19 +804,38 @@ What are the specific disease, pest, or nutrient risks for this crop in West Ben
                       : 'Ask about crop symptoms, dosage, or soil...'
                   }
                   disabled={isLoading}
-                  className="w-full px-3.5 py-2.5 rounded-xl border border-cream-200 bg-cream-50/30 focus:bg-white text-xs sm:text-sm text-brand-dark focus:outline-hidden focus:border-brand-leaf focus:ring-1 focus:ring-brand-leaf transition-all placeholder:text-brand-dark/40"
+                  className="flex-1 bg-transparent border-none text-xs sm:text-sm text-[#143224] font-medium placeholder:text-[#5E7367]/60 focus:outline-none focus:ring-0 px-1"
                 />
+
+                {/* Walkie-Talkie Voice Microphone Button */}
+                <WalkieTalkie
+                  language={language}
+                  onSpeechFinal={(transcript) => {
+                    setInputText(transcript);
+                    handleSendMessage(transcript);
+                  }}
+                />
+
+                {/* Send Button */}
+                <button
+                  type="button"
+                  onClick={() => handleSendMessage()}
+                  disabled={isLoading || (!inputText.trim() && !attachedImage)}
+                  className="p-2 sm:p-2.5 rounded-xl bg-[#143224] hover:bg-[#1E4733] disabled:opacity-30 disabled:hover:bg-[#143224] text-white transition-all shadow-xs shrink-0 cursor-pointer disabled:cursor-not-allowed"
+                  aria-label="Send message"
+                >
+                  <Send className="w-4 h-4 text-[#D9822B]" />
+                </button>
               </div>
 
-              <Button
-                variant="primary"
-                size="md"
-                onClick={() => handleSendMessage()}
-                disabled={isLoading || (!inputText.trim() && !attachedImage)}
-                className="rounded-xl px-3 sm:px-4 py-2.5 shadow-2xs font-bold shrink-0"
-              >
-                <Send className="w-4 h-4" />
-              </Button>
+              {/* Verified Agricultural Intelligence Note */}
+              <p className="text-[10px] text-center text-[#5E7367] font-medium select-none">
+                {language === 'bn'
+                  ? 'আইসিএআর ও বিসিকেভি সমন্বিত বৈজ্ঞানিক পরামর্শ · জমিতে কীটনাশক ব্যবহারের পূর্বে কৃষি কর্মকর্তার পরামর্শ নিন'
+                  : language === 'hi'
+                  ? 'आईसीएआर और बीसीकेवी प्रमाणित वैज्ञानिक सलाह · कीटनाशक उपयोग से पहले कृषि अधिकारी से पुष्टि करें'
+                  : 'ICAR & BCKV validated agronomy guidance · Verify local field conditions before chemical spraying'}
+              </p>
             </div>
           </div>
         </div>

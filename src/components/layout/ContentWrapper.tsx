@@ -9,7 +9,7 @@ export function ContentWrapper({ children }: { children: React.ReactNode }) {
 
   if (isAssistant) {
     return (
-      <main className="flex-1 min-w-0 w-full h-[calc(100dvh-61px-4rem)] lg:h-[calc(100dvh-61px)] overflow-hidden bg-white">
+      <main className="flex-1 min-w-0 w-full h-[calc(100dvh-57px-4rem)] lg:h-[calc(100dvh-57px)] overflow-hidden bg-white flex flex-col">
         {children}
       </main>
     );

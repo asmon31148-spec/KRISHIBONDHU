@@ -6,11 +6,11 @@ import { useTranslation } from '@/i18n/context';
 import { useAuth } from '@/context/AuthContext';
 import { LanguageSelector } from '@/components/ui/LanguageSelector';
 import { BrandLogo } from '@/components/ui/BrandLogo';
-import { ScanLine, CloudSun, User as UserIcon } from 'lucide-react';
+import { ScanLine, CloudSun, User as UserIcon, LogOut } from 'lucide-react';
 
 export function Navbar() {
   const { language } = useTranslation();
-  const { user, profile, isGuest } = useAuth();
+  const { user, profile, isGuest, signOut } = useAuth();
 
   const weatherBadgeText = {
     bn: '২৪°সে নদীয়া · স্প্রে উইন্ডো খোলা (০৬:০০ - ০৯:০০)',
@@ -25,7 +25,7 @@ export function Navbar() {
   }[language || 'en'];
 
   return (
-    <header className="sticky top-0 z-40 w-full bg-[#F9F7F2]/90 backdrop-blur-md border-b border-[#143224]/10 px-3 sm:px-6 lg:px-8 py-2.5 transition-all shadow-[0_2px_12px_rgba(20,50,36,0.03)] print:hidden">
+    <header className="sticky top-0 z-40 w-full h-[57px] bg-[#F9F7F2]/90 backdrop-blur-md border-b border-[#143224]/10 px-3 sm:px-6 lg:px-8 flex items-center transition-all shadow-[0_2px_12px_rgba(20,50,36,0.03)] print:hidden shrink-0">
       <div className="w-full max-w-[1536px] mx-auto flex items-center justify-between gap-2 sm:gap-4">
         {/* Left: Brand Mark */}
         <div className="flex items-center gap-4 shrink-0">
@@ -61,18 +61,30 @@ export function Navbar() {
               {language === 'bn' ? 'লগইন' : language === 'hi' ? 'लॉगिन' : 'Sign In'}
             </Link>
           ) : (
-            <Link
-              href="/profile"
-              className="flex items-center gap-2 p-1.5 rounded-xl hover:bg-white/80 transition-colors text-[#143224] border border-transparent hover:border-[#143224]/10"
-              aria-label="User profile"
-            >
-              <div className="w-8 h-8 rounded-full bg-[#EAF2EC] border border-[#143224]/20 flex items-center justify-center text-[#143224] font-bold text-xs shrink-0">
-                {profile?.full_name ? profile.full_name.charAt(0).toUpperCase() : <UserIcon className="w-3.5 h-3.5" />}
-              </div>
-              <span className="hidden md:inline-block text-xs font-semibold max-w-[120px] truncate text-[#143224]">
-                {profile?.full_name || user?.email?.split('@')[0]}
-              </span>
-            </Link>
+            <div className="flex items-center gap-1 sm:gap-2">
+              <Link
+                href="/profile"
+                className="flex items-center gap-2 p-1.5 rounded-xl hover:bg-white/80 transition-colors text-[#143224] border border-transparent hover:border-[#143224]/10"
+                aria-label="User profile"
+                title="View Profile"
+              >
+                <div className="w-8 h-8 rounded-full bg-[#143224] text-[#D9822B] flex items-center justify-center font-bold text-xs shrink-0 shadow-2xs">
+                  {profile?.full_name ? profile.full_name.charAt(0).toUpperCase() : <UserIcon className="w-3.5 h-3.5" />}
+                </div>
+                <span className="hidden md:inline-block text-xs font-bold max-w-[120px] truncate text-[#143224]">
+                  {profile?.full_name || user?.email?.split('@')[0]}
+                </span>
+              </Link>
+              <button
+                type="button"
+                onClick={() => signOut()}
+                className="p-1.5 rounded-xl text-[#143224]/70 hover:text-red-700 hover:bg-red-50 transition-colors cursor-pointer"
+                title={language === 'bn' ? 'লগআউট' : language === 'hi' ? 'लॉगआउट' : 'Sign Out'}
+                aria-label="Sign Out"
+              >
+                <LogOut className="w-4 h-4 text-red-600" />
+              </button>
+            </div>
           )}
         </div>
       </div>
