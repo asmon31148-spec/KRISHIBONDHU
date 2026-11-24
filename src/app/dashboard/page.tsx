@@ -257,12 +257,16 @@ export default function DashboardPage() {
         </div>
       </div>
 
-      {/* 2. THE COMPACT ANIMATED FARM INTELLIGENCE STAGE */}
+      {/* 2. THE UNIFIED EXECUTIVE FARM ANALYTICS MATRIX (ALL ANALYSES IN ONE PAGE) */}
       <FarmIntelligenceStage
         yieldData={yieldComparisonData}
         totalProjectedTons={totalProjectedTons}
         severityData={severityPieData}
         landData={cropAreaData}
+        cropCount={crops.length}
+        attentionCropsCount={attentionCropsCount}
+        totalLandBigha={farms.reduce((acc, f) => acc + (f.area || 0), 0) || 5.0}
+        district={profile?.district || 'South 24 Parganas, West Bengal'}
       />
 
       {/* 3. PRIMARY ACTION DOCK - Exactly 2 High-Contrast Action Buttons */}
