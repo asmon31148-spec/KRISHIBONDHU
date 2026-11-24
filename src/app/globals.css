@@ -128,3 +128,60 @@ body,
   }
 }
 
+/* Feature Orbit Dial Animations */
+@keyframes scanY {
+  0%, 8% { transform: translateY(-110%); opacity: 0; }
+  18% { opacity: 1; }
+  82% { opacity: 1; }
+  92%, 100% { transform: translateY(110%); opacity: 0; }
+}
+.anim-scan .line { animation: scanY 2.4s ease-in-out infinite; }
+
+@keyframes dropFall {
+  0% { transform: translateY(-8px); opacity: 0; }
+  30% { opacity: 1; }
+  100% { transform: translateY(18px); opacity: 0; }
+}
+.anim-drop .d1 { animation: dropFall 1.4s ease-in infinite; }
+
+@keyframes growPulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.15); }
+}
+.anim-grow .icon-el { animation: growPulse 2s ease-in-out infinite; }
+
+@keyframes rainFall {
+  0% { transform: translateY(-6px); opacity: 0; }
+  40% { opacity: 1; }
+  100% { transform: translateY(16px); opacity: 0; }
+}
+.anim-rain .r1 { animation: rainFall 1.2s ease-in infinite; }
+.anim-rain .r2 { animation: rainFall 1.2s ease-in infinite; animation-delay: 0.35s; }
+
+@keyframes rippleWave {
+  0% { transform: scale(0.6); opacity: 0.8; }
+  100% { transform: scale(1.9); opacity: 0; }
+}
+.anim-ripple .ring1 { animation: rippleWave 2.2s ease-out infinite; }
+
+@keyframes ringPulse {
+  0% { transform: scale(1); opacity: 0.7; }
+  100% { transform: scale(1.8); opacity: 0; }
+}
+.anim-ring .ring1 { animation: ringPulse 1.8s ease-out infinite; }
+
+.bubble {
+  transition: left 0.7s cubic-bezier(0.4, 0, 0.2, 1),
+              top 0.7s cubic-bezier(0.4, 0, 0.2, 1),
+              width 0.7s cubic-bezier(0.4, 0, 0.2, 1),
+              height 0.7s cubic-bezier(0.4, 0, 0.2, 1),
+              box-shadow 0.4s ease, border-color 0.4s ease, background-color 0.4s ease;
+}
+
+@keyframes captionIn {
+  from { opacity: 0; transform: translateY(6px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.caption-in { animation: captionIn 0.35s ease-out both; }
+
+

@@ -57,19 +57,22 @@ export default function RootLayout({
           dangerouslySetInnerHTML={{
             __html: `
               if ('serviceWorker' in navigator) {
-                // Unregister stale service workers to eliminate reload hangs and chunk mismatch glitches
                 navigator.serviceWorker.getRegistrations().then(function(registrations) {
-                  for (var i = 0; i < registrations.length; i++) {
-                    registrations[i].unregister();
+                  if (registrations && registrations.length > 0) {
+                    for (var i = 0; i < registrations.length; i++) {
+                      registrations[i].unregister();
+                    }
+                    if (window.caches) {
+                      caches.keys().then(function(names) {
+                        for (var j = 0; j < names.length; j++) {
+                          if (names[j].indexOf('workbox') !== -1 || names[j].indexOf('sw-') !== -1) {
+                            caches.delete(names[j]);
+                          }
+                        }
+                      });
+                    }
                   }
                 });
-                if (window.caches) {
-                  caches.keys().then(function(names) {
-                    for (var i = 0; i < names.length; i++) {
-                      caches.delete(names[i]);
-                    }
-                  });
-                }
               }
             `,
           }}

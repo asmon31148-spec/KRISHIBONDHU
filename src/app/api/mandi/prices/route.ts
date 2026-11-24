@@ -93,8 +93,12 @@ export async function GET(req: NextRequest) {
           year: 'numeric',
         }).format(new Date());
 
+        const groqController = new AbortController();
+        const groqTimeoutId = setTimeout(() => groqController.abort(), 8000);
+
         const groqRes = await fetch('https://api.groq.com/openai/v1/chat/completions', {
           method: 'POST',
+          signal: groqController.signal,
           headers: {
             Authorization: `Bearer ${groqKey}`,
             'Content-Type': 'application/json',
@@ -115,6 +119,8 @@ export async function GET(req: NextRequest) {
             temperature: 0.1,
           }),
         });
+
+        clearTimeout(groqTimeoutId);
 
         if (groqRes.ok) {
           const groqJson = await groqRes.json();

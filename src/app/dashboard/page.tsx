@@ -121,6 +121,11 @@ export default function DashboardPage() {
   const [yields, setYields] = useState<YieldMetric[]>([]);
   const [allScans, setAllScans] = useState<ScanMetric[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [isMounted, setIsMounted] = useState(false);
+
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
 
   useEffect(() => {
     async function loadDashboardData() {
@@ -312,7 +317,7 @@ export default function DashboardPage() {
                   leftIcon={<ScanLine className="w-4 h-4" />}
                   className="shadow-md hover:shadow-lg transition-all font-bold"
                 >
-                  Scan Crop Leaf Now
+                  Scan Crop Leaf
                 </Button>
               </Link>
               <Link href="/assistant">
@@ -323,26 +328,6 @@ export default function DashboardPage() {
                   className="bg-brand-forest hover:bg-brand-forest/90 text-white shadow-md font-bold"
                 >
                   Ask AI Agronomist
-                </Button>
-              </Link>
-              <Link href="/scan">
-                <Button 
-                  variant="primary" 
-                  size="md" 
-                  leftIcon={<ScanLine className="w-4 h-4 text-emerald-200" />}
-                  className="bg-[#143224] hover:bg-[#1E4733] text-white shadow-md font-bold"
-                >
-                  + New Leaf Scan
-                </Button>
-              </Link>
-              <Link href="/assistant">
-                <Button 
-                  variant="secondary" 
-                  size="md" 
-                  leftIcon={<Bot className="w-4 h-4 text-brand-leaf" />}
-                  className="border-cream-300 hover:border-brand-leaf text-brand-dark font-medium"
-                >
-                  Ask Agronomy AI
                 </Button>
               </Link>
               <Button 
@@ -467,6 +452,10 @@ export default function DashboardPage() {
               <div className="h-56 flex items-center justify-center text-xs text-[#5E7367] italic">
                 No disease scans recorded yet. Scan a leaf to view health distribution.
               </div>
+            ) : !isMounted ? (
+              <div className="h-60 w-full flex items-center justify-center text-xs text-[#5E7367]">
+                Preparing visual analytics...
+              </div>
             ) : (
               <div className="h-60 w-full">
                 <ResponsiveContainer width="100%" height="100%">
@@ -495,18 +484,27 @@ export default function DashboardPage() {
 
           {/* Chart 2: Cultivated Area Breakdown */}
           <Card className="p-5 space-y-3 bg-white/95 border border-[#143224]/10 shadow-xs">
-            <div className="space-y-0.5">
-              <CardTitle className="text-sm sm:text-base font-bold text-[#143224]">
-                Land Allocation by Cultivated Crop (Bigha)
-              </CardTitle>
-              <p className="text-xs text-[#5E7367]">
-                Normalized cultivated area distribution across all your registered farm plots.
-              </p>
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+              <div className="space-y-0.5">
+                <CardTitle className="text-sm sm:text-base font-bold text-[#143224]">
+                  Land Allocation by Cultivated Crop (Bigha)
+                </CardTitle>
+                <p className="text-xs text-[#5E7367]">
+                  Normalized cultivated area distribution across all your registered farm plots.
+                </p>
+              </div>
+              <span className="text-xs font-bold text-[#143224] px-3 py-1 rounded-full bg-emerald-50 border border-emerald-200/60 self-start sm:self-auto">
+                Total: {totalCultivatedAreaBigha.toFixed(1)} Bigha
+              </span>
             </div>
 
             {cropAreaData.length === 0 ? (
               <div className="h-56 flex items-center justify-center text-xs text-[#5E7367] italic">
                 No active crops registered yet. Add crops to view land allocation.
+              </div>
+            ) : !isMounted ? (
+              <div className="h-60 w-full flex items-center justify-center text-xs text-[#5E7367]">
+                Preparing visual analytics...
               </div>
             ) : (
               <div className="h-60 w-full">
@@ -542,6 +540,10 @@ export default function DashboardPage() {
             {yieldComparisonData.length === 0 ? (
               <div className="h-56 flex items-center justify-center text-xs text-[#5E7367] italic">
                 Calculate crop yield in Yield & Profit tool to generate multi-season harvest benchmarks.
+              </div>
+            ) : !isMounted ? (
+              <div className="h-64 w-full flex items-center justify-center text-xs text-[#5E7367]">
+                Preparing visual analytics...
               </div>
             ) : (
               <div className="space-y-3">

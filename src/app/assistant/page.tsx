@@ -249,6 +249,7 @@ What are the specific disease, pest, or nutrient risks for this crop in West Ben
       hasAutoAskedRef.current = true;
       handleSendMessage(customQuery);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [searchParams, language]);
 
   // Load messages when selecting an existing conversation
