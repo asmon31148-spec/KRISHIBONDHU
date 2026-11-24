@@ -7,6 +7,7 @@ import { ToastProvider } from '@/components/ui/Toast';
 import { Navbar } from '@/components/layout/Navbar';
 import { Sidebar } from '@/components/layout/Sidebar';
 import { MobileNav } from '@/components/layout/MobileNav';
+import { ContentWrapper } from '@/components/layout/ContentWrapper';
 
 const plusJakarta = Plus_Jakarta_Sans({
   subsets: ['latin'],
@@ -46,11 +47,7 @@ export default function RootLayout({
               <Navbar />
               <div className="flex-1 flex w-full pb-16 lg:pb-0 overflow-x-clip min-h-[calc(100vh-57px)]">
                 <Sidebar />
-                <main className="flex-1 min-w-0 w-full overflow-x-clip p-0 sm:p-2 lg:p-0 flex flex-col">
-                  <div className="w-full h-full flex-1">
-                    {children}
-                  </div>
-                </main>
+                <ContentWrapper>{children}</ContentWrapper>
               </div>
               <MobileNav />
             </ToastProvider>

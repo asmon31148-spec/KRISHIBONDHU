@@ -281,81 +281,48 @@ function YieldPredictionContent() {
     <div className="space-y-6 w-full text-left">
       {/* Page Title & Methodology Banner */}
       <div>
-        <div className="flex items-center gap-2 flex-wrap">
-          <Badge variant="forest" size="md" className="font-bold shadow-2xs">
+        <div className="flex items-center gap-2">
+          <Badge variant="forest" size="sm" className="font-bold shadow-2xs">
             Empirical Agronomy
           </Badge>
           <span className="text-xs text-brand-dark/65 font-medium">
-            • Dynamic GPS & Pan-India District Calibration
+            • GPS Calibrated
           </span>
-          <span className="text-xs text-brand-dark/40">• Zero Fabricated Values</span>
         </div>
-        <h1 className="text-2xl sm:text-3xl font-extrabold text-brand-dark mt-1.5 tracking-tight">
-          Crop Yield Prediction & Production Economics
+        <h1 className="text-xl sm:text-2xl lg:text-3xl font-extrabold text-[#143224] mt-1 tracking-tight">
+          Crop Yield Prediction & Economics
         </h1>
         <p className="text-xs sm:text-sm text-brand-dark/75 mt-1 max-w-3xl leading-relaxed">
-          Estimate expected harvest tonnage, itemized cultivation expenses, and market revenue ranges.
-          Select your state and district or tap <strong>Auto-Detect GPS</strong> for location-specific
-          agro-climatic calibrations and live APMC mandi rates.
+          Estimate expected harvest tonnage, cultivation expenses, and market revenue ranges calibrated to your district.
         </p>
       </div>
 
-      {/* Scenario Selector Tabs (Scenario A vs Scenario B) */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 p-1.5 rounded-2xl bg-cream-100 border border-cream-300">
+      {/* Sleek Scenario Selector Tabs (Scenario A vs Scenario B) */}
+      <div className="grid grid-cols-2 gap-2 p-1 rounded-xl bg-cream-100 border border-cream-300 max-w-xl">
         <button
           type="button"
           onClick={() => setScenario('pre_cultivation')}
-          className={`flex items-start gap-3 p-3.5 rounded-xl text-left transition-all cursor-pointer ${
+          className={`flex items-center justify-center gap-2 py-2 px-3 rounded-lg text-xs font-bold transition-all cursor-pointer ${
             scenario === 'pre_cultivation'
-              ? 'bg-white text-brand-dark shadow-xs border border-cream-300/80'
+              ? 'bg-[#143224] text-white shadow-xs'
               : 'text-brand-dark/70 hover:text-brand-dark hover:bg-white/60'
           }`}
         >
-          <div
-            className={`w-9 h-9 rounded-xl flex items-center justify-center shrink-0 ${
-              scenario === 'pre_cultivation'
-                ? 'bg-emerald-100 text-emerald-800'
-                : 'bg-cream-200 text-brand-dark/60'
-            }`}
-          >
-            <Sparkles className="w-5 h-5" />
-          </div>
-          <div>
-            <span className="text-xs sm:text-sm font-extrabold block">
-              Scenario A: Pre-Sowing Crop Planning
-            </span>
-            <span className="text-[11px] text-brand-dark/65 block mt-0.5 leading-tight">
-              Evaluate potential harvest range, required expense budget, and net returns before sowing.
-            </span>
-          </div>
+          <Sparkles className="w-3.5 h-3.5 text-[#D9822B]" />
+          <span>Pre-Sowing Planning</span>
         </button>
 
         <button
           type="button"
           onClick={() => setScenario('in_season')}
-          className={`flex items-start gap-3 p-3.5 rounded-xl text-left transition-all cursor-pointer ${
+          className={`flex items-center justify-center gap-2 py-2 px-3 rounded-lg text-xs font-bold transition-all cursor-pointer ${
             scenario === 'in_season'
-              ? 'bg-white text-brand-dark shadow-xs border border-cream-300/80'
+              ? 'bg-[#143224] text-white shadow-xs'
               : 'text-brand-dark/70 hover:text-brand-dark hover:bg-white/60'
           }`}
         >
-          <div
-            className={`w-9 h-9 rounded-xl flex items-center justify-center shrink-0 ${
-              scenario === 'in_season'
-                ? 'bg-brand-forest text-white'
-                : 'bg-cream-200 text-brand-dark/60'
-            }`}
-          >
-            <TrendingUp className="w-5 h-5" />
-          </div>
-          <div>
-            <span className="text-xs sm:text-sm font-extrabold block">
-              Scenario B: In-Season Harvest Tracking
-            </span>
-            <span className="text-[11px] text-brand-dark/65 block mt-0.5 leading-tight">
-              Track active crops already in the ground with observed vigour, growth days, and health risks.
-            </span>
-          </div>
+          <TrendingUp className="w-3.5 h-3.5 text-[#D9822B]" />
+          <span>In-Season Tracking</span>
         </button>
       </div>
 
