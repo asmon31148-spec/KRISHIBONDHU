@@ -88,12 +88,12 @@ export default function HeroVideoBackground({
         />
       )}
 
-      {/* High-Legibility Dark Scrim: Preserves white text contrast under sunlight */}
-      <div className="absolute inset-0 bg-[#061209]/45 backdrop-blur-[0.5px]" />
-      <div className="absolute inset-0 bg-gradient-to-t from-[#061209]/90 via-black/20 to-[#061209]/50" />
+      {/* High-Legibility Dark Scrim */}
+      <div className="absolute inset-0 bg-black/45 backdrop-blur-[0.5px]" />
+      <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/25 to-black/50" />
 
-      {/* Adaptive Soft Dissolve into Active Page Background (Light or Dark Mode) */}
-      <div className="absolute inset-x-0 bottom-0 h-40 sm:h-56 lg:h-72 bg-gradient-to-b from-transparent via-[#F9F7F2]/60 to-[#F9F7F2] dark:via-[#0B1711]/60 dark:to-[#0B1711] pointer-events-none transition-colors duration-200" />
+      {/* Adaptive Soft Dissolve into Active Page Background (Clean White or True OLED Black) */}
+      <div className="absolute inset-x-0 bottom-0 h-40 sm:h-56 lg:h-72 bg-gradient-to-b from-transparent via-white/60 to-white dark:via-black/60 dark:to-black pointer-events-none transition-colors duration-200" />
     </div>
   );
 }

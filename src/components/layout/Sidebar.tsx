@@ -66,12 +66,12 @@ export function Sidebar() {
   const userDisplayName = profile?.full_name || user?.email?.split('@')[0] || 'Farmer';
 
   return (
-    <aside className="hidden lg:flex flex-col w-64 border-r border-[#143224]/10 dark:border-white/10 bg-[#F9F7F2]/80 dark:bg-[#0B1711]/90 backdrop-blur-md h-[calc(100dvh-57px)] sticky top-[57px] p-3.5 shrink-0 print:hidden justify-between transition-colors duration-200">
+    <aside className="hidden lg:flex flex-col w-64 border-r border-gray-200 dark:border-white/10 bg-white/95 dark:bg-[#000000]/95 backdrop-blur-md h-[calc(100dvh-57px)] sticky top-[57px] p-3.5 shrink-0 print:hidden justify-between transition-colors duration-200">
       {/* Scrollable Grouped 3-Tier Navigation */}
       <nav className="flex-1 space-y-4 overflow-y-auto pr-1 -mr-1 no-scrollbar">
         {navigationHubs.map((hub, idx) => (
           <div key={idx} className="space-y-1">
-            <span className="text-[10px] font-bold uppercase tracking-wider text-[#143224]/50 dark:text-white/40 px-3 block">
+            <span className="text-[10px] font-bold uppercase tracking-wider text-gray-500 dark:text-gray-400 px-3 block">
               {hub.title}
             </span>
             <div className="space-y-0.5 pt-0.5">
@@ -84,11 +84,11 @@ export function Sidebar() {
                     href={item.href}
                     className={`flex items-center gap-3 px-3 py-2 rounded-xl text-xs font-semibold transition-all ${
                       isActive
-                        ? 'bg-[#143224] dark:bg-emerald-500/20 text-white dark:text-[#34D399] dark:border dark:border-emerald-500/30 shadow-xs'
-                        : 'text-[#10241A]/80 dark:text-[#EAF2EC]/75 hover:text-[#10241A] dark:hover:text-white hover:bg-[#EAF2EC]/70 dark:hover:bg-white/5'
+                        ? 'bg-emerald-600 text-white shadow-xs'
+                        : 'text-gray-700 dark:text-gray-300 hover:text-black dark:hover:text-white hover:bg-gray-100 dark:hover:bg-white/5'
                     }`}
                   >
-                    <Icon className={`w-4 h-4 ${isActive ? 'text-[#D9822B] dark:text-[#34D399]' : 'text-[#1E4733] dark:text-emerald-400'}`} />
+                    <Icon className={`w-4 h-4 ${isActive ? 'text-white' : 'text-emerald-600 dark:text-emerald-400'}`} />
                     <span className="truncate">{item.label}</span>
                   </Link>
                 );
@@ -99,7 +99,7 @@ export function Sidebar() {
       </nav>
 
       {/* Bottom Area: Guest Banner OR Dignified Integrated User Profile Card */}
-      <div className="pt-3 mt-2 border-t border-[#143224]/10 dark:border-white/10 shrink-0">
+      <div className="pt-3 mt-2 border-t border-gray-200 dark:border-white/10 shrink-0">
         {isGuest ? (
           <div className="p-3 rounded-xl bg-amber-50/90 dark:bg-amber-950/30 border border-amber-200/80 dark:border-amber-500/20 text-left">
             <div className="flex items-center gap-1.5 text-xs font-bold text-amber-900 dark:text-amber-300 mb-1">
@@ -117,7 +117,7 @@ export function Sidebar() {
             </Link>
           </div>
         ) : (
-          <div className="flex items-center justify-between p-2 rounded-xl bg-[#EAF2EC]/70 dark:bg-[#13261D] border border-[#143224]/10 dark:border-white/10 hover:bg-[#EAF2EC] dark:hover:bg-[#1A3326] transition-colors">
+          <div className="flex items-center justify-between p-2 rounded-xl bg-gray-100/80 dark:bg-[#111418] border border-gray-200 dark:border-white/10 hover:bg-gray-200/70 dark:hover:bg-white/10 transition-colors">
             <Link
               href="/profile"
               className="flex items-center gap-2.5 min-w-0 flex-1 group"
@@ -127,7 +127,7 @@ export function Sidebar() {
                 {userInitial}
               </div>
               <div className="min-w-0 flex-1 text-left">
-                <p className="text-xs font-bold text-[#143224] dark:text-[#EAF2EC] truncate group-hover:text-[#D9822B] dark:group-hover:text-emerald-400 transition-colors">
+                <p className="text-xs font-bold text-[#143224] dark:text-white truncate group-hover:text-[#D9822B] dark:group-hover:text-emerald-400 transition-colors">
                   {userDisplayName}
                 </p>
                 <span className="text-[10px] text-[#5E7367] dark:text-white/40 block truncate">

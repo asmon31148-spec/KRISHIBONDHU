@@ -324,7 +324,7 @@ function YieldPredictionContent() {
             • GPS Calibrated
           </span>
         </div>
-        <h1 className="text-xl sm:text-2xl lg:text-3xl font-extrabold text-[#143224] dark:text-[#EAF2EC] mt-1 tracking-tight">
+        <h1 className="text-xl sm:text-2xl lg:text-3xl font-extrabold text-[#143224] dark:text-white mt-1 tracking-tight">
           Crop Yield Prediction & Economics
         </h1>
         <p className="text-xs sm:text-sm text-brand-dark/75 dark:text-white/60 mt-1 max-w-3xl leading-relaxed">

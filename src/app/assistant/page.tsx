@@ -10,6 +10,7 @@ import { Modal } from '@/components/ui/Modal';
 import { VoiceControls } from '@/components/assistant/VoiceControls';
 import { WalkieTalkie } from '@/components/voice/WalkieTalkie';
 import { MarkdownView } from '@/components/assistant/MarkdownView';
+import { createClient } from '@/lib/supabase/client';
 import {
   Bot,
   Send,
@@ -21,6 +22,8 @@ import {
   MessageSquare,
   Flag,
   ShieldAlert,
+  ChevronLeft,
+  ChevronRight,
 } from 'lucide-react';
 import { ActiveCropIssueContext } from '@/lib/ai/chat';
 
@@ -143,7 +146,7 @@ const SUGGESTED_CARDS: Record<Language, SuggestedCard[]> = {
 function AssistantChat() {
   const searchParams = useSearchParams();
   const { language } = useTranslation();
-  const { user, isGuest } = useAuth();
+  const { user, profile, isGuest } = useAuth();
   const toast = useToast();
 
   const [conversations, setConversations] = useState<Conversation[]>([]);
@@ -154,6 +157,11 @@ function AssistantChat() {
   const [isLoading, setIsLoading] = useState(false);
   const [copiedId, setCopiedId] = useState<string | null>(null);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+
+  // Farmer's registered crops and recent scans for Adaptive Quick Suggestions
+  const [userCrops, setUserCrops] = useState<Array<{ id: string; name: string; variety?: string }>>([]);
+  const [latestScan, setLatestScan] = useState<{ crop_name: string; disease_name: string | null } | null>(null);
+  const suggestionsScrollRef = useRef<HTMLDivElement>(null);
 
   // Active Crop / Plot Context (Passed from Farms, Crops, or Alert Cards)
   const [activeCropContext, setActiveCropContext] = useState<ActiveCropIssueContext | null>(null);
@@ -191,6 +199,29 @@ function AssistantChat() {
         }
       })
       .catch((err) => console.warn('Could not load conversations:', err));
+
+    // Load Farmer's crops & recent scan to make quick suggestions adaptive
+    const supabase = createClient();
+    if (supabase) {
+      supabase
+        .from('crops')
+        .select('id, name, variety')
+        .eq('user_id', user.id)
+        .limit(3)
+        .then(({ data }) => {
+          if (data && data.length > 0) setUserCrops(data);
+        });
+
+      supabase
+        .from('crop_scans')
+        .select('crop_name, disease_name')
+        .eq('user_id', user.id)
+        .order('created_at', { ascending: false })
+        .limit(1)
+        .then(({ data }) => {
+          if (data && data.length > 0) setLatestScan(data[0]);
+        });
+    }
   }, [user]);
 
   // Process Context from URL Query Parameters (e.g. from Farms / Crops / Dashboard Alert)
@@ -423,20 +454,70 @@ What are the specific disease, pest, or nutrient risks for this crop in West Ben
     }
   };
 
-  const currentSuggestions = SUGGESTED_CARDS[language] || SUGGESTED_CARDS.en;
+  // ── Adaptive Quick Suggestions ────────────────────────────────
+  const baseSuggestions = SUGGESTED_CARDS[language] || SUGGESTED_CARDS.en;
+  const adaptiveSuggestions: SuggestedCard[] = [];
+
+  if (latestScan && latestScan.disease_name) {
+    adaptiveSuggestions.push({
+      icon: '🔬',
+      tag: language === 'bn' ? 'সম্প্রতি স্ক্যান' : language === 'hi' ? 'हालिया स्कैन' : 'Recent Scan',
+      title: `${latestScan.crop_name}: ${latestScan.disease_name}`,
+      desc: language === 'bn' ? 'অনুমোদিত ওষুধ ও স্প্রে মাত্রা' : 'Approved treatment & dosage',
+      prompt: language === 'bn'
+        ? `আমার সম্প্রীতি স্ক্যান করা "${latestScan.crop_name}" ফসলে "${latestScan.disease_name}" ধরা পড়েছে। এর অবিলম্বে জৈব ও অনুমোদিত ওষুধ স্প্রে মাত্রা কী?`
+        : `My recent scan of ${latestScan.crop_name} detected "${latestScan.disease_name}". What is the exact ICAR/BCKV approved remedy and spray dosage to cure it?`,
+    });
+  }
+
+  userCrops.forEach((c) => {
+    adaptiveSuggestions.push({
+      icon: '🌱',
+      tag: language === 'bn' ? 'আমার ফসল' : language === 'hi' ? 'मेरी फसल' : 'My Crop',
+      title: `${c.name} ${language === 'bn' ? 'এন-পি-কে মাত্রা' : 'N-P-K & Care'}`,
+      desc: language === 'bn' ? 'সার প্রয়োগ ও রোগ সুরক্ষা' : 'Fertilizer & protection plan',
+      prompt: language === 'bn'
+        ? `${profile?.district || 'পশ্চিমবঙ্গে'} আমার "${c.name}" ফসলে সর্বোচ্চ ফলনের জন্য সার প্রয়োগ ও বালাইনাশকের সময়সূচি কী?`
+        : `What is the optimal fertilizer dosage and pest protection schedule for my ${c.name} crop in ${profile?.district || 'West Bengal'}?`,
+    });
+  });
+
+  if (profile?.district) {
+    adaptiveSuggestions.push({
+      icon: '🏛️',
+      tag: language === 'bn' ? 'সরকারি অনুদান' : language === 'hi' ? 'सरकारी योजनाएं' : 'Govt Subsidy',
+      title: `${profile.district} ${language === 'bn' ? 'প্রকল্প' : 'Schemes'}`,
+      desc: language === 'bn' ? 'কৃষকবন্ধু ও পিএম কিষান' : 'Krishak Bandhu & PM-Kisan',
+      prompt: language === 'bn'
+        ? `${profile.district}-এর কৃষকদের জন্য বর্তমানে কী কী সরকারি অনুদান ও ফসল বিমা প্রকল্প চালু আছে?`
+        : `What state and central agricultural subsidies and crop insurance schemes are active for farmers in ${profile.district}?`,
+    });
+  }
+
+  const currentSuggestions =
+    adaptiveSuggestions.length > 0
+      ? [...adaptiveSuggestions, ...baseSuggestions.slice(0, Math.max(2, 6 - adaptiveSuggestions.length))]
+      : baseSuggestions;
+
+  const handleScrollSuggestions = (dir: 'left' | 'right') => {
+    if (suggestionsScrollRef.current) {
+      const scrollAmount = dir === 'left' ? -220 : 220;
+      suggestionsScrollRef.current.scrollBy({ left: scrollAmount, behavior: 'smooth' });
+    }
+  };
 
   return (
-    <div className="flex flex-col h-full w-full bg-[#FDFCFA] dark:bg-[#0B1711] relative overflow-hidden text-left transition-colors duration-200">
+    <div className="flex flex-col h-full w-full bg-[#FFFFFF] dark:bg-[#000000] relative overflow-hidden text-left transition-colors duration-200">
       {/* Top Bar with Clean Header & History Controls */}
-      <div className="flex items-center justify-between px-3 sm:px-5 h-[52px] border-b border-[#143224]/10 dark:border-white/10 bg-[#F9F7F2]/90 dark:bg-[#0B1711]/90 backdrop-blur-md gap-3 shrink-0">
+      <div className="flex items-center justify-between px-3 sm:px-5 h-[52px] border-b border-gray-200 dark:border-white/10 bg-white/90 dark:bg-[#000000]/90 backdrop-blur-md gap-3 shrink-0">
         <div className="flex items-center gap-2 min-w-0">
           {!isGuest && (
             <button
               onClick={() => setIsSidebarOpen(!isSidebarOpen)}
               className={`inline-flex items-center gap-2 px-3 py-1.5 rounded-xl border text-xs font-bold transition-all shrink-0 cursor-pointer min-h-[36px] ${
                 isSidebarOpen
-                  ? 'bg-[#143224] dark:bg-emerald-600 text-white border-[#143224] dark:border-emerald-600 shadow-xs'
-                  : 'bg-white dark:bg-[#13261D] hover:bg-[#EAF2EC] dark:hover:bg-[#1A3326] text-[#143224] dark:text-[#EAF2EC] border-[#143224]/15 dark:border-white/15 shadow-2xs'
+                  ? 'bg-emerald-600 text-white border-emerald-600 shadow-xs'
+                  : 'bg-white dark:bg-[#111418] hover:bg-gray-100 dark:hover:bg-white/10 text-gray-900 dark:text-gray-100 border-gray-200 dark:border-white/15 shadow-2xs'
               }`}
               title={isSidebarOpen ? 'Hide History Panel' : 'Show Saved Conversations'}
               aria-label="Toggle history"
@@ -455,7 +536,7 @@ What are the specific disease, pest, or nutrient risks for this crop in West Ben
             </button>
           )}
 
-          <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-xl bg-white dark:bg-[#13261D] border border-[#143224]/10 dark:border-white/10 text-[#143224] dark:text-[#EAF2EC] text-xs font-bold shadow-2xs">
+          <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-xl bg-white dark:bg-[#111418] border border-[#143224]/10 dark:border-white/10 text-[#143224] dark:text-white text-xs font-bold shadow-2xs">
             <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse shrink-0" />
             <span className="truncate max-w-[140px] sm:max-w-none">BCKV & ICAR AI</span>
           </div>
@@ -466,7 +547,7 @@ What are the specific disease, pest, or nutrient risks for this crop in West Ben
             variant="outline"
             size="sm"
             onClick={handleNewChat}
-            className="bg-white dark:bg-[#13261D] hover:bg-[#EAF2EC] dark:hover:bg-[#1A3326] text-xs font-bold border-[#143224]/15 dark:border-white/15 text-[#143224] dark:text-[#EAF2EC] shadow-2xs min-h-[36px]"
+            className="bg-white dark:bg-[#111418] hover:bg-[#EAF2EC] dark:hover:bg-white/10 text-xs font-bold border-[#143224]/15 dark:border-white/15 text-[#143224] dark:text-white shadow-2xs min-h-[36px]"
             leftIcon={<Plus className="w-3.5 h-3.5 text-[#1E4733] dark:text-emerald-400" />}
           >
             New Chat
@@ -478,14 +559,14 @@ What are the specific disease, pest, or nutrient risks for this crop in West Ben
       <div className="flex-1 flex overflow-hidden relative">
         {/* Sub-Sidebar: Sleek Integrated Chat History */}
         {isSidebarOpen && !isGuest && (
-          <aside className="w-72 lg:w-80 border-r border-[#143224]/10 dark:border-white/10 bg-[#FDFCFA] dark:bg-[#0F1E16] flex flex-col shrink-0 z-10 animate-in slide-in-from-left duration-150">
+          <aside className="w-72 lg:w-80 border-r border-[#143224]/10 dark:border-white/10 bg-[#FDFCFA] dark:bg-[#111418] flex flex-col shrink-0 z-10 animate-in slide-in-from-left duration-150">
             {/* Panel Header */}
-            <div className="p-3.5 border-b border-[#143224]/10 dark:border-white/10 flex items-center justify-between bg-[#F9F7F2]/60 dark:bg-[#0B1711]/60">
+            <div className="p-3.5 border-b border-[#143224]/10 dark:border-white/10 flex items-center justify-between bg-[#F9F7F2]/60 dark:bg-[#000000]/60">
               <div className="flex items-center gap-2">
-                <span className="text-xs font-bold uppercase tracking-wider text-[#143224] dark:text-[#EAF2EC]">
+                <span className="text-xs font-bold uppercase tracking-wider text-[#143224] dark:text-white">
                   Saved Chats
                 </span>
-                <span className="px-2 py-0.5 rounded-full text-[10px] font-extrabold bg-[#143224]/10 dark:bg-white/10 text-[#143224] dark:text-[#EAF2EC]">
+                <span className="px-2 py-0.5 rounded-full text-[10px] font-extrabold bg-[#143224]/10 dark:bg-white/10 text-[#143224] dark:text-white">
                   {conversations.length}
                 </span>
               </div>
@@ -517,7 +598,7 @@ What are the specific disease, pest, or nutrient risks for this crop in West Ben
                       className={`group flex items-center justify-between px-3 py-2.5 rounded-xl text-xs font-semibold cursor-pointer transition-all ${
                         isSelected
                           ? 'bg-[#143224] dark:bg-emerald-600 text-white shadow-xs'
-                          : 'text-[#10241A]/80 dark:text-[#EAF2EC]/80 hover:bg-[#EAF2EC]/70 dark:hover:bg-white/5 hover:text-[#143224] dark:hover:text-white'
+                          : 'text-[#10241A]/80 dark:text-white/80 hover:bg-[#EAF2EC]/70 dark:hover:bg-white/5 hover:text-[#143224] dark:hover:text-white'
                       }`}
                     >
                       <div className="flex items-center gap-2 min-w-0">
@@ -546,7 +627,7 @@ What are the specific disease, pest, or nutrient risks for this crop in West Ben
         )}
 
         {/* Chat Messages Stream Area (Flush Docked flex-1) */}
-        <div className="flex-1 flex flex-col min-h-0 bg-[#FDFCFA] dark:bg-[#0B1711] overflow-hidden transition-colors duration-200">
+        <div className="flex-1 flex flex-col min-h-0 bg-[#FDFCFA] dark:bg-[#000000] overflow-hidden transition-colors duration-200">
           {/* Active Crop Field Issue Context Pill (If navigated from Farms/Crops/Alerts) */}
           {activeCropContext && (
             <div className="mx-3 mt-3 p-3 rounded-2xl bg-amber-50 dark:bg-amber-950/40 border border-amber-300 dark:border-amber-500/30 flex items-start justify-between gap-3 shadow-2xs shrink-0">
@@ -590,19 +671,19 @@ What are the specific disease, pest, or nutrient risks for this crop in West Ben
               {messages.length === 0 ? (
                 /* Compact, Friendly Mobile Welcome Area */
                 <div className="flex flex-col items-center justify-center text-center p-4 sm:p-8 space-y-4 sm:space-y-6 w-full my-auto">
-                  <div className="w-14 h-14 rounded-2xl bg-[#EAF2EC] dark:bg-[#13261D] border border-[#143224]/10 dark:border-white/10 flex items-center justify-center shadow-xs">
+                  <div className="w-14 h-14 rounded-2xl bg-[#EAF2EC] dark:bg-[#111418] border border-[#143224]/10 dark:border-white/10 flex items-center justify-center shadow-xs">
                     <Bot className="w-7 h-7 text-[#143224] dark:text-emerald-400" />
                   </div>
 
                   <div className="space-y-1.5 max-w-md">
-                    <h3 className="text-lg sm:text-xl font-black text-[#143224] dark:text-[#EAF2EC] tracking-tight">
+                    <h3 className="text-lg sm:text-xl font-black text-[#143224] dark:text-white tracking-tight">
                       {language === 'bn'
                         ? 'কৃষিবন্ধু এগ্রোনমি সহকারী'
                         : language === 'hi'
                         ? 'कृषिबंधु सस्य विज्ञान सहायक'
                         : 'Krishibondhu Agronomy Assistant'}
                     </h3>
-                    <p className="text-xs sm:text-sm text-[#5E7367] dark:text-[#94A89E] font-medium leading-relaxed">
+                    <p className="text-xs sm:text-sm text-[#5E7367] dark:text-gray-400 font-medium leading-relaxed">
                       {language === 'bn'
                         ? 'গাছের পাতার রোগ, সার প্রয়োগ মাত্রা ও সরকারি অনুদান সম্পর্কে সরাসরি প্রশ্ন করুন।'
                         : language === 'hi'
@@ -611,25 +692,49 @@ What are the specific disease, pest, or nutrient risks for this crop in West Ben
                     </p>
                   </div>
 
-                  {/* Compact Swipeable Topic Chips (Horizontal Scroll, Zero Screen Bloat) */}
-                  <div className="w-full space-y-2 pt-2">
-                    <span className="text-[10px] font-bold uppercase tracking-wider text-[#143224]/60 dark:text-white/50 block text-center">
-                      {language === 'bn' ? 'কী জানতে চান? বেছে নিন' : language === 'hi' ? 'सुझाए गए विषय' : 'Quick Suggestions'}
-                    </span>
-                    <div className="flex items-center gap-2 overflow-x-auto no-scrollbar py-1 px-1 justify-start sm:justify-center">
+                  {/* Adaptive Scrollable Topic Chips */}
+                  <div className="w-full space-y-2 pt-2 relative">
+                    <div className="flex items-center justify-between px-1">
+                      <span className="text-[10px] font-bold uppercase tracking-wider text-gray-500 dark:text-gray-400">
+                        {language === 'bn' ? 'কী জানতে চান? বেছে নিন' : language === 'hi' ? 'सुझाए गए विषय' : 'Adaptive Quick Suggestions'}
+                      </span>
+                      <div className="flex items-center gap-1">
+                        <button
+                          type="button"
+                          onClick={() => handleScrollSuggestions('left')}
+                          className="w-6 h-6 rounded-lg bg-gray-100 dark:bg-white/10 hover:bg-gray-200 dark:hover:bg-white/20 flex items-center justify-center text-gray-600 dark:text-white transition-colors cursor-pointer"
+                          aria-label="Scroll left"
+                        >
+                          <ChevronLeft className="w-3.5 h-3.5" />
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => handleScrollSuggestions('right')}
+                          className="w-6 h-6 rounded-lg bg-gray-100 dark:bg-white/10 hover:bg-gray-200 dark:hover:bg-white/20 flex items-center justify-center text-gray-600 dark:text-white transition-colors cursor-pointer"
+                          aria-label="Scroll right"
+                        >
+                          <ChevronRight className="w-3.5 h-3.5" />
+                        </button>
+                      </div>
+                    </div>
+
+                    <div
+                      ref={suggestionsScrollRef}
+                      className="flex items-center gap-2.5 overflow-x-auto no-scrollbar py-1.5 px-1 justify-start w-full scroll-smooth"
+                    >
                       {currentSuggestions.map((card, idx) => (
                         <button
                           key={idx}
                           type="button"
                           onClick={() => handleSendMessage(card.prompt)}
-                          className="flex items-center gap-2 px-3 py-2 rounded-xl bg-white dark:bg-[#13261D] hover:bg-[#EAF2EC] dark:hover:bg-[#1A3326] border border-[#143224]/10 dark:border-white/10 text-left cursor-pointer transition-all active:scale-[0.98] shadow-2xs shrink-0 min-h-[44px]"
+                          className="flex items-center gap-2.5 px-3.5 py-2.5 rounded-xl bg-white dark:bg-[#111418] hover:bg-gray-50 dark:hover:bg-white/10 border border-gray-200 dark:border-white/10 text-left cursor-pointer transition-all active:scale-[0.98] shadow-2xs shrink-0 min-h-[44px]"
                         >
                           <span className="text-base shrink-0">{card.icon}</span>
                           <div className="text-left">
-                            <span className="text-xs font-bold text-[#143224] dark:text-[#EAF2EC] block leading-tight whitespace-nowrap">
+                            <span className="text-xs font-bold text-gray-900 dark:text-white block leading-tight whitespace-nowrap">
                               {card.title}
                             </span>
-                            <span className="text-[10px] font-semibold text-[#D9822B] block leading-tight">
+                            <span className="text-[10px] font-semibold text-emerald-600 dark:text-emerald-400 block leading-tight">
                               {card.tag}
                             </span>
                           </div>
@@ -646,7 +751,7 @@ What are the specific disease, pest, or nutrient risks for this crop in West Ben
                     className={`flex gap-2.5 sm:gap-3 ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}
                   >
                     {msg.role === 'assistant' && (
-                      <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-xl bg-[#143224] dark:bg-emerald-700 text-white flex items-center justify-center shrink-0 mt-0.5 shadow-2xs">
+                      <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-xl bg-emerald-700 text-white flex items-center justify-center shrink-0 mt-0.5 shadow-2xs">
                         <Bot className="w-4 h-4 text-emerald-300" />
                       </div>
                     )}
@@ -654,8 +759,8 @@ What are the specific disease, pest, or nutrient risks for this crop in West Ben
                     <div
                       className={`max-w-[88%] sm:max-w-[80%] rounded-2xl p-3.5 sm:p-4 text-[15px] sm:text-base leading-relaxed ${
                         msg.role === 'user'
-                          ? 'bg-[#143224] dark:bg-emerald-700 text-white shadow-xs rounded-tr-xs'
-                          : 'bg-white dark:bg-[#13261D] text-[#10241A] dark:text-[#EAF2EC] border border-[#143224]/10 dark:border-white/10 rounded-tl-xs shadow-2xs'
+                          ? 'bg-emerald-600 text-white shadow-xs rounded-tr-xs'
+                          : 'bg-white dark:bg-[#111418] text-gray-900 dark:text-gray-100 border border-gray-200 dark:border-white/10 rounded-tl-xs shadow-2xs'
                       }`}
                     >
                       {/* Attached image if any */}
@@ -718,7 +823,7 @@ What are the specific disease, pest, or nutrient risks for this crop in West Ben
                   <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-xl bg-[#143224] dark:bg-emerald-700 text-white flex items-center justify-center shrink-0 shadow-2xs">
                     <Bot className="w-4 h-4 text-emerald-300" />
                   </div>
-                  <div className="bg-white dark:bg-[#13261D] border border-[#143224]/10 dark:border-white/10 rounded-2xl p-3.5 flex items-center gap-2 text-xs sm:text-sm text-[#10241A]/70 dark:text-[#EAF2EC]/70 shadow-2xs">
+                  <div className="bg-white dark:bg-[#111418] border border-[#143224]/10 dark:border-white/10 rounded-2xl p-3.5 flex items-center gap-2 text-xs sm:text-sm text-[#10241A]/70 dark:text-white/70 shadow-2xs">
                     <span className="w-2 h-2 rounded-full bg-emerald-500 animate-bounce [animation-delay:-0.3s]" />
                     <span className="w-2 h-2 rounded-full bg-emerald-500 animate-bounce [animation-delay:-0.15s]" />
                     <span className="w-2 h-2 rounded-full bg-emerald-500 animate-bounce" />
@@ -733,7 +838,7 @@ What are the specific disease, pest, or nutrient risks for this crop in West Ben
 
           {/* Attached Image Preview Bar */}
           {attachedImage && (
-            <div className="px-4 py-2 border-t border-[#143224]/10 dark:border-white/10 bg-[#F9F7F2] dark:bg-[#13261D] flex items-center justify-between">
+            <div className="px-4 py-2 border-t border-[#143224]/10 dark:border-white/10 bg-[#F9F7F2] dark:bg-[#111418] flex items-center justify-between">
               <div className="flex items-center gap-2">
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img
@@ -754,9 +859,9 @@ What are the specific disease, pest, or nutrient risks for this crop in West Ben
           )}
 
           {/* Unified Modern Agronomy Chat Capsule (Pinned Above Mobile Navigation) */}
-          <div className="p-2.5 sm:p-4 border-t border-[#143224]/10 dark:border-white/10 bg-white/95 dark:bg-[#0B1711]/95 backdrop-blur-md shrink-0">
+          <div className="p-2.5 sm:p-4 border-t border-[#143224]/10 dark:border-white/10 bg-white/95 dark:bg-[#000000]/95 backdrop-blur-md shrink-0">
             <div className="max-w-3xl mx-auto space-y-1">
-              <div className="flex items-center gap-1.5 sm:gap-2 p-1.5 sm:p-2 rounded-2xl bg-[#F9F7F2] dark:bg-[#13261D] border border-[#143224]/15 dark:border-white/15 shadow-[0_2px_12px_rgba(0,0,0,0.03)] focus-within:border-[#143224]/40 dark:focus-within:border-emerald-500 focus-within:bg-white dark:focus-within:bg-[#172D22] transition-all">
+              <div className="flex items-center gap-1.5 sm:gap-2 p-1.5 sm:p-2 rounded-2xl bg-[#F9F7F2] dark:bg-[#111418] border border-[#143224]/15 dark:border-white/15 shadow-[0_2px_12px_rgba(0,0,0,0.03)] focus-within:border-[#143224]/40 dark:focus-within:border-emerald-500 focus-within:bg-white dark:focus-within:bg-[#172D22] transition-all">
                 {/* Photo Attachment Input & Trigger */}
                 <input
                   type="file"
@@ -795,7 +900,7 @@ What are the specific disease, pest, or nutrient risks for this crop in West Ben
                       : 'Ask about crop symptoms, dosage, or soil...'
                   }
                   disabled={isLoading}
-                  className="flex-1 bg-transparent border-none text-base text-[#143224] dark:text-[#EAF2EC] font-medium placeholder:text-[#5E7367]/60 dark:placeholder:text-white/40 focus:outline-none focus:ring-0 px-1"
+                  className="flex-1 bg-transparent border-none text-base text-[#143224] dark:text-white font-medium placeholder:text-[#5E7367]/60 dark:placeholder:text-white/40 focus:outline-none focus:ring-0 px-1"
                 />
 
                 {/* Walkie-Talkie Voice Microphone Button */}

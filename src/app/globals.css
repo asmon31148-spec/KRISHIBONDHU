@@ -3,28 +3,28 @@
 @tailwind utilities;
 
 :root {
-  --background: #F9F7F2;
-  --foreground: #10241A;
+  --background: #FFFFFF;
+  --foreground: #0F172A;
   --card: #FFFFFF;
-  --card-foreground: #10241A;
-  --muted: #EAF2EC;
-  --muted-foreground: #4B6354;
-  --border: rgba(20, 50, 36, 0.10);
-  --header-bg: rgba(249, 247, 242, 0.95);
-  --nav-bg: rgba(249, 247, 242, 0.98);
+  --card-foreground: #0F172A;
+  --muted: #F8FAFC;
+  --muted-foreground: #64748B;
+  --border: #E2E8F0;
+  --header-bg: rgba(255, 255, 255, 0.95);
+  --nav-bg: rgba(255, 255, 255, 0.98);
   --font-inter: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
 }
 
 .dark {
-  --background: #0B1711;
-  --foreground: #EAF2EC;
-  --card: #13261D;
-  --card-foreground: #EAF2EC;
-  --muted: #1A3326;
-  --muted-foreground: #94A89E;
-  --border: rgba(255, 255, 255, 0.08);
-  --header-bg: rgba(11, 23, 17, 0.95);
-  --nav-bg: rgba(11, 23, 17, 0.98);
+  --background: #000000;
+  --foreground: #F8FAFC;
+  --card: #111418;
+  --card-foreground: #F8FAFC;
+  --muted: #1A1F26;
+  --muted-foreground: #94A3B8;
+  --border: rgba(255, 255, 255, 0.12);
+  --header-bg: rgba(0, 0, 0, 0.92);
+  --nav-bg: rgba(0, 0, 0, 0.95);
 }
 
 body {

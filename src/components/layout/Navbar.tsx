@@ -21,14 +21,14 @@ export function Navbar() {
   }[language || 'en'];
 
   return (
-    <header className="sticky top-0 z-40 w-full h-[57px] bg-[#F9F7F2]/95 dark:bg-[#0B1711]/95 backdrop-blur-md border-b border-[#143224]/10 dark:border-white/10 px-4 sm:px-6 lg:px-8 flex items-center transition-colors duration-200 shadow-xs print:hidden shrink-0 pt-safe">
+    <header className="sticky top-0 z-40 w-full h-[57px] bg-white/95 dark:bg-[#000000]/95 backdrop-blur-md border-b border-gray-200 dark:border-white/10 px-4 sm:px-6 lg:px-8 flex items-center transition-colors duration-200 shadow-xs print:hidden shrink-0 pt-safe">
       <div className="w-full max-w-[1536px] mx-auto flex items-center justify-between gap-3 sm:gap-6">
         {/* Left: Brand Logo & Subtle Weather Indicator */}
         <div className="flex items-center gap-3 sm:gap-4 shrink-0">
           <BrandLogo size="md" />
 
           {/* Compact Weather Pill (Only on wide screens to preserve breathing space) */}
-          <div className="hidden 2xl:flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-[#EAF2EC] dark:bg-[#13261D] border border-[#143224]/10 dark:border-white/10 text-[#143224] dark:text-[#EAF2EC] text-xs font-semibold select-none">
+          <div className="hidden 2xl:flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-gray-100 dark:bg-[#111418] border border-gray-200 dark:border-white/10 text-gray-900 dark:text-gray-100 text-xs font-semibold select-none">
             <CloudSun className="w-3.5 h-3.5 text-[#D9822B] shrink-0" />
             <span className="truncate">{weatherBadgeText}</span>
             <span className="w-1.5 h-1.5 rounded-full bg-emerald-600 dark:bg-emerald-400 animate-pulse shrink-0 ml-0.5" />
@@ -42,7 +42,7 @@ export function Navbar() {
             type="button"
             onClick={toggleTheme}
             aria-label={resolvedTheme === 'dark' ? 'Switch to daylight theme' : 'Switch to nocturnal field theme'}
-            className="p-2 rounded-xl text-[#143224] dark:text-[#EAF2EC] hover:bg-black/5 dark:hover:bg-white/10 transition-colors border border-transparent hover:border-[#143224]/10 dark:hover:border-white/10"
+            className="p-2 rounded-xl text-[#143224] dark:text-white hover:bg-black/5 dark:hover:bg-white/10 transition-colors border border-transparent hover:border-[#143224]/10 dark:hover:border-white/10"
             title={resolvedTheme === 'dark' ? 'Daylight Mode' : 'Nocturnal Mode'}
           >
             {resolvedTheme === 'dark' ? (
@@ -58,14 +58,14 @@ export function Navbar() {
           {isGuest ? (
             <Link
               href="/auth/login"
-              className="text-xs sm:text-sm font-bold text-[#143224] dark:text-[#EAF2EC] hover:text-white dark:hover:text-[#0B1711] px-3.5 py-1.5 rounded-xl bg-white/90 dark:bg-[#13261D] hover:bg-[#143224] dark:hover:bg-[#EAF2EC] border border-[#143224]/15 dark:border-white/15 transition-all shadow-2xs whitespace-nowrap"
+              className="text-xs sm:text-sm font-bold text-[#143224] dark:text-white hover:text-white dark:hover:text-[#0B1711] px-3.5 py-1.5 rounded-xl bg-white/90 dark:bg-[#111418] hover:bg-[#143224] dark:hover:bg-[#EAF2EC] border border-[#143224]/15 dark:border-white/15 transition-all shadow-2xs whitespace-nowrap"
             >
               {language === 'bn' ? 'লগইন' : language === 'hi' ? 'लॉगिन' : 'Sign In'}
             </Link>
           ) : (
             <Link
               href="/profile"
-              className="flex items-center p-1 rounded-xl hover:bg-white/80 dark:hover:bg-white/10 transition-colors text-[#143224] dark:text-[#EAF2EC] border border-transparent hover:border-[#143224]/10 dark:hover:border-white/10"
+              className="flex items-center p-1 rounded-xl hover:bg-white/80 dark:hover:bg-white/10 transition-colors text-[#143224] dark:text-white border border-transparent hover:border-[#143224]/10 dark:hover:border-white/10"
               aria-label="User profile"
               title={profile?.full_name || 'My Profile'}
             >

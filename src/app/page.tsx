@@ -369,10 +369,10 @@ export default function LandingPage() {
           <span className="text-xs font-bold uppercase tracking-wider text-[#D9822B]">
             {content.bentoTag}
           </span>
-          <h2 className="text-2xl sm:text-4xl font-extrabold text-[#143224] dark:text-[#EAF2EC] tracking-tight">
+          <h2 className="text-2xl sm:text-4xl font-extrabold text-[#143224] dark:text-white tracking-tight">
             {content.bentoTitle}
           </h2>
-          <p className="text-sm sm:text-base text-[#384D41] dark:text-[#94A89E] font-medium">
+          <p className="text-sm sm:text-base text-[#384D41] dark:text-gray-400 font-medium">
             {content.bentoSubtitle}
           </p>
         </div>
@@ -383,7 +383,7 @@ export default function LandingPage() {
               CARD A (Large 2-Column Span): AI Crop Health Diagnostic
               Actionable Real Diagnostic Launchpad (Zero Mock)
              ---------------------------------------------------- */}
-          <div className="lg:col-span-2 rounded-3xl bg-white/95 dark:bg-[#13261D] border border-[#143224]/12 dark:border-white/10 shadow-[0_4px_24px_rgba(20,50,36,0.04)] hover:shadow-[0_12px_32px_rgba(20,50,36,0.08)] transition-all p-6 sm:p-8 flex flex-col justify-between space-y-6 text-left group">
+          <div className="lg:col-span-2 rounded-3xl bg-white/95 dark:bg-[#111418] border border-[#143224]/12 dark:border-white/10 shadow-[0_4px_24px_rgba(20,50,36,0.04)] hover:shadow-[0_12px_32px_rgba(20,50,36,0.08)] transition-all p-6 sm:p-8 flex flex-col justify-between space-y-6 text-left group">
             <div className="space-y-3">
               <div className="flex items-center justify-between">
                 <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-[#EAF2EC] dark:bg-emerald-950/60 text-[#143224] dark:text-emerald-400 border border-[#143224]/12 dark:border-white/10">
@@ -395,24 +395,24 @@ export default function LandingPage() {
                 </span>
               </div>
 
-              <h3 className="text-xl sm:text-2xl font-bold text-[#143224] dark:text-[#EAF2EC] leading-snug">
+              <h3 className="text-xl sm:text-2xl font-bold text-[#143224] dark:text-white leading-snug">
                 {content.cardATitle}
               </h3>
 
-              <p className="text-sm text-[#384D41] dark:text-[#94A89E] leading-relaxed">
+              <p className="text-sm text-[#384D41] dark:text-gray-400 leading-relaxed">
                 {content.cardADesc}
               </p>
             </div>
 
             {/* If user has real saved scans, display their actual recent scan */}
             {latestUserScan ? (
-              <div className="rounded-2xl bg-[#F9F7F2] dark:bg-[#0B1711] border border-[#143224]/10 dark:border-white/10 p-4 sm:p-5 flex items-center justify-between gap-4">
+              <div className="rounded-2xl bg-[#F9F7F2] dark:bg-[#000000] border border-[#143224]/10 dark:border-white/10 p-4 sm:p-5 flex items-center justify-between gap-4">
                 <div className="space-y-1">
                   <span className="text-xs font-bold text-[#5E7367] dark:text-white/40">
                     {content.cardARecentLabel}
                   </span>
                   <div className="flex items-center gap-2">
-                    <span className="text-base font-extrabold text-[#143224] dark:text-[#EAF2EC]">
+                    <span className="text-base font-extrabold text-[#143224] dark:text-white">
                       {latestUserScan.crop_name}
                     </span>
                     {latestUserScan.disease_name && (
@@ -437,12 +437,12 @@ export default function LandingPage() {
               </div>
             ) : (
               /* Actionable Scan Trigger Area */
-              <div className="rounded-2xl bg-[#F9F7F2] dark:bg-[#0B1711] border border-[#143224]/10 dark:border-white/10 p-5 space-y-4">
+              <div className="rounded-2xl bg-[#F9F7F2] dark:bg-[#000000] border border-[#143224]/10 dark:border-white/10 p-5 space-y-4">
                 <div className="space-y-1">
-                  <span className="text-xs font-bold text-[#143224] dark:text-[#EAF2EC] uppercase tracking-wider block">
+                  <span className="text-xs font-bold text-[#143224] dark:text-white uppercase tracking-wider block">
                     {content.cardASupportedTitle}
                   </span>
-                  <p className="text-xs text-[#384D41] dark:text-[#94A89E] leading-relaxed font-medium">
+                  <p className="text-xs text-[#384D41] dark:text-gray-400 leading-relaxed font-medium">
                     {content.cardASupportedList}
                   </p>
                 </div>
@@ -461,7 +461,7 @@ export default function LandingPage() {
                   <Link href="/scan">
                     <button
                       type="button"
-                      className="inline-flex items-center gap-2 px-5 py-3 rounded-xl bg-white dark:bg-[#13261D] hover:bg-[#F3EFE6] dark:hover:bg-[#1A3528] text-[#143224] dark:text-[#EAF2EC] font-bold text-sm border border-[#143224]/18 dark:border-white/15 shadow-2xs transition-all cursor-pointer"
+                      className="inline-flex items-center gap-2 px-5 py-3 rounded-xl bg-white dark:bg-[#111418] hover:bg-[#F3EFE6] dark:hover:bg-white/10 text-[#143224] dark:text-white font-bold text-sm border border-[#143224]/18 dark:border-white/15 shadow-2xs transition-all cursor-pointer"
                     >
                       <Upload className="w-4 h-4 text-[#D9822B]" />
                       <span>{content.cardAUploadBtn}</span>
@@ -482,7 +482,7 @@ export default function LandingPage() {
               CARD B (1-Column Span): Live Mandi / Market Prices
               Connected to real Government Agmarknet feed
              ---------------------------------------------------- */}
-          <div className="hidden md:flex rounded-3xl bg-white/95 dark:bg-[#13261D] border border-[#143224]/12 dark:border-white/10 shadow-[0_4px_24px_rgba(20,50,36,0.04)] hover:shadow-[0_12px_32px_rgba(20,50,36,0.08)] transition-all p-6 sm:p-7 flex-col justify-between space-y-5 text-left group">
+          <div className="hidden md:flex rounded-3xl bg-white/95 dark:bg-[#111418] border border-[#143224]/12 dark:border-white/10 shadow-[0_4px_24px_rgba(20,50,36,0.04)] hover:shadow-[0_12px_32px_rgba(20,50,36,0.08)] transition-all p-6 sm:p-7 flex-col justify-between space-y-5 text-left group">
             <div className="space-y-3">
               <div className="flex items-center justify-between">
                 <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-[#FDF5EC] dark:bg-amber-950/40 text-[#D9822B] border border-[#D9822B]/20">
@@ -495,7 +495,7 @@ export default function LandingPage() {
                 </span>
               </div>
 
-              <h3 className="text-lg sm:text-xl font-bold text-[#143224] dark:text-[#EAF2EC] leading-snug">
+              <h3 className="text-lg sm:text-xl font-bold text-[#143224] dark:text-white leading-snug">
                 {content.cardBTitle}
               </h3>
             </div>
@@ -512,10 +512,10 @@ export default function LandingPage() {
                 mandiRates.map((item, idx) => (
                   <div
                     key={idx}
-                    className="p-3 rounded-xl bg-[#F9F7F2] dark:bg-[#0B1711] border border-[#143224]/8 dark:border-white/8 flex items-center justify-between"
+                    className="p-3 rounded-xl bg-[#F9F7F2] dark:bg-[#000000] border border-[#143224]/8 dark:border-white/8 flex items-center justify-between"
                   >
                     <div>
-                      <span className="font-bold text-xs text-[#143224] dark:text-[#EAF2EC] block">
+                      <span className="font-bold text-xs text-[#143224] dark:text-white block">
                         {item.commodity}
                       </span>
                       <span className="text-[11px] text-[#5E7367] dark:text-white/40">
@@ -523,7 +523,7 @@ export default function LandingPage() {
                       </span>
                     </div>
                     <div className="text-right">
-                      <span className="font-extrabold text-sm text-[#143224] dark:text-[#EAF2EC] block">
+                      <span className="font-extrabold text-sm text-[#143224] dark:text-white block">
                         ₹{item.modal_price.toLocaleString('en-IN')}/q
                       </span>
                       <span className="text-[10px] text-[#5E7367] dark:text-white/40">
@@ -533,7 +533,7 @@ export default function LandingPage() {
                   </div>
                 ))
               ) : (
-                <div className="p-4 rounded-xl bg-[#F9F7F2] dark:bg-[#0B1711] border border-[#143224]/8 dark:border-white/8 text-center text-xs text-[#5E7367] dark:text-white/40">
+                <div className="p-4 rounded-xl bg-[#F9F7F2] dark:bg-[#000000] border border-[#143224]/8 dark:border-white/8 text-center text-xs text-[#5E7367] dark:text-white/40">
                   {content.cardBEmpty}
                 </div>
               )}
@@ -542,7 +542,7 @@ export default function LandingPage() {
             <Link href="/mandi" className="block pt-1">
               <button
                 type="button"
-                className="w-full inline-flex items-center justify-center gap-2 px-4 py-3 rounded-xl bg-white dark:bg-[#13261D] hover:bg-[#F3EFE6] dark:hover:bg-[#1A3528] text-[#143224] dark:text-[#EAF2EC] border border-[#143224]/18 dark:border-white/15 font-bold text-xs sm:text-sm transition-all cursor-pointer"
+                className="w-full inline-flex items-center justify-center gap-2 px-4 py-3 rounded-xl bg-white dark:bg-[#111418] hover:bg-[#F3EFE6] dark:hover:bg-white/10 text-[#143224] dark:text-white border border-[#143224]/18 dark:border-white/15 font-bold text-xs sm:text-sm transition-all cursor-pointer"
               >
                 <span>{content.cardBBtn}</span>
                 <ArrowRight className="w-4 h-4 ml-0.5 group-hover:translate-x-1 transition-transform" />
@@ -554,7 +554,7 @@ export default function LandingPage() {
               CARD C (1-Column Span): Micro-Climate & Soil Forecast
               Connected to live Open-Meteo Weather API
              ---------------------------------------------------- */}
-          <div className="hidden md:flex rounded-3xl bg-white/95 dark:bg-[#13261D] border border-[#143224]/12 dark:border-white/10 shadow-[0_4px_24px_rgba(20,50,36,0.04)] hover:shadow-[0_12px_32px_rgba(20,50,36,0.08)] transition-all p-6 sm:p-7 flex-col justify-between space-y-5 text-left group">
+          <div className="hidden md:flex rounded-3xl bg-white/95 dark:bg-[#111418] border border-[#143224]/12 dark:border-white/10 shadow-[0_4px_24px_rgba(20,50,36,0.04)] hover:shadow-[0_12px_32px_rgba(20,50,36,0.08)] transition-all p-6 sm:p-7 flex-col justify-between space-y-5 text-left group">
             <div className="space-y-3">
               <div className="flex items-center justify-between">
                 <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-[#EAF2EC] dark:bg-emerald-950/60 text-[#143224] dark:text-emerald-400 border border-[#143224]/12 dark:border-white/10">
@@ -567,7 +567,7 @@ export default function LandingPage() {
                 </span>
               </div>
 
-              <h3 className="text-lg sm:text-xl font-bold text-[#143224] dark:text-[#EAF2EC] leading-snug">
+              <h3 className="text-lg sm:text-xl font-bold text-[#143224] dark:text-white leading-snug">
                 {content.cardCTitle}
               </h3>
             </div>
@@ -585,7 +585,7 @@ export default function LandingPage() {
                     <span className="text-[10px] font-bold text-[#5E7367] dark:text-white/40 block">
                       {content.cardCTemp}
                     </span>
-                    <span className="text-base font-extrabold text-[#143224] dark:text-[#EAF2EC] block">
+                    <span className="text-base font-extrabold text-[#143224] dark:text-white block">
                       {Math.round(weatherData.current.temperature)}°C
                     </span>
                     <span className="text-[9px] font-medium text-[#384D41] dark:text-white/60">
@@ -593,11 +593,11 @@ export default function LandingPage() {
                     </span>
                   </div>
 
-                  <div className="p-2.5 rounded-xl bg-[#F9F7F2] dark:bg-[#0B1711] border border-[#143224]/10 dark:border-white/10 text-center space-y-0.5">
+                  <div className="p-2.5 rounded-xl bg-[#F9F7F2] dark:bg-[#000000] border border-[#143224]/10 dark:border-white/10 text-center space-y-0.5">
                     <span className="text-[10px] font-bold text-[#5E7367] dark:text-white/40 block">
                       {content.cardCHumidity}
                     </span>
-                    <span className="text-base font-extrabold text-[#143224] dark:text-[#EAF2EC] block">
+                    <span className="text-base font-extrabold text-[#143224] dark:text-white block">
                       {weatherData.current.relativeHumidity}%
                     </span>
                     <span className="text-[9px] font-medium text-[#384D41] dark:text-white/60">
@@ -605,11 +605,11 @@ export default function LandingPage() {
                     </span>
                   </div>
 
-                  <div className="p-2.5 rounded-xl bg-[#F9F7F2] dark:bg-[#0B1711] border border-[#143224]/10 dark:border-white/10 text-center space-y-0.5">
+                  <div className="p-2.5 rounded-xl bg-[#F9F7F2] dark:bg-[#000000] border border-[#143224]/10 dark:border-white/10 text-center space-y-0.5">
                     <span className="text-[10px] font-bold text-[#5E7367] dark:text-white/40 block">
                       {content.cardCWind}
                     </span>
-                    <span className="text-base font-extrabold text-[#143224] dark:text-[#EAF2EC] block">
+                    <span className="text-base font-extrabold text-[#143224] dark:text-white block">
                       {Math.round(weatherData.current.windSpeed)} km/h
                     </span>
                     <span className="text-[9px] font-medium text-[#384D41] dark:text-white/60">
@@ -629,7 +629,7 @@ export default function LandingPage() {
                 )}
               </div>
             ) : (
-              <div className="p-4 rounded-xl bg-[#F9F7F2] dark:bg-[#0B1711] border border-[#143224]/8 dark:border-white/8 text-center text-xs text-[#5E7367] dark:text-white/40">
+              <div className="p-4 rounded-xl bg-[#F9F7F2] dark:bg-[#000000] border border-[#143224]/8 dark:border-white/8 text-center text-xs text-[#5E7367] dark:text-white/40">
                 Live weather data synchronizing...
               </div>
             )}
@@ -637,7 +637,7 @@ export default function LandingPage() {
             <Link href="/weather" className="block pt-1">
               <button
                 type="button"
-                className="w-full inline-flex items-center justify-center gap-2 px-4 py-3 rounded-xl bg-white dark:bg-[#13261D] hover:bg-[#F3EFE6] dark:hover:bg-[#1A3528] text-[#143224] dark:text-[#EAF2EC] border border-[#143224]/18 dark:border-white/15 font-bold text-xs sm:text-sm transition-all cursor-pointer"
+                className="w-full inline-flex items-center justify-center gap-2 px-4 py-3 rounded-xl bg-white dark:bg-[#111418] hover:bg-[#F3EFE6] dark:hover:bg-white/10 text-[#143224] dark:text-white border border-[#143224]/18 dark:border-white/15 font-bold text-xs sm:text-sm transition-all cursor-pointer"
               >
                 <span>{content.cardCBtn}</span>
                 <ArrowRight className="w-4 h-4 ml-0.5 group-hover:translate-x-1 transition-transform" />
@@ -649,8 +649,8 @@ export default function LandingPage() {
               MOBILE COMPACT SEGMENTED AGRI-PULSE HUB (<768px only)
               Eliminates vertical bloat on small screens
               ---------------------------------------------------- */}
-          <div className="block md:hidden rounded-3xl bg-white/95 dark:bg-[#13261D] border border-[#143224]/12 dark:border-white/10 shadow-xs p-5 space-y-4 text-left">
-            <div className="flex items-center p-1 bg-cream-100 dark:bg-[#0B1711] rounded-2xl">
+          <div className="block md:hidden rounded-3xl bg-white/95 dark:bg-[#111418] border border-[#143224]/12 dark:border-white/10 shadow-xs p-5 space-y-4 text-left">
+            <div className="flex items-center p-1 bg-cream-100 dark:bg-[#000000] rounded-2xl">
               <button
                 type="button"
                 onClick={() => setMobilePulseTab('mandi')}
@@ -681,7 +681,7 @@ export default function LandingPage() {
             {mobilePulseTab === 'mandi' && (
               <div className="space-y-3 animate-in fade-in duration-200">
                 <div className="flex items-center justify-between">
-                  <h3 className="text-base font-bold text-[#143224] dark:text-[#EAF2EC]">{content.cardBTitle}</h3>
+                  <h3 className="text-base font-bold text-[#143224] dark:text-white">{content.cardBTitle}</h3>
                   <span className="text-[10px] font-bold text-emerald-800 dark:text-emerald-300 bg-emerald-100 dark:bg-emerald-900/40 px-2 py-0.5 rounded-full flex items-center gap-1">
                     <span className="w-1.5 h-1.5 rounded-full bg-emerald-600 animate-pulse" />
                     <span>Live</span>
@@ -695,25 +695,25 @@ export default function LandingPage() {
                     </div>
                   ) : mandiRates.length > 0 ? (
                     mandiRates.map((item, idx) => (
-                      <div key={idx} className="p-2.5 rounded-xl bg-[#F9F7F2] dark:bg-[#0B1711] border border-[#143224]/8 dark:border-white/8 flex items-center justify-between text-xs">
+                      <div key={idx} className="p-2.5 rounded-xl bg-[#F9F7F2] dark:bg-[#000000] border border-[#143224]/8 dark:border-white/8 flex items-center justify-between text-xs">
                         <div>
-                          <span className="font-bold text-[#143224] dark:text-[#EAF2EC] block">{item.commodity}</span>
+                          <span className="font-bold text-[#143224] dark:text-white block">{item.commodity}</span>
                           <span className="text-[11px] text-[#5E7367] dark:text-white/40">{item.market}</span>
                         </div>
                         <div className="text-right">
-                          <span className="font-extrabold text-[#143224] dark:text-[#EAF2EC] block">₹{item.modal_price.toLocaleString('en-IN')}/q</span>
+                          <span className="font-extrabold text-[#143224] dark:text-white block">₹{item.modal_price.toLocaleString('en-IN')}/q</span>
                           <span className="text-[10px] text-[#5E7367] dark:text-white/40">{item.arrival_date}</span>
                         </div>
                       </div>
                     ))
                   ) : (
-                    <div className="p-3 rounded-xl bg-[#F9F7F2] dark:bg-[#0B1711] text-center text-xs text-[#5E7367] dark:text-white/40">
+                    <div className="p-3 rounded-xl bg-[#F9F7F2] dark:bg-[#000000] text-center text-xs text-[#5E7367] dark:text-white/40">
                       {content.cardBEmpty}
                     </div>
                   )}
                 </div>
                 <Link href="/mandi" className="block pt-1">
-                  <button type="button" className="w-full py-2.5 rounded-xl bg-white dark:bg-[#13261D] border border-[#143224]/18 dark:border-white/15 text-xs font-bold text-[#143224] dark:text-[#EAF2EC] flex items-center justify-center gap-1.5 min-h-[44px] cursor-pointer">
+                  <button type="button" className="w-full py-2.5 rounded-xl bg-white dark:bg-[#111418] border border-[#143224]/18 dark:border-white/15 text-xs font-bold text-[#143224] dark:text-white flex items-center justify-center gap-1.5 min-h-[44px] cursor-pointer">
                     <span>{content.cardBBtn}</span>
                     <ArrowRight className="w-3.5 h-3.5" />
                   </button>
@@ -725,7 +725,7 @@ export default function LandingPage() {
             {mobilePulseTab === 'weather' && (
               <div className="space-y-3 animate-in fade-in duration-200">
                 <div className="flex items-center justify-between">
-                  <h3 className="text-base font-bold text-[#143224] dark:text-[#EAF2EC]">{content.cardCTitle}</h3>
+                  <h3 className="text-base font-bold text-[#143224] dark:text-white">{content.cardCTitle}</h3>
                   <span className="text-[10px] font-bold text-emerald-800 dark:text-emerald-300 bg-emerald-100 dark:bg-emerald-900/40 px-2 py-0.5 rounded-full">Open-Meteo</span>
                 </div>
                 {isWeatherLoading ? (
@@ -735,15 +735,15 @@ export default function LandingPage() {
                     <div className="grid grid-cols-3 gap-2">
                       <div className="p-2 rounded-xl bg-[#EAF2EC] dark:bg-[#1A3326] border border-[#143224]/10 dark:border-white/10 text-center">
                         <span className="text-[10px] font-bold text-[#5E7367] dark:text-white/40 block">{content.cardCTemp}</span>
-                        <span className="text-base font-extrabold text-[#143224] dark:text-[#EAF2EC] block">{Math.round(weatherData.current.temperature)}°C</span>
+                        <span className="text-base font-extrabold text-[#143224] dark:text-white block">{Math.round(weatherData.current.temperature)}°C</span>
                       </div>
-                      <div className="p-2 rounded-xl bg-[#F9F7F2] dark:bg-[#0B1711] border border-[#143224]/10 dark:border-white/10 text-center">
+                      <div className="p-2 rounded-xl bg-[#F9F7F2] dark:bg-[#000000] border border-[#143224]/10 dark:border-white/10 text-center">
                         <span className="text-[10px] font-bold text-[#5E7367] dark:text-white/40 block">{content.cardCHumidity}</span>
-                        <span className="text-base font-extrabold text-[#143224] dark:text-[#EAF2EC] block">{weatherData.current.relativeHumidity}%</span>
+                        <span className="text-base font-extrabold text-[#143224] dark:text-white block">{weatherData.current.relativeHumidity}%</span>
                       </div>
-                      <div className="p-2 rounded-xl bg-[#F9F7F2] dark:bg-[#0B1711] border border-[#143224]/10 dark:border-white/10 text-center">
+                      <div className="p-2 rounded-xl bg-[#F9F7F2] dark:bg-[#000000] border border-[#143224]/10 dark:border-white/10 text-center">
                         <span className="text-[10px] font-bold text-[#5E7367] dark:text-white/40 block">{content.cardCWind}</span>
-                        <span className="text-base font-extrabold text-[#143224] dark:text-[#EAF2EC] block">{Math.round(weatherData.current.windSpeed)} km/h</span>
+                        <span className="text-base font-extrabold text-[#143224] dark:text-white block">{Math.round(weatherData.current.windSpeed)} km/h</span>
                       </div>
                     </div>
                     {weatherData.agronomicInsights?.sprayCondition && (
@@ -756,12 +756,12 @@ export default function LandingPage() {
                     )}
                   </div>
                 ) : (
-                  <div className="p-3 rounded-xl bg-[#F9F7F2] dark:bg-[#0B1711] text-center text-xs text-[#5E7367] dark:text-white/40">
+                  <div className="p-3 rounded-xl bg-[#F9F7F2] dark:bg-[#000000] text-center text-xs text-[#5E7367] dark:text-white/40">
                     Live weather updating...
                   </div>
                 )}
                 <Link href="/weather" className="block pt-1">
-                  <button type="button" className="w-full py-2.5 rounded-xl bg-white dark:bg-[#13261D] border border-[#143224]/18 dark:border-white/15 text-xs font-bold text-[#143224] dark:text-[#EAF2EC] flex items-center justify-center gap-1.5 min-h-[44px] cursor-pointer">
+                  <button type="button" className="w-full py-2.5 rounded-xl bg-white dark:bg-[#111418] border border-[#143224]/18 dark:border-white/15 text-xs font-bold text-[#143224] dark:text-white flex items-center justify-center gap-1.5 min-h-[44px] cursor-pointer">
                     <span>{content.cardCBtn}</span>
                     <ArrowRight className="w-3.5 h-3.5" />
                   </button>
@@ -774,62 +774,62 @@ export default function LandingPage() {
               CARD D (Large 2-Column Span): Government Schemes & Subsidies Tracker
               Verified Direct Official Portals
              ---------------------------------------------------- */}
-          <div className="lg:col-span-2 rounded-3xl bg-white/95 dark:bg-[#13261D] border border-[#143224]/12 dark:border-white/10 shadow-[0_4px_24px_rgba(20,50,36,0.04)] hover:shadow-[0_12px_32px_rgba(20,50,36,0.08)] transition-all p-6 sm:p-8 flex flex-col justify-between space-y-6 text-left group">
+          <div className="lg:col-span-2 rounded-3xl bg-white/95 dark:bg-[#111418] border border-[#143224]/12 dark:border-white/10 shadow-[0_4px_24px_rgba(20,50,36,0.04)] hover:shadow-[0_12px_32px_rgba(20,50,36,0.08)] transition-all p-6 sm:p-8 flex flex-col justify-between space-y-6 text-left group">
             <div className="space-y-3">
               <div className="flex items-center justify-between">
                 <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-[#EAF2EC] dark:bg-emerald-950/60 text-[#143224] dark:text-emerald-400 border border-[#143224]/12 dark:border-white/10">
                   <FileText className="w-3.5 h-3.5 text-[#D9822B]" />
                   <span>{content.cardDTag}</span>
                 </span>
-                <span className="text-xs font-bold text-[#143224] dark:text-[#EAF2EC] bg-[#EAF2EC] dark:bg-[#1A3326] px-2.5 py-0.5 rounded-full">
+                <span className="text-xs font-bold text-[#143224] dark:text-white bg-[#EAF2EC] dark:bg-[#1A3326] px-2.5 py-0.5 rounded-full">
                   Direct Official Portals
                 </span>
               </div>
 
-              <h3 className="text-xl sm:text-2xl font-bold text-[#143224] dark:text-[#EAF2EC] leading-snug">
+              <h3 className="text-xl sm:text-2xl font-bold text-[#143224] dark:text-white leading-snug">
                 {content.cardDTitle}
               </h3>
 
-              <p className="text-sm text-[#384D41] dark:text-[#94A89E] leading-relaxed">
+              <p className="text-sm text-[#384D41] dark:text-gray-400 leading-relaxed">
                 {content.cardDDesc}
               </p>
             </div>
 
             {/* List of Verified Government Agricultural Aid Schemes */}
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-              <div className="p-3.5 rounded-2xl bg-[#F9F7F2] dark:bg-[#0B1711] border border-[#143224]/8 dark:border-white/8 space-y-1">
+              <div className="p-3.5 rounded-2xl bg-[#F9F7F2] dark:bg-[#000000] border border-[#143224]/8 dark:border-white/8 space-y-1">
                 <div className="flex items-center justify-between">
-                  <span className="font-extrabold text-sm text-[#143224] dark:text-[#EAF2EC]">Krishak Bandhu (Assured Income)</span>
+                  <span className="font-extrabold text-sm text-[#143224] dark:text-white">Krishak Bandhu (Assured Income)</span>
                   <span className="text-[10px] font-bold text-emerald-800 dark:text-emerald-300 bg-emerald-100 dark:bg-emerald-900/40 px-2 py-0.5 rounded-md">WB Govt</span>
                 </div>
-                <p className="text-xs text-[#384D41] dark:text-[#94A89E] font-medium">Direct DBT cash transfer up to ₹10,000/year in Rabi & Kharif installments for landholders.</p>
+                <p className="text-xs text-[#384D41] dark:text-gray-400 font-medium">Direct DBT cash transfer up to ₹10,000/year in Rabi & Kharif installments for landholders.</p>
                 <div className="text-[11px] font-bold text-[#D9822B] pt-0.5">krishakbandhu.wb.gov.in</div>
               </div>
 
-              <div className="p-3.5 rounded-2xl bg-[#F9F7F2] dark:bg-[#0B1711] border border-[#143224]/8 dark:border-white/8 space-y-1">
+              <div className="p-3.5 rounded-2xl bg-[#F9F7F2] dark:bg-[#000000] border border-[#143224]/8 dark:border-white/8 space-y-1">
                 <div className="flex items-center justify-between">
-                  <span className="font-extrabold text-sm text-[#143224] dark:text-[#EAF2EC]">Bangla Shasya Bima (BSB)</span>
+                  <span className="font-extrabold text-sm text-[#143224] dark:text-white">Bangla Shasya Bima (BSB)</span>
                   <span className="text-[10px] font-bold text-emerald-800 dark:text-emerald-300 bg-emerald-100 dark:bg-emerald-900/40 px-2 py-0.5 rounded-md">100% Free Premium</span>
                 </div>
-                <p className="text-xs text-[#384D41] dark:text-[#94A89E] font-medium">100% state-paid crop insurance protecting paddy, potato, and jute against flood & cyclone.</p>
+                <p className="text-xs text-[#384D41] dark:text-gray-400 font-medium">100% state-paid crop insurance protecting paddy, potato, and jute against flood & cyclone.</p>
                 <div className="text-[11px] font-bold text-[#D9822B] pt-0.5">banglashasyabima.net</div>
               </div>
 
-              <div className={`p-3.5 rounded-2xl bg-[#F9F7F2] dark:bg-[#0B1711] border border-[#143224]/8 dark:border-white/8 space-y-1 ${!isSchemesExpanded ? 'hidden sm:block' : 'block'}`}>
+              <div className={`p-3.5 rounded-2xl bg-[#F9F7F2] dark:bg-[#000000] border border-[#143224]/8 dark:border-white/8 space-y-1 ${!isSchemesExpanded ? 'hidden sm:block' : 'block'}`}>
                 <div className="flex items-center justify-between">
-                  <span className="font-extrabold text-sm text-[#143224] dark:text-[#EAF2EC]">PM-Kisan Samman Nidhi</span>
+                  <span className="font-extrabold text-sm text-[#143224] dark:text-white">PM-Kisan Samman Nidhi</span>
                   <span className="text-[10px] font-bold text-blue-800 dark:text-blue-300 bg-blue-100 dark:bg-blue-900/40 px-2 py-0.5 rounded-md">Central DBT</span>
                 </div>
-                <p className="text-xs text-[#384D41] dark:text-[#94A89E] font-medium">₹6,000 per year directly credited to Aadhaar-linked bank accounts in three 4-monthly installments.</p>
+                <p className="text-xs text-[#384D41] dark:text-gray-400 font-medium">₹6,000 per year directly credited to Aadhaar-linked bank accounts in three 4-monthly installments.</p>
                 <div className="text-[11px] font-bold text-[#D9822B] pt-0.5">pmkisan.gov.in</div>
               </div>
 
-              <div className={`p-3.5 rounded-2xl bg-[#F9F7F2] dark:bg-[#0B1711] border border-[#143224]/8 dark:border-white/8 space-y-1 ${!isSchemesExpanded ? 'hidden sm:block' : 'block'}`}>
+              <div className={`p-3.5 rounded-2xl bg-[#F9F7F2] dark:bg-[#000000] border border-[#143224]/8 dark:border-white/8 space-y-1 ${!isSchemesExpanded ? 'hidden sm:block' : 'block'}`}>
                 <div className="flex items-center justify-between">
-                  <span className="font-extrabold text-sm text-[#143224] dark:text-[#EAF2EC]">Farm Mechanization Subsidies</span>
+                  <span className="font-extrabold text-sm text-[#143224] dark:text-white">Farm Mechanization Subsidies</span>
                   <span className="text-[10px] font-bold text-amber-800 dark:text-amber-300 bg-amber-100 dark:bg-amber-900/40 px-2 py-0.5 rounded-md">50% Subsidy</span>
                 </div>
-                <p className="text-xs text-[#384D41] dark:text-[#94A89E] font-medium">50% financial subsidy on power sprayers, solar pumps, and tillers through Matir Katha portal.</p>
+                <p className="text-xs text-[#384D41] dark:text-gray-400 font-medium">50% financial subsidy on power sprayers, solar pumps, and tillers through Matir Katha portal.</p>
                 <div className="text-[11px] font-bold text-[#D9822B] pt-0.5">matirkatha.gov.in</div>
               </div>
             </div>
@@ -869,59 +869,59 @@ export default function LandingPage() {
           3. INSTITUTIONAL SCIENTIFIC & OPEN DATA FOUNDATION
           Strictly Zero Fake Testimonials · Verifiable Public Sources
          ======================================================== */}
-      <section className="space-y-10 rounded-[2.5rem] bg-[#EAF2EC]/60 dark:bg-[#13261D]/60 border border-[#143224]/12 dark:border-white/10 p-8 sm:p-12 text-left">
+      <section className="space-y-10 rounded-[2.5rem] bg-[#EAF2EC]/60 dark:bg-[#111418]/60 border border-[#143224]/12 dark:border-white/10 p-8 sm:p-12 text-left">
         {/* Header */}
         <div className="max-w-3xl space-y-2">
-          <span className="text-xs font-bold uppercase tracking-wider text-[#143224] dark:text-[#EAF2EC] inline-flex items-center gap-1.5">
+          <span className="text-xs font-bold uppercase tracking-wider text-[#143224] dark:text-white inline-flex items-center gap-1.5">
             <Award className="w-4 h-4 text-[#D9822B]" />
             <span>{content.pillarsTag}</span>
           </span>
-          <h2 className="text-2xl sm:text-4xl font-extrabold text-[#143224] dark:text-[#EAF2EC] tracking-tight">
+          <h2 className="text-2xl sm:text-4xl font-extrabold text-[#143224] dark:text-white tracking-tight">
             {content.pillarsTitle}
           </h2>
-          <p className="text-sm sm:text-base text-[#384D41] dark:text-[#94A89E] font-medium">
+          <p className="text-sm sm:text-base text-[#384D41] dark:text-gray-400 font-medium">
             {content.pillarsSubtitle}
           </p>
         </div>
 
         {/* 4 Authentic Institutional Pillars */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
-          <div className="p-5 sm:p-6 rounded-2xl bg-white/95 dark:bg-[#0B1711] border border-[#143224]/10 dark:border-white/10 shadow-[0_2px_10px_rgba(20,50,36,0.03)] space-y-2.5">
+          <div className="p-5 sm:p-6 rounded-2xl bg-white/95 dark:bg-[#000000] border border-[#143224]/10 dark:border-white/10 shadow-[0_2px_10px_rgba(20,50,36,0.03)] space-y-2.5">
             <div className="w-10 h-10 rounded-xl bg-[#143224] dark:bg-emerald-950 text-[#D9822B] flex items-center justify-center font-bold text-sm">
               <ShieldCheck className="w-5 h-5" />
             </div>
-            <h4 className="text-base font-bold text-[#143224] dark:text-[#EAF2EC]">{content.pillar1Title}</h4>
-            <p className="text-xs text-[#384D41] dark:text-[#94A89E] leading-relaxed font-medium">
+            <h4 className="text-base font-bold text-[#143224] dark:text-white">{content.pillar1Title}</h4>
+            <p className="text-xs text-[#384D41] dark:text-gray-400 leading-relaxed font-medium">
               {content.pillar1Desc}
             </p>
           </div>
 
-          <div className="p-5 sm:p-6 rounded-2xl bg-white/95 dark:bg-[#0B1711] border border-[#143224]/10 dark:border-white/10 shadow-[0_2px_10px_rgba(20,50,36,0.03)] space-y-2.5">
+          <div className="p-5 sm:p-6 rounded-2xl bg-white/95 dark:bg-[#000000] border border-[#143224]/10 dark:border-white/10 shadow-[0_2px_10px_rgba(20,50,36,0.03)] space-y-2.5">
             <div className="w-10 h-10 rounded-xl bg-[#143224] dark:bg-emerald-950 text-[#D9822B] flex items-center justify-center font-bold text-sm">
               <TrendingUp className="w-5 h-5" />
             </div>
-            <h4 className="text-base font-bold text-[#143224] dark:text-[#EAF2EC]">{content.pillar2Title}</h4>
-            <p className="text-xs text-[#384D41] dark:text-[#94A89E] leading-relaxed font-medium">
+            <h4 className="text-base font-bold text-[#143224] dark:text-white">{content.pillar2Title}</h4>
+            <p className="text-xs text-[#384D41] dark:text-gray-400 leading-relaxed font-medium">
               {content.pillar2Desc}
             </p>
           </div>
 
-          <div className="p-5 sm:p-6 rounded-2xl bg-white/95 dark:bg-[#0B1711] border border-[#143224]/10 dark:border-white/10 shadow-[0_2px_10px_rgba(20,50,36,0.03)] space-y-2.5">
+          <div className="p-5 sm:p-6 rounded-2xl bg-white/95 dark:bg-[#000000] border border-[#143224]/10 dark:border-white/10 shadow-[0_2px_10px_rgba(20,50,36,0.03)] space-y-2.5">
             <div className="w-10 h-10 rounded-xl bg-[#143224] dark:bg-emerald-950 text-[#D9822B] flex items-center justify-center font-bold text-sm">
               <CloudSun className="w-5 h-5" />
             </div>
-            <h4 className="text-base font-bold text-[#143224] dark:text-[#EAF2EC]">{content.pillar3Title}</h4>
-            <p className="text-xs text-[#384D41] dark:text-[#94A89E] leading-relaxed font-medium">
+            <h4 className="text-base font-bold text-[#143224] dark:text-white">{content.pillar3Title}</h4>
+            <p className="text-xs text-[#384D41] dark:text-gray-400 leading-relaxed font-medium">
               {content.pillar3Desc}
             </p>
           </div>
 
-          <div className="p-5 sm:p-6 rounded-2xl bg-white/95 dark:bg-[#0B1711] border border-[#143224]/10 dark:border-white/10 shadow-[0_2px_10px_rgba(20,50,36,0.03)] space-y-2.5">
+          <div className="p-5 sm:p-6 rounded-2xl bg-white/95 dark:bg-[#000000] border border-[#143224]/10 dark:border-white/10 shadow-[0_2px_10px_rgba(20,50,36,0.03)] space-y-2.5">
             <div className="w-10 h-10 rounded-xl bg-[#143224] dark:bg-emerald-950 text-[#D9822B] flex items-center justify-center font-bold text-sm">
               <Building2 className="w-5 h-5" />
             </div>
-            <h4 className="text-base font-bold text-[#143224] dark:text-[#EAF2EC]">{content.pillar4Title}</h4>
-            <p className="text-xs text-[#384D41] dark:text-[#94A89E] leading-relaxed font-medium">
+            <h4 className="text-base font-bold text-[#143224] dark:text-white">{content.pillar4Title}</h4>
+            <p className="text-xs text-[#384D41] dark:text-gray-400 leading-relaxed font-medium">
               {content.pillar4Desc}
             </p>
           </div>
@@ -931,7 +931,7 @@ export default function LandingPage() {
       {/* ========================================================
           4. UNIFIED EMERGENCY HELPLINE & FAST ACCESS
          ======================================================== */}
-      <section className="rounded-3xl bg-[#143224] dark:bg-[#0c1810] border border-white/10 text-white p-8 sm:p-10 shadow-[0_8px_32px_rgba(20,50,36,0.18)] flex flex-col md:flex-row items-center justify-between gap-6 text-left">
+      <section className="rounded-3xl bg-[#143224] dark:bg-[#111418] border border-white/10 text-white p-8 sm:p-10 shadow-[0_8px_32px_rgba(20,50,36,0.18)] flex flex-col md:flex-row items-center justify-between gap-6 text-left">
         <div className="space-y-2 max-w-xl">
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/10 text-emerald-300 text-xs font-bold">
             <PhoneCall className="w-3.5 h-3.5 text-[#D9822B]" />
@@ -963,7 +963,7 @@ export default function LandingPage() {
           5. UNIFIED FOOTER & DIRECTORY
          ======================================================== */}
       <footer className="pt-8 border-t border-[#143224]/10 dark:border-white/10 text-center space-y-4 text-xs text-[#5E7367] dark:text-white/40 font-medium max-w-4xl mx-auto">
-        <div className="flex flex-wrap items-center justify-center gap-6 text-xs font-bold text-[#143224] dark:text-[#EAF2EC]">
+        <div className="flex flex-wrap items-center justify-center gap-6 text-xs font-bold text-[#143224] dark:text-white">
           <Link href="/scan" className="hover:text-[#D9822B] transition-colors">Crop Leaf Doctor</Link>
           <Link href="/mandi" className="hover:text-[#D9822B] transition-colors">Mandi Radar</Link>
           <Link href="/fertilizer" className="hover:text-[#D9822B] transition-colors">Fertilizer Calculator</Link>

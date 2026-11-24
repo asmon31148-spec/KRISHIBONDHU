@@ -8,7 +8,16 @@ export function SplashScreen() {
   const [isFadingOut, setIsFadingOut] = useState(false);
 
   useEffect(() => {
-    // Only show splash once per session on cold app launch
+    // Only show splash screen in standalone installed mobile app (PWA), NOT regular desktop web browser
+    const isStandalonePWA =
+      window.matchMedia('(display-mode: standalone)').matches ||
+      (navigator as unknown as { standalone?: boolean }).standalone === true;
+
+    if (!isStandalonePWA) {
+      return;
+    }
+
+    // Only show splash once per session on cold mobile app launch
     const hasSeenSplash = sessionStorage.getItem('krishibondhu_splash_seen');
     if (hasSeenSplash) return;
 

@@ -202,20 +202,50 @@ export default function DashboardPage() {
     };
   });
 
-  // 3. Yield Prediction vs Actual Harvest
-  const yieldComparisonData = yields.map((y, idx) => {
-    const baseName = y.crop_name.split(' ')[0];
-    const duplicates = yields.filter((other) => other.crop_name.split(' ')[0] === baseName);
-    const label = duplicates.length > 1 ? `${baseName} (Plot ${idx + 1})` : baseName;
-    return {
-      crop: label,
-      predicted: y.total_expected_production_tons,
-      actual: y.actual_harvest_yield_tons || 0,
-      isPending: !y.actual_harvest_yield_tons || y.actual_harvest_yield_tons === 0,
-    };
-  });
+  // 3. Yield Prediction vs Actual Harvest (derived from real user yields or user registered crops)
+  const CROP_BENCHMARKS_PER_BIGHA: Record<string, number> = {
+    potato: 3.2,
+    rice: 0.85,
+    paddy: 0.85,
+    mustard: 0.35,
+    jute: 0.6,
+    wheat: 0.7,
+    maize: 1.1,
+    brinjal: 2.5,
+    tomato: 3.0,
+    cabbage: 3.5,
+  };
 
-  const totalProjectedTons = yields.reduce((acc, curr) => acc + (curr.total_expected_production_tons || 0), 0);
+  const yieldComparisonData =
+    yields.length > 0
+      ? yields.map((y, idx) => {
+          const baseName = y.crop_name.split(' ')[0];
+          const duplicates = yields.filter((other) => other.crop_name.split(' ')[0] === baseName);
+          const label = duplicates.length > 1 ? `${baseName} (Plot ${idx + 1})` : baseName;
+          return {
+            crop: label,
+            predicted: y.total_expected_production_tons,
+            actual: y.actual_harvest_yield_tons || 0,
+            isPending: !y.actual_harvest_yield_tons || y.actual_harvest_yield_tons === 0,
+          };
+        })
+      : crops.map((c, idx) => {
+          const base = c.name.toLowerCase();
+          const matchedKey = Object.keys(CROP_BENCHMARKS_PER_BIGHA).find((k) => base.includes(k)) || 'rice';
+          const ratePerBigha = CROP_BENCHMARKS_PER_BIGHA[matchedKey];
+          const rawUnit = (c.area_unit?.toLowerCase() || 'bigha') as LandUnit;
+          const validUnit: LandUnit = ['acres', 'bigha', 'katha', 'hectares'].includes(rawUnit) ? rawUnit : 'bigha';
+          const areaBigha = convertLandArea(c.area, validUnit, 'bigha') || 1;
+          const estYield = Math.round(areaBigha * ratePerBigha * 10) / 10;
+          return {
+            crop: `${c.name} (Plot ${idx + 1})`,
+            predicted: estYield,
+            actual: 0,
+            isPending: true,
+          };
+        });
+
+  const totalProjectedTons = yieldComparisonData.reduce((acc, curr) => acc + (curr.predicted || 0), 0);
 
   if (isLoading) {
     return (
@@ -235,7 +265,7 @@ export default function DashboardPage() {
       {/* 1. MINIMALIST HEADS-UP DISPLAY (HUD) - No heavy box borders */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-cream-200 dark:border-white/10">
         <div>
-          <h1 className="text-xl sm:text-2xl font-black text-[#143224] dark:text-[#EAF2EC] tracking-tight">
+          <h1 className="text-xl sm:text-2xl font-black text-[#143224] dark:text-white tracking-tight">
             Welcome back, {farmerName}
           </h1>
           <p className="text-xs text-brand-dark/70 dark:text-white/60 font-medium mt-0.5">
@@ -253,7 +283,7 @@ export default function DashboardPage() {
               <span>{attentionCropsCount} Plot Needs Attention</span>
             </Link>
           )}
-          <div className="text-xs font-semibold px-3 py-1.5 rounded-xl bg-cream-100/90 dark:bg-[#13261D] border border-cream-200 dark:border-white/10 text-brand-dark/80 dark:text-white/80">
+          <div className="text-xs font-semibold px-3 py-1.5 rounded-xl bg-cream-100/90 dark:bg-[#111418] border border-cream-200 dark:border-white/10 text-brand-dark/80 dark:text-white/80">
             ⛅ 28°C • Optimal Spray Window
           </div>
           <Button
@@ -290,7 +320,7 @@ export default function DashboardPage() {
         </Link>
 
         <Link href="/assistant" className="group">
-          <button className="w-full flex items-center justify-center gap-3 p-4 rounded-2xl bg-white dark:bg-[#13261D] hover:bg-cream-100 dark:hover:bg-white/5 text-[#143224] dark:text-[#EAF2EC] border-2 border-[#143224] dark:border-emerald-500/30 font-bold text-sm shadow-xs transition-all active:scale-[0.99] cursor-pointer">
+          <button className="w-full flex items-center justify-center gap-3 p-4 rounded-2xl bg-white dark:bg-[#111418] hover:bg-cream-100 dark:hover:bg-white/5 text-[#143224] dark:text-white border-2 border-[#143224] dark:border-emerald-500/30 font-bold text-sm shadow-xs transition-all active:scale-[0.99] cursor-pointer">
             <Bot className="w-5 h-5 text-emerald-700 dark:text-emerald-400" />
             <span>Speak with Agronomy AI Assistant</span>
           </button>
@@ -312,11 +342,11 @@ export default function DashboardPage() {
           </div>
 
           {scans.length === 0 ? (
-            <div className="p-6 rounded-2xl bg-white dark:bg-[#13261D] border border-cream-200 dark:border-white/10 text-center text-xs text-brand-dark/50 dark:text-white/50">
+            <div className="p-6 rounded-2xl bg-white dark:bg-[#111418] border border-cream-200 dark:border-white/10 text-center text-xs text-brand-dark/50 dark:text-white/50">
               No recent scans. Tap &quot;Scan Plant Leaf&quot; above to diagnose your first crop leaf.
             </div>
           ) : (
-            <div className="divide-y divide-cream-200 dark:divide-white/10 rounded-2xl bg-white dark:bg-[#13261D] border border-cream-200 dark:border-white/10 overflow-hidden shadow-2xs">
+            <div className="divide-y divide-cream-200 dark:divide-white/10 rounded-2xl bg-white dark:bg-[#111418] border border-cream-200 dark:border-white/10 overflow-hidden shadow-2xs">
               {scans.slice(0, 4).map((scan) => (
                 <div key={scan.id} className="p-3.5 flex items-center justify-between text-xs hover:bg-cream-50/50 dark:hover:bg-white/5 transition-colors">
                   <div className="flex items-center gap-3 min-w-0">
@@ -354,13 +384,13 @@ export default function DashboardPage() {
           </div>
 
           {farms.length === 0 ? (
-            <div className="p-6 rounded-2xl bg-white dark:bg-[#13261D] border border-cream-200 dark:border-white/10 text-center text-xs text-brand-dark/50 dark:text-white/50">
+            <div className="p-6 rounded-2xl bg-white dark:bg-[#111418] border border-cream-200 dark:border-white/10 text-center text-xs text-brand-dark/50 dark:text-white/50">
               No farm plots registered yet. Register a plot in &quot;My Farm&quot; to track crops and soil health.
             </div>
           ) : (
             <div className="space-y-2">
               {farms.slice(0, 3).map((farm) => (
-                <div key={farm.id} className="p-3 rounded-2xl bg-white dark:bg-[#13261D] border border-cream-200 dark:border-white/10 shadow-2xs flex items-center justify-between text-xs">
+                <div key={farm.id} className="p-3 rounded-2xl bg-white dark:bg-[#111418] border border-cream-200 dark:border-white/10 shadow-2xs flex items-center justify-between text-xs">
                   <div className="flex items-center gap-2.5 min-w-0">
                     <div className="p-2 rounded-xl bg-emerald-50 dark:bg-emerald-950/60 text-emerald-800 dark:text-emerald-300 shrink-0">
                       <Warehouse className="w-4 h-4" />

@@ -123,7 +123,7 @@ export default function SchemesPage() {
               </Badge>
               <span className="text-xs text-brand-dark/60 dark:text-white/60">• Zero Middleman Guarantee</span>
             </div>
-            <h1 className="text-2xl sm:text-3xl font-extrabold text-brand-dark dark:text-[#EAF2EC] tracking-tight">
+            <h1 className="text-2xl sm:text-3xl font-extrabold text-brand-dark dark:text-white tracking-tight">
               {language === 'bn'
                 ? 'সরকারি কৃষি প্রকল্প ও বীমা ন্যাভিগেটর'
                 : language === 'hi'
@@ -215,7 +215,7 @@ export default function SchemesPage() {
                   className={`p-4 rounded-2xl border transition-all cursor-pointer flex flex-col justify-between ${
                     isChecked
                       ? 'border-emerald-500 bg-emerald-50/40 dark:bg-emerald-950/40 ring-1 ring-emerald-400 shadow-2xs'
-                      : 'border-cream-200 dark:border-white/10 bg-white dark:bg-[#13261D] hover:border-brand-leaf/40'
+                      : 'border-cream-200 dark:border-white/10 bg-white dark:bg-[#111418] hover:border-brand-leaf/40'
                   }`}
                 >
                   <div>

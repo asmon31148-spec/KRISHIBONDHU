@@ -354,7 +354,7 @@ export default function WeatherPage() {
       </div>
 
       {/* Provenance & Location Source Indicator */}
-      <div className="flex items-center justify-between p-3 rounded-xl bg-cream-50 dark:bg-[#13261D] border border-cream-200 dark:border-white/10 text-xs flex-wrap gap-2">
+      <div className="flex items-center justify-between p-3 rounded-xl bg-cream-50 dark:bg-[#111418] border border-cream-200 dark:border-white/10 text-xs flex-wrap gap-2">
         <div className="flex items-center gap-2">
           {selectedLocation.source === 'gps' ? (
             <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-emerald-100 text-emerald-900 font-bold text-xs border border-emerald-300">
@@ -451,7 +451,7 @@ export default function WeatherPage() {
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2">
                   <Wind className="w-4 h-4 text-brand-leaf" />
-                  <h3 className="text-sm font-bold text-brand-dark dark:text-[#EAF2EC] uppercase tracking-wider">
+                  <h3 className="text-sm font-bold text-brand-dark dark:text-white uppercase tracking-wider">
                     {language === 'bn'
                       ? 'জরুরি কৃষি নির্দেশিকা ও অডিও বার্তা'
                       : language === 'hi'
@@ -510,7 +510,7 @@ export default function WeatherPage() {
                             </button>
                           </div>
 
-                          <h4 className="text-sm font-bold text-brand-dark dark:text-[#EAF2EC] leading-snug">
+                          <h4 className="text-sm font-bold text-brand-dark dark:text-white leading-snug">
                             {title}
                           </h4>
                           <p className="text-xs text-brand-dark/75 dark:text-white/70 leading-relaxed">
@@ -539,7 +539,7 @@ export default function WeatherPage() {
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">
                 <Sprout className="w-4 h-4 text-emerald-600" />
-                <h3 className="text-sm font-bold text-brand-dark dark:text-[#EAF2EC] uppercase tracking-wider">
+                <h3 className="text-sm font-bold text-brand-dark dark:text-white uppercase tracking-wider">
                   Crop-Specific Pathogen & Climate Risk ({userCrops.length} Crops Tracked)
                 </h3>
               </div>
@@ -553,7 +553,7 @@ export default function WeatherPage() {
             </div>
 
             {userCrops.length === 0 ? (
-              <div className="p-4 rounded-2xl bg-cream-50 dark:bg-[#13261D] border border-cream-200 dark:border-white/10 text-xs text-brand-dark/75 dark:text-white/70 flex items-center justify-between gap-3">
+              <div className="p-4 rounded-2xl bg-cream-50 dark:bg-[#111418] border border-cream-200 dark:border-white/10 text-xs text-brand-dark/75 dark:text-white/70 flex items-center justify-between gap-3">
                 <div className="flex items-center gap-2">
                   <Info className="w-4 h-4 text-brand-leaf shrink-0" />
                   <span>
@@ -600,7 +600,7 @@ export default function WeatherPage() {
                     <p className="text-brand-dark/80 leading-relaxed">
                       {risk.details}
                     </p>
-                    <div className="p-2.5 rounded-xl bg-white/90 dark:bg-[#0B1711] border border-cream-200 dark:border-white/10 font-medium text-brand-forest dark:text-emerald-400">
+                    <div className="p-2.5 rounded-xl bg-white/90 dark:bg-[#000000] border border-cream-200 dark:border-white/10 font-medium text-brand-forest dark:text-emerald-400">
                       <span className="font-bold block text-[10px] uppercase text-brand-dark/60 dark:text-white/60">Actionable Agronomy Advice:</span>
                       {risk.action}
                     </div>

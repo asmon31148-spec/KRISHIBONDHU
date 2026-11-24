@@ -198,7 +198,7 @@ export default function ProfilePage() {
         </div>
 
         {/* Why Create an Account (Benefits) */}
-        <div className="bg-white dark:bg-[#13261D] rounded-3xl border border-cream-200/90 dark:border-white/10 p-4 sm:p-6 shadow-2xs space-y-3">
+        <div className="bg-white dark:bg-[#111418] rounded-3xl border border-cream-200/90 dark:border-white/10 p-4 sm:p-6 shadow-2xs space-y-3">
           <div className="flex items-center gap-2 pb-2 border-b border-cream-200 dark:border-white/10">
             <Sparkles className="w-4 h-4 text-brand-harvest" />
             <h3 className="text-xs sm:text-sm font-bold text-brand-forest dark:text-emerald-400 uppercase tracking-wider">
@@ -207,7 +207,7 @@ export default function ProfilePage() {
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5 pt-1">
-            <div className="p-3 rounded-2xl bg-cream-50 dark:bg-[#0B1711] border border-cream-200/80 dark:border-white/10 flex sm:flex-col items-center sm:items-start gap-3">
+            <div className="p-3 rounded-2xl bg-cream-50 dark:bg-[#000000] border border-cream-200/80 dark:border-white/10 flex sm:flex-col items-center sm:items-start gap-3">
               <div className="w-8 h-8 rounded-xl bg-brand-forest/10 flex items-center justify-center text-brand-forest dark:text-emerald-400 shrink-0">
                 <CheckCircle2 className="w-4 h-4 text-brand-leaf dark:text-emerald-400" />
               </div>
@@ -219,7 +219,7 @@ export default function ProfilePage() {
               </div>
             </div>
 
-            <div className="p-3 rounded-2xl bg-cream-50 dark:bg-[#0B1711] border border-cream-200/80 dark:border-white/10 flex sm:flex-col items-center sm:items-start gap-3">
+            <div className="p-3 rounded-2xl bg-cream-50 dark:bg-[#000000] border border-cream-200/80 dark:border-white/10 flex sm:flex-col items-center sm:items-start gap-3">
               <div className="w-8 h-8 rounded-xl bg-amber-500/10 flex items-center justify-center text-amber-700 shrink-0">
                 <CloudSun className="w-4 h-4 text-brand-harvest" />
               </div>
@@ -231,7 +231,7 @@ export default function ProfilePage() {
               </div>
             </div>
 
-            <div className="p-3 rounded-2xl bg-cream-50 dark:bg-[#0B1711] border border-cream-200/80 dark:border-white/10 flex sm:flex-col items-center sm:items-start gap-3">
+            <div className="p-3 rounded-2xl bg-cream-50 dark:bg-[#000000] border border-cream-200/80 dark:border-white/10 flex sm:flex-col items-center sm:items-start gap-3">
               <div className="w-8 h-8 rounded-xl bg-emerald-500/10 flex items-center justify-center text-emerald-700 dark:text-emerald-400 shrink-0">
                 <Bot className="w-4 h-4 text-brand-leaf dark:text-emerald-400" />
               </div>
@@ -246,7 +246,7 @@ export default function ProfilePage() {
         </div>
 
         {/* Quick App Preferences (Language & Support) */}
-        <div className="bg-white dark:bg-[#13261D] rounded-3xl border border-cream-200/90 dark:border-white/10 p-4 sm:p-6 shadow-2xs space-y-4">
+        <div className="bg-white dark:bg-[#111418] rounded-3xl border border-cream-200/90 dark:border-white/10 p-4 sm:p-6 shadow-2xs space-y-4">
           <div className="flex items-center gap-2 pb-2 border-b border-cream-200 dark:border-white/10">
             <Globe className="w-4 h-4 text-brand-leaf dark:text-emerald-400" />
             <h3 className="text-xs sm:text-sm font-bold text-brand-forest dark:text-emerald-400 uppercase tracking-wider">

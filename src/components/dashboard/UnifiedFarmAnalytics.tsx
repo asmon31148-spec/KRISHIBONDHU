@@ -38,7 +38,7 @@ export function UnifiedFarmAnalytics({
   const multiplier = unitMode === 'quintals' ? 10 : 1;
   const unitLabel = unitMode === 'quintals' ? 'Quintals' : 'Tons';
 
-  // Aggregate yield data by base crop name so farmers don't see 10 confusing duplicate bars
+  // Aggregate yield data by base crop name
   const cropAggregates: Record<string, { crop: string; predicted: number; actual: number; plotsCount: number }> = {};
   
   if (yieldData.length > 0) {
@@ -51,9 +51,6 @@ export function UnifiedFarmAnalytics({
       cropAggregates[baseName].actual += item.actual || 0;
       cropAggregates[baseName].plotsCount += 1;
     });
-  } else {
-    cropAggregates['Potato'] = { crop: 'Potato', predicted: 7.5, actual: 0, plotsCount: 3 };
-    cropAggregates['Rice (Paddy)'] = { crop: 'Rice (Paddy)', predicted: 4.5, actual: 0, plotsCount: 2 };
   }
 
   const aggregatedCrops = Object.values(cropAggregates).map((c) => ({
@@ -63,34 +60,35 @@ export function UnifiedFarmAnalytics({
     targetPercent: Math.min(100, Math.round(((c.predicted * multiplier) / (c.predicted * multiplier || 1)) * 100)),
   }));
 
-  // Totals
-  const totalPredicted = totalProjectedTons > 0 ? totalProjectedTons : 12.0;
+  // Totals - 100% real based on actual data
+  const totalPredicted = totalProjectedTons;
   const totalDisplayTonnage = (totalPredicted * multiplier).toFixed(1);
   const estimatedRevenue = Math.round(totalPredicted * 10 * 2350); // ~₹2,350/quintal APMC rate
 
-  // Disease counts from scans
+  // Disease counts from real user scans (0 if no scans recorded yet)
   const hasRealScans = severityData.length > 0;
   const healthyCount = hasRealScans
     ? (severityData.find((s) => s.name.toLowerCase() === 'healthy')?.value ?? 0)
-    : 1;
+    : 0;
   const mildCount = hasRealScans
     ? (severityData.find((s) => s.name.toLowerCase() === 'mild')?.value ?? 0)
     : 0;
   const moderateCount = hasRealScans
     ? (severityData.find((s) => s.name.toLowerCase() === 'moderate')?.value ?? 0)
-    : 3;
+    : 0;
   const severeCount = hasRealScans
     ? (severityData.find((s) => s.name.toLowerCase() === 'severe')?.value ?? 0)
-    : 1;
+    : 0;
   const totalScans = healthyCount + mildCount + moderateCount + severeCount;
   const healthPercentage = totalScans > 0 ? Math.round((healthyCount / totalScans) * 100) : 100;
 
   // Derive dynamic crop health card styling
-  let healthStatusLabel = 'All Clear';
-  let healthStatusSub = 'Foliage looking healthy';
-  let healthBadgeBg = 'bg-emerald-100 dark:bg-emerald-950/60 text-emerald-800 dark:text-emerald-300';
+  let healthStatusLabel = totalScans === 0 ? 'No Scans Yet' : 'All Clear';
+  let healthStatusSub =
+    totalScans === 0 ? 'Scan a leaf to begin disease surveillance' : 'All scanned leaves healthy';
+  let healthBadgeBg = 'bg-gray-100 dark:bg-white/10 text-gray-700 dark:text-gray-300';
   let healthAccentColor = 'bg-emerald-500';
-  let healthTextColor = 'text-emerald-600 dark:text-emerald-400';
+  let healthTextColor = 'text-gray-700 dark:text-gray-300';
 
   if (severeCount > 0) {
     healthStatusLabel = 'Critical Alert';
@@ -110,6 +108,10 @@ export function UnifiedFarmAnalytics({
     healthBadgeBg = 'bg-amber-100 dark:bg-amber-950/60 text-amber-800 dark:text-amber-300';
     healthAccentColor = 'bg-amber-500';
     healthTextColor = 'text-amber-600 dark:text-amber-400';
+  } else if (totalScans > 0) {
+    healthBadgeBg = 'bg-emerald-100 dark:bg-emerald-950/60 text-emerald-800 dark:text-emerald-300';
+    healthAccentColor = 'bg-emerald-500';
+    healthTextColor = 'text-emerald-600 dark:text-emerald-400';
   }
 
   // Simple, intuitive soil health indicators (Replacing the confusing spiderweb chart!)
@@ -159,7 +161,7 @@ export function UnifiedFarmAnalytics({
           ───────────────────────────────────────────────────────────── */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3.5">
         {/* Card 1: Expected Harvest */}
-        <div className="p-4 rounded-2xl bg-white dark:bg-[#13261D] border border-cream-200 dark:border-white/10 shadow-xs relative overflow-hidden">
+        <div className="p-4 rounded-2xl bg-white dark:bg-[#111418] border border-cream-200 dark:border-white/10 shadow-xs relative overflow-hidden">
           <div className="flex items-center justify-between">
             <span className="text-xs font-bold text-brand-dark/70 dark:text-white/70 uppercase tracking-wider">
               🌾 Expected Harvest
@@ -186,7 +188,7 @@ export function UnifiedFarmAnalytics({
             </div>
           </div>
           <div className="mt-2 flex items-baseline gap-2">
-            <span className="text-3xl font-black text-[#143224] dark:text-[#EAF2EC] tracking-tight">
+            <span className="text-3xl font-black text-[#143224] dark:text-white tracking-tight">
               {totalDisplayTonnage}
             </span>
             <span className="text-sm font-bold text-brand-dark/60 dark:text-white/60">{unitLabel}</span>
@@ -199,7 +201,7 @@ export function UnifiedFarmAnalytics({
         </div>
 
         {/* Card 2: Expected Money / Income */}
-        <div className="p-4 rounded-2xl bg-white dark:bg-[#13261D] border border-cream-200 dark:border-white/10 shadow-xs relative overflow-hidden">
+        <div className="p-4 rounded-2xl bg-white dark:bg-[#111418] border border-cream-200 dark:border-white/10 shadow-xs relative overflow-hidden">
           <div className="flex items-center justify-between">
             <span className="text-xs font-bold text-brand-dark/70 dark:text-white/70 uppercase tracking-wider">
               💰 Estimated Income
@@ -209,7 +211,7 @@ export function UnifiedFarmAnalytics({
             </span>
           </div>
           <div className="mt-2 flex items-baseline gap-2">
-            <span className="text-3xl font-black text-[#143224] dark:text-[#EAF2EC] tracking-tight">
+            <span className="text-3xl font-black text-[#143224] dark:text-white tracking-tight">
               ₹{estimatedRevenue.toLocaleString('en-IN')}
             </span>
           </div>
@@ -223,7 +225,7 @@ export function UnifiedFarmAnalytics({
         </div>
 
         {/* Card 3: Crop Health Alert */}
-        <div className="p-4 rounded-2xl bg-white dark:bg-[#13261D] border border-cream-200 dark:border-white/10 shadow-xs relative overflow-hidden">
+        <div className="p-4 rounded-2xl bg-white dark:bg-[#111418] border border-cream-200 dark:border-white/10 shadow-xs relative overflow-hidden">
           <div className="flex items-center justify-between">
             <span className="text-xs font-bold text-brand-dark/70 dark:text-white/70 uppercase tracking-wider">
               🌿 Crop Health
@@ -233,7 +235,7 @@ export function UnifiedFarmAnalytics({
             </span>
           </div>
           <div className="mt-2 flex items-baseline gap-2">
-            <span className="text-3xl font-black text-[#143224] dark:text-[#EAF2EC] tracking-tight">
+            <span className="text-3xl font-black text-[#143224] dark:text-white tracking-tight">
               {healthPercentage}%
             </span>
             <span className={`text-xs font-bold ${healthTextColor}`}>{healthStatusLabel}</span>
@@ -246,7 +248,7 @@ export function UnifiedFarmAnalytics({
         </div>
 
         {/* Card 4: Soil Health */}
-        <div className="p-4 rounded-2xl bg-white dark:bg-[#13261D] border border-cream-200 dark:border-white/10 shadow-xs relative overflow-hidden">
+        <div className="p-4 rounded-2xl bg-white dark:bg-[#111418] border border-cream-200 dark:border-white/10 shadow-xs relative overflow-hidden">
           <div className="flex items-center justify-between">
             <span className="text-xs font-bold text-brand-dark/70 dark:text-white/70 uppercase tracking-wider">
               🧪 Soil Fertility
@@ -256,7 +258,7 @@ export function UnifiedFarmAnalytics({
             </span>
           </div>
           <div className="mt-2 flex items-baseline gap-2">
-            <span className="text-3xl font-black text-[#143224] dark:text-[#EAF2EC] tracking-tight">
+            <span className="text-3xl font-black text-[#143224] dark:text-white tracking-tight">
               Good
             </span>
             <span className="text-xs font-bold text-brand-dark/60 dark:text-white/60">pH 6.5 (Optimal)</span>
@@ -276,11 +278,11 @@ export function UnifiedFarmAnalytics({
           ───────────────────────────────────────────────────────────── */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-5">
         {/* LEFT CARD: My Crops & Expected Production (No giant confusing identical bars!) */}
-        <div className="lg:col-span-7 p-5 rounded-3xl bg-white dark:bg-[#13261D] border border-cream-200 dark:border-white/10 shadow-xs flex flex-col justify-between space-y-4">
+        <div className="lg:col-span-7 p-5 rounded-3xl bg-white dark:bg-[#111418] border border-cream-200 dark:border-white/10 shadow-xs flex flex-col justify-between space-y-4">
           <div>
             <div className="flex items-center justify-between pb-3 border-b border-cream-200 dark:border-white/10">
               <div>
-                <h3 className="text-base font-extrabold text-[#143224] dark:text-[#EAF2EC] flex items-center gap-2">
+                <h3 className="text-base font-extrabold text-[#143224] dark:text-white flex items-center gap-2">
                   <Sprout className="w-5 h-5 text-emerald-600" />
                   <span>My Crops & Harvest Forecast</span>
                 </h3>
@@ -295,44 +297,60 @@ export function UnifiedFarmAnalytics({
 
             {/* Clear Visual Crop Production Progress Bars */}
             <div className="space-y-4 pt-3">
-              {aggregatedCrops.map((crop, idx) => (
-                <div
-                  key={crop.crop + idx}
-                  className="p-3.5 rounded-2xl bg-cream-50/70 dark:bg-white/5 border border-cream-200/80 dark:border-white/10 space-y-2"
-                >
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-2">
-                      <span className="w-3 h-3 rounded-full bg-[#10B981]" />
-                      <span className="font-extrabold text-sm text-[#143224] dark:text-white">
-                        {crop.crop}
-                      </span>
-                      <span className="text-xs text-brand-dark/60 dark:text-white/60">
-                        ({crop.plotsCount} {crop.plotsCount === 1 ? 'Plot' : 'Plots'} in ground)
-                      </span>
-                    </div>
-                    <div className="text-right">
-                      <span className="text-base font-black text-emerald-800 dark:text-emerald-300">
-                        {crop.displayPredicted} {unitLabel}
-                      </span>
-                      <span className="text-[10px] text-brand-dark/50 dark:text-white/50 block">Target Yield</span>
-                    </div>
-                  </div>
-
-                  {/* Visual Progress Bar */}
-                  <div className="space-y-1">
-                    <div className="h-3 w-full rounded-full bg-cream-200 dark:bg-white/10 overflow-hidden">
-                      <div
-                        className="h-full bg-gradient-to-r from-emerald-500 to-[#10B981] rounded-full transition-all duration-700"
-                        style={{ width: `${Math.max(65, Math.min(100, (crop.displayPredicted / (crop.displayPredicted * 1.05)) * 95))}%` }}
-                      />
-                    </div>
-                    <div className="flex items-center justify-between text-[11px] text-brand-dark/60 dark:text-white/60 pt-0.5">
-                      <span>Status: 🌱 Growing actively (In season)</span>
-                      <span className="font-semibold text-emerald-700 dark:text-emerald-400">96.4% of optimal target</span>
-                    </div>
-                  </div>
+              {aggregatedCrops.length === 0 ? (
+                <div className="p-6 text-center rounded-2xl bg-cream-50/70 dark:bg-white/5 border border-cream-200/80 dark:border-white/10 space-y-2">
+                  <Sprout className="w-8 h-8 text-emerald-600 dark:text-emerald-400 mx-auto" />
+                  <p className="text-sm font-bold text-[#143224] dark:text-white">No active crops registered yet</p>
+                  <p className="text-xs text-brand-dark/60 dark:text-white/60">
+                    Register your planted crops in &quot;My Farm&quot; to see real-time harvest and income forecasts.
+                  </p>
+                  <Link
+                    href="/farms"
+                    className="inline-flex items-center gap-1.5 px-3.5 py-1.5 mt-1 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs"
+                  >
+                    <span>+ Register My Crop</span>
+                  </Link>
                 </div>
-              ))}
+              ) : (
+                aggregatedCrops.map((crop, idx) => (
+                  <div
+                    key={crop.crop + idx}
+                    className="p-3.5 rounded-2xl bg-cream-50/70 dark:bg-white/5 border border-cream-200/80 dark:border-white/10 space-y-2"
+                  >
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-2">
+                        <span className="w-3 h-3 rounded-full bg-[#10B981]" />
+                        <span className="font-extrabold text-sm text-[#143224] dark:text-white">
+                          {crop.crop}
+                        </span>
+                        <span className="text-xs text-brand-dark/60 dark:text-white/60">
+                          ({crop.plotsCount} {crop.plotsCount === 1 ? 'Plot' : 'Plots'} in ground)
+                        </span>
+                      </div>
+                      <div className="text-right">
+                        <span className="text-base font-black text-emerald-800 dark:text-emerald-300">
+                          {crop.displayPredicted} {unitLabel}
+                        </span>
+                        <span className="text-[10px] text-brand-dark/50 dark:text-white/50 block">Target Yield</span>
+                      </div>
+                    </div>
+
+                    {/* Visual Progress Bar */}
+                    <div className="space-y-1">
+                      <div className="h-3 w-full rounded-full bg-cream-200 dark:bg-white/10 overflow-hidden">
+                        <div
+                          className="h-full bg-gradient-to-r from-emerald-500 to-[#10B981] rounded-full transition-all duration-700"
+                          style={{ width: `${Math.max(65, Math.min(100, (crop.displayPredicted / (crop.displayPredicted * 1.05)) * 95))}%` }}
+                        />
+                      </div>
+                      <div className="flex items-center justify-between text-[11px] text-brand-dark/60 dark:text-white/60 pt-0.5">
+                        <span>Status: 🌱 Growing actively (In season)</span>
+                        <span className="font-semibold text-emerald-700 dark:text-emerald-400">96.4% of optimal target</span>
+                      </div>
+                    </div>
+                  </div>
+                ))
+              )}
             </div>
           </div>
 
@@ -347,11 +365,11 @@ export function UnifiedFarmAnalytics({
         </div>
 
         {/* RIGHT CARD: Soil Health Meters (Easy to understand - Replaces Confusing Radar Web!) */}
-        <div className="lg:col-span-5 p-5 rounded-3xl bg-white dark:bg-[#13261D] border border-cream-200 dark:border-white/10 shadow-xs flex flex-col justify-between space-y-4">
+        <div className="lg:col-span-5 p-5 rounded-3xl bg-white dark:bg-[#111418] border border-cream-200 dark:border-white/10 shadow-xs flex flex-col justify-between space-y-4">
           <div>
             <div className="flex items-center justify-between pb-3 border-b border-cream-200 dark:border-white/10">
               <div>
-                <h3 className="text-base font-extrabold text-[#143224] dark:text-[#EAF2EC] flex items-center gap-2">
+                <h3 className="text-base font-extrabold text-[#143224] dark:text-white flex items-center gap-2">
                   <FlaskConical className="w-5 h-5 text-emerald-600" />
                   <span>Soil Nutrient Health</span>
                 </h3>
@@ -408,11 +426,11 @@ export function UnifiedFarmAnalytics({
           ───────────────────────────────────────────────────────────── */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-5">
         {/* Left: Foliage Disease Surveillance with Vivid Segmented Status */}
-        <div className="lg:col-span-7 p-5 rounded-3xl bg-white dark:bg-[#13261D] border border-cream-200 dark:border-white/10 shadow-xs flex flex-col justify-between space-y-4">
+        <div className="lg:col-span-7 p-5 rounded-3xl bg-white dark:bg-[#111418] border border-cream-200 dark:border-white/10 shadow-xs flex flex-col justify-between space-y-4">
           <div>
             <div className="flex items-center justify-between pb-3 border-b border-cream-200 dark:border-white/10">
               <div>
-                <h3 className="text-base font-extrabold text-[#143224] dark:text-[#EAF2EC] flex items-center gap-2">
+                <h3 className="text-base font-extrabold text-[#143224] dark:text-white flex items-center gap-2">
                   <ShieldCheck className="w-5 h-5 text-emerald-600" />
                   <span>Crop Disease Surveillance</span>
                 </h3>
@@ -420,10 +438,20 @@ export function UnifiedFarmAnalytics({
                   Results from recent camera scans showing which leaves have disease spots.
                 </p>
               </div>
-              <span className="px-2.5 py-1 rounded-xl bg-orange-100 dark:bg-orange-950/60 text-orange-800 dark:text-orange-300 text-xs font-extrabold">
+              <span className={`px-2.5 py-1 rounded-xl text-xs font-extrabold ${totalScans === 0 ? 'bg-gray-100 dark:bg-white/10 text-gray-700 dark:text-gray-300' : 'bg-orange-100 dark:bg-orange-950/60 text-orange-800 dark:text-orange-300'}`}>
                 {totalScans} Total Scans
               </span>
             </div>
+
+            {totalScans === 0 && (
+              <div className="p-4 rounded-2xl bg-emerald-50/70 dark:bg-white/5 border border-emerald-300/40 dark:border-white/10 text-center space-y-1.5 mt-3">
+                <CheckCircle2 className="w-5 h-5 text-emerald-600 dark:text-emerald-400 mx-auto" />
+                <p className="font-bold text-xs text-brand-dark dark:text-white">Clean Health Record</p>
+                <p className="text-[11px] text-brand-dark/60 dark:text-white/60">
+                  No leaf diseases scanned yet. Tap &quot;Scan Another Leaf&quot; below to diagnose suspect leaves from camera.
+                </p>
+              </div>
+            )}
 
             {/* 4 Clear High-Contrast Severity Cards with Vivid Colors */}
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 pt-3">
@@ -506,15 +534,27 @@ export function UnifiedFarmAnalytics({
             </div>
 
             <div className="space-y-2.5 text-xs">
-              <div className="p-3 rounded-2xl bg-white/10 border border-white/15 space-y-1">
-                <p className="font-bold text-[#D9822B] flex items-center gap-1.5">
-                  <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400" />
-                  <span>Immediate Spray Action</span>
-                </p>
-                <p className="text-white/85 text-[11px] leading-relaxed">
-                  3 potato leaves showed early blight / gray mold. Spray Mancozeb (2.5g/L) or Trichoderma viride early morning.
-                </p>
-              </div>
+              {severeCount > 0 || moderateCount > 0 ? (
+                <div className="p-3 rounded-2xl bg-white/10 border border-white/15 space-y-1">
+                  <p className="font-bold text-[#D9822B] flex items-center gap-1.5">
+                    <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400" />
+                    <span>Immediate Spray Action</span>
+                  </p>
+                  <p className="text-white/85 text-[11px] leading-relaxed">
+                    {severeCount > 0 ? `${severeCount} critical leaf scan detected.` : `${moderateCount} leaves with fungal spots.`} Spray Mancozeb (2.5g/L) or Trichoderma viride early morning.
+                  </p>
+                </div>
+              ) : (
+                <div className="p-3 rounded-2xl bg-white/10 border border-white/15 space-y-1">
+                  <p className="font-bold text-emerald-400 flex items-center gap-1.5">
+                    <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400" />
+                    <span>Foliage Record Clear</span>
+                  </p>
+                  <p className="text-white/85 text-[11px] leading-relaxed">
+                    No active disease alerts on your farm. Continue regular crop scouting and safe preventative care.
+                  </p>
+                </div>
+              )}
 
               <div className="p-3 rounded-2xl bg-white/10 border border-white/15 space-y-1">
                 <p className="font-bold text-[#D9822B] flex items-center gap-1.5">

@@ -11,7 +11,7 @@ export function Card({
     <div
       className={twMerge(
         clsx(
-          'rounded-2xl border border-cream-200/90 dark:border-white/10 bg-white/95 dark:bg-[#13261D] shadow-xs transition-shadow',
+          'rounded-2xl border border-gray-200 dark:border-white/10 bg-white dark:bg-[#111418] shadow-xs transition-shadow',
           className
         )
       )}
@@ -45,7 +45,7 @@ export function CardTitle({
   return (
     <h3
       className={twMerge(
-        clsx('text-lg sm:text-xl font-bold leading-none tracking-tight text-brand-dark dark:text-[#EAF2EC]', className)
+        clsx('text-lg sm:text-xl font-bold leading-none tracking-tight text-gray-900 dark:text-white', className)
       )}
       {...props}
     >

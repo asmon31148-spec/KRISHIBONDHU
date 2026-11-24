@@ -414,7 +414,7 @@ export default function CropScannerPage() {
               • {language === 'bn' ? 'আইসিএআর নির্দেশিত' : language === 'hi' ? 'आईसीएआर निर्देशित' : 'ICAR Aligned'}
             </span>
           </div>
-          <h1 className="text-2xl sm:text-3xl font-black text-brand-dark dark:text-[#EAF2EC] mt-1 tracking-tight">
+          <h1 className="text-2xl sm:text-3xl font-black text-brand-dark dark:text-white mt-1 tracking-tight">
             {language === 'bn'
               ? 'ফসলের পাতার রোগ নির্ণয়'
               : language === 'hi'
@@ -476,7 +476,7 @@ export default function CropScannerPage() {
         /* Dedicated Full Scan History Tab */
         <div className="space-y-4">
           <div className="flex items-center justify-between">
-            <h3 className="text-lg font-bold text-brand-dark dark:text-[#EAF2EC] flex items-center gap-2">
+            <h3 className="text-lg font-bold text-brand-dark dark:text-white flex items-center gap-2">
               <History className="w-5 h-5 text-emerald-700" />
               <span>
                 {language === 'bn' ? 'পূর্ববর্তী স্ক্যান রেকর্ড সমূহ' : language === 'hi' ? 'पिछले स्कैन रिकॉर्ड' : 'Previous Scan Records'}
@@ -491,7 +491,7 @@ export default function CropScannerPage() {
           </div>
 
           {recentScans.length === 0 ? (
-            <div className="text-center py-12 p-6 rounded-2xl bg-white dark:bg-[#13261D] border border-cream-200 dark:border-white/10 space-y-3">
+            <div className="text-center py-12 p-6 rounded-2xl bg-white dark:bg-[#111418] border border-cream-200 dark:border-white/10 space-y-3">
               <div className="w-12 h-12 rounded-full bg-cream-100 dark:bg-white/10 text-brand-dark/40 dark:text-white/40 flex items-center justify-center mx-auto">
                 <ScanLine className="w-6 h-6" />
               </div>
@@ -521,7 +521,7 @@ export default function CropScannerPage() {
                 <div
                   key={sc.id}
                   onClick={() => openSavedScan(sc)}
-                  className="group p-4 rounded-2xl bg-white dark:bg-[#13261D] border border-cream-200 dark:border-white/10 shadow-2xs hover:shadow-md hover:border-emerald-500 transition-all cursor-pointer flex flex-col justify-between gap-3"
+                  className="group p-4 rounded-2xl bg-white dark:bg-[#111418] border border-cream-200 dark:border-white/10 shadow-2xs hover:shadow-md hover:border-emerald-500 transition-all cursor-pointer flex flex-col justify-between gap-3"
                 >
                   <div className="flex gap-3">
                     <div className="w-16 h-16 rounded-xl overflow-hidden bg-cream-100 dark:bg-black/30 shrink-0 border border-cream-200 dark:border-white/10">
@@ -564,7 +564,7 @@ export default function CropScannerPage() {
       ) : (
         /* Scanner Capture Screen */
         <div className="space-y-8">
-          <Card className="border border-cream-200 dark:border-white/10 bg-white dark:bg-[#13261D] shadow-sm overflow-hidden rounded-2xl">
+          <Card className="border border-cream-200 dark:border-white/10 bg-white dark:bg-[#111418] shadow-sm overflow-hidden rounded-2xl">
             <CardContent className="p-6 sm:p-10 flex flex-col items-center justify-center text-center space-y-4">
               {imagePreview ? (
                 <div className="space-y-4 w-full flex flex-col items-center">
@@ -644,7 +644,7 @@ export default function CropScannerPage() {
                     <Camera className="w-8 h-8 text-emerald-700" />
                   </div>
                   <div>
-                    <h3 className="text-lg font-bold text-brand-dark dark:text-[#EAF2EC]">
+                    <h3 className="text-lg font-bold text-brand-dark dark:text-white">
                       {language === 'bn'
                         ? 'আক্রান্ত পাতার স্পষ্ট ছবি দিন'
                         : language === 'hi'

@@ -82,7 +82,7 @@ export function LivingFarmCanvas({
                 className={`relative px-4 py-2 rounded-2xl text-xs font-bold transition-all shrink-0 cursor-pointer ${
                   isSelected
                     ? 'bg-[#143224] text-white shadow-md scale-102 ring-2 ring-[#D9822B]/40'
-                    : 'bg-white/80 dark:bg-[#13261D] hover:bg-white text-[#10241A]/70 dark:text-white/70 hover:text-[#143224] dark:hover:text-white border border-[#143224]/10 dark:border-white/10'
+                    : 'bg-white/80 dark:bg-[#111418] hover:bg-white text-[#10241A]/70 dark:text-white/70 hover:text-[#143224] dark:hover:text-white border border-[#143224]/10 dark:border-white/10'
                 }`}
               >
                 <div className="flex items-center gap-2">
@@ -116,11 +116,11 @@ export function LivingFarmCanvas({
         {/* Live GPS & Soil Type Pill with Plot Quick Actions */}
         {activeFarm && (
           <div className="flex items-center gap-2 text-xs font-semibold text-[#10241A]/70 dark:text-white/70 flex-wrap self-end sm:self-center">
-            <span className="flex items-center gap-1 px-2.5 py-1 rounded-xl bg-white/80 dark:bg-[#13261D] border border-[#143224]/10 dark:border-white/10 shadow-2xs">
+            <span className="flex items-center gap-1 px-2.5 py-1 rounded-xl bg-white/80 dark:bg-[#111418] border border-[#143224]/10 dark:border-white/10 shadow-2xs">
               <Compass className="w-3.5 h-3.5 text-[#1E4733] dark:text-emerald-400" />
               <span className="truncate max-w-[150px]">{activeFarm.location_name || 'Location Tracked'}</span>
             </span>
-            <span className="px-2.5 py-1 rounded-xl bg-white/80 dark:bg-[#13261D] border border-[#143224]/10 dark:border-white/10 capitalize shadow-2xs">
+            <span className="px-2.5 py-1 rounded-xl bg-white/80 dark:bg-[#111418] border border-[#143224]/10 dark:border-white/10 capitalize shadow-2xs">
               {activeFarm.soil_type || 'Alluvial'} Soil
             </span>
 
@@ -153,11 +153,11 @@ export function LivingFarmCanvas({
         <div className="py-6 space-y-8 animate-in fade-in duration-300">
           {/* Active Crop Lifecycle River */}
           {activeCrops.length === 0 ? (
-            <div className="py-12 text-center space-y-3 bg-white/60 dark:bg-[#13261D] backdrop-blur-md rounded-3xl border border-[#143224]/10 dark:border-white/10 p-6">
+            <div className="py-12 text-center space-y-3 bg-white/60 dark:bg-[#111418] backdrop-blur-md rounded-3xl border border-[#143224]/10 dark:border-white/10 p-6">
               <div className="w-14 h-14 rounded-2xl bg-[#143224]/5 dark:bg-white/10 flex items-center justify-center text-[#143224]/40 dark:text-white/40 mx-auto">
                 <Sprout className="w-7 h-7" />
               </div>
-              <h3 className="text-base font-bold text-[#143224] dark:text-[#EAF2EC]">No Crops Currently Planted on this Plot</h3>
+              <h3 className="text-base font-bold text-[#143224] dark:text-white">No Crops Currently Planted on this Plot</h3>
               <p className="text-xs text-[#10241A]/60 dark:text-white/60 max-w-sm mx-auto">
                 Begin tracking growth stages, disease vulnerabilities, and harvest timelines by adding a crop.
               </p>
@@ -172,13 +172,13 @@ export function LivingFarmCanvas({
           ) : (
             <div className="space-y-6">
               <div className="flex items-center justify-between">
-                <span className="text-xs font-extrabold uppercase tracking-wider text-[#143224] dark:text-[#EAF2EC] flex items-center gap-1.5">
+                <span className="text-xs font-extrabold uppercase tracking-wider text-[#143224] dark:text-white flex items-center gap-1.5">
                   <Sprout className="w-4 h-4 text-[#D9822B]" />
                   <span>The Living Crop Growth River ({activeCrops.length} Active {activeCrops.length === 1 ? 'Crop' : 'Crops'})</span>
                 </span>
                 <button
                   onClick={() => onAddCrop(activeFarm.id)}
-                  className="inline-flex items-center gap-1 px-3 py-1 rounded-xl bg-white dark:bg-[#13261D] hover:bg-[#EAF2EC] text-[#143224] dark:text-white text-xs font-bold border border-[#143224]/15 dark:border-white/10 shadow-2xs transition-all cursor-pointer"
+                  className="inline-flex items-center gap-1 px-3 py-1 rounded-xl bg-white dark:bg-[#111418] hover:bg-[#EAF2EC] text-[#143224] dark:text-white text-xs font-bold border border-[#143224]/15 dark:border-white/10 shadow-2xs transition-all cursor-pointer"
                 >
                   <Plus className="w-3.5 h-3.5 text-[#1E4733] dark:text-emerald-400" />
                   <span>Add Another Crop</span>
@@ -201,7 +201,7 @@ export function LivingFarmCanvas({
                 return (
                   <div
                     key={crop.id}
-                    className="space-y-4 p-4 sm:p-6 rounded-3xl bg-white/80 dark:bg-[#13261D] backdrop-blur-md border border-[#143224]/10 dark:border-white/10 shadow-xs hover:border-[#143224]/25 transition-all"
+                    className="space-y-4 p-4 sm:p-6 rounded-3xl bg-white/80 dark:bg-[#111418] backdrop-blur-md border border-[#143224]/10 dark:border-white/10 shadow-xs hover:border-[#143224]/25 transition-all"
                   >
                     {/* Crop Header Aura */}
                     <div className="flex items-center justify-between flex-wrap gap-3">
@@ -215,7 +215,7 @@ export function LivingFarmCanvas({
                         </div>
                         <div>
                           <div className="flex items-center gap-2 flex-wrap">
-                            <h2 className="text-base sm:text-lg font-extrabold text-[#143224] dark:text-[#EAF2EC]">{crop.name}</h2>
+                            <h2 className="text-base sm:text-lg font-extrabold text-[#143224] dark:text-white">{crop.name}</h2>
                             {crop.variety && (
                               <span className="text-xs font-semibold px-2 py-0.5 rounded-lg bg-white dark:bg-black/30 border border-[#143224]/10 dark:border-white/10 text-[#143224] dark:text-white shadow-2xs">
                                 {crop.variety}
@@ -279,7 +279,7 @@ export function LivingFarmCanvas({
                           <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-emerald-600 text-white flex items-center justify-center text-xs font-bold shadow-xs">
                             🌱
                           </div>
-                          <span className="text-[11px] sm:text-xs font-bold text-[#143224] dark:text-[#EAF2EC] mt-2">Sown</span>
+                          <span className="text-[11px] sm:text-xs font-bold text-[#143224] dark:text-white mt-2">Sown</span>
                           <span className="text-[9px] sm:text-[10px] text-[#10241A]/50 dark:text-white/40">Day 1</span>
                         </div>
 
@@ -301,7 +301,7 @@ export function LivingFarmCanvas({
 
                         {/* Node 3: Flowering */}
                         <div className="flex flex-col items-center">
-                          <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-white dark:bg-[#13261D] border-2 border-emerald-300 dark:border-emerald-700 text-gray-400 flex items-center justify-center text-xs font-bold shadow-2xs">
+                          <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-white dark:bg-[#111418] border-2 border-emerald-300 dark:border-emerald-700 text-gray-400 flex items-center justify-center text-xs font-bold shadow-2xs">
                             🌾
                           </div>
                           <span className="text-[11px] sm:text-xs font-medium text-gray-500 dark:text-gray-400 mt-2">Flowering</span>
@@ -329,11 +329,11 @@ export function LivingFarmCanvas({
           {/* ─────────────────────────────────────────────────────────────
               3. THE SOIL STRATA: Layered Earth Nutrient Meters (No Boxes)
               ───────────────────────────────────────────────────────────── */}
-          <div className="p-5 sm:p-6 rounded-3xl bg-white/85 dark:bg-[#13261D] backdrop-blur-md border border-[#143224]/10 dark:border-white/10 space-y-4 shadow-xs">
+          <div className="p-5 sm:p-6 rounded-3xl bg-white/85 dark:bg-[#111418] backdrop-blur-md border border-[#143224]/10 dark:border-white/10 space-y-4 shadow-xs">
             <div className="flex items-center justify-between flex-wrap gap-2">
               <div className="flex items-center gap-2">
                 <span className="w-2.5 h-2.5 rounded-full bg-emerald-600 animate-pulse" />
-                <h3 className="text-xs font-bold uppercase tracking-wider text-[#143224] dark:text-[#EAF2EC]">
+                <h3 className="text-xs font-bold uppercase tracking-wider text-[#143224] dark:text-white">
                   Living Soil Strata & Fertility Balance
                 </h3>
               </div>
@@ -355,7 +355,7 @@ export function LivingFarmCanvas({
               {/* Nitrogen Gauge */}
               <div className="space-y-1">
                 <div className="flex justify-between text-xs font-bold">
-                  <span className="text-[#143224] dark:text-[#EAF2EC]">Nitrogen (N)</span>
+                  <span className="text-[#143224] dark:text-white">Nitrogen (N)</span>
                   <span className="text-emerald-700 dark:text-emerald-400 font-extrabold">{activeSoil?.nitrogen || 240} kg/ha • Balanced</span>
                 </div>
                 <div className="h-2.5 w-full bg-[#EAF2EC] dark:bg-white/10 rounded-full overflow-hidden p-0.5">
@@ -369,7 +369,7 @@ export function LivingFarmCanvas({
               {/* Phosphorus Gauge */}
               <div className="space-y-1">
                 <div className="flex justify-between text-xs font-bold">
-                  <span className="text-[#143224] dark:text-[#EAF2EC]">Phosphorus (P)</span>
+                  <span className="text-[#143224] dark:text-white">Phosphorus (P)</span>
                   <span className="text-blue-700 dark:text-blue-400 font-extrabold">{activeSoil?.phosphorus || 18} kg/ha • Optimal</span>
                 </div>
                 <div className="h-2.5 w-full bg-[#EAF2EC] dark:bg-white/10 rounded-full overflow-hidden p-0.5">
@@ -383,7 +383,7 @@ export function LivingFarmCanvas({
               {/* Potassium Gauge */}
               <div className="space-y-1">
                 <div className="flex justify-between text-xs font-bold">
-                  <span className="text-[#143224] dark:text-[#EAF2EC]">Potassium (K)</span>
+                  <span className="text-[#143224] dark:text-white">Potassium (K)</span>
                   <span className="text-amber-700 dark:text-amber-400 font-extrabold">{activeSoil?.potassium || 190} kg/ha • Adequate</span>
                 </div>
                 <div className="h-2.5 w-full bg-[#EAF2EC] dark:bg-white/10 rounded-full overflow-hidden p-0.5">
@@ -397,7 +397,7 @@ export function LivingFarmCanvas({
               {/* pH Meter */}
               <div className="space-y-1 pt-1">
                 <div className="flex justify-between text-xs font-bold">
-                  <span className="text-[#143224] dark:text-[#EAF2EC]">Soil Acidity (pH)</span>
+                  <span className="text-[#143224] dark:text-white">Soil Acidity (pH)</span>
                   <span className="text-[#143224] dark:text-emerald-400 font-extrabold">{activeSoil?.ph || 6.5} • Ideal Range (6.0 - 7.2)</span>
                 </div>
                 <div className="h-2.5 w-full bg-gradient-to-r from-red-400 via-emerald-400 to-blue-400 rounded-full relative">

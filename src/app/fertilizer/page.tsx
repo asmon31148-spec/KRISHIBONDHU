@@ -3,6 +3,8 @@
 import React, { useState, useMemo, useEffect, useCallback } from 'react';
 import Link from 'next/link';
 import { useTranslation } from '@/i18n/context';
+import { useAuth } from '@/context/AuthContext';
+import { createClient } from '@/lib/supabase/client';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/Card';
 import { Button } from '@/components/ui/Button';
 import { Badge } from '@/components/ui/Badge';
@@ -49,6 +51,7 @@ const CATEGORIES: { id: 'all' | CropCategory | 'custom'; label_en: string; label
 
 export default function FertilizerCalculatorPage() {
   const { language } = useTranslation();
+  const { user, profile } = useAuth();
 
   // Search & Category Filters
   const [activeCategory, setActiveCategory] = useState<'all' | CropCategory | 'custom'>('all');
@@ -75,6 +78,43 @@ export default function FertilizerCalculatorPage() {
 
   // Location & Weather Advisory
   const [selectedDistrict, setSelectedDistrict] = useState<string>('Hooghly');
+
+  // Adapt to logged-in farmer's actual district & crops
+  useEffect(() => {
+    if (profile?.district) {
+      setSelectedDistrict(profile.district);
+    }
+  }, [profile]);
+
+  useEffect(() => {
+    if (!user) return;
+    const supabase = createClient();
+    if (!supabase) return;
+
+    supabase
+      .from('crops')
+      .select('name, area')
+      .eq('user_id', user.id)
+      .order('created_at', { ascending: false })
+      .limit(1)
+      .then(({ data }) => {
+        if (data && data.length > 0) {
+          const userCrop = data[0];
+          const matched = Object.values(CROP_BASELINES).find(
+            (b) =>
+              b.id.toLowerCase() === userCrop.name.toLowerCase() ||
+              (b.name_en && b.name_en.toLowerCase().includes(userCrop.name.toLowerCase())) ||
+              userCrop.name.toLowerCase().includes(b.id.toLowerCase())
+          );
+          if (matched) {
+            setSelectedCropId(matched.id);
+          }
+          if (userCrop.area && userCrop.area > 0) {
+            setBigha(Math.max(1, Math.round(userCrop.area)));
+          }
+        }
+      });
+  }, [user]);
   const [weatherAlert, setWeatherAlert] = useState<{
     temperature: number;
     rainExpectedNext48h: boolean;
@@ -275,7 +315,7 @@ export default function FertilizerCalculatorPage() {
                 30+ Crops & Real Field Physics
               </span>
             </div>
-            <h1 className="text-2xl sm:text-3xl font-extrabold text-brand-dark dark:text-[#EAF2EC] tracking-tight">
+            <h1 className="text-2xl sm:text-3xl font-extrabold text-brand-dark dark:text-white tracking-tight">
               {language === 'bn'
                 ? 'বিজ্ঞানভিত্তিক সার ক্যালকুলেটর ও পুষ্টিবিজ্ঞান'
                 : language === 'hi'
