@@ -130,6 +130,19 @@ export function UnifiedFarmAnalytics({
     { name: 'Fallow / Veg', area: 0.5 },
   ];
 
+  // Pre-calculate disease severity counts for interactive donut and status breakdown
+  const healthyCount = severityData.find((s) => s.name.toLowerCase() === 'healthy')?.value || 0;
+  const mildCount = severityData.find((s) => s.name.toLowerCase() === 'mild')?.value || 0;
+  const moderateCount = severityData.find((s) => s.name.toLowerCase() === 'moderate')?.value || 0;
+  const severeCount = severityData.find((s) => s.name.toLowerCase() === 'severe')?.value || 0;
+
+  const SEVERITY_ACCENT_COLORS: Record<string, string> = {
+    healthy: '#10B981', // Vibrant Emerald Green
+    mild: '#F59E0B', // Warm Amber Gold
+    moderate: '#F97316', // Vibrant Fiery Orange
+    severe: '#EF4444', // High-Alert Crimson Red
+  };
+
   return (
     <div className="w-full space-y-5 text-left">
       {/* ─────────────────────────────────────────────────────────────
@@ -503,6 +516,7 @@ export function UnifiedFarmAnalytics({
                             : [
                                 { name: 'Healthy', value: 3, color: '#10B981' },
                                 { name: 'Mild', value: 1, color: '#F59E0B' },
+                                { name: 'Moderate', value: 1, color: '#F97316' },
                               ]
                         }
                         dataKey="value"
@@ -518,12 +532,34 @@ export function UnifiedFarmAnalytics({
                           : [
                               { name: 'Healthy', value: 3, color: '#10B981' },
                               { name: 'Mild', value: 1, color: '#F59E0B' },
+                              { name: 'Moderate', value: 1, color: '#F97316' },
                             ]
-                        ).map((entry, index) => (
-                          <Cell key={`cell-${index}`} fill={entry.color} />
-                        ))}
+                        ).map((entry, index) => {
+                          const fill =
+                            entry.color && entry.color !== '#64748B'
+                              ? entry.color
+                              : SEVERITY_ACCENT_COLORS[entry.name.toLowerCase()] || '#F97316';
+                          return <Cell key={`cell-${index}`} fill={fill} />;
+                        })}
                       </Pie>
-                      <Tooltip />
+                      <Tooltip
+                        content={({ active, payload }) => {
+                          if (active && payload && payload.length) {
+                            const data = payload[0];
+                            const entryColor =
+                              data.payload.color && data.payload.color !== '#64748B'
+                                ? data.payload.color
+                                : SEVERITY_ACCENT_COLORS[String(data.name).toLowerCase()] || '#F97316';
+                            return (
+                              <div className="bg-[#143224] text-white px-2.5 py-1.5 rounded-xl text-xs font-bold shadow-lg border border-white/10 flex items-center gap-2">
+                                <span className="w-2.5 h-2.5 rounded-full shrink-0" style={{ backgroundColor: entryColor }} />
+                                <span>{data.name}: {data.value} {data.value === 1 ? 'leaf' : 'leaves'}</span>
+                              </div>
+                            );
+                          }
+                          return null;
+                        }}
+                      />
                     </PieChart>
                   </ResponsiveContainer>
                 ) : (
@@ -537,30 +573,38 @@ export function UnifiedFarmAnalytics({
                 </div>
               </div>
 
-              {/* Status Breakdown Legend Chips */}
-              <div className="sm:col-span-6 space-y-2">
-                <div className="flex items-center justify-between p-2 rounded-xl bg-emerald-50/70 border border-emerald-200/40 text-xs">
-                  <div className="flex items-center gap-2">
-                    <span className="w-2.5 h-2.5 rounded-full bg-emerald-500" />
-                    <span className="font-semibold text-brand-dark">Healthy Foliage</span>
+              {/* Status Breakdown Legend Chips - All 4 Distinct High-Contrast Severity Levels */}
+              <div className="sm:col-span-6 space-y-1.5">
+                <div className="flex items-center justify-between p-2 rounded-xl bg-emerald-50/80 border border-emerald-200/50 text-xs">
+                  <div className="flex items-center gap-2 min-w-0">
+                    <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 shrink-0" />
+                    <span className="font-semibold text-brand-dark truncate">Healthy Foliage</span>
                   </div>
-                  <span className="font-bold text-emerald-800">{healthyScans > 0 ? healthyScans : 3} leaves</span>
+                  <span className="font-bold text-emerald-800 shrink-0">{healthyCount} {healthyCount === 1 ? 'leaf' : 'leaves'}</span>
                 </div>
 
-                <div className="flex items-center justify-between p-2 rounded-xl bg-amber-50/70 border border-amber-200/40 text-xs">
-                  <div className="flex items-center gap-2">
-                    <span className="w-2.5 h-2.5 rounded-full bg-amber-500" />
-                    <span className="font-semibold text-brand-dark">Mild Leaf Spot</span>
+                <div className="flex items-center justify-between p-2 rounded-xl bg-amber-50/80 border border-amber-200/50 text-xs">
+                  <div className="flex items-center gap-2 min-w-0">
+                    <span className="w-2.5 h-2.5 rounded-full bg-amber-500 shrink-0" />
+                    <span className="font-semibold text-brand-dark truncate">Mild Leaf Spot</span>
                   </div>
-                  <span className="font-bold text-amber-800">1 leaf</span>
+                  <span className="font-bold text-amber-800 shrink-0">{mildCount} {mildCount === 1 ? 'leaf' : 'leaves'}</span>
                 </div>
 
-                <div className="flex items-center justify-between p-2 rounded-xl bg-gray-50 border border-gray-200/50 text-xs">
-                  <div className="flex items-center gap-2">
-                    <span className="w-2.5 h-2.5 rounded-full bg-red-500" />
-                    <span className="font-semibold text-brand-dark">Severe / Critical</span>
+                <div className="flex items-center justify-between p-2 rounded-xl bg-orange-50/80 border border-orange-200/50 text-xs">
+                  <div className="flex items-center gap-2 min-w-0">
+                    <span className="w-2.5 h-2.5 rounded-full bg-[#F97316] shrink-0" />
+                    <span className="font-semibold text-brand-dark truncate">Moderate Disease</span>
                   </div>
-                  <span className="font-bold text-gray-500">0 leaves</span>
+                  <span className="font-bold text-orange-800 shrink-0">{moderateCount} {moderateCount === 1 ? 'leaf' : 'leaves'}</span>
+                </div>
+
+                <div className="flex items-center justify-between p-2 rounded-xl bg-red-50/50 border border-red-200/40 text-xs">
+                  <div className="flex items-center gap-2 min-w-0">
+                    <span className="w-2.5 h-2.5 rounded-full bg-red-500 shrink-0" />
+                    <span className="font-semibold text-brand-dark truncate">Severe / Critical</span>
+                  </div>
+                  <span className="font-bold text-red-700 shrink-0">{severeCount} {severeCount === 1 ? 'leaf' : 'leaves'}</span>
                 </div>
               </div>
             </div>

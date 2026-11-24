@@ -61,11 +61,11 @@ interface ScanMetric {
 }
 
 const SEVERITY_COLORS: Record<string, string> = {
-  healthy: '#10B981', // Emerald
-  mild: '#F59E0B', // Amber
-  moderate: '#F97316', // Orange
-  severe: '#EF4444', // Red
-  uncertain: '#64748B', // Slate
+  healthy: '#10B981', // Vibrant Emerald Green
+  mild: '#F59E0B', // Warm Amber Gold
+  moderate: '#F97316', // Vibrant Fiery Orange
+  severe: '#EF4444', // High-Alert Crimson Red
+  uncertain: '#8B5CF6', // Purple/Violet
 };
 
 export default function DashboardPage() {
@@ -168,17 +168,28 @@ export default function DashboardPage() {
   };
 
   // 1. Severity Distribution
-  const severityCounts: Record<string, number> = {};
+  const severityCounts: Record<string, number> = {
+    healthy: 0,
+    mild: 0,
+    moderate: 0,
+    severe: 0,
+  };
   (allScans.length > 0 ? allScans : scans).forEach((s) => {
-    const sev = s.severity || 'healthy';
-    severityCounts[sev] = (severityCounts[sev] || 0) + 1;
+    const raw = (s.severity || 'healthy').toLowerCase().trim();
+    if (raw === 'healthy') severityCounts.healthy += 1;
+    else if (raw === 'mild') severityCounts.mild += 1;
+    else if (raw === 'moderate') severityCounts.moderate += 1;
+    else if (raw === 'severe') severityCounts.severe += 1;
+    else severityCounts.moderate += 1;
   });
 
-  const severityPieData = Object.entries(severityCounts).map(([sev, count]) => ({
-    name: sev.charAt(0).toUpperCase() + sev.slice(1),
-    value: count,
-    color: SEVERITY_COLORS[sev] || '#64748B',
-  }));
+  const severityPieData = Object.entries(severityCounts)
+    .filter(([_, count]) => count > 0)
+    .map(([sev, count]) => ({
+      name: sev.charAt(0).toUpperCase() + sev.slice(1),
+      value: count,
+      color: SEVERITY_COLORS[sev] || '#F97316',
+    }));
 
   // 2. Crop Land Allocation normalized to Bigha
   const cropAreaData = crops.map((c) => {
