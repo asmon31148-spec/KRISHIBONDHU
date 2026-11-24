@@ -426,27 +426,27 @@ What are the specific disease, pest, or nutrient risks for this crop in West Ben
   const currentSuggestions = SUGGESTED_CARDS[language] || SUGGESTED_CARDS.en;
 
   return (
-    <div className="flex flex-col h-full w-full bg-white relative overflow-hidden text-left">
+    <div className="flex flex-col h-full w-full bg-[#FDFCFA] dark:bg-[#0B1711] relative overflow-hidden text-left transition-colors duration-200">
       {/* Top Bar with Clean Header & History Controls */}
-      <div className="flex items-center justify-between px-3 sm:px-5 h-[52px] border-b border-[#143224]/10 bg-[#F9F7F2]/90 backdrop-blur-md gap-3 shrink-0">
+      <div className="flex items-center justify-between px-3 sm:px-5 h-[52px] border-b border-[#143224]/10 dark:border-white/10 bg-[#F9F7F2]/90 dark:bg-[#0B1711]/90 backdrop-blur-md gap-3 shrink-0">
         <div className="flex items-center gap-2 min-w-0">
           {!isGuest && (
             <button
               onClick={() => setIsSidebarOpen(!isSidebarOpen)}
-              className={`inline-flex items-center gap-2 px-3 py-1.5 rounded-xl border text-xs font-bold transition-all shrink-0 cursor-pointer ${
+              className={`inline-flex items-center gap-2 px-3 py-1.5 rounded-xl border text-xs font-bold transition-all shrink-0 cursor-pointer min-h-[36px] ${
                 isSidebarOpen
-                  ? 'bg-[#143224] text-white border-[#143224] shadow-xs'
-                  : 'bg-white hover:bg-[#EAF2EC] text-[#143224] border-[#143224]/15 shadow-2xs'
+                  ? 'bg-[#143224] dark:bg-emerald-600 text-white border-[#143224] dark:border-emerald-600 shadow-xs'
+                  : 'bg-white dark:bg-[#13261D] hover:bg-[#EAF2EC] dark:hover:bg-[#1A3326] text-[#143224] dark:text-[#EAF2EC] border-[#143224]/15 dark:border-white/15 shadow-2xs'
               }`}
               title={isSidebarOpen ? 'Hide History Panel' : 'Show Saved Conversations'}
               aria-label="Toggle history"
             >
-              <MessageSquare className={`w-3.5 h-3.5 ${isSidebarOpen ? 'text-[#D9822B]' : 'text-[#1E4733]'}`} />
-              <span>{isSidebarOpen ? 'Close History' : 'Chat History'}</span>
+              <MessageSquare className={`w-3.5 h-3.5 ${isSidebarOpen ? 'text-[#D9822B] dark:text-emerald-100' : 'text-[#1E4733] dark:text-emerald-400'}`} />
+              <span>{isSidebarOpen ? 'Close' : 'History'}</span>
               {conversations.length > 0 && (
                 <span
                   className={`px-1.5 py-0.2 rounded-full text-[10px] font-extrabold ${
-                    isSidebarOpen ? 'bg-white/20 text-white' : 'bg-[#143224]/10 text-[#143224]'
+                    isSidebarOpen ? 'bg-white/20 text-white' : 'bg-[#143224]/10 dark:bg-white/10 text-[#143224] dark:text-white'
                   }`}
                 >
                   {conversations.length}
@@ -455,9 +455,9 @@ What are the specific disease, pest, or nutrient risks for this crop in West Ben
             </button>
           )}
 
-          <div className="hidden sm:flex items-center gap-1.5 px-3 py-1 rounded-xl bg-white border border-[#143224]/10 text-[#143224] text-xs font-bold shadow-2xs">
-            <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
-            <span>BCKV & ICAR Agronomy AI</span>
+          <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-xl bg-white dark:bg-[#13261D] border border-[#143224]/10 dark:border-white/10 text-[#143224] dark:text-[#EAF2EC] text-xs font-bold shadow-2xs">
+            <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse shrink-0" />
+            <span className="truncate max-w-[140px] sm:max-w-none">BCKV & ICAR AI</span>
           </div>
         </div>
 
@@ -466,8 +466,8 @@ What are the specific disease, pest, or nutrient risks for this crop in West Ben
             variant="outline"
             size="sm"
             onClick={handleNewChat}
-            className="bg-white hover:bg-[#EAF2EC] text-xs font-bold border-[#143224]/15 text-[#143224] shadow-2xs"
-            leftIcon={<Plus className="w-3.5 h-3.5 text-[#1E4733]" />}
+            className="bg-white dark:bg-[#13261D] hover:bg-[#EAF2EC] dark:hover:bg-[#1A3326] text-xs font-bold border-[#143224]/15 dark:border-white/15 text-[#143224] dark:text-[#EAF2EC] shadow-2xs min-h-[36px]"
+            leftIcon={<Plus className="w-3.5 h-3.5 text-[#1E4733] dark:text-emerald-400" />}
           >
             New Chat
           </Button>
@@ -478,20 +478,20 @@ What are the specific disease, pest, or nutrient risks for this crop in West Ben
       <div className="flex-1 flex overflow-hidden relative">
         {/* Sub-Sidebar: Sleek Integrated Chat History */}
         {isSidebarOpen && !isGuest && (
-          <aside className="w-72 lg:w-80 border-r border-[#143224]/10 bg-[#FDFCFA] flex flex-col shrink-0 z-10 animate-in slide-in-from-left duration-150">
+          <aside className="w-72 lg:w-80 border-r border-[#143224]/10 dark:border-white/10 bg-[#FDFCFA] dark:bg-[#0F1E16] flex flex-col shrink-0 z-10 animate-in slide-in-from-left duration-150">
             {/* Panel Header */}
-            <div className="p-3.5 border-b border-[#143224]/10 flex items-center justify-between bg-[#F9F7F2]/60">
+            <div className="p-3.5 border-b border-[#143224]/10 dark:border-white/10 flex items-center justify-between bg-[#F9F7F2]/60 dark:bg-[#0B1711]/60">
               <div className="flex items-center gap-2">
-                <span className="text-xs font-bold uppercase tracking-wider text-[#143224]">
+                <span className="text-xs font-bold uppercase tracking-wider text-[#143224] dark:text-[#EAF2EC]">
                   Saved Chats
                 </span>
-                <span className="px-2 py-0.5 rounded-full text-[10px] font-extrabold bg-[#143224]/10 text-[#143224]">
+                <span className="px-2 py-0.5 rounded-full text-[10px] font-extrabold bg-[#143224]/10 dark:bg-white/10 text-[#143224] dark:text-[#EAF2EC]">
                   {conversations.length}
                 </span>
               </div>
               <button
                 onClick={() => setIsSidebarOpen(false)}
-                className="p-1 rounded-lg text-[#10241A]/50 hover:text-[#10241A] hover:bg-black/5 transition-colors"
+                className="p-1 rounded-lg text-[#10241A]/50 dark:text-white/50 hover:text-[#10241A] dark:hover:text-white hover:bg-black/5 dark:hover:bg-white/10 transition-colors"
                 title="Collapse History"
               >
                 <X className="w-4 h-4" />
@@ -499,9 +499,9 @@ What are the specific disease, pest, or nutrient risks for this crop in West Ben
             </div>
 
             {/* Scrollable Conversation List with Sleek Hover Items */}
-            <div className="flex-1 overflow-y-auto p-2.5 space-y-1">
+            <div className="flex-1 overflow-y-auto p-2.5 space-y-1 no-scrollbar">
               {conversations.length === 0 ? (
-                <div className="p-6 text-center text-xs text-[#10241A]/50 italic">
+                <div className="p-6 text-center text-xs text-[#10241A]/50 dark:text-white/40 italic">
                   No previous conversations. Start asking questions to save your advisory history!
                 </div>
               ) : (
@@ -516,14 +516,14 @@ What are the specific disease, pest, or nutrient risks for this crop in West Ben
                       }}
                       className={`group flex items-center justify-between px-3 py-2.5 rounded-xl text-xs font-semibold cursor-pointer transition-all ${
                         isSelected
-                          ? 'bg-[#143224] text-white shadow-xs'
-                          : 'text-[#10241A]/80 hover:bg-[#EAF2EC]/70 hover:text-[#143224]'
+                          ? 'bg-[#143224] dark:bg-emerald-600 text-white shadow-xs'
+                          : 'text-[#10241A]/80 dark:text-[#EAF2EC]/80 hover:bg-[#EAF2EC]/70 dark:hover:bg-white/5 hover:text-[#143224] dark:hover:text-white'
                       }`}
                     >
                       <div className="flex items-center gap-2 min-w-0">
                         <MessageSquare
                           className={`w-3.5 h-3.5 shrink-0 ${
-                            isSelected ? 'text-[#D9822B]' : 'text-[#143224]/40 group-hover:text-[#143224]'
+                            isSelected ? 'text-[#D9822B] dark:text-white' : 'text-[#143224]/40 dark:text-emerald-400/60 group-hover:text-[#143224]'
                           }`}
                         />
                         <span className="truncate">{conv.title}</span>
@@ -531,7 +531,7 @@ What are the specific disease, pest, or nutrient risks for this crop in West Ben
                       <button
                         onClick={(e) => deleteConversation(conv.id, e)}
                         className={`p-1 rounded-md opacity-0 group-hover:opacity-100 transition-opacity hover:text-red-500 hover:bg-black/5 ${
-                          isSelected ? 'text-white/80 hover:text-white' : 'text-[#10241A]/40'
+                          isSelected ? 'text-white/80 hover:text-white' : 'text-[#10241A]/40 dark:text-white/40'
                         }`}
                         aria-label="Delete chat"
                       >
@@ -546,27 +546,27 @@ What are the specific disease, pest, or nutrient risks for this crop in West Ben
         )}
 
         {/* Chat Messages Stream Area (Flush Docked flex-1) */}
-        <div className="flex-1 flex flex-col min-h-0 bg-white overflow-hidden">
+        <div className="flex-1 flex flex-col min-h-0 bg-[#FDFCFA] dark:bg-[#0B1711] overflow-hidden transition-colors duration-200">
           {/* Active Crop Field Issue Context Pill (If navigated from Farms/Crops/Alerts) */}
           {activeCropContext && (
-            <div className="mx-3 mt-3 p-3 rounded-2xl bg-gradient-to-r from-amber-50 to-cream-50 border border-amber-300 flex items-start justify-between gap-3 shadow-2xs shrink-0">
+            <div className="mx-3 mt-3 p-3 rounded-2xl bg-amber-50 dark:bg-amber-950/40 border border-amber-300 dark:border-amber-500/30 flex items-start justify-between gap-3 shadow-2xs shrink-0">
               <div className="flex items-start gap-2.5">
-                <div className="w-8 h-8 rounded-xl bg-amber-100 border border-amber-300 flex items-center justify-center text-amber-800 shrink-0 mt-0.5 shadow-2xs">
-                  <ShieldAlert className="w-4 h-4 text-amber-700 animate-pulse" />
+                <div className="w-8 h-8 rounded-xl bg-amber-100 dark:bg-amber-900/60 border border-amber-300 dark:border-amber-500/30 flex items-center justify-center text-amber-800 dark:text-amber-200 shrink-0 mt-0.5 shadow-2xs">
+                  <ShieldAlert className="w-4 h-4 text-amber-700 dark:text-amber-400 animate-pulse" />
                 </div>
                 <div>
                   <div className="flex items-center gap-2 flex-wrap">
-                    <span className="text-xs font-extrabold text-brand-dark">
+                    <span className="text-xs font-extrabold text-brand-dark dark:text-amber-100">
                       Active Plot Context Loaded
                     </span>
-                    <span className="px-2 py-0.5 rounded-full bg-amber-200 text-amber-900 text-[10px] font-extrabold uppercase tracking-wider">
+                    <span className="px-2 py-0.5 rounded-full bg-amber-200 dark:bg-amber-800 text-amber-900 dark:text-amber-100 text-[10px] font-extrabold uppercase tracking-wider">
                       {activeCropContext.healthStatus === 'needs_attention'
                         ? 'Action Needed'
                         : activeCropContext.healthStatus || 'Alert'}
                     </span>
                   </div>
-                  <p className="text-xs text-brand-dark/85 mt-0.5 leading-snug">
-                    <strong className="text-brand-forest">{activeCropContext.cropName}</strong>
+                  <p className="text-xs text-brand-dark/85 dark:text-amber-200/90 mt-0.5 leading-snug">
+                    <strong className="text-brand-forest dark:text-white">{activeCropContext.cropName}</strong>
                     {activeCropContext.variety ? ` (Variety: ${activeCropContext.variety})` : ''}
                     {activeCropContext.farmName ? ` on ${activeCropContext.farmName}` : ''}
                     {activeCropContext.area ? ` • ${activeCropContext.area} ${activeCropContext.areaUnit || 'Bigha'}` : ''}
@@ -576,7 +576,7 @@ What are the specific disease, pest, or nutrient risks for this crop in West Ben
               </div>
               <button
                 onClick={() => setActiveCropContext(null)}
-                className="p-1 rounded-lg text-brand-dark/40 hover:text-brand-dark hover:bg-amber-100 transition-colors"
+                className="p-1 rounded-lg text-brand-dark/40 dark:text-white/40 hover:text-brand-dark dark:hover:text-white hover:bg-amber-100 dark:hover:bg-amber-900/40 transition-colors"
                 title="Clear Context"
               >
                 <X className="w-4 h-4" />
@@ -585,67 +585,53 @@ What are the specific disease, pest, or nutrient risks for this crop in West Ben
           )}
 
           {/* Scrollable Message History */}
-          <div className="flex-1 overflow-y-auto px-3 py-2 sm:p-4 lg:p-5 space-y-3 sm:space-y-4">
-            <div className="max-w-3xl mx-auto w-full space-y-2.5 sm:space-y-4">
+          <div className="flex-1 overflow-y-auto px-3 py-3 sm:p-5 space-y-4 no-scrollbar">
+            <div className="max-w-3xl mx-auto w-full space-y-4">
               {messages.length === 0 ? (
-                <div className="flex flex-col items-center justify-center text-center p-3 sm:p-6 space-y-4 sm:space-y-6 w-full my-auto">
-                  <div className="space-y-2">
-                    <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#EAF2EC] border border-[#143224]/15 text-[#143224] text-xs font-bold">
-                      <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
-                      <span>
-                        {language === 'bn'
-                          ? 'আইসিএআর ও বিসিকেভি সমন্বিত কৃষি বুদ্ধিমত্তা'
-                          : language === 'hi'
-                          ? 'आईसीएआर एवं बीसीकेवी प्रमाणित कृषि बुद्धिमत्ता'
-                          : 'ICAR & BCKV Certified Agronomy AI'}
-                      </span>
-                    </div>
-                    <h3 className="text-xl sm:text-2xl font-black text-[#143224] tracking-tight">
+                /* Compact, Friendly Mobile Welcome Area */
+                <div className="flex flex-col items-center justify-center text-center p-4 sm:p-8 space-y-4 sm:space-y-6 w-full my-auto">
+                  <div className="w-14 h-14 rounded-2xl bg-[#EAF2EC] dark:bg-[#13261D] border border-[#143224]/10 dark:border-white/10 flex items-center justify-center shadow-xs">
+                    <Bot className="w-7 h-7 text-[#143224] dark:text-emerald-400" />
+                  </div>
+
+                  <div className="space-y-1.5 max-w-md">
+                    <h3 className="text-lg sm:text-xl font-black text-[#143224] dark:text-[#EAF2EC] tracking-tight">
                       {language === 'bn'
-                        ? 'আজ আপনার খামারে কীভাবে সাহায্য করতে পারি?'
+                        ? 'কৃষিবন্ধু এগ্রোনমি সহকারী'
                         : language === 'hi'
-                        ? 'आज आपके खेत के लिए क्या सहायता चाहिए?'
-                        : 'How can I assist your farm today?'}
+                        ? 'कृषिबंधु सस्य विज्ञान सहायक'
+                        : 'Krishibondhu Agronomy Assistant'}
                     </h3>
-                    <p className="text-xs sm:text-sm text-[#5E7367] max-w-lg mx-auto font-medium">
+                    <p className="text-xs sm:text-sm text-[#5E7367] dark:text-[#94A89E] font-medium leading-relaxed">
                       {language === 'bn'
-                        ? 'ফসলের রোগ নির্ণয়, অনুমোদিত ওষুধের মাত্রা, সারের হিসাব বা সরকারি প্রকল্পের তথ্য জানুন।'
+                        ? 'গাছের পাতার রোগ, সার প্রয়োগ মাত্রা ও সরকারি অনুদান সম্পর্কে সরাসরি প্রশ্ন করুন।'
                         : language === 'hi'
-                        ? 'फसल रोग, दवा की सटीक मात्रा, खाद का अनुपात या सरकारी योजनाओं के बारे में पूछें।'
-                        : 'Ask about leaf diseases, approved chemical/bio dosages, fertilizer schedules, or government subsidies.'}
+                        ? 'फसल रोग, खाद की सटीक मात्रा और सरकारी योजनाओं की जानकारी पाएं।'
+                        : 'Ask about crop leaf diseases, fertilizer dosages, or government subsidies.'}
                     </p>
                   </div>
 
-                  {/* 2x2 Bento Query Cards */}
-                  <div className="w-full space-y-2.5">
-                    <span className="text-[11px] font-bold text-[#143224] uppercase tracking-wider block text-left">
-                      {language === 'bn'
-                        ? 'জনপ্রিয় প্রশ্নসমূহ'
-                        : language === 'hi'
-                        ? 'लोकप्रिय प्रश्न'
-                        : 'Recommended Queries'}
+                  {/* Compact Swipeable Topic Chips (Horizontal Scroll, Zero Screen Bloat) */}
+                  <div className="w-full space-y-2 pt-2">
+                    <span className="text-[10px] font-bold uppercase tracking-wider text-[#143224]/60 dark:text-white/50 block text-center">
+                      {language === 'bn' ? 'কী জানতে চান? বেছে নিন' : language === 'hi' ? 'सुझाए गए विषय' : 'Quick Suggestions'}
                     </span>
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-left w-full">
+                    <div className="flex items-center gap-2 overflow-x-auto no-scrollbar py-1 px-1 justify-start sm:justify-center">
                       {currentSuggestions.map((card, idx) => (
                         <button
                           key={idx}
                           type="button"
                           onClick={() => handleSendMessage(card.prompt)}
-                          className="p-3.5 rounded-2xl bg-white hover:bg-[#F9F7F2] border border-[#143224]/10 hover:border-[#143224]/30 shadow-[0_2px_8px_rgba(20,50,36,0.03)] hover:shadow-[0_4px_16px_rgba(20,50,36,0.08)] flex flex-col justify-between gap-2 text-left cursor-pointer transition-all hover:-translate-y-0.5 active:translate-y-0 group"
+                          className="flex items-center gap-2 px-3 py-2 rounded-xl bg-white dark:bg-[#13261D] hover:bg-[#EAF2EC] dark:hover:bg-[#1A3326] border border-[#143224]/10 dark:border-white/10 text-left cursor-pointer transition-all active:scale-[0.98] shadow-2xs shrink-0 min-h-[44px]"
                         >
-                          <div className="flex items-center justify-between gap-2 w-full">
-                            <span className="text-xl shrink-0">{card.icon}</span>
-                            <span className="text-[10px] font-bold text-[#D9822B] px-2 py-0.5 rounded-full bg-amber-50 border border-amber-200/60 uppercase tracking-wider">
+                          <span className="text-base shrink-0">{card.icon}</span>
+                          <div className="text-left">
+                            <span className="text-xs font-bold text-[#143224] dark:text-[#EAF2EC] block leading-tight whitespace-nowrap">
+                              {card.title}
+                            </span>
+                            <span className="text-[10px] font-semibold text-[#D9822B] block leading-tight">
                               {card.tag}
                             </span>
-                          </div>
-                          <div>
-                            <h4 className="text-xs sm:text-sm font-bold text-[#143224] group-hover:text-[#D9822B] transition-colors leading-snug">
-                              {card.title}
-                            </h4>
-                            <p className="text-[11px] text-[#5E7367] mt-0.5 line-clamp-2 leading-relaxed">
-                              {card.desc}
-                            </p>
                           </div>
                         </button>
                       ))}
@@ -653,22 +639,23 @@ What are the specific disease, pest, or nutrient risks for this crop in West Ben
                   </div>
                 </div>
               ) : (
+                /* Active Conversation Stream */
                 messages.map((msg) => (
                   <div
                     key={msg.id}
-                    className={`flex gap-3 ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}
+                    className={`flex gap-2.5 sm:gap-3 ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}
                   >
                     {msg.role === 'assistant' && (
-                      <div className="w-8 h-8 rounded-xl bg-brand-forest text-white flex items-center justify-center shrink-0 mt-0.5 shadow-2xs">
-                        <Bot className="w-4 h-4 text-brand-mint" />
+                      <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-xl bg-[#143224] dark:bg-emerald-700 text-white flex items-center justify-center shrink-0 mt-0.5 shadow-2xs">
+                        <Bot className="w-4 h-4 text-emerald-300" />
                       </div>
                     )}
 
                     <div
-                      className={`max-w-[88%] sm:max-w-[80%] md:max-w-[75%] rounded-2xl p-3 sm:p-4 text-xs sm:text-sm leading-relaxed ${
+                      className={`max-w-[88%] sm:max-w-[80%] rounded-2xl p-3.5 sm:p-4 text-[15px] sm:text-base leading-relaxed ${
                         msg.role === 'user'
-                          ? 'bg-brand-forest text-white shadow-xs rounded-tr-xs'
-                          : 'bg-cream-50 text-brand-dark border border-cream-200 rounded-tl-xs shadow-2xs'
+                          ? 'bg-[#143224] dark:bg-emerald-700 text-white shadow-xs rounded-tr-xs'
+                          : 'bg-white dark:bg-[#13261D] text-[#10241A] dark:text-[#EAF2EC] border border-[#143224]/10 dark:border-white/10 rounded-tl-xs shadow-2xs'
                       }`}
                     >
                       {/* Attached image if any */}
@@ -691,10 +678,10 @@ What are the specific disease, pest, or nutrient risks for this crop in West Ben
 
                       {/* Controls for assistant replies */}
                       {msg.role === 'assistant' && (
-                        <div className="flex items-center justify-end gap-2.5 pt-2 mt-2 border-t border-cream-200/80 text-[11px] text-brand-dark/60">
+                        <div className="flex items-center justify-end gap-3 pt-2 mt-2.5 border-t border-[#143224]/10 dark:border-white/10 text-xs text-[#5E7367] dark:text-white/50">
                           <button
                             onClick={() => copyToClipboard(msg.id, msg.content)}
-                            className="flex items-center gap-1 hover:text-brand-dark transition-colors cursor-pointer"
+                            className="flex items-center gap-1 hover:text-[#10241A] dark:hover:text-white transition-colors cursor-pointer min-h-[32px] px-1"
                             title="Copy reply text"
                           >
                             <Copy className="w-3.5 h-3.5" />
@@ -712,7 +699,7 @@ What are the specific disease, pest, or nutrient risks for this crop in West Ben
                               setReportingContent(msg.content);
                               setReportModalOpen(true);
                             }}
-                            className="flex items-center gap-1 hover:text-red-600 transition-colors cursor-pointer"
+                            className="flex items-center gap-1 hover:text-red-600 transition-colors cursor-pointer min-h-[32px] px-1"
                             title="Report safety concern"
                           >
                             <Flag className="w-3.5 h-3.5" />
@@ -727,15 +714,15 @@ What are the specific disease, pest, or nutrient risks for this crop in West Ben
 
               {/* Typing Loader Indicator */}
               {isLoading && (
-                <div className="flex gap-3 justify-start">
-                  <div className="w-8 h-8 rounded-xl bg-brand-forest text-white flex items-center justify-center shrink-0 shadow-2xs">
-                    <Bot className="w-4 h-4 text-brand-mint" />
+                <div className="flex gap-2.5 sm:gap-3 justify-start">
+                  <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-xl bg-[#143224] dark:bg-emerald-700 text-white flex items-center justify-center shrink-0 shadow-2xs">
+                    <Bot className="w-4 h-4 text-emerald-300" />
                   </div>
-                  <div className="bg-cream-50 border border-cream-200 rounded-2xl p-4 flex items-center gap-2 text-xs text-brand-dark/70 shadow-2xs">
-                    <span className="w-2 h-2 rounded-full bg-brand-leaf animate-bounce [animation-delay:-0.3s]" />
-                    <span className="w-2 h-2 rounded-full bg-brand-leaf animate-bounce [animation-delay:-0.15s]" />
-                    <span className="w-2 h-2 rounded-full bg-brand-leaf animate-bounce" />
-                    <span className="ml-2 font-medium">Analyzing agronomy guidelines...</span>
+                  <div className="bg-white dark:bg-[#13261D] border border-[#143224]/10 dark:border-white/10 rounded-2xl p-3.5 flex items-center gap-2 text-xs sm:text-sm text-[#10241A]/70 dark:text-[#EAF2EC]/70 shadow-2xs">
+                    <span className="w-2 h-2 rounded-full bg-emerald-500 animate-bounce [animation-delay:-0.3s]" />
+                    <span className="w-2 h-2 rounded-full bg-emerald-500 animate-bounce [animation-delay:-0.15s]" />
+                    <span className="w-2 h-2 rounded-full bg-emerald-500 animate-bounce" />
+                    <span className="ml-1 font-medium">Analyzing agronomy guidelines...</span>
                   </div>
                 </div>
               )}
@@ -746,7 +733,7 @@ What are the specific disease, pest, or nutrient risks for this crop in West Ben
 
           {/* Attached Image Preview Bar */}
           {attachedImage && (
-            <div className="px-4 py-2 border-t border-cream-200 bg-cream-50 flex items-center justify-between">
+            <div className="px-4 py-2 border-t border-[#143224]/10 dark:border-white/10 bg-[#F9F7F2] dark:bg-[#13261D] flex items-center justify-between">
               <div className="flex items-center gap-2">
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img
@@ -754,11 +741,11 @@ What are the specific disease, pest, or nutrient risks for this crop in West Ben
                   alt="Attachment preview"
                   className="w-10 h-10 object-cover rounded-lg border border-cream-300"
                 />
-                <span className="text-xs font-semibold text-brand-dark">Image attached</span>
+                <span className="text-xs font-semibold text-brand-dark dark:text-white">Image attached</span>
               </div>
               <button
                 onClick={() => setAttachedImage(null)}
-                className="p-1 rounded-full hover:bg-cream-200 text-brand-dark/60 hover:text-brand-dark"
+                className="p-1 rounded-full hover:bg-cream-200 dark:hover:bg-white/10 text-brand-dark/60 dark:text-white/60 hover:text-brand-dark"
                 title="Remove image"
               >
                 <X className="w-4 h-4" />
@@ -766,10 +753,10 @@ What are the specific disease, pest, or nutrient risks for this crop in West Ben
             </div>
           )}
 
-          {/* Unified Modern Agronomy Chat Capsule */}
-          <div className="p-3 sm:p-4 border-t border-[#143224]/10 bg-white/95 backdrop-blur-md shrink-0">
-            <div className="max-w-3xl mx-auto space-y-1.5">
-              <div className="flex items-center gap-1.5 sm:gap-2 p-1.5 sm:p-2 rounded-2xl bg-[#F9F7F2] border border-[#143224]/15 shadow-[0_2px_12px_rgba(20,50,36,0.04)] focus-within:border-[#143224]/35 focus-within:bg-white focus-within:shadow-[0_4px_16px_rgba(20,50,36,0.08)] transition-all">
+          {/* Unified Modern Agronomy Chat Capsule (Pinned Above Mobile Navigation) */}
+          <div className="p-2.5 sm:p-4 border-t border-[#143224]/10 dark:border-white/10 bg-white/95 dark:bg-[#0B1711]/95 backdrop-blur-md shrink-0">
+            <div className="max-w-3xl mx-auto space-y-1">
+              <div className="flex items-center gap-1.5 sm:gap-2 p-1.5 sm:p-2 rounded-2xl bg-[#F9F7F2] dark:bg-[#13261D] border border-[#143224]/15 dark:border-white/15 shadow-[0_2px_12px_rgba(0,0,0,0.03)] focus-within:border-[#143224]/40 dark:focus-within:border-emerald-500 focus-within:bg-white dark:focus-within:bg-[#172D22] transition-all">
                 {/* Photo Attachment Input & Trigger */}
                 <input
                   type="file"
@@ -782,14 +769,14 @@ What are the specific disease, pest, or nutrient risks for this crop in West Ben
                 <button
                   type="button"
                   onClick={() => fileInputRef.current?.click()}
-                  className="p-2 sm:p-2.5 rounded-xl text-[#143224]/70 hover:text-[#143224] hover:bg-white transition-colors shrink-0 cursor-pointer"
+                  className="p-2 sm:p-2.5 rounded-xl text-[#143224]/70 dark:text-white/70 hover:text-[#143224] dark:hover:text-white hover:bg-white dark:hover:bg-white/10 transition-colors shrink-0 cursor-pointer min-h-[44px] min-w-[44px] flex items-center justify-center"
                   title="Attach photo of diseased leaf or crop"
                   disabled={isLoading}
                 >
-                  <ImageIcon className="w-4 h-4 text-[#1E4733]" />
+                  <ImageIcon className="w-5 h-5 text-[#1E4733] dark:text-emerald-400" />
                 </button>
 
-                {/* Text Input */}
+                {/* Text Input (16px to prevent iOS auto-zoom) */}
                 <input
                   type="text"
                   value={inputText}
@@ -808,7 +795,7 @@ What are the specific disease, pest, or nutrient risks for this crop in West Ben
                       : 'Ask about crop symptoms, dosage, or soil...'
                   }
                   disabled={isLoading}
-                  className="flex-1 bg-transparent border-none text-xs sm:text-sm text-[#143224] font-medium placeholder:text-[#5E7367]/60 focus:outline-none focus:ring-0 px-1"
+                  className="flex-1 bg-transparent border-none text-base text-[#143224] dark:text-[#EAF2EC] font-medium placeholder:text-[#5E7367]/60 dark:placeholder:text-white/40 focus:outline-none focus:ring-0 px-1"
                 />
 
                 {/* Walkie-Talkie Voice Microphone Button */}
@@ -825,15 +812,15 @@ What are the specific disease, pest, or nutrient risks for this crop in West Ben
                   type="button"
                   onClick={() => handleSendMessage()}
                   disabled={isLoading || (!inputText.trim() && !attachedImage)}
-                  className="p-2 sm:p-2.5 rounded-xl bg-[#143224] hover:bg-[#1E4733] disabled:opacity-30 disabled:hover:bg-[#143224] text-white transition-all shadow-xs shrink-0 cursor-pointer disabled:cursor-not-allowed"
+                  className="p-2.5 sm:p-3 rounded-xl bg-[#143224] dark:bg-emerald-600 hover:bg-[#1E4733] disabled:opacity-30 disabled:hover:bg-[#143224] text-white transition-all shadow-xs shrink-0 cursor-pointer disabled:cursor-not-allowed min-h-[44px] min-w-[44px] flex items-center justify-center"
                   aria-label="Send message"
                 >
-                  <Send className="w-4 h-4 text-[#D9822B]" />
+                  <Send className="w-4 h-4 text-[#D9822B] dark:text-white" />
                 </button>
               </div>
 
-              {/* Verified Agricultural Intelligence Note */}
-              <p className="text-[10px] text-center text-[#5E7367] font-medium select-none">
+              {/* Verified Agricultural Intelligence Note (Subtle, Compact) */}
+              <p className="text-[10px] text-center text-[#5E7367] dark:text-white/40 font-medium select-none truncate">
                 {language === 'bn'
                   ? 'আইসিএআর ও বিসিকেভি সমন্বিত বৈজ্ঞানিক পরামর্শ · জমিতে কীটনাশক ব্যবহারের পূর্বে কৃষি কর্মকর্তার পরামর্শ নিন'
                   : language === 'hi'
