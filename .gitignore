@@ -25,6 +25,11 @@
 *.pem
 AUDIT.md
 
+# raw video source clips in root and unmerged clips
+/*.mp4
+/public/videos/clips/
+.video-temp/
+
 # debug
 npm-debug.log*
 yarn-debug.log*
