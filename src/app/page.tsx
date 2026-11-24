@@ -288,17 +288,17 @@ export default function LandingPage() {
   }[langKey];
 
   return (
-    <div className="space-y-16 lg:space-y-24 w-full text-left pb-20 max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8">
+    <div className="w-full text-left pb-20">
       {/* ========================================================
-          1. THE HERO WITH SEAMLESS LOOPING 1080p VIDEO & ORBITAL DIAL
-          High-Agency, Visual & Interactive Agriculture Command Hero
+          1. FULL-BLEED EDGE-TO-EDGE HERO WITH SEAMLESS 1080p LOOP & ORBITAL DIAL
+          High-Agency, Cinematic & Interactive Agriculture Command Hero
          ======================================================== */}
-      <section className="relative overflow-hidden rounded-[2rem] shadow-[0_12px_40px_rgba(20,50,36,0.18)] min-h-[580px] lg:min-h-[640px] flex items-center p-6 sm:p-10 lg:p-12 border border-[#143224]/15">
+      <section className="relative w-full min-h-[85vh] lg:min-h-[88vh] flex items-center justify-center overflow-hidden px-4 sm:px-8 lg:px-12 py-12 lg:py-16">
         {/* Authentic 9-Clip Looping Video Background */}
         <HeroVideoBackground />
 
         {/* Hero Content Grid: Left Column Text & CTAs, Right Column Orbital Selector */}
-        <div className="relative z-10 w-full max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center">
+        <div className="relative z-10 w-full max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center">
           {/* Left Column: Heading, Subtitle & Action Buttons */}
           <div className="lg:col-span-7 space-y-6 text-white text-left">
             {/* Scientific Anchor Eyebrow */}
@@ -355,11 +355,13 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* ========================================================
-          2. THE CENTRAL BENTO GRID (AUTHENTIC UTILITY DASHBOARD)
-          Dynamic 4-Card Bento Architecture Powered by Live Feeds
-         ======================================================== */}
-      <section className="space-y-6">
+      {/* Main Content Sections: Bento Grid, Scientific Pillars, Footer */}
+      <div className="space-y-16 lg:space-y-24 max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8 pt-12 sm:pt-16">
+        {/* ========================================================
+            2. THE CENTRAL BENTO GRID (AUTHENTIC UTILITY DASHBOARD)
+            Dynamic 4-Card Bento Architecture Powered by Live Feeds
+           ======================================================== */}
+        <section className="space-y-6">
         {/* Section Header */}
         <div className="space-y-1.5 text-left max-w-2xl">
           <span className="text-xs font-bold uppercase tracking-wider text-[#D9822B]">
@@ -840,6 +842,7 @@ export default function LandingPage() {
           {content.footerCitation}
         </p>
       </footer>
+      </div>
     </div>
   );
 }
