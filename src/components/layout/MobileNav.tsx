@@ -55,14 +55,14 @@ export function MobileNav() {
         <div
           role="dialog"
           aria-modal="true"
-          className="lg:hidden fixed inset-0 z-[60] bg-black/60 dark:bg-black/80 backdrop-blur-xs flex flex-col justify-end animate-in fade-in duration-150 print:hidden"
+          className="lg:hidden fixed inset-0 z-[60] bg-black/75 flex flex-col justify-end animate-in fade-in duration-150 print:hidden"
         >
           <div
             className="fixed inset-0"
             onClick={() => setIsMoreOpen(false)}
             aria-hidden="true"
           />
-          <div className="relative bg-white dark:bg-[#111418] text-gray-900 dark:text-gray-100 rounded-t-3xl border-t border-gray-200 dark:border-white/10 p-4 pb-safe shadow-2xl z-10 max-h-[82vh] overflow-y-auto">
+          <div className="relative bg-white dark:bg-[#121212] text-gray-900 dark:text-gray-100 rounded-t-3xl border-t border-gray-200 dark:border-white/10 p-4 pb-safe shadow-2xl z-10 max-h-[82vh] overflow-y-auto">
             {/* Visual drag handle for tactile mobile feedback */}
             <div className="w-12 h-1.5 bg-gray-300 dark:bg-white/20 rounded-full mx-auto mb-3" />
 
@@ -121,7 +121,7 @@ export function MobileNav() {
       {/* Persistent Bottom Bar with Edge-to-Edge Safe-Area Inset and Seamless Background */}
       <nav
         aria-label="Mobile navigation"
-        className="lg:hidden fixed bottom-0 left-0 right-0 z-50 bg-white/98 dark:bg-[#000000]/98 backdrop-blur-md border-t border-gray-200 dark:border-white/10 px-1 pt-1.5 pb-[max(0.75rem,env(safe-area-inset-bottom))] shadow-[0_-4px_24px_rgba(0,0,0,0.06)] flex items-center justify-around print:hidden transition-colors duration-200"
+        className="lg:hidden fixed bottom-0 left-0 right-0 z-50 bg-white dark:bg-[#121212] border-t border-gray-200 dark:border-white/10 px-1 pt-1 pb-[max(0.5rem,env(safe-area-inset-bottom))] shadow-lg flex items-center justify-around print:hidden transition-colors duration-200"
       >
         {mainTabs.map((tab) => {
           const isActive = pathname === tab.href || (tab.href !== '/' && pathname.startsWith(tab.href));
@@ -130,17 +130,17 @@ export function MobileNav() {
             <Link
               key={tab.href}
               href={tab.href}
-              className={`flex flex-col items-center justify-center min-w-[62px] min-h-[48px] py-1 px-1 rounded-xl text-[10px] transition-all ${
+              className={`flex flex-col items-center justify-center min-w-[62px] min-h-[46px] py-1 px-1 rounded-xl text-[10px] transition-all ${
                 isActive
-                  ? 'text-[#143224] dark:text-[#34D399] font-extrabold'
-                  : 'text-[#10241A]/75 dark:text-white/70 hover:text-[#143224] dark:hover:text-[#EAF2EC] font-semibold'
+                  ? 'text-emerald-700 dark:text-emerald-400 font-extrabold'
+                  : 'text-gray-600 dark:text-gray-400 hover:text-black dark:hover:text-white font-medium'
               }`}
             >
               <div
                 className={`p-1.5 rounded-xl transition-all ${
                   isActive
-                    ? 'bg-[#143224] dark:bg-emerald-500/20 text-[#D9822B] dark:text-[#34D399] dark:border dark:border-emerald-500/30 shadow-xs'
-                    : 'text-[#10241A]/70 dark:text-white/60'
+                    ? 'bg-emerald-600 text-white shadow-xs'
+                    : 'text-gray-600 dark:text-gray-400'
                 }`}
               >
                 <Icon className="w-4 h-4 sm:w-5 sm:h-5" />
@@ -154,9 +154,9 @@ export function MobileNav() {
         <button
           type="button"
           onClick={() => setIsMoreOpen(true)}
-          className="flex flex-col items-center justify-center min-w-[62px] min-h-[48px] py-1 px-1 rounded-xl text-[10px] font-semibold text-[#10241A]/75 dark:text-white/70 hover:text-brand-forest dark:hover:text-emerald-400"
+          className="flex flex-col items-center justify-center min-w-[62px] min-h-[46px] py-1 px-1 rounded-xl text-[10px] font-medium text-gray-600 dark:text-gray-400 hover:text-black dark:hover:text-white cursor-pointer"
         >
-          <div className="p-1.5 rounded-xl text-[#10241A]/70 dark:text-white/60">
+          <div className="p-1.5 rounded-xl text-gray-600 dark:text-gray-400">
             <Menu className="w-4 h-4 sm:w-5 sm:h-5" />
           </div>
           <span className="leading-tight mt-0.5">{t('nav.more')}</span>

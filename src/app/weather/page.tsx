@@ -414,19 +414,19 @@ export default function WeatherPage() {
 
                 {/* Key Metric Pills */}
                 <div className="grid grid-cols-2 gap-3 text-xs">
-                  <div className="p-3 rounded-2xl bg-white/10 backdrop-blur-xs border border-white/15">
+                  <div className="p-3 rounded-2xl bg-white/10  border border-white/15">
                     <span className="text-white/70 block text-[10px] uppercase font-bold">Relative Humidity</span>
                     <span className="text-base font-black text-white">{weather.current.relativeHumidity}%</span>
                   </div>
-                  <div className="p-3 rounded-2xl bg-white/10 backdrop-blur-xs border border-white/15">
+                  <div className="p-3 rounded-2xl bg-white/10  border border-white/15">
                     <span className="text-white/70 block text-[10px] uppercase font-bold">Wind Speed</span>
                     <span className="text-base font-black text-white">{weather.current.windSpeed} km/h</span>
                   </div>
-                  <div className="p-3 rounded-2xl bg-white/10 backdrop-blur-xs border border-white/15">
+                  <div className="p-3 rounded-2xl bg-white/10  border border-white/15">
                     <span className="text-white/70 block text-[10px] uppercase font-bold">Rainfall (1h)</span>
                     <span className="text-base font-black text-white">{weather.current.precipitation} mm</span>
                   </div>
-                  <div className="p-3 rounded-2xl bg-white/10 backdrop-blur-xs border border-white/15">
+                  <div className="p-3 rounded-2xl bg-white/10  border border-white/15">
                     <span className="text-white/70 block text-[10px] uppercase font-bold">Day Temperature</span>
                     <span className="text-base font-black text-white">
                       {Math.round(weather.daily[0]?.temperatureMax)}° / {Math.round(weather.daily[0]?.temperatureMin)}°

@@ -203,7 +203,7 @@ export default function FeatureOrbitDial() {
 
         {/* Mobile Active Feature Card */}
         <div
-          className="relative overflow-hidden p-5 rounded-2xl bg-black/55 backdrop-blur-md border border-white/20 text-center shadow-xl space-y-3 transition-all"
+          className="relative overflow-hidden p-5 rounded-2xl bg-[#141E17] border border-white/20 text-center shadow-xl space-y-3 transition-all"
           style={{ borderColor: `${activeItem.color}55` }}
         >
           {/* Top Row with Prev/Next Controls */}
@@ -312,7 +312,7 @@ export default function FeatureOrbitDial() {
                 key={item.id}
                 onClick={() => setActiveIdx(idx)}
                 aria-label={`Select ${item.label[langKey]}`}
-                className="bubble absolute rounded-full flex flex-col items-center justify-center cursor-pointer backdrop-blur-md focus:outline-none"
+                className="bubble absolute rounded-full flex flex-col items-center justify-center cursor-pointer focus:outline-none"
                 style={{
                   left: `${slot.left}%`,
                   top: `${slot.top}%`,
@@ -403,7 +403,7 @@ export default function FeatureOrbitDial() {
         {/* Active Feature Description & Direct Launch Card (Tablet/Desktop) */}
         <div
           key={`caption-${activeItem.id}`}
-          className="caption-in mt-2 p-4 sm:p-5 rounded-2xl bg-black/45 border border-white/20 backdrop-blur-md text-center shadow-lg space-y-3"
+          className="caption-in mt-2 p-4 sm:p-5 rounded-2xl bg-[#141E17] border border-white/20 text-center shadow-lg space-y-3"
         >
           <p className="text-white text-sm sm:text-base font-medium leading-relaxed drop-shadow-sm">
             {activeItem.copy[langKey]}

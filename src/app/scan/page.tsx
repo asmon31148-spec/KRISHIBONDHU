@@ -578,7 +578,7 @@ export default function CropScannerPage() {
                     {!isScanning && (
                       <button
                         onClick={handleRetake}
-                        className="absolute top-2 right-2 p-1.5 rounded-full bg-black/60 hover:bg-black/80 text-white backdrop-blur-xs transition-colors cursor-pointer"
+                        className="absolute top-2 right-2 p-1.5 rounded-full bg-black/60 hover:bg-black/80 text-white  transition-colors cursor-pointer"
                         aria-label="Remove image"
                       >
                         <X className="w-4 h-4" />

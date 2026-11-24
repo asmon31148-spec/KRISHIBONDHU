@@ -153,7 +153,7 @@ export function LivingFarmCanvas({
         <div className="py-6 space-y-8 animate-in fade-in duration-300">
           {/* Active Crop Lifecycle River */}
           {activeCrops.length === 0 ? (
-            <div className="py-12 text-center space-y-3 bg-white/60 dark:bg-[#111418] backdrop-blur-md rounded-3xl border border-[#143224]/10 dark:border-white/10 p-6">
+            <div className="py-12 text-center space-y-3 bg-white/60 dark:bg-[#111418]  rounded-3xl border border-[#143224]/10 dark:border-white/10 p-6">
               <div className="w-14 h-14 rounded-2xl bg-[#143224]/5 dark:bg-white/10 flex items-center justify-center text-[#143224]/40 dark:text-white/40 mx-auto">
                 <Sprout className="w-7 h-7" />
               </div>
@@ -201,7 +201,7 @@ export function LivingFarmCanvas({
                 return (
                   <div
                     key={crop.id}
-                    className="space-y-4 p-4 sm:p-6 rounded-3xl bg-white/80 dark:bg-[#111418] backdrop-blur-md border border-[#143224]/10 dark:border-white/10 shadow-xs hover:border-[#143224]/25 transition-all"
+                    className="space-y-4 p-4 sm:p-6 rounded-3xl bg-white/80 dark:bg-[#111418]  border border-[#143224]/10 dark:border-white/10 shadow-xs hover:border-[#143224]/25 transition-all"
                   >
                     {/* Crop Header Aura */}
                     <div className="flex items-center justify-between flex-wrap gap-3">
@@ -329,7 +329,7 @@ export function LivingFarmCanvas({
           {/* ─────────────────────────────────────────────────────────────
               3. THE SOIL STRATA: Layered Earth Nutrient Meters (No Boxes)
               ───────────────────────────────────────────────────────────── */}
-          <div className="p-5 sm:p-6 rounded-3xl bg-white/85 dark:bg-[#111418] backdrop-blur-md border border-[#143224]/10 dark:border-white/10 space-y-4 shadow-xs">
+          <div className="p-5 sm:p-6 rounded-3xl bg-white/85 dark:bg-[#111418]  border border-[#143224]/10 dark:border-white/10 space-y-4 shadow-xs">
             <div className="flex items-center justify-between flex-wrap gap-2">
               <div className="flex items-center gap-2">
                 <span className="w-2.5 h-2.5 rounded-full bg-emerald-600 animate-pulse" />
@@ -419,7 +419,7 @@ export function LivingFarmCanvas({
           ───────────────────────────────────────────────────────────── */}
       {activeFarm && activeCrops[0] && (
         <div className="sticky bottom-4 mt-6 z-20 flex justify-center">
-          <div className="inline-flex items-center gap-2 p-2 rounded-2xl bg-[#143224]/90 backdrop-blur-xl border border-white/20 shadow-xl text-white">
+          <div className="inline-flex items-center gap-2 p-2 rounded-2xl bg-[#143224]/90  border border-white/20 shadow-xl text-white">
             <Link
               href={`/assistant?crop_id=${activeCrops[0].id}&crop_name=${encodeURIComponent(
                 activeCrops[0].name

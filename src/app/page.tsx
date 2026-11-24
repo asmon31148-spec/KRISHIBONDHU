@@ -304,7 +304,7 @@ export default function LandingPage() {
           {/* Left Column: Heading, Subtitle & Action Buttons */}
           <div className="lg:col-span-7 space-y-6 text-white text-left">
             {/* Scientific Anchor Eyebrow */}
-            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white/10 backdrop-blur-md border border-white/20 text-emerald-300 text-xs font-bold tracking-wide select-none">
+            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#14261C] border border-white/20 text-emerald-300 text-xs font-bold tracking-wide select-none">
               <Sparkles className="w-3.5 h-3.5 text-amber-300" />
               <span>{content.heroTag}</span>
             </div>
@@ -335,7 +335,7 @@ export default function LandingPage() {
               <Link href="/assistant" className="w-full sm:w-auto">
                 <button
                   type="button"
-                  className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-5 sm:px-6 py-3.5 rounded-2xl bg-black/40 hover:bg-black/60 text-white font-bold text-sm sm:text-base border border-white/25 backdrop-blur-md shadow-[0_2px_8px_rgba(0,0,0,0.2)] active:scale-[0.98] transition-all cursor-pointer min-h-[48px]"
+                  className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-5 sm:px-6 py-3.5 rounded-2xl bg-[#14261C] hover:bg-[#1E382A] text-white font-bold text-sm sm:text-base border border-white/25 shadow-md active:scale-[0.98] transition-all cursor-pointer min-h-[48px]"
                 >
                   <Bot className="w-5 h-5 text-emerald-400" />
                   <span>{content.secondaryCTA}</span>

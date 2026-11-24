@@ -264,7 +264,7 @@ export default function SchemesPage() {
                 key={i}
                 href={`tel:${h.dial}`}
                 onClick={(e) => handlePhoneClick(e, h.number)}
-                className="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl bg-white/15 hover:bg-white/25 backdrop-blur-xs text-white text-xs font-bold border border-white/20 transition-colors shadow-2xs"
+                className="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl bg-white/15 hover:bg-white/25  text-white text-xs font-bold border border-white/20 transition-colors shadow-2xs"
               >
                 <Phone className="w-3.5 h-3.5 text-emerald-300" />
                 <span>{h.number}</span>

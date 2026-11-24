@@ -66,7 +66,7 @@ export function Sidebar() {
   const userDisplayName = profile?.full_name || user?.email?.split('@')[0] || 'Farmer';
 
   return (
-    <aside className="hidden lg:flex flex-col w-64 border-r border-gray-200 dark:border-white/10 bg-white/95 dark:bg-[#000000]/95 backdrop-blur-md h-[calc(100dvh-57px)] sticky top-[57px] p-3.5 shrink-0 print:hidden justify-between transition-colors duration-200">
+    <aside className="hidden lg:flex flex-col w-64 border-r border-gray-200 dark:border-white/10 bg-white dark:bg-[#121212] h-[calc(100dvh-56px)] sticky top-14 p-3.5 shrink-0 print:hidden justify-between transition-colors duration-200">
       {/* Scrollable Grouped 3-Tier Navigation */}
       <nav className="flex-1 space-y-4 overflow-y-auto pr-1 -mr-1 no-scrollbar">
         {navigationHubs.map((hub, idx) => (

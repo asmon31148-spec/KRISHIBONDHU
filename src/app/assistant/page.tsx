@@ -509,7 +509,7 @@ What are the specific disease, pest, or nutrient risks for this crop in West Ben
   return (
     <div className="flex flex-col h-full w-full bg-[#FFFFFF] dark:bg-[#000000] relative overflow-hidden text-left transition-colors duration-200">
       {/* Top Bar with Clean Header & History Controls */}
-      <div className="flex items-center justify-between px-3 sm:px-5 h-[52px] border-b border-gray-200 dark:border-white/10 bg-white/90 dark:bg-[#000000]/90 backdrop-blur-md gap-3 shrink-0">
+      <div className="flex items-center justify-between px-3 sm:px-5 h-[52px] border-b border-gray-200 dark:border-white/10 bg-white/90 dark:bg-[#000000]/90  gap-3 shrink-0">
         <div className="flex items-center gap-2 min-w-0">
           {!isGuest && (
             <button
@@ -859,7 +859,7 @@ What are the specific disease, pest, or nutrient risks for this crop in West Ben
           )}
 
           {/* Unified Modern Agronomy Chat Capsule (Pinned Above Mobile Navigation) */}
-          <div className="p-2.5 sm:p-4 border-t border-[#143224]/10 dark:border-white/10 bg-white/95 dark:bg-[#000000]/95 backdrop-blur-md shrink-0">
+          <div className="p-2.5 sm:p-4 border-t border-[#143224]/10 dark:border-white/10 bg-white/95 dark:bg-[#000000]/95  shrink-0">
             <div className="max-w-3xl mx-auto space-y-1">
               <div className="flex items-center gap-1.5 sm:gap-2 p-1.5 sm:p-2 rounded-2xl bg-[#F9F7F2] dark:bg-[#111418] border border-[#143224]/15 dark:border-white/15 shadow-[0_2px_12px_rgba(0,0,0,0.03)] focus-within:border-[#143224]/40 dark:focus-within:border-emerald-500 focus-within:bg-white dark:focus-within:bg-[#172D22] transition-all">
                 {/* Photo Attachment Input & Trigger */}

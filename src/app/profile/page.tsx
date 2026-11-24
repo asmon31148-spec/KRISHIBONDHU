@@ -162,7 +162,7 @@ export default function ProfilePage() {
         <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-brand-forest via-brand-forest/95 to-brand-leaf p-5 sm:p-7 text-white shadow-md">
           <div className="flex items-start justify-between gap-3">
             <div className="flex items-center gap-3">
-              <div className="w-12 h-12 sm:w-14 sm:h-14 rounded-2xl bg-white/15 backdrop-blur-md border border-white/20 flex items-center justify-center text-white shrink-0">
+              <div className="w-12 h-12 sm:w-14 sm:h-14 rounded-2xl bg-white/15  border border-white/20 flex items-center justify-center text-white shrink-0">
                 <User className="w-6 h-6 sm:w-7 sm:h-7 text-brand-mint" />
               </div>
               <div>

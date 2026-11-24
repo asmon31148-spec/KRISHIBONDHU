@@ -13,66 +13,15 @@ interface BrandLogoProps {
 export function BrandLogoMark({ className = 'w-9 h-9' }: { className?: string }) {
   return (
     <div
-      className={`relative rounded-2xl p-0.5 bg-gradient-to-br from-emerald-500 via-emerald-700 to-emerald-950 shadow-md flex items-center justify-center shrink-0 overflow-hidden group-hover:scale-105 transition-transform ${className}`}
+      className={`relative rounded-2xl overflow-hidden shadow-xs flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform bg-white border border-[#143224]/15 ${className}`}
     >
-      {/* Subtle Golden Sheen Overlay */}
-      <div className="absolute inset-0 bg-gradient-to-tr from-amber-400/20 via-transparent to-white/25 pointer-events-none" />
-
-      {/* Embedded Commercial SVG Mark */}
-      <svg
-        viewBox="0 0 48 48"
-        fill="none"
-        xmlns="http://www.w3.org/2000/svg"
-        className="w-full h-full p-1.5"
-      >
-        {/* Shield / Seed Background contour */}
-        <path
-          d="M24 4C14 4 6 11 6 22C6 33.5 15.5 41.5 24 44C32.5 41.5 42 33.5 42 22C42 11 34 4 24 4Z"
-          fill="url(#shieldGrad)"
-        />
-
-        {/* Golden Wheat Stalk (Left Branch) */}
-        <path
-          d="M17 28C15 25 15.5 21 17 18C18.5 21 19 25 17 28Z"
-          fill="#F6AD55"
-        />
-        <path
-          d="M19 22C17.5 19.5 18 16 19.5 13.5C21 16 21.5 19.5 19 22Z"
-          fill="#ED8936"
-        />
-        <path
-          d="M22 17C21 14.5 21.5 11 23 9C24 11 24.5 14.5 22 17Z"
-          fill="#ECC94B"
-        />
-
-        {/* Vibrant Green Leaf / Sprout (Right Branch) */}
-        <path
-          d="M24 37C24 37 25 29 31 25C37 21 34 13 34 13C34 13 28 14 26 21C24.5 26.5 24 37 24 37Z"
-          fill="#68D391"
-        />
-        <path
-          d="M24 30C26 27 30 25.5 32 23C29 25 26 27 24 30Z"
-          fill="#38A169"
-        />
-
-        {/* Center Stem */}
-        <path
-          d="M24 40V12"
-          stroke="#FAF5FF"
-          strokeWidth="1.8"
-          strokeLinecap="round"
-        />
-
-        {/* Small Sun Ray / Sparkle at Top */}
-        <circle cx="24" cy="7.5" r="2" fill="#F6E05E" />
-
-        <defs>
-          <linearGradient id="shieldGrad" x1="6" y1="4" x2="42" y2="44" gradientUnits="userSpaceOnUse">
-            <stop stopColor="#064E3B" />
-            <stop offset="1" stopColor="#022C22" />
-          </linearGradient>
-        </defs>
-      </svg>
+      {/* User Brand Mark */}
+      {/* eslint-disable-next-line @next/next/no-img-element */}
+      <img
+        src="/brand-logo.png"
+        alt="Krishibondhu"
+        className="w-full h-full object-cover"
+      />
     </div>
   );
 }
