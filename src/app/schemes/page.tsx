@@ -430,7 +430,7 @@ export default function SchemesPage() {
                     href={scheme.statusCheckUrl}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="inline-flex items-center justify-center gap-1.5 px-3.5 py-2 rounded-xl bg-brand-forest hover:bg-brand-forest/90 text-white text-xs font-bold shadow-xs transition-colors"
+                    className="inline-flex items-center justify-center gap-1.5 px-3.5 py-2.5 rounded-xl bg-brand-forest hover:bg-brand-forest/90 text-white text-xs font-bold shadow-xs transition-colors min-h-[44px] cursor-pointer"
                   >
                     <span>{scheme.statusCheckLabel}</span>
                     <ExternalLink className="w-3.5 h-3.5" />
@@ -440,7 +440,7 @@ export default function SchemesPage() {
                 <a
                   href={`tel:${scheme.phoneDial}`}
                   onClick={(e) => handlePhoneClick(e, scheme.helpline)}
-                  className="inline-flex items-center justify-center gap-1 px-3 py-2 rounded-xl bg-white border border-cream-300 hover:border-brand-leaf text-brand-dark text-xs font-semibold transition-colors"
+                  className="inline-flex items-center justify-center gap-1.5 px-3.5 py-2.5 rounded-xl bg-white border border-cream-300 hover:border-brand-leaf text-brand-dark text-xs font-semibold transition-colors min-h-[44px] cursor-pointer"
                   title="Direct Phone Call"
                 >
                   <Phone className="w-3.5 h-3.5 text-brand-leaf" />

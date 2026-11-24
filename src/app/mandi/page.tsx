@@ -366,8 +366,8 @@ export default function MandiRadarPage() {
                 </div>
 
                 {/* Market & Date Provenance */}
-                <div className="pt-2 border-t border-cream-200/80 flex items-center justify-between text-[11px] text-brand-dark/60">
-                  <div className="flex items-center gap-1 truncate max-w-[170px]">
+                <div className="pt-2 border-t border-cream-200/80 flex items-center justify-between text-[11px] text-brand-dark/60 gap-2">
+                  <div className="flex items-center gap-1 min-w-0 flex-1 truncate">
                     <MapPin className="w-3 h-3 text-brand-leaf shrink-0" />
                     <span className="truncate">{r.market}, {r.district}</span>
                   </div>

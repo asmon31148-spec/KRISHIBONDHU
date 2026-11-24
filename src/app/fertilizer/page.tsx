@@ -851,9 +851,9 @@ export default function FertilizerCalculatorPage() {
               </div>
 
               {/* Elemental Balance Pill */}
-              <div className="p-3 rounded-xl bg-white border border-cream-200 text-xs flex items-center justify-between text-brand-dark/80">
+              <div className="p-3 rounded-xl bg-white border border-cream-200 text-xs flex flex-wrap items-center justify-between gap-2 text-brand-dark/80">
                 <span className="font-medium">Net Elemental Demand:</span>
-                <span className="font-bold text-brand-forest">
+                <span className="font-bold text-brand-forest break-words">
                   N: {calculationResult.required_elemental.n_kg}kg | P: {calculationResult.required_elemental.p_kg}kg | K: {calculationResult.required_elemental.k_kg}kg
                 </span>
               </div>

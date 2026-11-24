@@ -219,11 +219,11 @@ export function ScanResultView({
           </div>
         </div>
 
-        {/* 3 Switchable Tabs */}
-        <div className="border-b border-cream-200 px-4 sm:px-6 flex gap-4 text-xs sm:text-sm font-bold print:hidden">
+        {/* 3 Switchable Tabs - Smooth Horizontal Scroll on Mobile */}
+        <div className="border-b border-cream-200 px-4 sm:px-6 flex gap-2 sm:gap-4 overflow-x-auto text-xs sm:text-sm font-bold print:hidden scrollbar-none">
           <button
             onClick={() => setActiveTab('actions')}
-            className={`py-3.5 border-b-2 transition-all ${
+            className={`py-3.5 border-b-2 transition-all whitespace-nowrap shrink-0 ${
               activeTab === 'actions'
                 ? 'border-brand-forest text-brand-forest'
                 : 'border-transparent text-brand-dark/60 hover:text-brand-dark'
@@ -233,23 +233,23 @@ export function ScanResultView({
           </button>
           <button
             onClick={() => setActiveTab('symptoms')}
-            className={`py-3.5 border-b-2 transition-all ${
+            className={`py-3.5 border-b-2 transition-all whitespace-nowrap shrink-0 ${
               activeTab === 'symptoms'
                 ? 'border-brand-forest text-brand-forest'
                 : 'border-transparent text-brand-dark/60 hover:text-brand-dark'
             }`}
           >
-            Symptoms & Visible Signs
+            Symptoms & Signs
           </button>
           <button
             onClick={() => setActiveTab('explanation')}
-            className={`py-3.5 border-b-2 transition-all ${
+            className={`py-3.5 border-b-2 transition-all whitespace-nowrap shrink-0 ${
               activeTab === 'explanation'
                 ? 'border-brand-forest text-brand-forest'
                 : 'border-transparent text-brand-dark/60 hover:text-brand-dark'
             }`}
           >
-            AI Agronomy Explanation
+            AI Agronomy Notes
           </button>
         </div>
 

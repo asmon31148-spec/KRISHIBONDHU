@@ -220,6 +220,41 @@ function YieldPredictionContent() {
     }
   }, [loadExistingCrop, queryCropId]);
 
+  // Auto-calculate initial benchmark projection on mount so the user never sees an empty void
+  useEffect(() => {
+    let isMounted = true;
+    async function loadInitialEstimate() {
+      try {
+        const payload = {
+          scenario: 'pre_cultivation',
+          cropKey: 'potato',
+          state: 'West Bengal',
+          district: 'Hooghly',
+          agroZone: 'alluvial_gangetic',
+          area: 2.0,
+          areaUnit: 'bigha' as LandUnit,
+          irrigationType: 'Shallow Tube Well (STW)',
+          soilType: 'Clay Loam (দোআঁশ মাটি)',
+        };
+        const res = await fetch('/api/yield/predict', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload),
+        });
+        const data = await res.json();
+        if (isMounted && data.success && data.prediction) {
+          setResult(data.prediction);
+        }
+      } catch {
+        // Soft fallback
+      }
+    }
+    loadInitialEstimate();
+    return () => {
+      isMounted = false;
+    };
+  }, []);
+
   const handlePredict = async (e: React.FormEvent) => {
     e.preventDefault();
 
@@ -698,21 +733,12 @@ function YieldPredictionContent() {
         {/* ======================================================== */}
         <div className="lg:col-span-7 space-y-4">
           {!result ? (
-            <Card className="h-full min-h-[460px] flex items-center justify-center p-8 text-center bg-cream-50/50 border-dashed border-2 border-cream-300">
-              <div className="space-y-3 max-w-sm">
-                <div className="w-14 h-14 rounded-2xl bg-cream-100 flex items-center justify-center text-brand-forest mx-auto border border-cream-200 shadow-2xs">
-                  <TrendingUp className="w-7 h-7" />
-                </div>
-                <h3 className="text-base sm:text-lg font-bold text-brand-dark">
-                  Ready to Calculate Agricultural Production
-                </h3>
-                <p className="text-xs text-brand-dark/70 leading-relaxed">
-                  Select your state and district or tap <strong>Auto-Detect GPS</strong> on the left.
-                  The engine will estimate expected harvest ranges, itemized cultivation expenses, and market revenue
-                  calibrated specifically to your land without fabricating missing values.
-                </p>
-              </div>
-            </Card>
+            <div className="h-full min-h-[420px] rounded-3xl bg-white/80 border border-cream-200 p-8 flex flex-col items-center justify-center text-center space-y-3">
+              <Loader2 className="w-8 h-8 animate-spin text-[#143224]" />
+              <p className="text-xs font-bold text-brand-dark/80">
+                Calibrating empirical agronomic projections for {selectedDistrict}...
+              </p>
+            </div>
           ) : (
             <div className="space-y-4">
               {/* Card 1: Production Forecast Hero */}
@@ -760,6 +786,31 @@ function YieldPredictionContent() {
                       Realistic Forecast Range: <strong>{result.totalRangeMinTons}</strong> –{' '}
                       <strong>{result.totalRangeMaxTons} Tons</strong>
                     </p>
+
+                    {/* Visual Yield Range Progress Meter */}
+                    <div className="pt-1.5 space-y-1">
+                      <div className="h-2.5 rounded-full bg-black/20 overflow-hidden relative p-0.5">
+                        <div
+                          className="h-full bg-gradient-to-r from-amber-400 via-emerald-300 to-emerald-200 rounded-full transition-all duration-500"
+                          style={{
+                            width: `${Math.min(
+                              100,
+                              Math.max(
+                                30,
+                                ((result.totalExpectedProductionTons - result.totalRangeMinTons) /
+                                  Math.max(0.1, result.totalRangeMaxTons - result.totalRangeMinTons)) *
+                                  100
+                              )
+                            )}%`,
+                          }}
+                        />
+                      </div>
+                      <div className="flex justify-between text-[10px] text-emerald-100/75 font-semibold">
+                        <span>Min: {result.totalRangeMinTons} T</span>
+                        <span className="text-white font-extrabold underline underline-offset-2">Target: {result.totalExpectedProductionTons} T</span>
+                        <span>Max Potential: {result.totalRangeMaxTons} T</span>
+                      </div>
+                    </div>
                   </div>
 
                   <div className="pt-2 border-t border-white/20 flex items-center justify-between text-xs text-emerald-100 flex-wrap gap-2">
