@@ -10,6 +10,7 @@ import { Sidebar } from '@/components/layout/Sidebar';
 import { MobileNav } from '@/components/layout/MobileNav';
 import { ContentWrapper } from '@/components/layout/ContentWrapper';
 import { SplashScreen } from '@/components/ui/SplashScreen';
+import { OfflineBanner } from '@/components/ui/OfflineBanner';
 
 const plusJakarta = Plus_Jakarta_Sans({
   subsets: ['latin'],
@@ -75,6 +76,7 @@ export default function RootLayout({
             <AuthProvider>
               <ToastProvider>
                 <Navbar />
+                <OfflineBanner />
                 <div className="flex-1 flex w-full pb-16 lg:pb-0 overflow-x-clip min-h-[calc(100vh-57px)]">
                   <Sidebar />
                   <ContentWrapper>{children}</ContentWrapper>
@@ -88,21 +90,8 @@ export default function RootLayout({
           dangerouslySetInnerHTML={{
             __html: `
               if ('serviceWorker' in navigator) {
-                navigator.serviceWorker.getRegistrations().then(function(registrations) {
-                  if (registrations && registrations.length > 0) {
-                    for (var i = 0; i < registrations.length; i++) {
-                      registrations[i].unregister();
-                    }
-                    if (window.caches) {
-                      caches.keys().then(function(names) {
-                        for (var j = 0; j < names.length; j++) {
-                          if (names[j].indexOf('workbox') !== -1 || names[j].indexOf('sw-') !== -1) {
-                            caches.delete(names[j]);
-                          }
-                        }
-                      });
-                    }
-                  }
+                window.addEventListener('load', function() {
+                  navigator.serviceWorker.register('/sw.js').catch(function() {});
                 });
               }
             `,

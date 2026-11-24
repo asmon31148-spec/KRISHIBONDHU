@@ -4,6 +4,7 @@ import React, { useState, useMemo, useEffect, useCallback } from 'react';
 import Link from 'next/link';
 import { useTranslation } from '@/i18n/context';
 import { useAuth } from '@/context/AuthContext';
+import { useToast } from '@/components/ui/Toast';
 import { createClient } from '@/lib/supabase/client';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/Card';
 import { Button } from '@/components/ui/Button';
@@ -27,7 +28,18 @@ import {
   ChevronUp,
   MapPin,
   RefreshCw,
+  Share2,
+  Printer,
+  Copy,
+  Volume2,
+  VolumeX,
+  Camera,
 } from 'lucide-react';
+import {
+  formatFertilizerPrescriptionText,
+  getWhatsAppShareUrl,
+} from '@/lib/prescription';
+import { useSpeech } from '@/lib/useSpeech';
 import {
   CROP_BASELINES,
   calculateFertilizerDosage,
@@ -52,6 +64,8 @@ const CATEGORIES: { id: 'all' | CropCategory | 'custom'; label_en: string; label
 export default function FertilizerCalculatorPage() {
   const { language } = useTranslation();
   const { user, profile } = useAuth();
+  const toast = useToast();
+  const { isSpeaking, speak } = useSpeech();
 
   // Search & Category Filters
   const [activeCategory, setActiveCategory] = useState<'all' | CropCategory | 'custom'>('all');
@@ -75,6 +89,44 @@ export default function FertilizerCalculatorPage() {
   const [soilKStatus, setSoilKStatus] = useState<'low' | 'medium' | 'high'>('medium');
   const [soilTexture, setSoilTexture] = useState<'alluvial_clay' | 'loam' | 'sandy_laterite' | 'coastal_saline'>('loam');
   const [fymAppliedTonsPerBigha, setFymAppliedTonsPerBigha] = useState<number>(0);
+  const [isScanningSoilCard, setIsScanningSoilCard] = useState<boolean>(false);
+
+  const handleScanSoilCard = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    setIsScanningSoilCard(true);
+    try {
+      const formData = new FormData();
+      formData.append('image', file);
+      const res = await fetch('/api/soil/ocr', { method: 'POST', body: formData });
+      const data = await res.json();
+      if (!res.ok || !data.success) {
+        throw new Error(data.error || 'Failed to read Soil Health Card');
+      }
+      const ocr = data.result;
+      if (!ocr.readable) {
+        toast.warning(
+          language === 'bn'
+            ? 'মাটি পরীক্ষার কার্ডটি স্পষ্ট নয়। অনুগ্রহ করে পরিষ্কার ছবি তুলুন।'
+            : 'Soil Health Card text unclear. Please upload a sharper photo.'
+        );
+        return;
+      }
+      setSoilNStatus(ocr.n_status);
+      setSoilPStatus(ocr.p_status);
+      setSoilKStatus(ocr.k_status);
+      toast.success(
+        language === 'bn'
+          ? `মাটি কার্ড স্ক্যান সম্পন্ন! N: ${ocr.n_status}, P: ${ocr.p_status}, K: ${ocr.k_status}`
+          : `Soil Card Auto-Filled! N: ${ocr.n_status.toUpperCase()}, P: ${ocr.p_status.toUpperCase()}, K: ${ocr.k_status.toUpperCase()}`
+      );
+    } catch (err) {
+      toast.error(err instanceof Error ? err.message : 'OCR scan failed');
+    } finally {
+      setIsScanningSoilCard(false);
+      e.target.value = '';
+    }
+  };
 
   // Location & Weather Advisory
   const [selectedDistrict, setSelectedDistrict] = useState<string>('Hooghly');
@@ -653,22 +705,62 @@ export default function FertilizerCalculatorPage() {
                   3
                 </span>
                 <div>
-                  <h3 className="text-sm font-bold text-brand-dark">
+                  <h3 className="text-sm font-bold text-brand-dark dark:text-white">
                     {language === 'bn' ? 'মাটি পরীক্ষা ও জৈব সারের সমন্বয় (STCR)' : 'Step 3: Soil Health Card & Organic Manure Adjustments'}
                   </h3>
-                  <p className="text-[11px] text-brand-dark/60">
+                  <p className="text-[11px] text-brand-dark/60 dark:text-slate-400">
                     {language === 'bn'
                       ? 'মাটিতে উপস্থিত খাদ্যোপাদান ও গোবর সারের হিসাব দিলে রাসায়নিক সার আরও কমানো যায়'
                       : 'Adjust doses according to soil fertility (N-P-K) and deduct applied organic manure credits'}
                   </p>
                 </div>
               </div>
-              {showSoilOptions ? <ChevronUp className="w-4 h-4 text-brand-dark/60" /> : <ChevronDown className="w-4 h-4 text-brand-dark/60" />}
+              {showSoilOptions ? <ChevronUp className="w-4 h-4 text-brand-dark/60 dark:text-slate-400" /> : <ChevronDown className="w-4 h-4 text-brand-dark/60 dark:text-slate-400" />}
             </button>
 
             {showSoilOptions && (
-              <CardContent className="pt-0 pb-5 px-4 sm:px-5 space-y-4 border-t border-cream-100">
-                <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-3">
+              <CardContent className="pt-0 pb-5 px-4 sm:px-5 space-y-4 border-t border-cream-100 dark:border-slate-800">
+                {/* Soil Health Card Camera OCR Auto-Fill */}
+                <div className="pt-3 flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 p-3 rounded-xl bg-emerald-50/70 dark:bg-emerald-950/30 border border-emerald-200 dark:border-emerald-900/50">
+                  <div className="text-xs">
+                    <span className="font-bold text-emerald-950 dark:text-emerald-200 block">
+                      {language === 'bn'
+                        ? 'মৃত্তিকা স্বাস্থ্য কার্ড ছবি তুলে অটো-ফিল করুন'
+                        : language === 'hi'
+                        ? 'मृदा स्वास्थ्य कार्ड की फोटो से ऑटो-फ़िल करें'
+                        : 'Have a printed Soil Health Card?'}
+                    </span>
+                    <span className="text-[11px] text-emerald-900/75 dark:text-emerald-300/80">
+                      {language === 'bn'
+                        ? 'AI কার্ড পড়ে N-P-K স্বয়ংক্রিয়ভাবে বসাবে'
+                        : 'Snap a photo to auto-extract N, P, and K levels'}
+                    </span>
+                  </div>
+                  <label className="inline-flex items-center justify-center gap-1.5 px-3 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs cursor-pointer transition-colors shrink-0">
+                    <Camera className={`w-3.5 h-3.5 ${isScanningSoilCard ? 'animate-spin' : ''}`} />
+                    <span>
+                      {isScanningSoilCard
+                        ? language === 'bn'
+                          ? 'পড়া হচ্ছে...'
+                          : 'Scanning...'
+                        : language === 'bn'
+                        ? 'কার্ড স্ক্যান করুন'
+                        : language === 'hi'
+                        ? 'कार्ड स्कैन करें'
+                        : 'Scan Soil Card'}
+                    </span>
+                    <input
+                      type="file"
+                      accept="image/*"
+                      capture="environment"
+                      className="hidden"
+                      disabled={isScanningSoilCard}
+                      onChange={handleScanSoilCard}
+                    />
+                  </label>
+                </div>
+
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
                   {/* Soil Available N */}
                   <div className="p-3 rounded-xl bg-cream-50 dark:bg-[#141C2B] border border-cream-200 dark:border-slate-800">
                     <label className="text-[11px] font-bold text-brand-dark dark:text-white block mb-1">
@@ -836,9 +928,32 @@ export default function FertilizerCalculatorPage() {
                     For {calculationResult.crop_name} ({bigha} Bigha {katha > 0 ? `${katha} Katha` : ''})
                   </span>
                 </div>
-                <Badge variant="emerald" size="sm">
-                  Exact Doses
-                </Badge>
+                <div className="flex items-center gap-2">
+                  <button
+                    type="button"
+                    onClick={() => {
+                      const areaLabel = katha > 0 ? `${bigha} Bigha ${katha} Katha` : `${bigha} Bigha`;
+                      const text =
+                        language === 'bn'
+                          ? `${calculationResult.crop_name}, ${areaLabel} জমির জন্য: ইউরিয়া ${calculationResult.fertilizers_kg.urea} কেজি, ${calculationResult.fertilizers_kg.dap_label} ${calculationResult.fertilizers_kg.ssp_or_dap} কেজি, এবং পটাশ ${calculationResult.fertilizers_kg.mop} কেজি প্রয়োজন।`
+                          : language === 'hi'
+                          ? `${calculationResult.crop_name}, ${areaLabel} खेत के लिए: यूरिया ${calculationResult.fertilizers_kg.urea} किग्रा, ${calculationResult.fertilizers_kg.dap_label} ${calculationResult.fertilizers_kg.ssp_or_dap} किग्रा, और पोटाश ${calculationResult.fertilizers_kg.mop} किग्रा आवश्यक है।`
+                          : `For ${calculationResult.crop_name} on ${areaLabel}: Apply ${calculationResult.fertilizers_kg.urea} kg Urea, ${calculationResult.fertilizers_kg.ssp_or_dap} kg ${calculationResult.fertilizers_kg.dap_label}, and ${calculationResult.fertilizers_kg.mop} kg MOP.`;
+                      speak(text, language);
+                    }}
+                    className={`p-1.5 rounded-lg border transition-colors cursor-pointer ${
+                      isSpeaking
+                        ? 'bg-rose-600 text-white border-rose-600 animate-pulse'
+                        : 'bg-white dark:bg-[#1B2537] text-brand-dark/70 dark:text-white/80 border-cream-200 dark:border-slate-700 hover:bg-cream-100 dark:hover:bg-slate-700'
+                    }`}
+                    title={isSpeaking ? 'Stop Audio' : 'Listen to Doses'}
+                  >
+                    {isSpeaking ? <VolumeX className="w-4 h-4" /> : <Volume2 className="w-4 h-4 text-emerald-600 dark:text-emerald-400" />}
+                  </button>
+                  <Badge variant="emerald" size="sm">
+                    Exact Doses
+                  </Badge>
+                </div>
               </div>
             </CardHeader>
             <CardContent className="p-4 sm:p-5 space-y-4">
@@ -911,9 +1026,93 @@ export default function FertilizerCalculatorPage() {
                     </span>
                   </div>
                 </div>
-                <span className="text-lg font-black text-emerald-800">
+                <span className="text-lg font-black text-emerald-800 dark:text-emerald-300">
                   ₹{calculationResult.savings_estimate_inr.toLocaleString()}
                 </span>
+              </div>
+
+              {/* Anti-Dealer Over-Prescription Shield: WhatsApp / Copy / Print Rx */}
+              <div className="pt-3 border-t border-cream-200 dark:border-slate-800 space-y-2 print:hidden">
+                <span className="text-[11px] font-bold uppercase tracking-wider text-brand-dark/70 dark:text-slate-400 block">
+                  {language === 'bn'
+                    ? 'দোকানদারের জন্য অনুমোদিত স্লিপ (অপচয় রোধ)'
+                    : language === 'hi'
+                    ? 'खाद विक्रेता के लिए प्रमाणित पर्ची'
+                    : 'Certified Agro-Dealer Prescription Slip'}
+                </span>
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
+                  <a
+                    href={getWhatsAppShareUrl(
+                      formatFertilizerPrescriptionText({
+                        cropName: calculationResult.crop_name,
+                        bigha,
+                        katha,
+                        ureaKg: calculationResult.fertilizers_kg.urea,
+                        ureaBags: calculationResult.bags.urea_50kg,
+                        phosphateLabel: calculationResult.fertilizers_kg.dap_label,
+                        phosphateKg: calculationResult.fertilizers_kg.ssp_or_dap,
+                        phosphateBags: calculationResult.bags.ssp_or_dap_50kg,
+                        mopKg: calculationResult.fertilizers_kg.mop,
+                        mopBags: calculationResult.bags.mop_50kg,
+                        savingsInr: calculationResult.savings_estimate_inr,
+                        district: selectedDistrict,
+                        language: (language as 'en' | 'bn' | 'hi') || 'en',
+                      })
+                    )}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="sm:col-span-2 inline-flex items-center justify-center gap-2 px-3.5 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs shadow-xs transition-colors"
+                  >
+                    <Share2 className="w-3.5 h-3.5 shrink-0" />
+                    <span>
+                      {language === 'bn'
+                        ? 'হোয়াটসঅ্যাপে স্লিপ পাঠান'
+                        : language === 'hi'
+                        ? 'व्हाट्सएप पर पर्ची भेजें'
+                        : 'Share Rx on WhatsApp'}
+                    </span>
+                  </a>
+                  <div className="flex gap-1.5">
+                    <button
+                      type="button"
+                      onClick={() => {
+                        const text = formatFertilizerPrescriptionText({
+                          cropName: calculationResult.crop_name,
+                          bigha,
+                          katha,
+                          ureaKg: calculationResult.fertilizers_kg.urea,
+                          ureaBags: calculationResult.bags.urea_50kg,
+                          phosphateLabel: calculationResult.fertilizers_kg.dap_label,
+                          phosphateKg: calculationResult.fertilizers_kg.ssp_or_dap,
+                          phosphateBags: calculationResult.bags.ssp_or_dap_50kg,
+                          mopKg: calculationResult.fertilizers_kg.mop,
+                          mopBags: calculationResult.bags.mop_50kg,
+                          savingsInr: calculationResult.savings_estimate_inr,
+                          district: selectedDistrict,
+                          language: (language as 'en' | 'bn' | 'hi') || 'en',
+                        });
+                        navigator.clipboard.writeText(text);
+                        toast.success(
+                          language === 'bn'
+                            ? 'প্রেসক্রিপশন কপি হয়েছে!'
+                            : 'Prescription slip copied!'
+                        );
+                      }}
+                      className="flex-1 inline-flex items-center justify-center gap-1 px-2.5 py-2.5 rounded-xl bg-white dark:bg-[#1B2537] border border-cream-300 dark:border-slate-700 text-brand-dark dark:text-white font-bold text-xs hover:bg-cream-100 dark:hover:bg-slate-700 transition-colors cursor-pointer"
+                      title="Copy Prescription"
+                    >
+                      <Copy className="w-3.5 h-3.5" />
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => window.print()}
+                      className="flex-1 inline-flex items-center justify-center gap-1 px-2.5 py-2.5 rounded-xl bg-white dark:bg-[#1B2537] border border-cream-300 dark:border-slate-700 text-brand-dark dark:text-white font-bold text-xs hover:bg-cream-100 dark:hover:bg-slate-700 transition-colors cursor-pointer"
+                      title="Print Prescription Slip"
+                    >
+                      <Printer className="w-3.5 h-3.5" />
+                    </button>
+                  </div>
+                </div>
               </div>
             </CardContent>
           </Card>
@@ -922,11 +1121,11 @@ export default function FertilizerCalculatorPage() {
           {calculationResult.micronutrients_advice && (
             <Card className="border-l-4 border-l-amber-500">
               <CardContent className="p-4 sm:p-5 space-y-2">
-                <div className="flex items-center gap-2 text-amber-900 font-bold text-xs">
-                  <Leaf className="w-4 h-4 text-amber-600" />
+                <div className="flex items-center gap-2 text-amber-900 dark:text-amber-300 font-bold text-xs">
+                  <Leaf className="w-4 h-4 text-amber-600 dark:text-amber-400" />
                   <span>{language === 'bn' ? 'অণুখাদ্য ও ফসল নিরাপত্তা নির্দেশিকা' : 'Micronutrient & Soil Health Alert'}</span>
                 </div>
-                <p className="text-xs text-brand-dark/80 leading-relaxed">
+                <p className="text-xs text-brand-dark/80 dark:text-slate-300 leading-relaxed">
                   {language === 'bn'
                     ? calculationResult.micronutrients_advice.bn || calculationResult.micronutrients_advice.en
                     : calculationResult.micronutrients_advice.en}

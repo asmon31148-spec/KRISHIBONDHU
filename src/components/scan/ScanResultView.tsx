@@ -19,8 +19,12 @@ import {
   Sprout,
   Sparkles,
   Printer,
+  Volume2,
+  VolumeX,
 } from 'lucide-react';
 import type { CropScanResult } from '@/lib/ai/types';
+import { formatScanPrescriptionText, getWhatsAppShareUrl } from '@/lib/prescription';
+import { useSpeech } from '@/lib/useSpeech';
 
 interface ScanResultViewProps {
   result: CropScanResult;
@@ -35,7 +39,7 @@ export function ScanResultView({
   imagePreview,
   onScanAnother,
 }: ScanResultViewProps) {
-  const { t } = useTranslation();
+  const { t, language } = useTranslation();
   const { isGuest } = useAuth();
   const toast = useToast();
 
@@ -44,6 +48,21 @@ export function ScanResultView({
   const [isFeedbackModalOpen, setIsFeedbackModalOpen] = useState(false);
   const [feedbackNote, setFeedbackNote] = useState('');
   const [isSubmittingFeedback, setIsSubmittingFeedback] = useState(false);
+  const { isSpeaking, speak } = useSpeech();
+
+  const handleListen = () => {
+    const rawChem: unknown = result.treatment_chemical;
+    const chem = Array.isArray(rawChem) ? rawChem.slice(0, 2).join('. ') : typeof rawChem === 'string' ? rawChem : '';
+    const rawOrg: unknown = result.treatment_organic;
+    const org = Array.isArray(rawOrg) ? rawOrg.slice(0, 2).join('. ') : typeof rawOrg === 'string' ? rawOrg : '';
+    const summary =
+      language === 'bn'
+        ? `ফসল: ${result.crop_name}। রোগ: ${result.disease_name || 'সুস্থ'}। চিকিৎসা: ${chem || org || result.ai_explanation}`
+        : language === 'hi'
+        ? `फसल: ${result.crop_name}। रोग: ${result.disease_name || 'स्वस्थ'}। उपचार: ${chem || org || result.ai_explanation}`
+        : `Crop: ${result.crop_name}. Diagnosis: ${result.disease_name || 'Healthy'}. Treatment: ${chem || org || result.ai_explanation}`;
+    speak(summary, language);
+  };
 
   const handleShare = async () => {
     if (navigator.share) {
@@ -182,22 +201,52 @@ export function ScanResultView({
         </div>
 
         {/* Thumbnail Preview & Action Buttons Row */}
-        <div className="p-4 sm:p-5 bg-cream-50 border-b border-cream-200 flex flex-wrap items-center justify-between gap-3">
+        <div className="p-4 sm:p-5 bg-cream-50 dark:bg-[#141C2B] border-b border-cream-200 dark:border-slate-800 flex flex-wrap items-center justify-between gap-3">
           {imagePreview && (
             <div className="flex items-center gap-3">
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
                 src={imagePreview}
                 alt="Diagnosed leaf"
-                className="w-12 h-12 rounded-xl object-cover border border-cream-200 shadow-2xs"
+                className="w-12 h-12 rounded-xl object-cover border border-cream-200 dark:border-slate-700 shadow-2xs"
               />
-              <span className="text-xs font-semibold text-brand-dark/70">
+              <span className="text-xs font-semibold text-brand-dark/70 dark:text-slate-300">
                 Analyzed Leaf Sample
               </span>
             </div>
           )}
 
           <div className="flex flex-wrap items-center gap-2 print:hidden">
+            <button
+              type="button"
+              onClick={handleListen}
+              className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold border transition-colors cursor-pointer ${
+                isSpeaking
+                  ? 'bg-rose-600 text-white border-rose-600 animate-pulse'
+                  : 'bg-white dark:bg-[#1B2537] text-brand-dark dark:text-white border-cream-300 dark:border-slate-700 hover:bg-cream-100 dark:hover:bg-slate-700'
+              }`}
+              title="Listen to Diagnosis & Cure"
+            >
+              {isSpeaking ? <VolumeX className="w-3.5 h-3.5" /> : <Volume2 className="w-3.5 h-3.5 text-emerald-600 dark:text-emerald-400" />}
+              <span>{isSpeaking ? 'Stop' : language === 'bn' ? 'শুনুন' : language === 'hi' ? 'सुनें' : 'Listen'}</span>
+            </button>
+            <a
+              href={getWhatsAppShareUrl(
+                formatScanPrescriptionText(result, (language as 'en' | 'bn' | 'hi') || 'en')
+              )}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold shadow-xs transition-colors"
+            >
+              <Share2 className="w-3.5 h-3.5" />
+              <span>
+                {language === 'bn'
+                  ? 'হোয়াটসঅ্যাপ Rx'
+                  : language === 'hi'
+                  ? 'व्हाट्सएप Rx'
+                  : 'WhatsApp Rx'}
+              </span>
+            </a>
             <Button variant="secondary" size="sm" onClick={handleDownloadReport} leftIcon={<Printer className="w-3.5 h-3.5" />}>
               Print Report
             </Button>
@@ -208,8 +257,8 @@ export function ScanResultView({
               variant="ghost"
               size="sm"
               onClick={() => setIsFeedbackModalOpen(true)}
-              leftIcon={<Flag className="w-3.5 h-3.5 text-red-600" />}
-              className="text-red-700 hover:text-red-800"
+              leftIcon={<Flag className="w-3.5 h-3.5 text-red-600 dark:text-red-400" />}
+              className="text-red-700 dark:text-red-400 hover:text-red-800 dark:hover:text-red-300"
             >
               Report Mistake
             </Button>
@@ -220,13 +269,13 @@ export function ScanResultView({
         </div>
 
         {/* 3 Switchable Tabs - Smooth Horizontal Scroll on Mobile */}
-        <div className="border-b border-cream-200 px-4 sm:px-6 flex gap-2 sm:gap-4 overflow-x-auto text-xs sm:text-sm font-bold print:hidden scrollbar-none">
+        <div className="border-b border-cream-200 dark:border-slate-800 px-4 sm:px-6 flex gap-2 sm:gap-4 overflow-x-auto text-xs sm:text-sm font-bold print:hidden scrollbar-none">
           <button
             onClick={() => setActiveTab('actions')}
             className={`py-3.5 border-b-2 transition-all whitespace-nowrap shrink-0 ${
               activeTab === 'actions'
-                ? 'border-brand-forest text-brand-forest'
-                : 'border-transparent text-brand-dark/60 hover:text-brand-dark'
+                ? 'border-brand-forest dark:border-emerald-400 text-brand-forest dark:text-emerald-400'
+                : 'border-transparent text-brand-dark/60 dark:text-slate-400 hover:text-brand-dark dark:hover:text-white'
             }`}
           >
             Recommended Treatments
@@ -235,8 +284,8 @@ export function ScanResultView({
             onClick={() => setActiveTab('symptoms')}
             className={`py-3.5 border-b-2 transition-all whitespace-nowrap shrink-0 ${
               activeTab === 'symptoms'
-                ? 'border-brand-forest text-brand-forest'
-                : 'border-transparent text-brand-dark/60 hover:text-brand-dark'
+                ? 'border-brand-forest dark:border-emerald-400 text-brand-forest dark:text-emerald-400'
+                : 'border-transparent text-brand-dark/60 dark:text-slate-400 hover:text-brand-dark dark:hover:text-white'
             }`}
           >
             Symptoms & Signs
@@ -245,8 +294,8 @@ export function ScanResultView({
             onClick={() => setActiveTab('explanation')}
             className={`py-3.5 border-b-2 transition-all whitespace-nowrap shrink-0 ${
               activeTab === 'explanation'
-                ? 'border-brand-forest text-brand-forest'
-                : 'border-transparent text-brand-dark/60 hover:text-brand-dark'
+                ? 'border-brand-forest dark:border-emerald-400 text-brand-forest dark:text-emerald-400'
+                : 'border-transparent text-brand-dark/60 dark:text-slate-400 hover:text-brand-dark dark:hover:text-white'
             }`}
           >
             AI Agronomy Notes

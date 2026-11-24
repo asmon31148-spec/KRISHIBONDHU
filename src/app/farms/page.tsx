@@ -17,6 +17,7 @@ import {
   Compass,
   Sprout,
   FlaskConical,
+  Camera,
 } from 'lucide-react';
 
 export interface Farm {
@@ -188,6 +189,37 @@ export default function FarmsPage() {
   const [soilPh, setSoilPh] = useState('6.5');
   const [soilTestDate, setSoilTestDate] = useState(new Date().toISOString().split('T')[0]);
   const [isSubmittingSoil, setIsSubmittingSoil] = useState(false);
+  const [isScanningSoilCard, setIsScanningSoilCard] = useState(false);
+
+  const handleScanSoilCard = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    setIsScanningSoilCard(true);
+    try {
+      const formData = new FormData();
+      formData.append('image', file);
+      const res = await fetch('/api/soil/ocr', { method: 'POST', body: formData });
+      const data = await res.json();
+      if (!res.ok || !data.success) {
+        throw new Error(data.error || 'Failed to read Soil Health Card');
+      }
+      const ocr = data.result;
+      if (!ocr.readable) {
+        toast.warning('Soil Health Card text unclear. Please upload a sharper photo.');
+        return;
+      }
+      if (ocr.nitrogen_kg_ha != null) setSoilN(String(Math.round(ocr.nitrogen_kg_ha)));
+      if (ocr.phosphorus_kg_ha != null) setSoilP(String(Math.round(ocr.phosphorus_kg_ha)));
+      if (ocr.potassium_kg_ha != null) setSoilK(String(Math.round(ocr.potassium_kg_ha)));
+      if (ocr.ph != null) setSoilPh(String(ocr.ph));
+      toast.success('Soil Health Card values auto-filled!');
+    } catch (err) {
+      toast.error(err instanceof Error ? err.message : 'OCR scan failed');
+    } finally {
+      setIsScanningSoilCard(false);
+      e.target.value = '';
+    }
+  };
 
   // Guest prompt
   const [isGuestPromptOpen, setIsGuestPromptOpen] = useState(false);
@@ -825,9 +857,23 @@ export default function FarmsPage() {
         title="Record Plot Soil Test (N-P-K & pH)"
       >
         <form onSubmit={handleSaveSoil} className="space-y-4 pt-2">
-          <p className="text-xs text-brand-dark/70">
-            Enter values from your official Soil Health Card (SHC) or block agricultural lab report.
-          </p>
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 p-3 rounded-xl bg-emerald-50/80 dark:bg-emerald-950/30 border border-emerald-200 dark:border-emerald-900/50">
+            <p className="text-xs text-emerald-950 dark:text-emerald-200 font-medium">
+              Snap your printed Soil Health Card to auto-fill N, P, K & pH.
+            </p>
+            <label className="inline-flex items-center justify-center gap-1.5 px-3 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs cursor-pointer transition-colors shrink-0">
+              <Camera className={`w-3.5 h-3.5 ${isScanningSoilCard ? 'animate-spin' : ''}`} />
+              <span>{isScanningSoilCard ? 'Scanning...' : 'Scan Soil Card'}</span>
+              <input
+                type="file"
+                accept="image/*"
+                capture="environment"
+                className="hidden"
+                disabled={isScanningSoilCard}
+                onChange={handleScanSoilCard}
+              />
+            </label>
+          </div>
 
           <div className="grid grid-cols-3 gap-2">
             <Input
