@@ -9,6 +9,7 @@ import { Navbar } from '@/components/layout/Navbar';
 import { Sidebar } from '@/components/layout/Sidebar';
 import { MobileNav } from '@/components/layout/MobileNav';
 import { ContentWrapper } from '@/components/layout/ContentWrapper';
+import { SplashScreen } from '@/components/ui/SplashScreen';
 
 const plusJakarta = Plus_Jakarta_Sans({
   subsets: ['latin'],
@@ -64,6 +65,7 @@ export default function RootLayout({
         />
       </head>
       <body className={`${plusJakarta.variable} bg-[#F9F7F2] dark:bg-[#0B1711] text-[#10241A] dark:text-[#EAF2EC] min-h-screen flex flex-col font-sans overflow-x-clip selection:bg-pine-100 selection:text-pine-900 transition-colors duration-200`}>
+        <SplashScreen />
         <ThemeProvider>
           <I18nProvider>
             <AuthProvider>

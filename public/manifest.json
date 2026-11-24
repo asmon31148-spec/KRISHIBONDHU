@@ -4,8 +4,8 @@
   "description": "Smart Agriculture, Crop Disease Detection & Agronomy AI for Bengal and India",
   "start_url": "/",
   "display": "standalone",
-  "background_color": "#FAF9F5",
-  "theme_color": "#1B4332",
+  "background_color": "#143224",
+  "theme_color": "#143224",
   "icons": [
     {
       "src": "/icon.svg",
