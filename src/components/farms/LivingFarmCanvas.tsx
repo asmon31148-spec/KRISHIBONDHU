@@ -343,7 +343,7 @@ export function LivingFarmCanvas({
                 </span>
                 <button
                   onClick={() => onAddSoil(activeFarm.id)}
-                  className="inline-flex items-center gap-1 px-2.5 py-1 rounded-xl bg-cream-100 hover:bg-cream-200 text-[#143224] text-xs font-bold transition-all cursor-pointer"
+                  className="inline-flex items-center gap-1 px-2.5 py-1 rounded-xl bg-cream-100 dark:bg-slate-800 hover:bg-cream-200 dark:hover:bg-slate-700 text-[#143224] dark:text-white border border-transparent dark:border-slate-700 text-xs font-bold transition-all cursor-pointer"
                 >
                   <FlaskConical className="w-3.5 h-3.5 text-emerald-700" />
                   <span>{activeSoil ? 'Update Test' : '+ Record Test'}</span>

@@ -526,43 +526,43 @@ export default function FarmsPage() {
 
       {/* Visual Farmer Overview Stats */}
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4">
-        <div className="p-4 rounded-2xl bg-white border border-cream-200/90 shadow-2xs flex items-center gap-3.5">
-          <div className="w-12 h-12 rounded-xl bg-brand-forest/10 flex items-center justify-center text-brand-forest shrink-0">
+        <div className="p-4 rounded-2xl bg-white dark:bg-[#141C2B] border border-cream-200/90 dark:border-slate-800 shadow-2xs flex items-center gap-3.5">
+          <div className="w-12 h-12 rounded-xl bg-brand-forest/10 dark:bg-emerald-950/60 flex items-center justify-center text-brand-forest dark:text-emerald-400 shrink-0">
             <Warehouse className="w-6 h-6" />
           </div>
           <div>
-            <span className="text-xs font-semibold text-brand-dark/60 block">
+            <span className="text-xs font-semibold text-brand-dark/60 dark:text-slate-400 block">
               {activeLang === 'bn' ? 'মোট জমি (প্লট)' : activeLang === 'hi' ? 'कुल खेत (प्लॉट)' : 'Total Farm Plots'}
             </span>
-            <span className="text-xl sm:text-2xl font-extrabold text-brand-dark">
+            <span className="text-xl sm:text-2xl font-extrabold text-brand-dark dark:text-white">
               {farms.length} {activeLang === 'bn' ? 'টি প্লট' : activeLang === 'hi' ? 'खेत' : 'Plots'}
             </span>
           </div>
         </div>
 
-        <div className="p-4 rounded-2xl bg-white border border-cream-200/90 shadow-2xs flex items-center gap-3.5">
-          <div className="w-12 h-12 rounded-xl bg-emerald-50 flex items-center justify-center text-emerald-600 shrink-0">
+        <div className="p-4 rounded-2xl bg-white dark:bg-[#141C2B] border border-cream-200/90 dark:border-slate-800 shadow-2xs flex items-center gap-3.5">
+          <div className="w-12 h-12 rounded-xl bg-emerald-50 dark:bg-emerald-950/60 flex items-center justify-center text-emerald-600 dark:text-emerald-400 shrink-0">
             <Sprout className="w-6 h-6" />
           </div>
           <div>
-            <span className="text-xs font-semibold text-brand-dark/60 block">
+            <span className="text-xs font-semibold text-brand-dark/60 dark:text-slate-400 block">
               {activeLang === 'bn' ? 'বপন করা চলতি ফসল' : activeLang === 'hi' ? 'सक्रिय फसलें' : 'Active Sown Crops'}
             </span>
-            <span className="text-xl sm:text-2xl font-extrabold text-emerald-700">
+            <span className="text-xl sm:text-2xl font-extrabold text-emerald-700 dark:text-emerald-400">
               {crops.length} {activeLang === 'bn' ? 'টি ফসল' : activeLang === 'hi' ? 'फसलें' : 'Crops'}
             </span>
           </div>
         </div>
 
-        <div className="p-4 rounded-2xl bg-white border border-cream-200/90 shadow-2xs flex items-center gap-3.5">
-          <div className="w-12 h-12 rounded-xl bg-blue-50 flex items-center justify-center text-blue-600 shrink-0">
+        <div className="p-4 rounded-2xl bg-white dark:bg-[#141C2B] border border-cream-200/90 dark:border-slate-800 shadow-2xs flex items-center gap-3.5">
+          <div className="w-12 h-12 rounded-xl bg-blue-50 dark:bg-blue-950/60 flex items-center justify-center text-blue-600 dark:text-blue-400 shrink-0">
             <FlaskConical className="w-6 h-6" />
           </div>
           <div>
-            <span className="text-xs font-semibold text-brand-dark/60 block">
+            <span className="text-xs font-semibold text-brand-dark/60 dark:text-slate-400 block">
               {activeLang === 'bn' ? 'মাটির পরীক্ষা রেকর্ড' : activeLang === 'hi' ? 'मृदा परीक्षण रिपोर्ट' : 'Soil Test Records'}
             </span>
-            <span className="text-xl sm:text-2xl font-extrabold text-blue-700">
+            <span className="text-xl sm:text-2xl font-extrabold text-blue-700 dark:text-blue-400">
               {soilRecords.length} {activeLang === 'bn' ? 'টি রিপোর্ট' : activeLang === 'hi' ? 'रिपोर्ट' : 'Reports'}
             </span>
           </div>
@@ -641,7 +641,7 @@ export default function FarmsPage() {
               <select
                 value={farmAreaUnit}
                 onChange={(e) => setFarmAreaUnit(e.target.value)}
-                className="block w-full rounded-xl border border-cream-300 bg-white px-3.5 py-2.5 text-sm text-brand-dark focus:outline-none focus:ring-2 focus:ring-brand-emerald min-h-[44px]"
+                className="block w-full rounded-xl border border-cream-300 dark:border-slate-800 bg-white dark:bg-[#1B2537] px-3.5 py-2.5 text-sm text-brand-dark dark:text-white focus:outline-none focus:ring-2 focus:ring-brand-emerald min-h-[44px]"
               >
                 <option value="bigha">{t('onboarding.units.bigha')}</option>
                 <option value="katha">{t('onboarding.units.katha')}</option>
@@ -658,7 +658,7 @@ export default function FarmsPage() {
             <select
               value={farmSoilType}
               onChange={(e) => setFarmSoilType(e.target.value)}
-              className="block w-full rounded-xl border border-cream-300 bg-white px-3.5 py-2.5 text-sm text-brand-dark focus:outline-none focus:ring-2 focus:ring-brand-emerald min-h-[44px]"
+              className="block w-full rounded-xl border border-cream-300 dark:border-slate-800 bg-white dark:bg-[#1B2537] px-3.5 py-2.5 text-sm text-brand-dark dark:text-white focus:outline-none focus:ring-2 focus:ring-brand-emerald min-h-[44px]"
             >
               <option value="alluvial">{t('onboarding.soilTypes.alluvial')}</option>
               <option value="clay">{t('onboarding.soilTypes.clay')}</option>
@@ -715,7 +715,7 @@ export default function FarmsPage() {
             <select
               value={cropName}
               onChange={(e) => setCropName(e.target.value)}
-              className="block w-full rounded-xl border border-cream-300 bg-white px-3.5 py-2.5 text-sm text-brand-dark focus:outline-none focus:ring-2 focus:ring-brand-emerald min-h-[44px]"
+              className="block w-full rounded-xl border border-cream-300 dark:border-slate-800 bg-white dark:bg-[#1B2537] px-3.5 py-2.5 text-sm text-brand-dark dark:text-white focus:outline-none focus:ring-2 focus:ring-brand-emerald min-h-[44px]"
             >
               {cropList.map((item) => (
                 <option key={item.value} value={item.value}>
@@ -749,7 +749,7 @@ export default function FarmsPage() {
               <select
                 value={cropAreaUnit}
                 onChange={(e) => setCropAreaUnit(e.target.value)}
-                className="block w-full rounded-xl border border-cream-300 bg-white px-3.5 py-2.5 text-sm text-brand-dark focus:outline-none focus:ring-2 focus:ring-brand-emerald min-h-[44px]"
+                className="block w-full rounded-xl border border-cream-300 dark:border-slate-800 bg-white dark:bg-[#1B2537] px-3.5 py-2.5 text-sm text-brand-dark dark:text-white focus:outline-none focus:ring-2 focus:ring-brand-emerald min-h-[44px]"
               >
                 <option value="bigha">Bigha</option>
                 <option value="katha">Katha</option>
@@ -782,7 +782,7 @@ export default function FarmsPage() {
             <select
               value={irrigationType}
               onChange={(e) => setIrrigationType(e.target.value)}
-              className="block w-full rounded-xl border border-cream-300 bg-white px-3.5 py-2.5 text-sm text-brand-dark focus:outline-none focus:ring-2 focus:ring-brand-emerald min-h-[44px]"
+              className="block w-full rounded-xl border border-cream-300 dark:border-slate-800 bg-white dark:bg-[#1B2537] px-3.5 py-2.5 text-sm text-brand-dark dark:text-white focus:outline-none focus:ring-2 focus:ring-brand-emerald min-h-[44px]"
             >
               {irrigationList.map((irr) => (
                 <option key={irr.value} value={irr.value}>
@@ -799,7 +799,7 @@ export default function FarmsPage() {
             <select
               value={healthStatus}
               onChange={(e) => setHealthStatus(e.target.value as 'healthy' | 'needs_attention' | 'diseased')}
-              className="block w-full rounded-xl border border-cream-300 bg-white px-3.5 py-2.5 text-sm text-brand-dark focus:outline-none focus:ring-2 focus:ring-brand-emerald min-h-[44px]"
+              className="block w-full rounded-xl border border-cream-300 dark:border-slate-800 bg-white dark:bg-[#1B2537] px-3.5 py-2.5 text-sm text-brand-dark dark:text-white focus:outline-none focus:ring-2 focus:ring-brand-emerald min-h-[44px]"
             >
               <option value="healthy">Healthy (No visible pests/disease)</option>
               <option value="needs_attention">Needs Attention (Mild leaf yellowing/stress)</option>

@@ -383,7 +383,7 @@ export default function LandingPage() {
               CARD A (Large 2-Column Span): AI Crop Health Diagnostic
               Actionable Real Diagnostic Launchpad (Zero Mock)
              ---------------------------------------------------- */}
-          <div className="lg:col-span-2 rounded-3xl bg-white/95 dark:bg-[#111418] border border-[#143224]/12 dark:border-white/10 shadow-[0_4px_24px_rgba(20,50,36,0.04)] hover:shadow-[0_12px_32px_rgba(20,50,36,0.08)] transition-all p-6 sm:p-8 flex flex-col justify-between space-y-6 text-left group">
+          <div className="lg:col-span-2 rounded-3xl bg-white/95 dark:bg-[#141C2B] border border-[#143224]/12 dark:border-slate-800 shadow-[0_4px_24px_rgba(20,50,36,0.04)] hover:shadow-[0_12px_32px_rgba(20,50,36,0.08)] transition-all p-6 sm:p-8 flex flex-col justify-between space-y-6 text-left group">
             <div className="space-y-3">
               <div className="flex items-center justify-between">
                 <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-[#EAF2EC] dark:bg-emerald-950/60 text-[#143224] dark:text-emerald-400 border border-[#143224]/12 dark:border-white/10">
@@ -482,7 +482,7 @@ export default function LandingPage() {
               CARD B (1-Column Span): Live Mandi / Market Prices
               Connected to real Government Agmarknet feed
              ---------------------------------------------------- */}
-          <div className="hidden md:flex rounded-3xl bg-white/95 dark:bg-[#111418] border border-[#143224]/12 dark:border-white/10 shadow-[0_4px_24px_rgba(20,50,36,0.04)] hover:shadow-[0_12px_32px_rgba(20,50,36,0.08)] transition-all p-6 sm:p-7 flex-col justify-between space-y-5 text-left group">
+          <div className="hidden md:flex rounded-3xl bg-white/95 dark:bg-[#141C2B] border border-[#143224]/12 dark:border-slate-800 shadow-[0_4px_24px_rgba(20,50,36,0.04)] hover:shadow-[0_12px_32px_rgba(20,50,36,0.08)] transition-all p-6 sm:p-7 flex-col justify-between space-y-5 text-left group">
             <div className="space-y-3">
               <div className="flex items-center justify-between">
                 <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-[#FDF5EC] dark:bg-amber-950/40 text-[#D9822B] border border-[#D9822B]/20">
@@ -542,7 +542,7 @@ export default function LandingPage() {
             <Link href="/mandi" className="block pt-1">
               <button
                 type="button"
-                className="w-full inline-flex items-center justify-center gap-2 px-4 py-3 rounded-xl bg-white dark:bg-[#111418] hover:bg-[#F3EFE6] dark:hover:bg-white/10 text-[#143224] dark:text-white border border-[#143224]/18 dark:border-white/15 font-bold text-xs sm:text-sm transition-all cursor-pointer"
+                className="w-full inline-flex items-center justify-center gap-2 px-4 py-3 rounded-xl bg-white dark:bg-[#141C2B] hover:bg-[#F3EFE6] dark:hover:bg-slate-800 text-[#143224] dark:text-white border border-[#143224]/18 dark:border-slate-700 font-bold text-xs sm:text-sm transition-all cursor-pointer"
               >
                 <span>{content.cardBBtn}</span>
                 <ArrowRight className="w-4 h-4 ml-0.5 group-hover:translate-x-1 transition-transform" />
@@ -554,7 +554,7 @@ export default function LandingPage() {
               CARD C (1-Column Span): Micro-Climate & Soil Forecast
               Connected to live Open-Meteo Weather API
              ---------------------------------------------------- */}
-          <div className="hidden md:flex rounded-3xl bg-white/95 dark:bg-[#111418] border border-[#143224]/12 dark:border-white/10 shadow-[0_4px_24px_rgba(20,50,36,0.04)] hover:shadow-[0_12px_32px_rgba(20,50,36,0.08)] transition-all p-6 sm:p-7 flex-col justify-between space-y-5 text-left group">
+          <div className="hidden md:flex rounded-3xl bg-white/95 dark:bg-[#141C2B] border border-[#143224]/12 dark:border-slate-800 shadow-[0_4px_24px_rgba(20,50,36,0.04)] hover:shadow-[0_12px_32px_rgba(20,50,36,0.08)] transition-all p-6 sm:p-7 flex-col justify-between space-y-5 text-left group">
             <div className="space-y-3">
               <div className="flex items-center justify-between">
                 <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-[#EAF2EC] dark:bg-emerald-950/60 text-[#143224] dark:text-emerald-400 border border-[#143224]/12 dark:border-white/10">
@@ -637,7 +637,7 @@ export default function LandingPage() {
             <Link href="/weather" className="block pt-1">
               <button
                 type="button"
-                className="w-full inline-flex items-center justify-center gap-2 px-4 py-3 rounded-xl bg-white dark:bg-[#111418] hover:bg-[#F3EFE6] dark:hover:bg-white/10 text-[#143224] dark:text-white border border-[#143224]/18 dark:border-white/15 font-bold text-xs sm:text-sm transition-all cursor-pointer"
+                className="w-full inline-flex items-center justify-center gap-2 px-4 py-3 rounded-xl bg-white dark:bg-[#141C2B] hover:bg-[#F3EFE6] dark:hover:bg-slate-800 text-[#143224] dark:text-white border border-[#143224]/18 dark:border-slate-700 font-bold text-xs sm:text-sm transition-all cursor-pointer"
               >
                 <span>{content.cardCBtn}</span>
                 <ArrowRight className="w-4 h-4 ml-0.5 group-hover:translate-x-1 transition-transform" />
@@ -931,7 +931,7 @@ export default function LandingPage() {
       {/* ========================================================
           4. UNIFIED EMERGENCY HELPLINE & FAST ACCESS
          ======================================================== */}
-      <section className="rounded-3xl bg-[#143224] dark:bg-[#111418] border border-white/10 text-white p-8 sm:p-10 shadow-[0_8px_32px_rgba(20,50,36,0.18)] flex flex-col md:flex-row items-center justify-between gap-6 text-left">
+      <section className="rounded-3xl bg-[#143224] dark:bg-[#141C2B] border border-white/10 dark:border-slate-800 text-white p-8 sm:p-10 shadow-[0_8px_32px_rgba(20,50,36,0.18)] flex flex-col md:flex-row items-center justify-between gap-6 text-left">
         <div className="space-y-2 max-w-xl">
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/10 text-emerald-300 text-xs font-bold">
             <PhoneCall className="w-3.5 h-3.5 text-[#D9822B]" />

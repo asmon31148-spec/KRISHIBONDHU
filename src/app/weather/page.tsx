@@ -307,14 +307,14 @@ export default function WeatherPage() {
       {/* Title & Location Bar */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-brand-forest/10 text-brand-forest text-xs font-semibold mb-1">
+          <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-brand-forest/10 dark:bg-emerald-950/60 text-brand-forest dark:text-emerald-400 text-xs font-semibold mb-1">
             <Compass className="w-3.5 h-3.5" />
             <span>Open-Meteo High-Resolution Agronomic Weather</span>
           </div>
-          <h1 className="text-2xl sm:text-3xl font-extrabold text-brand-forest">
+          <h1 className="text-2xl sm:text-3xl font-extrabold text-brand-forest dark:text-white">
             Farm Weather & Agro-Advisories
           </h1>
-          <p className="text-xs sm:text-sm text-brand-dark/70 mt-0.5">
+          <p className="text-xs sm:text-sm text-brand-dark/70 dark:text-slate-400 mt-0.5">
             Real live meteorological data from Open-Meteo with spray window, crop risk, and 7-day agricultural forecasts.
           </p>
         </div>
@@ -325,7 +325,7 @@ export default function WeatherPage() {
             value={selectedLocation.source === 'gps' ? 'gps' : selectedLocation.name}
             onChange={handleDistrictChange}
             aria-label="Select Farm District or Coordinates"
-            className="block rounded-xl border border-cream-300 bg-white px-3 py-2 text-xs sm:text-sm text-brand-dark font-semibold focus:outline-none focus:ring-2 focus:ring-brand-emerald min-h-[44px]"
+            className="block rounded-xl border border-cream-300 dark:border-slate-800 bg-white dark:bg-[#141C2B] px-3 py-2 text-xs sm:text-sm text-brand-dark dark:text-white font-semibold focus:outline-none focus:ring-2 focus:ring-brand-emerald min-h-[44px] cursor-pointer"
           >
             {selectedLocation.source === 'gps' && (
               <option value="gps">
@@ -354,24 +354,24 @@ export default function WeatherPage() {
       </div>
 
       {/* Provenance & Location Source Indicator */}
-      <div className="flex items-center justify-between p-3 rounded-xl bg-cream-50 dark:bg-[#111418] border border-cream-200 dark:border-white/10 text-xs flex-wrap gap-2">
+      <div className="flex items-center justify-between p-3 rounded-xl bg-cream-50 dark:bg-[#141C2B] border border-cream-200 dark:border-slate-800 text-xs flex-wrap gap-2">
         <div className="flex items-center gap-2">
           {selectedLocation.source === 'gps' ? (
-            <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-emerald-100 text-emerald-900 font-bold text-xs border border-emerald-300">
-              <Compass className="w-3.5 h-3.5 text-emerald-700" />
+            <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-emerald-100 dark:bg-emerald-950/80 text-emerald-900 dark:text-emerald-300 font-bold text-xs border border-emerald-300 dark:border-emerald-700/60">
+              <Compass className="w-3.5 h-3.5 text-emerald-700 dark:text-emerald-400" />
               <span>GPS Coordinates Active: {selectedLocation.gpsDetails || `${selectedLocation.lat.toFixed(3)}, ${selectedLocation.lon.toFixed(3)}`}</span>
             </span>
           ) : (
-            <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-cream-200/80 text-brand-dark font-semibold text-xs border border-cream-300">
-              <MapPin className="w-3.5 h-3.5 text-brand-leaf" />
+            <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-cream-200/80 dark:bg-[#1B2537] text-brand-dark dark:text-slate-200 font-semibold text-xs border border-cream-300 dark:border-slate-700">
+              <MapPin className="w-3.5 h-3.5 text-brand-leaf dark:text-emerald-400" />
               <span>Manually Selected District: {selectedLocation.name}</span>
             </span>
           )}
         </div>
 
         {lastFetchedAt && (
-          <span className="text-[11px] text-brand-dark/60 flex items-center gap-1">
-            <Clock className="w-3.5 h-3.5 text-brand-leaf" />
+          <span className="text-[11px] text-brand-dark/60 dark:text-slate-400 flex items-center gap-1">
+            <Clock className="w-3.5 h-3.5 text-brand-leaf dark:text-emerald-400" />
             Last Synced: {lastFetchedAt}
           </span>
         )}
@@ -474,10 +474,10 @@ export default function WeatherPage() {
                       key={d.id}
                       className={`border-t-4 transition-all ${
                         d.status === 'optimal'
-                          ? 'border-t-emerald-600 bg-white'
+                          ? 'border-t-emerald-600 bg-white dark:bg-[#141C2B]'
                           : d.status === 'warning'
-                          ? 'border-t-amber-500 bg-amber-50/20'
-                          : 'border-t-rose-600 bg-rose-50/20'
+                          ? 'border-t-amber-500 bg-amber-50/20 dark:bg-[#141C2B]'
+                          : 'border-t-rose-600 bg-rose-50/20 dark:bg-[#141C2B]'
                       }`}
                     >
                       <CardContent className="p-4 sm:p-5 flex flex-col justify-between h-full space-y-3">
@@ -486,10 +486,10 @@ export default function WeatherPage() {
                             <span
                               className={`text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-md ${
                                 d.status === 'optimal'
-                                  ? 'bg-emerald-100 text-emerald-800'
+                                  ? 'bg-emerald-100 dark:bg-emerald-950/80 text-emerald-800 dark:text-emerald-300'
                                   : d.status === 'warning'
-                                  ? 'bg-amber-100 text-amber-900'
-                                  : 'bg-rose-100 text-rose-900'
+                                  ? 'bg-amber-100 dark:bg-amber-950/80 text-amber-900 dark:text-amber-300'
+                                  : 'bg-rose-100 dark:bg-rose-950/80 text-rose-900 dark:text-rose-300'
                               }`}
                             >
                               {d.type.replace('_', ' ')}
@@ -502,7 +502,7 @@ export default function WeatherPage() {
                               className={`p-1.5 rounded-lg border transition-colors cursor-pointer ${
                                 isSpeaking
                                   ? 'bg-rose-600 text-white border-rose-600 animate-pulse'
-                                  : 'bg-white text-brand-dark/70 hover:text-brand-forest hover:bg-cream-100 border-cream-200'
+                                  : 'bg-white dark:bg-[#1B2537] text-brand-dark/70 dark:text-white/70 hover:text-brand-forest dark:hover:text-white hover:bg-cream-100 dark:hover:bg-slate-700 border-cream-200 dark:border-slate-700'
                               }`}
                               title={isSpeaking ? 'Stop Audio Readout' : 'Listen in Bengali/Hindi'}
                             >
@@ -553,26 +553,26 @@ export default function WeatherPage() {
             </div>
 
             {userCrops.length === 0 ? (
-              <div className="p-4 rounded-2xl bg-cream-50 dark:bg-[#111418] border border-cream-200 dark:border-white/10 text-xs text-brand-dark/75 dark:text-white/70 flex items-center justify-between gap-3">
+              <div className="p-4 rounded-2xl bg-cream-50 dark:bg-[#141C2B] border border-cream-200 dark:border-slate-800 text-xs text-brand-dark/75 dark:text-slate-300 flex items-center justify-between gap-3">
                 <div className="flex items-center gap-2">
-                  <Info className="w-4 h-4 text-brand-leaf shrink-0" />
+                  <Info className="w-4 h-4 text-brand-leaf dark:text-emerald-400 shrink-0" />
                   <span>
                     No active crops recorded in your farm. Add your sown crops (Potato, Rice, Brinjal) to unlock personalized disease outbreak warnings.
                   </span>
                 </div>
                 <Link
                   href="/farms"
-                  className="px-3 py-1.5 rounded-lg bg-brand-forest text-white text-xs font-bold hover:bg-brand-leaf shrink-0"
+                  className="px-3 py-1.5 rounded-lg bg-brand-forest dark:bg-emerald-600 text-white text-xs font-bold hover:bg-brand-leaf dark:hover:bg-emerald-500 shrink-0"
                 >
                   Add Crops
                 </Link>
               </div>
             ) : evaluatedCropRisks.length === 0 ? (
-              <div className="p-4 rounded-2xl bg-emerald-50/70 border border-emerald-200 text-xs text-emerald-950 flex items-center gap-2.5">
-                <ShieldCheck className="w-5 h-5 text-emerald-600 shrink-0" />
+              <div className="p-4 rounded-2xl bg-emerald-50/70 dark:bg-emerald-950/30 border border-emerald-200 dark:border-emerald-900/50 text-xs text-emerald-950 dark:text-emerald-200 flex items-center gap-2.5">
+                <ShieldCheck className="w-5 h-5 text-emerald-600 dark:text-emerald-400 shrink-0" />
                 <div>
-                  <span className="font-bold block">Favorable Weather for Sown Crops:</span>
-                  <span className="text-emerald-900/80">
+                  <span className="font-bold block text-emerald-950 dark:text-emerald-200">Favorable Weather for Sown Crops:</span>
+                  <span className="text-emerald-900/80 dark:text-emerald-300">
                     Current humidity and temperature ranges show low fungal blight and waterlogging pressure for your active crops ({userCrops.map((c) => c.name).join(', ')}).
                   </span>
                 </div>
@@ -703,7 +703,7 @@ export default function WeatherPage() {
 
           {/* 7-Day Weather Forecast */}
           <div className="space-y-3">
-            <h3 className="text-base font-bold text-brand-forest">
+            <h3 className="text-base font-bold text-brand-forest dark:text-white">
               7-Day Agricultural Meteorological Forecast
             </h3>
             <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-7 gap-3">
@@ -713,23 +713,23 @@ export default function WeatherPage() {
                 const monthDay = dateObj.toLocaleDateString('en-IN', { day: 'numeric', month: 'short' });
 
                 return (
-                  <Card key={day.date} className="text-center hover:border-brand-leaf/40 transition-all p-3 space-y-2 bg-white">
+                  <Card key={day.date} className="text-center hover:border-brand-leaf/40 transition-all p-3 space-y-2 bg-white dark:bg-[#141C2B] border-cream-200 dark:border-slate-800">
                     <div>
-                      <span className="text-xs font-bold text-brand-dark block">{dayName}</span>
-                      <span className="text-[10px] text-brand-dark/60 block">{monthDay}</span>
+                      <span className="text-xs font-bold text-brand-dark dark:text-white block">{dayName}</span>
+                      <span className="text-[10px] text-brand-dark/60 dark:text-slate-400 block">{monthDay}</span>
                     </div>
 
                     <div className="py-1">
-                      <span className="text-xs font-bold text-brand-forest block">
+                      <span className="text-xs font-bold text-brand-forest dark:text-emerald-400 block">
                         {Math.round(day.temperatureMax)}° / {Math.round(day.temperatureMin)}°
                       </span>
-                      <span className="text-[11px] text-brand-dark/70 block mt-0.5 leading-tight">
+                      <span className="text-[11px] text-brand-dark/70 dark:text-slate-300 block mt-0.5 leading-tight">
                         {day.weatherDescription}
                       </span>
                     </div>
 
-                    <div className="pt-1 border-t border-cream-200 text-[10px] text-brand-dark/70 flex items-center justify-center gap-1">
-                      <CloudRain className="w-3 h-3 text-blue-600" />
+                    <div className="pt-1 border-t border-cream-200 dark:border-slate-800 text-[10px] text-brand-dark/70 dark:text-slate-300 flex items-center justify-center gap-1">
+                      <CloudRain className="w-3 h-3 text-blue-600 dark:text-blue-400" />
                       <span>{day.precipitationSum} mm</span>
                     </div>
                   </Card>

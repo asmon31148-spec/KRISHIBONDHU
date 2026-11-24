@@ -386,10 +386,10 @@ function YieldPredictionContent() {
             <CardContent className="p-4 sm:p-5">
               <form onSubmit={handlePredict} className="space-y-4">
                 {/* ---------------- SECTION: FARM LOCATION & GPS ---------------- */}
-                <div className="p-3.5 rounded-2xl bg-gradient-to-br from-cream-100/90 to-emerald-50/40 border border-cream-300/90 space-y-3">
+                <div className="p-3.5 rounded-2xl bg-cream-50 dark:bg-[#141C2B] border border-cream-200 dark:border-slate-800 space-y-3">
                   <div className="flex items-center justify-between flex-wrap gap-2">
-                    <span className="text-xs font-extrabold text-brand-forest uppercase tracking-wider flex items-center gap-1.5">
-                      <MapPin className="w-3.5 h-3.5 text-brand-leaf" />
+                    <span className="text-xs font-extrabold text-brand-forest dark:text-emerald-400 uppercase tracking-wider flex items-center gap-1.5">
+                      <MapPin className="w-3.5 h-3.5 text-brand-leaf dark:text-emerald-400" />
                       <span>Farm Location & Geography</span>
                     </span>
 
@@ -397,17 +397,17 @@ function YieldPredictionContent() {
                       type="button"
                       onClick={handleDetectGPS}
                       disabled={isDetectingLocation}
-                      className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-white border border-cream-300 text-brand-forest text-[11px] font-bold hover:border-brand-leaf hover:bg-emerald-50 active:scale-95 transition-all shadow-2xs cursor-pointer disabled:opacity-60"
+                      className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-white dark:bg-[#1B2537] border border-cream-300 dark:border-slate-700 text-brand-forest dark:text-emerald-400 text-[11px] font-bold hover:border-brand-leaf hover:bg-emerald-50 dark:hover:bg-slate-700 active:scale-95 transition-all shadow-2xs cursor-pointer disabled:opacity-60"
                       title="Auto-detect current GPS location"
                     >
                       {isDetectingLocation ? (
                         <>
-                          <Loader2 className="w-3 h-3 animate-spin text-brand-forest" />
+                          <Loader2 className="w-3 h-3 animate-spin text-brand-forest dark:text-emerald-400" />
                           <span>Locating...</span>
                         </>
                       ) : (
                         <>
-                          <LocateFixed className="w-3 h-3 text-brand-leaf" />
+                          <LocateFixed className="w-3 h-3 text-brand-leaf dark:text-emerald-400" />
                           <span>Auto-Detect GPS</span>
                         </>
                       )}
@@ -417,7 +417,7 @@ function YieldPredictionContent() {
                   <div className="grid grid-cols-2 gap-2.5">
                     {/* State Selector */}
                     <div className="space-y-1">
-                      <label className="block text-[11px] font-bold text-brand-dark/80">
+                      <label className="block text-[11px] font-bold text-brand-dark/80 dark:text-slate-300">
                         State (রাজ্য)
                       </label>
                       <select
@@ -431,7 +431,7 @@ function YieldPredictionContent() {
                           }
                           setLocationSource('manual');
                         }}
-                        className="block w-full rounded-xl border border-cream-300 bg-white px-2.5 py-2 text-xs text-brand-dark focus:outline-none focus:ring-2 focus:ring-brand-emerald min-h-[40px]"
+                        className="block w-full rounded-xl border border-cream-300 dark:border-slate-800 bg-white dark:bg-[#1B2537] px-2.5 py-2 text-xs text-brand-dark dark:text-white focus:outline-none focus:ring-2 focus:ring-brand-emerald min-h-[40px]"
                       >
                         {INDIAN_STATES.map((st) => (
                           <option key={st} value={st}>
@@ -443,7 +443,7 @@ function YieldPredictionContent() {
 
                     {/* District Selector */}
                     <div className="space-y-1">
-                      <label className="block text-[11px] font-bold text-brand-dark/80">
+                      <label className="block text-[11px] font-bold text-brand-dark/80 dark:text-slate-300">
                         District (জেলা)
                       </label>
                       <select
@@ -452,7 +452,7 @@ function YieldPredictionContent() {
                           setSelectedDistrict(e.target.value);
                           setLocationSource('manual');
                         }}
-                        className="block w-full rounded-xl border border-cream-300 bg-white px-2.5 py-2 text-xs text-brand-dark focus:outline-none focus:ring-2 focus:ring-brand-emerald min-h-[40px]"
+                        className="block w-full rounded-xl border border-cream-300 dark:border-slate-800 bg-white dark:bg-[#1B2537] px-2.5 py-2 text-xs text-brand-dark dark:text-white focus:outline-none focus:ring-2 focus:ring-brand-emerald min-h-[40px]"
                       >
                         {availableDistricts.map((dist) => (
                           <option key={dist} value={dist}>
@@ -508,13 +508,13 @@ function YieldPredictionContent() {
 
                   {/* Target Crop Selector */}
                   <div className="space-y-1.5">
-                    <label className="block text-xs sm:text-sm font-semibold text-brand-dark/90">
+                    <label className="block text-xs sm:text-sm font-semibold text-brand-dark/90 dark:text-slate-300">
                       Target Crop (ফসল নির্বাচন)
                     </label>
                     <select
                       value={cropKey}
                       onChange={(e) => setCropKey(e.target.value)}
-                      className="block w-full rounded-xl border border-cream-300 bg-white px-3.5 py-2.5 text-xs sm:text-sm text-brand-dark focus:outline-none focus:ring-2 focus:ring-brand-emerald min-h-[44px]"
+                      className="block w-full rounded-xl border border-cream-300 dark:border-slate-800 bg-white dark:bg-[#1B2537] px-3.5 py-2.5 text-xs sm:text-sm text-brand-dark dark:text-white focus:outline-none focus:ring-2 focus:ring-brand-emerald min-h-[44px]"
                     >
                       {Object.entries(CROP_BASELINES).map(([key, val]) => (
                         <option key={key} value={key}>
@@ -545,13 +545,13 @@ function YieldPredictionContent() {
                     />
 
                     <div className="space-y-1.5">
-                      <label className="block text-xs sm:text-sm font-semibold text-brand-dark/90">
+                      <label className="block text-xs sm:text-sm font-semibold text-brand-dark/90 dark:text-slate-300">
                         Unit (পরিমাপ একক)
                       </label>
                       <select
                         value={areaUnit}
                         onChange={(e) => setAreaUnit(e.target.value as LandUnit)}
-                        className="block w-full rounded-xl border border-cream-300 bg-white px-3.5 py-2.5 text-xs sm:text-sm text-brand-dark focus:outline-none focus:ring-2 focus:ring-brand-emerald min-h-[44px]"
+                        className="block w-full rounded-xl border border-cream-300 dark:border-slate-800 bg-white dark:bg-[#1B2537] px-3.5 py-2.5 text-xs sm:text-sm text-brand-dark dark:text-white focus:outline-none focus:ring-2 focus:ring-brand-emerald min-h-[44px]"
                       >
                         <option value="bigha">Bigha (বিঘা ≈ ২০ কাঠা)</option>
                         <option value="katha">Katha (কাঠা)</option>
@@ -563,13 +563,13 @@ function YieldPredictionContent() {
 
                   {/* Irrigation Availability */}
                   <div className="space-y-1.5">
-                    <label className="block text-xs sm:text-sm font-semibold text-brand-dark/90">
+                    <label className="block text-xs sm:text-sm font-semibold text-brand-dark/90 dark:text-slate-300">
                       Irrigation Facility (সেচ ব্যবস্থা)
                     </label>
                     <select
                       value={irrigationType}
                       onChange={(e) => setIrrigationType(e.target.value)}
-                      className="block w-full rounded-xl border border-cream-300 bg-white px-3.5 py-2.5 text-xs sm:text-sm text-brand-dark focus:outline-none focus:ring-2 focus:ring-brand-emerald min-h-[44px]"
+                      className="block w-full rounded-xl border border-cream-300 dark:border-slate-800 bg-white dark:bg-[#1B2537] px-3.5 py-2.5 text-xs sm:text-sm text-brand-dark dark:text-white focus:outline-none focus:ring-2 focus:ring-brand-emerald min-h-[44px]"
                     >
                       <option value="Shallow Tube Well (STW)">Shallow Tube Well (STW / অগভীর নলকূপ)</option>
                       <option value="Deep Tube Well (DTW)">Deep Tube Well (DTW / গভীর নলকূপ)</option>
@@ -581,13 +581,13 @@ function YieldPredictionContent() {
 
                   {/* Soil Texture (Plain visual question, no lab jargon) */}
                   <div className="space-y-1.5">
-                    <label className="block text-xs sm:text-sm font-semibold text-brand-dark/90">
+                    <label className="block text-xs sm:text-sm font-semibold text-brand-dark/90 dark:text-slate-300">
                       General Soil Texture (মাটির ধরন)
                     </label>
                     <select
                       value={soilType}
                       onChange={(e) => setSoilType(e.target.value)}
-                      className="block w-full rounded-xl border border-cream-300 bg-white px-3.5 py-2.5 text-xs sm:text-sm text-brand-dark focus:outline-none focus:ring-2 focus:ring-brand-emerald min-h-[44px]"
+                      className="block w-full rounded-xl border border-cream-300 dark:border-slate-800 bg-white dark:bg-[#1B2537] px-3.5 py-2.5 text-xs sm:text-sm text-brand-dark dark:text-white focus:outline-none focus:ring-2 focus:ring-brand-emerald min-h-[44px]"
                     >
                       <option value="Clay Loam (দোআঁশ মাটি)">Clay Loam (দোআঁশ মাটি - Balanced)</option>
                       <option value="Heavy Clay (এঁটেল মাটি)">Heavy Clay (এঁটেল মাটি - High Moisture)</option>
@@ -598,26 +598,26 @@ function YieldPredictionContent() {
 
                   {/* Scenario B Specific Inputs: Sowing Date & Observed Crop Vigour */}
                   {scenario === 'in_season' && (
-                    <div className="p-3.5 rounded-2xl bg-cream-100/70 border border-cream-200/90 space-y-3">
-                      <div className="flex items-center gap-1.5 text-xs font-bold text-brand-dark">
-                        <Calendar className="w-4 h-4 text-brand-leaf" />
+                    <div className="p-3.5 rounded-2xl bg-cream-100/70 dark:bg-[#1B2537] border border-cream-200/90 dark:border-slate-700/60 space-y-3">
+                      <div className="flex items-center gap-1.5 text-xs font-bold text-brand-dark dark:text-white">
+                        <Calendar className="w-4 h-4 text-brand-leaf dark:text-emerald-400" />
                         <span>In-Field Growth & Sowing Status</span>
                       </div>
 
                       <div className="space-y-1.5">
-                        <label className="block text-xs font-semibold text-brand-dark/85">
+                        <label className="block text-xs font-semibold text-brand-dark/85 dark:text-slate-300">
                           Date Sown / Transplanted
                         </label>
                         <input
                           type="date"
                           value={plantingDate}
                           onChange={(e) => setPlantingDate(e.target.value)}
-                          className="block w-full rounded-xl border border-cream-300 bg-white px-3 py-2 text-xs sm:text-sm text-brand-dark min-h-[42px]"
+                          className="block w-full rounded-xl border border-cream-300 dark:border-slate-800 bg-white dark:bg-[#141C2B] px-3 py-2 text-xs sm:text-sm text-brand-dark dark:text-white min-h-[42px]"
                         />
                       </div>
 
                       <div className="space-y-1.5">
-                        <label className="block text-xs font-semibold text-brand-dark/85">
+                        <label className="block text-xs font-semibold text-brand-dark/85 dark:text-slate-300">
                           Observed Crop Health (ফসলের অবস্থা)
                         </label>
                         <select
@@ -627,7 +627,7 @@ function YieldPredictionContent() {
                               e.target.value as 'healthy' | 'needs_attention' | 'diseased'
                             )
                           }
-                          className="block w-full rounded-xl border border-cream-300 bg-white px-3 py-2 text-xs sm:text-sm text-brand-dark min-h-[42px]"
+                          className="block w-full rounded-xl border border-cream-300 dark:border-slate-800 bg-white dark:bg-[#141C2B] px-3 py-2 text-xs sm:text-sm text-brand-dark dark:text-white min-h-[42px]"
                         >
                           <option value="healthy">Healthy & Vigorous (সম্পূর্ণ সুস্থ)</option>
                           <option value="needs_attention">
@@ -643,21 +643,21 @@ function YieldPredictionContent() {
                 </div>
 
                 {/* ---------------- LEVEL 2: AUTOMATIC DATA NOTICE ---------------- */}
-                <div className="p-3 rounded-2xl bg-emerald-50/70 border border-emerald-200/80 flex items-start gap-2.5 text-xs text-brand-dark/85">
-                  <ShieldCheck className="w-4 h-4 text-emerald-700 shrink-0 mt-0.5" />
+                <div className="p-3 rounded-2xl bg-emerald-50/70 dark:bg-emerald-950/30 border border-emerald-200/80 dark:border-emerald-900/50 flex items-start gap-2.5 text-xs text-brand-dark/85 dark:text-emerald-200">
+                  <ShieldCheck className="w-4 h-4 text-emerald-700 dark:text-emerald-400 shrink-0 mt-0.5" />
                   <p className="leading-relaxed">
                     <strong>Level 2 Auto-Integration:</strong> Calibrated with ICAR & BCKV agronomic research trials for {selectedDistrict} and live APMC mandi wholesale rates.
                   </p>
                 </div>
 
                 {/* ---------------- LEVEL 3: OPTIONAL SOIL LAB TEST ---------------- */}
-                <div className="p-4 rounded-2xl bg-cream-50 border border-cream-200/90 space-y-3">
+                <div className="p-4 rounded-2xl bg-cream-50 dark:bg-[#141C2B] border border-cream-200/90 dark:border-slate-800 space-y-3">
                   <div className="flex items-start justify-between gap-2">
                     <div>
-                      <span className="text-xs font-extrabold text-brand-forest uppercase tracking-wider block">
+                      <span className="text-xs font-extrabold text-brand-forest dark:text-emerald-400 uppercase tracking-wider block">
                         Level 3: Soil Test Laboratory Report
                       </span>
-                      <span className="text-[11px] text-brand-dark/60 block mt-0.5">
+                      <span className="text-[11px] text-brand-dark/60 dark:text-slate-400 block mt-0.5">
                         Do you have a Soil Health Card (মৃত্তিকা স্বাস্থ্য কার্ড)?
                       </span>
                     </div>
@@ -669,12 +669,12 @@ function YieldPredictionContent() {
                         onChange={(e) => setHasSoilReport(e.target.checked)}
                         className="sr-only peer"
                       />
-                      <div className="w-9 h-5 bg-cream-300 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-cream-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-brand-forest"></div>
+                      <div className="w-9 h-5 bg-cream-300 dark:bg-slate-700 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-cream-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-brand-forest dark:peer-checked:bg-emerald-600"></div>
                     </label>
                   </div>
 
                   {!hasSoilReport ? (
-                    <p className="text-[11px] text-brand-dark/65 leading-relaxed bg-white/70 p-2.5 rounded-xl border border-cream-200/70">
+                    <p className="text-[11px] text-brand-dark/65 dark:text-slate-300 leading-relaxed bg-white/70 dark:bg-[#1B2537] p-2.5 rounded-xl border border-cream-200/70 dark:border-slate-700/60">
                       ℹ️ <strong>No soil report?</strong> That is completely fine! We will generate your forecast using regional soil averages without penalizing you or inventing fake values.
                     </p>
                   ) : (
@@ -960,34 +960,34 @@ function YieldPredictionContent() {
               </Card>
 
               {/* Card 3: Data Fidelity & Scientific Transparency */}
-              <Card className="border-cream-300 shadow-xs">
-                <CardHeader className="pb-2.5 border-b border-cream-200 bg-cream-50/40">
-                  <CardTitle className="text-xs sm:text-sm font-bold text-brand-dark flex items-center gap-2">
+              <Card className="border-cream-300 dark:border-slate-800 shadow-xs">
+                <CardHeader className="pb-2.5 border-b border-cream-200 dark:border-slate-800 bg-cream-50/40 dark:bg-[#141C2B]">
+                  <CardTitle className="text-xs sm:text-sm font-bold text-brand-dark dark:text-white flex items-center gap-2">
                     <Scale className="w-4 h-4 text-brand-harvest" />
                     <span>Data Transparency & Location Traceability</span>
                   </CardTitle>
                 </CardHeader>
                 <CardContent className="p-4 space-y-3 text-xs">
-                  <p className="text-brand-dark/80 leading-relaxed">
+                  <p className="text-brand-dark/80 dark:text-slate-300 leading-relaxed">
                     {result.fidelity.description}
                   </p>
 
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-[11px]">
-                    <div className="p-2.5 rounded-xl bg-emerald-50/60 border border-emerald-200/70">
-                      <strong className="text-emerald-900 block mb-1">✓ Location & Data Utilized:</strong>
-                      <ul className="list-disc list-inside space-y-0.5 text-emerald-950">
+                    <div className="p-2.5 rounded-xl bg-emerald-50/60 dark:bg-emerald-950/30 border border-emerald-200/70 dark:border-emerald-900/50">
+                      <strong className="text-emerald-900 dark:text-emerald-300 block mb-1">✓ Location & Data Utilized:</strong>
+                      <ul className="list-disc list-inside space-y-0.5 text-emerald-950 dark:text-emerald-200">
                         {result.fidelity.dataPointsIncluded.map((dp, i) => (
                           <li key={i}>{dp}</li>
                         ))}
                       </ul>
                     </div>
 
-                    <div className="p-2.5 rounded-xl bg-amber-50/60 border border-amber-200/70">
-                      <strong className="text-amber-900 block mb-1">⚠ Unmeasured Variables:</strong>
+                    <div className="p-2.5 rounded-xl bg-amber-50/60 dark:bg-amber-950/30 border border-amber-200/70 dark:border-amber-900/50">
+                      <strong className="text-amber-900 dark:text-amber-300 block mb-1">⚠ Unmeasured Variables:</strong>
                       {result.fidelity.dataPointsMissing.length === 0 ? (
-                        <span className="text-emerald-800">All primary parameters verified.</span>
+                        <span className="text-emerald-800 dark:text-emerald-300">All primary parameters verified.</span>
                       ) : (
-                        <ul className="list-disc list-inside space-y-0.5 text-amber-950">
+                        <ul className="list-disc list-inside space-y-0.5 text-amber-950 dark:text-amber-200">
                           {result.fidelity.dataPointsMissing.map((dp, i) => (
                             <li key={i}>{dp}</li>
                           ))}
@@ -996,31 +996,31 @@ function YieldPredictionContent() {
                     </div>
                   </div>
 
-                  <p className="text-[11px] text-brand-dark/70 italic bg-cream-100 p-2.5 rounded-xl border border-cream-200">
+                  <p className="text-[11px] text-brand-dark/70 dark:text-slate-300 italic bg-cream-100 dark:bg-[#1B2537] p-2.5 rounded-xl border border-cream-200 dark:border-slate-700/60">
                     {result.fidelity.uncertaintyNotice}
                   </p>
                 </CardContent>
               </Card>
 
               {/* Card 4: Agronomic Advice & Disclaimers */}
-              <Card className="border-cream-300 shadow-xs">
+              <Card className="border-cream-300 dark:border-slate-800 shadow-xs">
                 <CardContent className="p-4 sm:p-5 space-y-3">
-                  <span className="text-xs font-bold text-brand-forest uppercase tracking-wider block">
+                  <span className="text-xs font-bold text-brand-forest dark:text-emerald-400 uppercase tracking-wider block">
                     Actionable Agronomy Recommendations ({selectedDistrict})
                   </span>
-                  <ul className="space-y-1.5 text-xs text-brand-dark/85">
+                  <ul className="space-y-1.5 text-xs text-brand-dark/85 dark:text-slate-200">
                     {result.recommendations.map((rec, idx) => (
                       <li
                         key={idx}
-                        className="flex items-start gap-2 p-2.5 rounded-xl bg-emerald-50/50 border border-emerald-200/60"
+                        className="flex items-start gap-2 p-2.5 rounded-xl bg-emerald-50/50 dark:bg-[#1B2537] border border-emerald-200/60 dark:border-slate-700/60"
                       >
-                        <CheckCircle2 className="w-4 h-4 text-brand-leaf shrink-0 mt-0.5" />
+                        <CheckCircle2 className="w-4 h-4 text-brand-leaf dark:text-emerald-400 shrink-0 mt-0.5" />
                         <span>{rec}</span>
                       </li>
                     ))}
                   </ul>
 
-                  <div className="pt-2 border-t border-cream-200 text-[10px] text-brand-dark/60 space-y-1">
+                  <div className="pt-2 border-t border-cream-200 dark:border-slate-800 text-[10px] text-brand-dark/60 dark:text-slate-400 space-y-1">
                     {result.scientificDisclaimers.map((disc, idx) => (
                       <p key={idx}>• {disc}</p>
                     ))}

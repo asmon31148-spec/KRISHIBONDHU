@@ -132,7 +132,7 @@ export default function MandiRadarPage() {
   return (
     <div className="space-y-6 sm:space-y-8 w-full text-left">
       {/* Header Banner */}
-      <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-cream-50 via-white to-emerald-50/50 dark:from-slate-900 dark:via-[#141C2B] dark:to-emerald-950/20 border border-cream-300 dark:border-slate-800 shadow-xs p-6 sm:p-8">
+      <div className="relative overflow-hidden rounded-3xl bg-white dark:bg-[#141C2B] border border-cream-300 dark:border-slate-800 shadow-xs p-6 sm:p-8">
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
           <div className="space-y-2">
             <div className="flex items-center gap-2">

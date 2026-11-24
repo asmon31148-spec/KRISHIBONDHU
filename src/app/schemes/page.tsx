@@ -341,39 +341,39 @@ export default function SchemesPage() {
               </div>
 
               {/* Benefit Highlight Box */}
-              <div className="p-3 rounded-xl bg-cream-50 border border-cream-200 flex items-center justify-between">
-                <span className="text-xs font-bold text-brand-forest">
+              <div className="p-3 rounded-xl bg-cream-50 dark:bg-[#1B2537] border border-cream-200 dark:border-slate-700/60 flex items-center justify-between">
+                <span className="text-xs font-bold text-brand-forest dark:text-emerald-400">
                   ₹ {scheme.benefitAmount}
                 </span>
-                <span className="text-[10px] font-bold text-emerald-800 bg-emerald-100 px-2 py-0.5 rounded-full">
+                <span className="text-[10px] font-bold text-emerald-800 dark:text-emerald-300 bg-emerald-100 dark:bg-emerald-950/80 px-2 py-0.5 rounded-full border border-emerald-200 dark:border-emerald-800/60">
                   {scheme.availabilityStatus}
                 </span>
               </div>
 
               {/* Live Web Grounded Checkline */}
               {liveVerifications[scheme.id] ? (
-                <div className="p-3 rounded-2xl bg-emerald-50/90 border border-emerald-300 text-xs text-emerald-950 space-y-1.5 shadow-2xs">
+                <div className="p-3 rounded-2xl bg-emerald-50/90 dark:bg-emerald-950/30 border border-emerald-300 dark:border-emerald-800/60 text-xs text-emerald-950 dark:text-emerald-200 space-y-1.5 shadow-2xs">
                   <div className="flex items-center justify-between">
-                    <span className="inline-flex items-center gap-1.5 font-extrabold text-emerald-900">
+                    <span className="inline-flex items-center gap-1.5 font-extrabold text-emerald-900 dark:text-emerald-300">
                       <span className="w-2 h-2 rounded-full bg-emerald-600 animate-pulse" />
                       <span>Live Verified: {liveVerifications[scheme.id].statusBadge}</span>
                     </span>
-                    <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-emerald-200/80 text-emerald-900">
+                    <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-emerald-200/80 dark:bg-emerald-900/60 text-emerald-900 dark:text-emerald-200">
                       {liveVerifications[scheme.id].verifiedDate}
                     </span>
                   </div>
-                  <p className="text-[11px] text-emerald-900/85 leading-snug font-medium">
+                  <p className="text-[11px] text-emerald-900/85 dark:text-emerald-200/90 leading-snug font-medium">
                     {liveVerifications[scheme.id].summary}
                   </p>
-                  <div className="text-[10px] text-emerald-800/80 font-semibold pt-1 border-t border-emerald-200/70 flex items-center justify-between">
+                  <div className="text-[10px] text-emerald-800/80 dark:text-emerald-300/80 font-semibold pt-1 border-t border-emerald-200/70 dark:border-emerald-800/50 flex items-center justify-between">
                     <span>Active Cycle: {liveVerifications[scheme.id].activeSeason}</span>
-                    <span className="text-emerald-700">Live Search Grounded ✓</span>
+                    <span className="text-emerald-700 dark:text-emerald-400">Live Search Grounded ✓</span>
                   </div>
                 </div>
               ) : (
-                <div className="p-2.5 rounded-xl bg-cream-50 border border-cream-200 text-[11px] text-brand-dark/70 flex items-center justify-between animate-pulse">
+                <div className="p-2.5 rounded-xl bg-cream-50 dark:bg-[#1B2537] border border-cream-200 dark:border-slate-700/60 text-[11px] text-brand-dark/70 dark:text-slate-300 flex items-center justify-between animate-pulse">
                   <span>Checking live official web circulars...</span>
-                  <span className="w-2 h-2 rounded-full bg-brand-leaf animate-ping" />
+                  <span className="w-2 h-2 rounded-full bg-brand-leaf dark:bg-emerald-400 animate-ping" />
                 </div>
               )}
             </CardHeader>
@@ -381,13 +381,13 @@ export default function SchemesPage() {
             <CardContent className="space-y-4 pt-0">
               {/* Key Eligibility */}
               <div className="space-y-1.5">
-                <span className="text-xs font-bold uppercase tracking-wider text-brand-dark/70 block">
+                <span className="text-xs font-bold uppercase tracking-wider text-brand-dark/70 dark:text-slate-400 block">
                   Eligibility & Key Provisions:
                 </span>
-                <ul className="space-y-1 text-xs text-brand-dark/80">
+                <ul className="space-y-1 text-xs text-brand-dark/80 dark:text-slate-300">
                   {scheme.eligibility.map((el, i) => (
                     <li key={i} className="flex items-start gap-1.5">
-                      <span className="text-emerald-700 font-bold shrink-0">•</span>
+                      <span className="text-emerald-700 dark:text-emerald-400 font-bold shrink-0">•</span>
                       <span>{el}</span>
                     </li>
                   ))}
@@ -396,25 +396,25 @@ export default function SchemesPage() {
 
               {/* Claims & Cutoff Dates if any */}
               {scheme.cutoffDates && (
-                <div className="p-2.5 rounded-xl bg-white border border-cream-200 text-xs text-brand-dark/75 space-y-1">
-                  <div className="flex items-center gap-1.5 font-bold text-brand-dark">
-                    <Calendar className="w-3.5 h-3.5 text-brand-leaf" />
+                <div className="p-2.5 rounded-xl bg-white dark:bg-[#1B2537] border border-cream-200 dark:border-slate-700/60 text-xs text-brand-dark/75 dark:text-slate-300 space-y-1">
+                  <div className="flex items-center gap-1.5 font-bold text-brand-dark dark:text-white">
+                    <Calendar className="w-3.5 h-3.5 text-brand-leaf dark:text-emerald-400" />
                     <span>Cutoff & Enrollment Timeline:</span>
                   </div>
-                  <p className="text-[11px] leading-relaxed">{scheme.cutoffDates}</p>
+                  <p className="text-[11px] leading-relaxed dark:text-slate-300">{scheme.cutoffDates}</p>
                 </div>
               )}
 
               {/* Documents Required */}
-              <div className="pt-2 border-t border-cream-200/80">
-                <span className="text-xs font-bold uppercase tracking-wider text-brand-dark/70 block mb-1.5">
+              <div className="pt-2 border-t border-cream-200/80 dark:border-slate-800">
+                <span className="text-xs font-bold uppercase tracking-wider text-brand-dark/70 dark:text-slate-400 block mb-1.5">
                   Required Documents Checklist:
                 </span>
                 <div className="flex flex-wrap gap-1.5">
                   {scheme.documents.map((doc, i) => (
                     <span
                       key={i}
-                      className="inline-flex items-center gap-1 text-[11px] px-2.5 py-1 rounded-lg bg-cream-100 text-brand-dark font-medium border border-cream-200"
+                      className="inline-flex items-center gap-1 text-[11px] px-2.5 py-1 rounded-lg bg-cream-100 dark:bg-slate-800 text-brand-dark dark:text-slate-200 font-medium border border-cream-200 dark:border-slate-700"
                     >
                       <span>{doc.icon}</span>
                       <span>{doc.name_en}</span>
@@ -424,7 +424,7 @@ export default function SchemesPage() {
               </div>
 
               {/* Direct Government Action Buttons */}
-              <div className="pt-3 border-t border-cream-200/80 flex flex-col sm:flex-row sm:items-center justify-between gap-2.5">
+              <div className="pt-3 border-t border-cream-200/80 dark:border-slate-800 flex flex-col sm:flex-row sm:items-center justify-between gap-2.5">
                 {scheme.statusCheckUrl && (
                   <a
                     href={scheme.statusCheckUrl}
@@ -440,10 +440,10 @@ export default function SchemesPage() {
                 <a
                   href={`tel:${scheme.phoneDial}`}
                   onClick={(e) => handlePhoneClick(e, scheme.helpline)}
-                  className="inline-flex items-center justify-center gap-1.5 px-3.5 py-2.5 rounded-xl bg-white border border-cream-300 hover:border-brand-leaf text-brand-dark text-xs font-semibold transition-colors min-h-[44px] cursor-pointer"
+                  className="inline-flex items-center justify-center gap-1.5 px-3.5 py-2.5 rounded-xl bg-white dark:bg-[#1B2537] border border-cream-300 dark:border-slate-700 hover:border-brand-leaf dark:hover:border-emerald-500 text-brand-dark dark:text-white text-xs font-semibold transition-colors min-h-[44px] cursor-pointer"
                   title="Direct Phone Call"
                 >
-                  <Phone className="w-3.5 h-3.5 text-brand-leaf" />
+                  <Phone className="w-3.5 h-3.5 text-brand-leaf dark:text-emerald-400" />
                   <span>Call {scheme.helpline.split(' ')[0]}</span>
                 </a>
               </div>
