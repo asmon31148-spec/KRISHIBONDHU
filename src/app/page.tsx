@@ -295,7 +295,7 @@ export default function LandingPage() {
           1. FULL-BLEED EDGE-TO-EDGE HERO WITH SEAMLESS 1080p LOOP & ORBITAL DIAL
           High-Agency, Cinematic & Interactive Agriculture Command Hero
          ======================================================== */}
-      <section className="relative w-full min-h-[85vh] lg:min-h-[88vh] flex items-center justify-center overflow-hidden px-4 sm:px-8 lg:px-12 py-12 lg:py-16">
+      <section className="relative w-full min-h-[88dvh] lg:min-h-[90dvh] flex items-center justify-center overflow-hidden px-4 sm:px-8 lg:px-12 py-10 lg:py-16">
         {/* Authentic 9-Clip Looping Video Background */}
         <HeroVideoBackground />
 
