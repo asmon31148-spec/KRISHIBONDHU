@@ -474,28 +474,35 @@ What are the specific disease, pest, or nutrient risks for this crop in West Ben
         </div>
       </div>
 
-      {/* Main Chat Layout Area */}
-      <div className="flex-1 flex overflow-hidden relative">
-        {/* Chat History Sidebar Column (Flush Docked) */}
+      {/* Main Chat Layout Area (Flush Docked with Zero Margin Gap) */}
+      <div className="flex-1 flex overflow-hidden relative border-t border-cream-200">
+        {/* Sub-Sidebar: Chat History (Flush Docked with Zero Margin Gap) */}
         {isSidebarOpen && !isGuest && (
-          <aside className="w-72 lg:w-80 border-r border-cream-200 bg-white flex flex-col shrink-0 z-20 absolute lg:relative inset-y-0 left-0 shadow-xl lg:shadow-none transition-all duration-200">
-            <div className="p-3.5 border-b border-cream-200 flex items-center justify-between bg-cream-50/60">
-              <span className="text-xs font-bold uppercase tracking-wider text-brand-dark">
-                Saved Conversations
-              </span>
+          <aside className="w-72 lg:w-80 border-r border-cream-200 bg-white flex flex-col shrink-0 z-10 animate-in slide-in-from-left duration-150">
+            {/* Panel Header */}
+            <div className="p-3.5 border-b border-cream-200 flex items-center justify-between bg-cream-50/50">
+              <div className="flex items-center gap-2">
+                <span className="text-xs font-bold uppercase tracking-wider text-brand-forest">
+                  Chat History
+                </span>
+                <span className="px-2 py-0.5 rounded-full text-[10px] font-extrabold bg-brand-forest/10 text-brand-forest">
+                  {conversations.length}
+                </span>
+              </div>
               <button
                 onClick={() => setIsSidebarOpen(false)}
-                className="p-1 rounded-lg text-brand-dark/50 hover:text-brand-dark lg:hidden"
-                aria-label="Close history"
+                className="p-1 rounded-lg text-brand-dark/50 hover:text-brand-dark hover:bg-cream-100 transition-colors"
+                title="Collapse History"
               >
                 <X className="w-4 h-4" />
               </button>
             </div>
 
-            <div className="flex-1 overflow-y-auto p-2 space-y-1.5">
+            {/* Scrollable Conversation List */}
+            <div className="flex-1 overflow-y-auto p-2 space-y-1">
               {conversations.length === 0 ? (
-                <div className="p-4 text-center text-xs text-brand-dark/60">
-                  No previous chats saved. Start asking questions!
+                <div className="p-6 text-center text-xs text-brand-dark/50 italic">
+                  No previous conversations.
                 </div>
               ) : (
                 conversations.map((conv) => (
@@ -505,25 +512,28 @@ What are the specific disease, pest, or nutrient risks for this crop in West Ben
                       handleSelectConversation(conv.id);
                       if (window.innerWidth < 1024) setIsSidebarOpen(false);
                     }}
-                    className={`flex items-center justify-between p-2.5 rounded-xl text-xs font-semibold cursor-pointer transition-colors ${
+                    className={`group flex items-center justify-between p-2.5 rounded-xl text-xs font-semibold cursor-pointer transition-all ${
                       activeConversationId === conv.id
-                        ? 'bg-brand-forest text-white'
-                        : 'bg-white text-brand-dark hover:bg-cream-100 border border-cream-200/80 shadow-2xs'
+                        ? 'bg-brand-forest text-white shadow-xs'
+                        : 'text-brand-dark hover:bg-cream-100 hover:text-brand-forest'
                     }`}
                   >
                     <span className="truncate max-w-[200px]">{conv.title}</span>
                     <button
                       onClick={(e) => deleteConversation(conv.id, e)}
-                      className="p-1.5 rounded opacity-60 hover:opacity-100 hover:text-red-500"
+                      className={`p-1 rounded opacity-0 group-hover:opacity-100 transition-opacity hover:text-red-500 ${
+                        activeConversationId === conv.id ? 'text-white/80 hover:text-white' : 'text-brand-dark/50'
+                      }`}
                       aria-label="Delete chat"
                     >
-                      <Trash2 className="w-4 h-4" />
+                      <Trash2 className="w-3.5 h-3.5" />
                     </button>
                   </div>
                 ))
               )}
             </div>
 
+            {/* Start New Chat Action */}
             <div className="p-3 border-t border-cream-200 bg-cream-50/40">
               <Button
                 variant="outline"
@@ -532,8 +542,8 @@ What are the specific disease, pest, or nutrient risks for this crop in West Ben
                   handleNewChat();
                   if (window.innerWidth < 1024) setIsSidebarOpen(false);
                 }}
-                className="w-full font-bold border-cream-300 hover:border-brand-leaf hover:bg-white text-brand-dark shadow-2xs"
-                leftIcon={<Plus className="w-4 h-4 text-brand-leaf" />}
+                className="w-full justify-center bg-white hover:bg-cream-100 text-xs font-bold border-cream-300"
+                leftIcon={<Plus className="w-3.5 h-3.5 text-brand-forest" />}
               >
                 Start New Chat
               </Button>

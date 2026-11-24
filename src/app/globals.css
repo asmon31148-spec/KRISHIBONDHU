@@ -184,4 +184,36 @@ body,
 }
 .caption-in { animation: captionIn 0.35s ease-out both; }
 
+/* 1. Vernacular Script Typography Polish */
+[lang="bn"], .font-bengali {
+  line-height: 1.65 !important;
+  letter-spacing: 0.01em;
+}
+
+[lang="hi"], .font-hindi {
+  line-height: 1.60 !important;
+  letter-spacing: 0.01em;
+}
+
+/* 2. Standardized Z-Index Scale to Prevent Overlap Bugs */
+/*
+  z-10: Floating badges & drag handles
+  z-20: Sticky headers inside pages
+  z-30: Desktop persistent sub-sidebars
+  z-40: Dropdowns & Language pickers
+  z-50: Persistent Mobile Bottom Navigation (<nav>)
+  z-60: Full-screen drawers & Modals (More drawer, Add Farm modal)
+  z-70: Global Toast Notifications & Alert overlays
+*/
+.z-drawer {
+  z-index: 60 !important;
+}
+.z-bottom-nav {
+  z-index: 50 !important;
+}
+.z-toast {
+  z-index: 70 !important;
+}
+
+
 

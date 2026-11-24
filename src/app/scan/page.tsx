@@ -229,7 +229,7 @@ export default function CropScannerPage() {
             }
           },
           'image/jpeg',
-          0.82
+          0.80
         );
       };
 

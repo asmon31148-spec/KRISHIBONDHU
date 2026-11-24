@@ -27,10 +27,10 @@ interface ScanItem {
   severity: string;
   is_uncertain: boolean;
   image_url: string;
-  symptoms: string[];
-  treatment_organic: string | null;
-  treatment_chemical: string | null;
-  ai_explanation: string | null;
+  symptoms?: string[] | null;
+  treatment_organic?: string | null;
+  treatment_chemical?: string | null;
+  ai_explanation?: string | null;
   created_at: string;
 }
 
@@ -71,10 +71,10 @@ export default function ScanHistoryPage() {
     try {
       const { data, error } = await supabase
         .from('crop_scans')
-        .select('id, crop_name, severity, created_at, is_healthy, image_url, disease_name, disease_confidence, crop_confidence, symptoms, ai_explanation, treatment_organic, treatment_chemical')
+        .select('id, crop_name, disease_name, severity, crop_confidence, disease_confidence, is_healthy, is_uncertain, created_at, image_url')
         .eq('user_id', user.id)
         .order('created_at', { ascending: false })
-        .limit(15);
+        .range(0, 9); // Load 10 items at a time
 
       if (!error && data) {
         // Merge with local items if any
@@ -98,6 +98,23 @@ export default function ScanHistoryPage() {
       setIsLoading(false);
     }
   }, [user, isGuest]);
+
+  const handleViewDetails = async (scan: ScanItem) => {
+    setSelectedScan(scan);
+    if (!scan.treatment_organic && !scan.ai_explanation) {
+      const supabase = createClient();
+      if (supabase) {
+        const { data } = await supabase
+          .from('crop_scans')
+          .select('symptoms, treatment_organic, treatment_chemical, ai_explanation')
+          .eq('id', scan.id)
+          .single();
+        if (data) {
+          setSelectedScan((prev) => (prev && prev.id === scan.id ? { ...prev, ...data } : prev));
+        }
+      }
+    }
+  };
 
   useEffect(() => {
     loadScans();
@@ -241,7 +258,7 @@ export default function ScanHistoryPage() {
             <Card
               key={scan.id}
               className="hover:border-brand-leaf/40 transition-all hover:shadow-2xs cursor-pointer"
-              onClick={() => setSelectedScan(scan)}
+              onClick={() => handleViewDetails(scan)}
             >
               <CardContent className="p-4 flex items-center justify-between gap-4">
                 <div className="flex items-center gap-3">

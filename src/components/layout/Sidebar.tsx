@@ -24,22 +24,37 @@ import {
 
 export function Sidebar() {
   const pathname = usePathname();
-  const { t } = useTranslation();
+  const { t, language } = useTranslation();
   const { isGuest, signOut, user, profile } = useAuth();
 
-  const navItems = [
-    { label: t('nav.home'), href: '/', icon: Home },
-    ...(!isGuest ? [{ label: t('nav.dashboard'), href: '/dashboard', icon: LayoutDashboard }] : []),
-    { label: t('nav.scan'), href: '/scan', icon: ScanLine },
-    { label: t('nav.assistant'), href: '/assistant', icon: Bot },
-    { label: t('nav.myFarm'), href: '/farms', icon: Warehouse },
-    { label: t('nav.mandi'), href: '/mandi', icon: TrendingUp },
-    { label: t('nav.fertilizer'), href: '/fertilizer', icon: FlaskConical },
-    { label: t('nav.yield'), href: '/yield', icon: Scale },
-    { label: t('nav.weather'), href: '/weather', icon: CloudSun },
-    { label: t('nav.news'), href: '/news', icon: Newspaper },
-    { label: t('nav.schemes'), href: '/schemes', icon: FileText },
-    { label: t('nav.profile'), href: '/profile', icon: User },
+  const navigationHubs = [
+    {
+      title: language === 'bn' ? 'দৈনিক পরামর্শ' : language === 'hi' ? 'दैनिक परामर्श' : 'Daily Advisory',
+      items: [
+        { label: t('nav.home'), href: isGuest ? '/' : '/dashboard', icon: Home },
+        { label: t('nav.scan'), href: '/scan', icon: ScanLine },
+        { label: t('nav.assistant'), href: '/assistant', icon: Bot },
+        { label: t('nav.weather'), href: '/weather', icon: CloudSun },
+      ],
+    },
+    {
+      title: language === 'bn' ? 'বাজার ও কৃষি উপকরণ' : language === 'hi' ? 'बाजार व कृषि सामग्री' : 'Market & Inputs',
+      items: [
+        { label: t('nav.mandi') || 'Mandi Radar', href: '/mandi', icon: TrendingUp },
+        { label: t('nav.fertilizer') || 'Fertilizer Calc', href: '/fertilizer', icon: FlaskConical },
+        { label: t('nav.yield') || 'Yield & Profit', href: '/yield', icon: Scale },
+        { label: t('nav.news'), href: '/news', icon: Newspaper },
+      ],
+    },
+    {
+      title: language === 'bn' ? 'আমার খামার রেকর্ড' : language === 'hi' ? 'मेरे खेत के रिकॉर्ड' : 'My Farm Records',
+      items: [
+        { label: t('nav.myFarm'), href: '/farms', icon: Warehouse },
+        { label: t('nav.schemes') || 'Schemes', href: '/schemes', icon: FileText },
+        { label: t('nav.analytics') || 'Analytics', href: '/dashboard#analytics', icon: LayoutDashboard },
+        { label: t('nav.profile'), href: '/profile', icon: User },
+      ],
+    },
   ];
 
   const userInitial = profile?.full_name
@@ -52,26 +67,35 @@ export function Sidebar() {
 
   return (
     <aside className="hidden lg:flex flex-col w-64 border-r border-[#143224]/10 bg-[#F9F7F2]/80 h-[calc(100dvh-57px)] sticky top-[57px] p-3.5 shrink-0 print:hidden justify-between">
-      {/* Scrollable Navigation Links */}
-      <nav className="flex-1 space-y-1 overflow-y-auto pr-1 -mr-1 no-scrollbar">
-        {navItems.map((item) => {
-          const isActive = pathname === item.href || (item.href !== '/' && pathname.startsWith(item.href));
-          const Icon = item.icon;
-          return (
-            <Link
-              key={item.href}
-              href={item.href}
-              className={`flex items-center gap-3 px-3 py-2 rounded-xl text-sm font-semibold transition-all ${
-                isActive
-                  ? 'bg-[#143224] text-white shadow-[0_2px_8px_rgba(20,50,36,0.18)]'
-                  : 'text-[#10241A]/80 hover:text-[#10241A] hover:bg-[#EAF2EC]/70'
-              }`}
-            >
-              <Icon className={`w-4 h-4 ${isActive ? 'text-[#D9822B]' : 'text-[#1E4733]'}`} />
-              <span className="truncate">{item.label}</span>
-            </Link>
-          );
-        })}
+      {/* Scrollable Grouped 3-Tier Navigation */}
+      <nav className="flex-1 space-y-4 overflow-y-auto pr-1 -mr-1 no-scrollbar">
+        {navigationHubs.map((hub, idx) => (
+          <div key={idx} className="space-y-1">
+            <span className="text-[10px] font-bold uppercase tracking-wider text-[#143224]/50 px-3 block">
+              {hub.title}
+            </span>
+            <div className="space-y-0.5 pt-0.5">
+              {hub.items.map((item) => {
+                const isActive = pathname === item.href || (item.href !== '/' && item.href !== '/dashboard' && pathname.startsWith(item.href));
+                const Icon = item.icon;
+                return (
+                  <Link
+                    key={item.href}
+                    href={item.href}
+                    className={`flex items-center gap-3 px-3 py-2 rounded-xl text-xs font-semibold transition-all ${
+                      isActive
+                        ? 'bg-[#143224] text-white shadow-xs'
+                        : 'text-[#10241A]/80 hover:text-[#10241A] hover:bg-[#EAF2EC]/70'
+                    }`}
+                  >
+                    <Icon className={`w-4 h-4 ${isActive ? 'text-[#D9822B]' : 'text-[#1E4733]'}`} />
+                    <span className="truncate">{item.label}</span>
+                  </Link>
+                );
+              })}
+            </div>
+          </div>
+        ))}
       </nav>
 
       {/* Bottom Area: Guest Banner OR Dignified Integrated User Profile Card */}
