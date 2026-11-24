@@ -3,12 +3,12 @@
 @tailwind utilities;
 
 :root {
-  --background: #FFFFFF;
+  --background: #F8F9FA;
   --foreground: #0F172A;
   --card: #FFFFFF;
   --card-foreground: #0F172A;
-  --muted: #F8FAFC;
-  --muted-foreground: #64748B;
+  --muted: #EEF2F6;
+  --muted-foreground: #5B6B79;
   --border: #E2E8F0;
   --header-bg: rgba(255, 255, 255, 0.95);
   --nav-bg: rgba(255, 255, 255, 0.98);
@@ -16,15 +16,15 @@
 }
 
 .dark {
-  --background: #000000;
+  --background: #090D0B;
   --foreground: #F8FAFC;
-  --card: #111418;
+  --card: #121815;
   --card-foreground: #F8FAFC;
-  --muted: #1A1F26;
+  --muted: #1A241F;
   --muted-foreground: #94A3B8;
-  --border: rgba(255, 255, 255, 0.12);
-  --header-bg: rgba(0, 0, 0, 0.92);
-  --nav-bg: rgba(0, 0, 0, 0.95);
+  --border: rgba(255, 255, 255, 0.10);
+  --header-bg: rgba(9, 13, 11, 0.95);
+  --nav-bg: rgba(9, 13, 11, 0.98);
 }
 
 body {
