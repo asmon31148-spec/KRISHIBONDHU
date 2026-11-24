@@ -1,6 +1,6 @@
 'use client';
 
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useTranslation } from '@/i18n/context';
 import HeroVideoBackground from '@/components/home/HeroVideoBackground';
@@ -14,15 +14,84 @@ import {
   ArrowRight,
   Sparkles,
   PhoneCall,
-  Droplets,
   AlertTriangle,
   Award,
   Bot,
+  Camera,
+  Upload,
+  Building2,
 } from 'lucide-react';
+
+interface LiveMandiRecord {
+  commodity: string;
+  market: string;
+  modal_price: number;
+  arrival_date: string;
+  district?: string;
+}
+
+interface SavedUserScan {
+  id: string;
+  crop_name: string;
+  disease_name?: string;
+  is_healthy?: boolean;
+  severity?: string;
+  created_at: string;
+}
 
 export default function LandingPage() {
   const { language } = useTranslation();
   const langKey = language === 'bn' || language === 'hi' ? language : 'en';
+
+  // Real Dynamic Data State
+  const [mandiRates, setMandiRates] = useState<LiveMandiRecord[]>([]);
+  const [isMandiLoading, setIsMandiLoading] = useState(true);
+  const [weatherData, setWeatherData] = useState<any>(null);
+  const [isWeatherLoading, setIsWeatherLoading] = useState(true);
+  const [latestUserScan, setLatestUserScan] = useState<SavedUserScan | null>(null);
+
+  useEffect(() => {
+    // 1. Fetch authentic live Mandi prices from government gateway
+    fetch('/api/mandi/prices')
+      .then((res) => res.json())
+      .then((json) => {
+        if (json.data && Array.isArray(json.data) && json.data.length > 0) {
+          setMandiRates(json.data.slice(0, 3));
+        }
+      })
+      .catch((err) => {
+        console.warn('Live Mandi feed connection error:', err);
+      })
+      .finally(() => {
+        setIsMandiLoading(false);
+      });
+
+    // 2. Fetch authentic live Weather data from Open-Meteo
+    fetch('/api/weather')
+      .then((res) => res.json())
+      .then((json) => {
+        if (json.data) {
+          setWeatherData(json.data);
+        }
+      })
+      .catch((err) => {
+        console.warn('Live Weather feed connection error:', err);
+      })
+      .finally(() => {
+        setIsWeatherLoading(false);
+      });
+
+    // 3. Load user's actual saved scan from local session (if any)
+    try {
+      const saved = localStorage.getItem('krishibondhu_recent_scans');
+      if (saved) {
+        const parsed = JSON.parse(saved);
+        if (Array.isArray(parsed) && parsed.length > 0) {
+          setLatestUserScan(parsed[0]);
+        }
+      }
+    } catch {}
+  }, []);
 
   const content = {
     bn: {
@@ -34,15 +103,6 @@ export default function LandingPage() {
       secondaryCTA: 'কৃষি সহকারীর পরামর্শ নিন',
       trustPill: '১০০% কৃষকের জন্য বিনামূল্যে · কোনো রেজিস্ট্রেশন ফি নেই · নির্ভুল সরকারি নির্দেশিকা',
 
-      // Live Intel Widget (Hero Right)
-      intelTitle: 'লাইভ কৃষি ইনটেলিজেন্স',
-      intelLocation: 'নদীয়া ও বর্ধমান অঞ্চল',
-      mandiHeadline: 'পাইকারি মান্ডি বাজার দর',
-      sprayHeadline: 'আজকের স্প্রে পরামর্শ',
-      sprayStatus: 'অনুকূল সময় খোলা',
-      sprayTime: 'সকাল ০৬:০০ - ০৯:৩০ (বাতাস: ৬ কিমি/ঘণ্টা)',
-      soilMoisture: 'মাটির আর্দ্রতা: ৬৪% (আদর্শ)',
-
       // Bento Grid Section
       bentoTag: 'ডিজিটাল কৃষি ড্যাশবোর্ড',
       bentoTitle: 'কৃষকের প্রয়োজনীয় ৪টি মূল সেবা',
@@ -50,54 +110,50 @@ export default function LandingPage() {
 
       // Card A: Diagnostic
       cardATag: 'এআই পাতার রোগ নির্ণয়',
-      cardATitle: 'পাতার ছবি থেকে ৩০ সেকেন্ডে রোগ ও সঠিক ওষুধ',
-      cardADesc: 'আলুর নাবি ধসা, ধানের ব্লাস্ট বা শাকসবজির পোকার আক্রমণ শনাক্ত করুন। কয়েক সেকেন্ডেই অনুমোদিত জৈব ও রাসায়নিক প্রতিকার পান।',
-      cardASampleCrop: 'আলু (জ্যোতি জাত) · রোগ শনাক্ত',
-      cardASampleDisease: 'নাবি ধসা (Late Blight)',
-      cardAConfidence: '৯৬.৪% নিশ্চিত',
-      cardARemedyLabel: 'অনুমোদিত প্রতিকার:',
-      cardARemedyOrganic: 'জৈব: ট্রাইকোডার্মা ভিরিডি বা নিম তেল ৩ মিলি/লিটার।',
-      cardARemedyChemical: 'রাসায়নিক: ম্যানকোজেব ৭৫% ডব্লিউপি @ ২.৫ গ্রাম/লিটার জলে গুলে স্প্রে।',
-      cardABtn: 'ক্যামেরা দিয়ে পাতা স্ক্যান করুন',
+      cardATitle: 'পাতার ছবি থেকে সরাসরি রোগ নির্ণয় ও প্রতিকার',
+      cardADesc: 'ধান, আলু, পাট, সরিষা বা শাকসবজির আক্রান্ত পাতার ছবি তুলুন। আইসিএআর অনুমোদিত বৈজ্ঞানিক জৈব ও রাসায়নিক প্রতিকার পান।',
+      cardABtn: 'ক্যামেরা দিয়ে স্ক্যান করুন',
+      cardAUploadBtn: 'গ্যালারি থেকে ছবি দিন',
+      cardASupportedTitle: 'যাচাইকৃত সমর্থিত ১৪টি ফসল:',
+      cardASupportedList: 'ধান (আমন/বোরো), আলু, পাট, সরিষা, বেগুন, টমেটো, লঙ্কা, গম, ফুলকপি, বাঁধাকপি, পেঁয়াজ, ভুট্টা ও মসুর ডাল।',
+      cardARecentLabel: 'আপনার সর্বশেষ স্ক্যান:',
+      cardANoScanLabel: 'এখনও কোনো স্ক্যান করা হয়নি। পরীক্ষা করতে একটি ছবি তুলুন।',
 
       // Card B: Mandi
       cardBTag: 'এগমार्कনেট লাইভ মান্ডি দর',
-      cardBTitle: 'আজকের পাইকারি দর ও বিক্রির সেরা সময়',
-      cardBWindowLabel: 'সেরা বিক্রির উইন্ডো:',
-      cardBWindowText: 'আগামী ৪৮ ঘণ্টার মধ্যে আলু বিক্রিতে লাভ বেশি হওয়ার সম্ভাবনা।',
+      cardBTitle: 'পশ্চিমবঙ্গের সরকারি পাইকারি বাজার দর',
+      cardBLoading: 'লাইভ মান্ডি দর লোড হচ্ছে...',
+      cardBEmpty: 'আজকের মান্ডি দর আপডেট হচ্ছে',
+      cardBArrivalPrefix: 'আগমন তারিখ:',
       cardBBtn: 'সব জেলার পাইকারি দর দেখুন',
 
       // Card C: Weather & Spray
       cardCTag: 'মাইক্রো-ক্লাইমেট পূর্বাভাস',
       cardCTitle: 'আবহাওয়া ও স্প্রে সময়সূচী',
-      cardCAlert: 'আগামীকাল বিকেলে মাঝারি বৃষ্টির সম্ভাবনা (৭৫%)। আজই নির্ধারিত স্প্রে সম্পন্ন করুন।',
-      cardCBtn: '৭ দিনের আবহাওয়া দেখুন',
+      cardCLoading: 'আবহাওয়া তথ্য লোড হচ্ছে...',
+      cardCTemp: 'তাপমাত্রা',
+      cardCHumidity: 'আর্দ্রতা',
+      cardCWind: 'বাতাস',
+      cardCBtn: 'সম্পূর্ণ ৭ দিনের পূর্বাভাস দেখুন',
 
       // Card D: Schemes
       cardDTag: 'সরকারি যোজনা ও অনুদান ট্র্যাকার',
       cardDTitle: 'কৃষকবন্ধু ও সরকারি অনুদানের সরাসরি তালিকা',
-      cardDDesc: 'আপনার জমির খতিয়ান অনুযায়ী সরাসরি কোন কোন প্রকল্পে অনুদান ও বিমা পাবেন তা এক ক্লিকে যাচাই করুন।',
+      cardDDesc: 'পশ্চিমবঙ্গ সরকার ও কেন্দ্রীয় সরকারের অনুমোদিত কৃষক সহায়তা প্রকল্প। মধ্যস্বত্বভোগী ছাড়াই সরাসরি সরকারি পোর্টালে আবেদনের নির্দেশিকা।',
       cardDBtn: 'সব সরকারি প্রকল্প দেখুন',
 
-      // Proof / Real Metrics
-      proofTag: 'মাঠের বাস্তব প্রমাণ ও সাফল্য',
-      proofTitle: 'বিজ্ঞানসম্মত চাষে কৃষকের আয় ও ফলন বৃদ্ধি',
-      proofSubtitle: 'পশ্চিমবঙ্গের হাজার হাজার কৃষক এখন অতিরিক্ত সারের খরচ কমিয়ে বেশি লাভ করছেন',
-      metrics: [
-        { value: '+৩২%', label: 'গড় ফলন বৃদ্ধি', sub: 'সঠিক সার ও সময়মতো রোগ নির্ণয়ে' },
-        { value: '৩০ সেকেন্ড', label: 'রোগ নির্ণয়ের সময়', sub: 'যেকোনো সাধারণ স্মার্টফোনে' },
-        { value: '₹৪,২০০', label: 'বিঘা প্রতি সাশ্রয়', sub: 'অনর্থক অতিরিক্ত সার ও বিষের অপচয় রোধে' },
-        { value: '২৪/৭', label: 'কৃষক হেল্পলাইন', sub: '১৮০০-১৮০-১৫৫১ টোল-ফ্রি বিজ্ঞানীদের সহায়তা' },
-      ],
-
-      // Stories
-      storyTitle: 'মাঠের কৃষকের অভিজ্ঞতা',
-      story1Quote: 'আগে আলুর পাতায় দাগ লাগলে আন্দাজে দোকান থেকে দামি বিষ কিনতাম। কৃষিবন্ধুতে ছবি তুলতেই নাবি ধসার সঠিক ওষুধের মাপ দেখিয়ে দিল। আমার বিঘা প্রতি প্রায় ৩,০০০ টাকা বেঁচে গেছে।',
-      story1Author: 'সুভাষ মণ্ডল',
-      story1Location: 'তারকেশ্বর, হুগলি · আলু চাষি (৪ বিঘা)',
-      story2Quote: 'বিঘা প্রতি কত বস্তা ইউরিয়া আর ডিএপি লাগবে তা সারের ক্যালকুলেটরে মেপে দিয়েছিলাম। ধান যেমন শক্ত হয়েছে, ফলনও গতবারের চেয়ে বিঘায় প্রায় দেড় কুইন্টাল বেশি হয়েছে।',
-      story2Author: 'পরিমল বিশ্বাস',
-      story2Location: 'কালনা, পূর্ব বর্ধমান · ধান ও সরিষা চাষি',
+      // Scientific Pillars (Zero Fake Reviews / Real Foundations)
+      pillarsTag: 'বিজ্ঞানসম্মত ও সরকারি তথ্য কাঠামো',
+      pillarsTitle: 'নির্ভরযোগ্য কৃষি তথ্য ও প্রাতিষ্ঠানিক ভিত্তি',
+      pillarsSubtitle: 'কৃষিবন্ধু কোনো অনুমান বা কৃত্রিম তথ্যে চলে না — প্রতিটি সেবা সরাসরি ভারতের স্বীকৃত কৃষি গবেষণা ও সরকারি ডেটা পোর্টালে যাচাইকৃত।',
+      pillar1Title: 'আইসিএআর ও বিসিকেভি গবেষণা',
+      pillar1Desc: 'ভারতীয় কৃষি গবেষণা পরিষদ (ICAR) ও বিধানচন্দ্র কৃষি বিশ্ববিদ্যালয়ের (BCKV) প্রকাশিত প্যাকেজ অব প্র্যাকটিসেস অনুযায়ী রোগের ওষুধ ও সারের মাত্রা।',
+      pillar2Title: 'এগমार्कনেট সরকারি মান্ডি ফিড',
+      pillar2Desc: 'ভারত সরকারের কৃষি ও কৃষক কল্যাণ মন্ত্রকের ডেটা পোর্টাল (data.gov.in) থেকে সরাসরি পশ্চিমবঙ্গের জেলা পাইকারি বাজারের দর।',
+      pillar3Title: 'আইএমডি ও ওপেন-মেটিও আবহাওয়া',
+      pillar3Desc: 'প্রতি ঘণ্টার বাতাসের গতি, আর্দ্রতা ও বৃষ্টির সম্ভাবনা পর্যবেক্ষণ করে কীটনাশক অপচয় রোধে বিজ্ঞানসম্মত নিরাপদ স্প্রে পূর্বাভাস।',
+      pillar4Title: 'সরাসরি সরকারি অনুদান (ডিবিটি)',
+      pillar4Desc: 'কৃষকবন্ধু, বাংলা শস্য বিমা ও পিএম-কিষান অনুদানের যাচাইকৃত অফিশিয়াল নির্দেশিকা — সরাসরি কৃষকের ব্যাঙ্ক অ্যাকাউন্টে টাকা পৌঁছানোর নিশ্চিত তথ্য।',
 
       // Emergency & Footer
       kisanLineTitle: 'জাতীয় কিষান কল সেন্টার (টোল-ফ্রি হেল্পলাইন)',
@@ -115,62 +171,51 @@ export default function LandingPage() {
       secondaryCTA: 'कृषि सहायक से पूछें',
       trustPill: '100% किसानों के लिए मुफ्त · कोई लॉगिन या पासवर्ड की बाधा नहीं · प्रामाणिक कृषि सलाह',
 
-      intelTitle: 'लाइव कृषि इंटेलिजेंस',
-      intelLocation: 'बंगाल व पूर्वी भारत क्षेत्र',
-      mandiHeadline: 'थोक मंडी भाव',
-      sprayHeadline: 'आज का छिड़काव समय',
-      sprayStatus: 'सुरक्षित समय जारी',
-      sprayTime: 'सुबह 06:00 - 09:30 (हवा: 6 किमी/घंटा)',
-      soilMoisture: 'मिट्टी की नमी: 64% (अनुकूल)',
-
       bentoTag: 'डिजिटल किसान डैशबोर्ड',
       bentoTitle: 'किसानों के लिए ४ प्रमुख उपयोगी सेवाएं',
       bentoSubtitle: 'सीधे उपयोग करें — बिना किसी परेशानी के अपनी फसल, मिट्टी व मंडी भाव की सटीक जानकारी पाएं',
 
       cardATag: 'एआई फसल रोग डॉक्टर',
-      cardATitle: 'पत्ती की फोटो से 30 सेकंड में रोग व स्वीकृत दवा',
-      cardADesc: 'धान, आलू, सरसों व सब्जियों की पत्ती का फोटो लें। तुरंत प्रमाणित जैविक व रासायनिक दवाओं की सटीक खुराक जानें।',
-      cardASampleCrop: 'आलू (ज्योति) · रोग पहचान',
-      cardASampleDisease: 'झुलसा रोग (Late Blight)',
-      cardAConfidence: '96.4% सटीक',
-      cardARemedyLabel: 'स्वीकृत उपचार:',
-      cardARemedyOrganic: 'जैविक: नीम तेल 3 मिली प्रति लीटर पानी का छिड़काव।',
-      cardARemedyChemical: 'रासायनिक: मैंकोजेब 75% WP @ 2.5 ग्राम प्रति लीटर पानी में मिलाकर छिड़कें।',
-      cardABtn: 'कैमरे से पत्ती स्कैन करें',
+      cardATitle: 'पत्ती की फोटो से सीधे रोग पहचान व उपचार',
+      cardADesc: 'धान, आलू, सरसों या सब्जियों के रोगी पत्ते की फोटो लें। तुरंत आईसीएआर प्रमाणित जैविक व रासायनिक दवाओं की सही खुराक जानें।',
+      cardABtn: 'कैमरे से स्कैन करें',
+      cardAUploadBtn: 'गैलरी से फोटो चुनें',
+      cardASupportedTitle: 'सत्यापित समर्थित १४ प्रमुख फसलें:',
+      cardASupportedList: 'धान (खरीफ/बोरो), आलू, जूट, सरसों, बैंगन, टमाटर, हरी मिर्च, गेहूं, फूलगोभी, पत्तागोभी, प्याज, मक्का व मसूर दाल।',
+      cardARecentLabel: 'आपकी पिछली जांच:',
+      cardANoScanLabel: 'अभी तक कोई स्कैन नहीं किया गया है। जांच के लिए फोटो लें।',
 
       cardBTag: 'एगमार्कनेट लाइव मंडी भाव',
-      cardBTitle: 'आज के थोक दाम व बिक्री का सही समय',
-      cardBWindowLabel: 'बिक्री का सही अवसर:',
-      cardBWindowText: 'आगामी 48 घंटों में आलू बेचने पर बेहतर मुनाफा मिलने का अनुमान।',
+      cardBTitle: 'सरकारी थोक मंडी भाव व ताजा आवक',
+      cardBLoading: 'लाइव मंडी भाव लोड हो रहे हैं...',
+      cardBEmpty: 'आज के मंडी भाव अपडेट हो रहे हैं',
+      cardBArrivalPrefix: 'आवक तिथि:',
       cardBBtn: 'सभी मंडियों के भाव देखें',
 
       cardCTag: 'सूक्ष्म मौसम व मिट्टी पूर्वानुमान',
       cardCTitle: 'मौसम व कीटनाशक छिड़काव समय',
-      cardCAlert: 'कल दोपहर बारिश की संभावना (75%) है। कीटनाशक छिड़काव आज सुबह ही पूरा कर लें।',
+      cardCLoading: 'मौसम डेटा लोड हो रहा है...',
+      cardCTemp: 'तापमान',
+      cardCHumidity: 'नमी',
+      cardCWind: 'हवा',
       cardCBtn: '7 दिनों का मौसम देखें',
 
       cardDTag: 'सरकारी योजना व अनुदान ट्रैकर',
       cardDTitle: 'कृषक बंधु व पीएम किसान योजनाओं की सूची',
-      cardDDesc: 'अपनी जमीन और फसल के अनुसार जानें कि कौन-सी सरकारी सब्सिडी व फसल बीमा आपके लिए उपलब्ध है।',
+      cardDDesc: 'अपनी जमीन और फसल के अनुसार जानें कि कौन-सी सरकारी सब्सिडी व फसल बीमा आपके लिए उपलब्ध है। बिना किसी दलाल के सीधे आवेदन की जानकारी।',
       cardDBtn: 'सभी सरकारी योजनाएं देखें',
 
-      proofTag: 'खेतों के वास्तविक परिणाम',
-      proofTitle: 'वैज्ञानिक खेती से किसानों की आय व उपज में वृद्धि',
-      proofSubtitle: 'हजारों किसान अनावश्यक खाद व रसायनों का खर्च घटाकर अधिक लाभ कमा रहे हैं',
-      metrics: [
-        { value: '+32%', label: 'औसत उपज वृद्धि', sub: 'संतुलित खाद व समय पर रोग नियंत्रण से' },
-        { value: '30 सेकंड', label: 'रोग पहचान समय', sub: 'साधारण स्मार्टफोन से तुरंत' },
-        { value: '₹4,200', label: 'प्रति बीघा बचत', sub: 'अनावश्यक खाद व विष के खर्च में कमी' },
-        { value: '24/7', label: 'किसान हेल्पलाइन', sub: '1800-180-1551 टोल-फ्री वैज्ञानिकों की मदद' },
-      ],
-
-      storyTitle: 'किसान भाइयों के अनुभव',
-      story1Quote: 'पहले आलू में रोग लगने पर दुकानदार के कहने पर महंगी दवा लाता था। कृषिबंधु में फोटो खींचते ही झुलसा रोग की सही दवा मिल गई। मेरे प्रति बीघा तीन हजार रुपये बचे।',
-      story1Author: 'सुभाष मंडल',
-      story1Location: 'हुगली, पश्चिम बंगाल · आलू उत्पादक',
-      story2Quote: 'खाद कैलकुलेटर से जमीन के नाप अनुसार यूरिया और डीएपी डाला। धान की फसल हरी-भरी रही और पैदावार भी पिछले साल से डेढ़ क्विंटल प्रति बीघा ज्यादा हुई।',
-      story2Author: 'परिमल विश्वास',
-      story2Location: 'पूर्व बर्धमान · धान व सरसों किसान',
+      pillarsTag: 'वैज्ञानिक एवं सरकारी डेटा आधार',
+      pillarsTitle: 'विश्वसनीय कृषि जानकारी व संस्थागत स्तंभ',
+      pillarsSubtitle: 'कृषिबंधु किसी भी कृत्रिम या अनुमानित डेटा पर नहीं चलता — हर सेवा सीधे भारत के मान्यता प्राप्त कृषि अनुसंधान संस्थानों से जुड़ी है।',
+      pillar1Title: 'आईसीएआर व बीसीकेवी अनुसंधान',
+      pillar1Desc: 'भारतीय कृषि अनुसंधान परिषद (ICAR) और राज्य कृषि विश्वविद्यालय के पैकेज ऑफ प्रैक्टिसेज पर आधारित रोग नियंत्रण व खाद संतुलन।',
+      pillar2Title: 'एगमार्कनेट सरकारी मंडी फीड',
+      pillar2Desc: 'कृषि एवं किसान कल्याण मंत्रालय के ओपन डेटा पोर्टल (data.gov.in) से सीधे मंडियों के दैनिक थोक भाव।',
+      pillar3Title: 'आईएमडी व ओपन-मेटियो मौसम',
+      pillar3Desc: 'हवा की गति, बारिश की संभावना व नमी के वास्तविक आंकड़ों से कीटनाशक छिड़काव का सटीक और सुरक्षित समय।',
+      pillar4Title: 'सीधे सरकारी अनुदान (डीबीटी)',
+      pillar4Desc: 'कृषक बंधु, बांग्ला शस्य बीमा और पीएम-किसान की आधिकारिक मार्गदर्शिका — सीधे किसान के बैंक खाते में वित्तीय सहायता।',
 
       kisanLineTitle: 'राष्ट्रीय किसान कॉल सेंटर (टोल-फ्री हेल्पलाइन)',
       kisanLinePhone: '1800-180-1551',
@@ -187,62 +232,51 @@ export default function LandingPage() {
       secondaryCTA: 'Ask Agronomy Assistant',
       trustPill: '100% Free for all farmers · No account or password required · ICAR Validated',
 
-      intelTitle: 'Live Agricultural Intelligence',
-      intelLocation: 'Bengal & Eastern Region',
-      mandiHeadline: 'APMC Wholesale Rates',
-      sprayHeadline: 'Today\'s Spray Window',
-      sprayStatus: 'Safe Window Open',
-      sprayTime: '06:00 - 09:30 AM (Wind: 6 km/h)',
-      soilMoisture: 'Soil Moisture: 64% (Optimal)',
-
       bentoTag: 'Farmer Utility Bento',
       bentoTitle: '4 Core High-Utility Farmer Tools',
       bentoSubtitle: 'Direct, actionable agriculture intelligence designed for high outdoor field readability',
 
       cardATag: 'AI Crop Leaf Diagnostic',
-      cardATitle: 'Diagnose leaf diseases and certified dosages in 30 seconds',
+      cardATitle: 'Diagnose crop leaf diseases and treatment guidelines in seconds',
       cardADesc: 'Take a close-up photo of any affected leaf. Instantly identify blight, blast, or pest infestations with ICAR-approved organic and chemical spray guidelines.',
-      cardASampleCrop: 'Potato (Jyoti) · Diagnostic Sample',
-      cardASampleDisease: 'Late Blight (Phytophthora)',
-      cardAConfidence: '96.4% Confidence',
-      cardARemedyLabel: 'Approved Treatment Plan:',
-      cardARemedyOrganic: 'Organic: Neem oil 3ml/L or Trichoderma viride bio-spray.',
-      cardARemedyChemical: 'Chemical: Mancozeb 75% WP @ 2.5g/L water foliar spray.',
-      cardABtn: 'Open Leaf Scanner',
+      cardABtn: 'Open Camera Scanner',
+      cardAUploadBtn: 'Upload from Gallery',
+      cardASupportedTitle: '14 Validated Field Crops Supported:',
+      cardASupportedList: 'Rice (Aman/Boro), Potato, Jute, Mustard, Brinjal, Tomato, Chilli, Wheat, Cauliflower, Cabbage, Onion, Maize, and Lentils.',
+      cardARecentLabel: 'Your Latest Scan:',
+      cardANoScanLabel: 'No scans saved yet on this device. Take a leaf photo to diagnose.',
 
       cardBTag: 'Agmarknet Mandi Radar',
-      cardBTitle: 'Live Wholesale Mandi Prices & Selling Windows',
-      cardBWindowLabel: 'Recommended Selling Window:',
-      cardBWindowText: 'Peak price window open for next 48 hours before new wholesale arrivals.',
-      cardBBtn: 'View 24 District Mandis',
+      cardBTitle: 'Official Wholesale Mandi Prices (Live Feed)',
+      cardBLoading: 'Loading live APMC prices...',
+      cardBEmpty: 'Mandi rates updating for today',
+      cardBArrivalPrefix: 'Arrival:',
+      cardBBtn: 'View All District Mandis',
 
       cardCTag: 'Micro-Climate & Spray Forecast',
       cardCTitle: 'Localized Weather & Spray Timing',
-      cardCAlert: '75% rain probability tomorrow afternoon. Complete scheduled foliar spray this morning.',
+      cardCLoading: 'Loading live meteorological data...',
+      cardCTemp: 'Temp',
+      cardCHumidity: 'Humidity',
+      cardCWind: 'Wind',
       cardCBtn: 'Explore 7-Day Forecast',
 
       cardDTag: 'Government Subsidies & Schemes',
       cardDTitle: 'Active Financial Aid & Subsidies Tracker',
-      cardDDesc: 'Direct eligibility guidelines and 1-click verification for Krishak Bandhu, PM-Kisan, and Bangla Shasya Bima insurance.',
+      cardDDesc: 'Direct eligibility guidelines and 1-click verification for Krishak Bandhu, PM-Kisan, and Bangla Shasya Bima insurance with zero intermediary fees.',
       cardDBtn: 'Check All 12 Subsidies',
 
-      proofTag: 'Field Proof & Verified Metrics',
-      proofTitle: 'Real Yield Increases and Documented Cost Savings',
-      proofSubtitle: 'Helping farmers eliminate pesticide waste and balance N-P-K nutrition across thousands of Bighas',
-      metrics: [
-        { value: '+32%', label: 'Average Yield Increase', sub: 'Through scientific soil balancing' },
-        { value: '30s', label: 'Diagnostic Speed', sub: 'Instant results on any smartphone' },
-        { value: '₹4,200', label: 'Saved per Bigha', sub: 'By eliminating chemical overdosing' },
-        { value: '24/7', label: 'Toll-Free Kisan Help', sub: '1800-180-1551 direct scientist access' },
-      ],
-
-      storyTitle: 'Real Farmer Testimonials',
-      story1Quote: 'Earlier I used to guess and purchase whatever expensive chemicals the shopkeeper gave me. With Krishibondhu, scanning the leaf immediately showed Potato Late Blight and the exact Mancozeb dose. Saved me over ₹3,000 per Bigha.',
-      story1Author: 'Subhash Mondal',
-      story1Location: 'Tarakeswar, Hooghly · Potato Farmer (4 Bighas)',
-      story2Quote: 'Using the fertilizer calculator gave me the exact bags of Urea and DAP for my soil. The paddy crop grew healthier with zero lodging, and my yield increased by 1.5 quintals per Bigha.',
-      story2Author: 'Parimal Biswas',
-      story2Location: 'Kalna, East Burdwan · Paddy & Mustard Grower',
+      pillarsTag: 'Scientific & Open Government Foundations',
+      pillarsTitle: 'Verified Agricultural Data & Institutional Pillars',
+      pillarsSubtitle: 'Krishibondhu runs on zero fabricated or mock data. Every insight is directly grounded in published research and official government feeds.',
+      pillar1Title: 'ICAR & BCKV Agronomy Standards',
+      pillar1Desc: 'Certified Package of Practices (PoP) and pathology treatment matrices from the Indian Council of Agricultural Research & Bidhan Chandra Krishi Viswavidyalaya.',
+      pillar2Title: 'Agmarknet Government Mandi Feed',
+      pillar2Desc: 'Direct integration with the Ministry of Agriculture & Farmers Welfare Open Data Portal (data.gov.in) for daily wholesale price arrivals.',
+      pillar3Title: 'IMD & Open-Meteo Agrometeorology',
+      pillar3Desc: 'Real-time hourly wind velocity, precipitation probability, and leaf wetness modeling to prevent pesticide washout.',
+      pillar4Title: 'Direct Benefit Transfer (DBT)',
+      pillar4Desc: 'Verified official documentation and portal links for Krishak Bandhu, Bangla Shasya Bima, and PM-Kisan direct cash assistance.',
 
       kisanLineTitle: 'National Kisan Call Centre (Toll-Free Hotline)',
       kisanLinePhone: '1800-180-1551',
@@ -254,10 +288,6 @@ export default function LandingPage() {
 
   return (
     <div className="space-y-16 lg:space-y-24 w-full text-left pb-20 max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8">
-      {/* ========================================================
-          1. THE HERO (1440x900 SINGLE SCREEN IMPACT)
-          Dignified, High-Agency Editorial Architecture
-         ======================================================== */}
       {/* ========================================================
           1. THE HERO WITH SEAMLESS LOOPING 1080p VIDEO & ORBITAL DIAL
           High-Agency, Visual & Interactive Agriculture Command Hero
@@ -325,8 +355,8 @@ export default function LandingPage() {
       </section>
 
       {/* ========================================================
-          2. THE CENTRAL BENTO GRID (HIGH-UTILITY FARMER DASHBOARD)
-          Dynamic 4-Card Bento Architecture
+          2. THE CENTRAL BENTO GRID (AUTHENTIC UTILITY DASHBOARD)
+          Dynamic 4-Card Bento Architecture Powered by Live Feeds
          ======================================================== */}
       <section className="space-y-6">
         {/* Section Header */}
@@ -346,6 +376,7 @@ export default function LandingPage() {
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           {/* ----------------------------------------------------
               CARD A (Large 2-Column Span): AI Crop Health Diagnostic
+              Actionable Real Diagnostic Launchpad (Zero Mock)
              ---------------------------------------------------- */}
           <div className="lg:col-span-2 rounded-3xl bg-white/95 border border-[#143224]/12 shadow-[0_4px_24px_rgba(20,50,36,0.04)] hover:shadow-[0_12px_32px_rgba(20,50,36,0.08)] transition-all p-6 sm:p-8 flex flex-col justify-between space-y-6 text-left group">
             <div className="space-y-3">
@@ -368,64 +399,83 @@ export default function LandingPage() {
               </p>
             </div>
 
-            {/* Realistic Diagnostic Sample Mockup (High Utility) */}
-            <div className="rounded-2xl bg-[#F9F7F2] border border-[#143224]/10 p-4 sm:p-5 grid grid-cols-1 sm:grid-cols-12 gap-4 items-center">
-              {/* Diagnostic Thumbnail */}
-              <div className="sm:col-span-4 relative rounded-xl overflow-hidden aspect-[4/3] bg-emerald-950 border border-[#143224]/15">
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img
-                  src="https://images.unsplash.com/photo-1595974482597-4b8da8879bc5?auto=format&fit=crop&w=500&q=80"
-                  alt="Crop Leaf Diagnosis"
-                  className="w-full h-full object-cover"
-                  onError={(e) => {
-                    e.currentTarget.style.display = 'none';
-                  }}
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent" />
-                <span className="absolute bottom-2 left-2 text-[10px] font-bold text-white bg-black/60 px-2 py-0.5 rounded-md backdrop-blur-xs">
-                  {content.cardASampleCrop}
-                </span>
-              </div>
-
-              {/* Verified Result & Dosages */}
-              <div className="sm:col-span-8 space-y-2 text-left">
-                <div className="flex items-center justify-between">
-                  <span className="text-sm font-extrabold text-[#143224]">
-                    {content.cardASampleDisease}
+            {/* If user has real saved scans, display their actual recent scan */}
+            {latestUserScan ? (
+              <div className="rounded-2xl bg-[#F9F7F2] border border-[#143224]/10 p-4 sm:p-5 flex items-center justify-between gap-4">
+                <div className="space-y-1">
+                  <span className="text-xs font-bold text-[#5E7367]">
+                    {content.cardARecentLabel}
                   </span>
-                  <span className="text-xs font-bold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-md border border-emerald-300">
-                    {content.cardAConfidence}
+                  <div className="flex items-center gap-2">
+                    <span className="text-base font-extrabold text-[#143224]">
+                      {latestUserScan.crop_name}
+                    </span>
+                    {latestUserScan.disease_name && (
+                      <span className="text-xs font-bold px-2 py-0.5 rounded-md bg-amber-100 text-amber-800">
+                        {latestUserScan.disease_name}
+                      </span>
+                    )}
+                  </div>
+                  <span className="text-[11px] text-[#5E7367] block">
+                    {new Date(latestUserScan.created_at).toLocaleDateString()}
                   </span>
                 </div>
+                <Link href="/scan">
+                  <button
+                    type="button"
+                    className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-[#143224] text-white text-xs font-bold hover:bg-[#1E4733] transition-all cursor-pointer"
+                  >
+                    <span>View Record</span>
+                    <ArrowRight className="w-3.5 h-3.5" />
+                  </button>
+                </Link>
+              </div>
+            ) : (
+              /* Actionable Scan Trigger Area */
+              <div className="rounded-2xl bg-[#F9F7F2] border border-[#143224]/10 p-5 space-y-4">
+                <div className="space-y-1">
+                  <span className="text-xs font-bold text-[#143224] uppercase tracking-wider block">
+                    {content.cardASupportedTitle}
+                  </span>
+                  <p className="text-xs text-[#384D41] leading-relaxed font-medium">
+                    {content.cardASupportedList}
+                  </p>
+                </div>
 
-                <div className="space-y-1 text-xs text-[#384D41] leading-relaxed">
-                  <span className="font-bold text-[#143224] block">{content.cardARemedyLabel}</span>
-                  <p className="text-emerald-900 font-medium">{content.cardARemedyOrganic}</p>
-                  <p className="text-[#2D2319] font-medium">{content.cardARemedyChemical}</p>
+                <div className="flex flex-wrap items-center gap-3 pt-1">
+                  <Link href="/scan">
+                    <button
+                      type="button"
+                      className="inline-flex items-center gap-2 px-5 py-3 rounded-xl bg-[#143224] hover:bg-[#1E4733] text-white font-bold text-sm shadow-[0_2px_8px_rgba(20,50,36,0.15)] transition-all cursor-pointer"
+                    >
+                      <Camera className="w-4 h-4 text-[#D9822B]" />
+                      <span>{content.cardABtn}</span>
+                    </button>
+                  </Link>
+
+                  <Link href="/scan">
+                    <button
+                      type="button"
+                      className="inline-flex items-center gap-2 px-5 py-3 rounded-xl bg-white hover:bg-[#F3EFE6] text-[#143224] font-bold text-sm border border-[#143224]/18 shadow-2xs transition-all cursor-pointer"
+                    >
+                      <Upload className="w-4 h-4 text-[#D9822B]" />
+                      <span>{content.cardAUploadBtn}</span>
+                    </button>
+                  </Link>
                 </div>
               </div>
-            </div>
+            )}
 
             {/* Action Bar */}
-            <div className="pt-2 flex items-center justify-between">
-              <Link href="/scan">
-                <button
-                  type="button"
-                  className="inline-flex items-center gap-2 px-5 py-3 rounded-xl bg-[#143224] hover:bg-[#1E4733] text-white font-bold text-sm shadow-[0_2px_8px_rgba(20,50,36,0.15)] transition-all cursor-pointer"
-                >
-                  <ScanLine className="w-4 h-4 text-[#D9822B]" />
-                  <span>{content.cardABtn}</span>
-                  <ArrowRight className="w-4 h-4 ml-1 group-hover:translate-x-1 transition-transform" />
-                </button>
-              </Link>
-              <span className="text-xs font-semibold text-[#5E7367]">
-                Camera & Phone Gallery Supported
-              </span>
+            <div className="pt-2 flex items-center justify-between text-xs font-semibold text-[#5E7367]">
+              <span>Camera & Smartphone Photo Gallery</span>
+              <span>100% Free · No Sign-in Barrier</span>
             </div>
           </div>
 
           {/* ----------------------------------------------------
               CARD B (1-Column Span): Live Mandi / Market Prices
+              Connected to real Government Agmarknet feed
              ---------------------------------------------------- */}
           <div className="rounded-3xl bg-white/95 border border-[#143224]/12 shadow-[0_4px_24px_rgba(20,50,36,0.04)] hover:shadow-[0_12px_32px_rgba(20,50,36,0.08)] transition-all p-6 sm:p-7 flex flex-col justify-between space-y-5 text-left group">
             <div className="space-y-3">
@@ -434,7 +484,10 @@ export default function LandingPage() {
                   <TrendingUp className="w-3.5 h-3.5 text-[#D9822B]" />
                   <span>{content.cardBTag}</span>
                 </span>
-                <span className="text-[11px] font-bold text-[#143224]">Live API</span>
+                <span className="text-[11px] font-bold text-emerald-800 bg-emerald-100/70 px-2 py-0.5 rounded-md flex items-center gap-1">
+                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-600 animate-pulse" />
+                  <span>Live Feed</span>
+                </span>
               </div>
 
               <h3 className="text-lg sm:text-xl font-bold text-[#143224] leading-snug">
@@ -442,50 +495,43 @@ export default function LandingPage() {
               </h3>
             </div>
 
-            {/* Top 3 Regional Mandi Crops Ticker */}
+            {/* Live Agmarknet Price Feed (Zero Hardcoded Values) */}
             <div className="space-y-2.5">
-              <div className="p-3 rounded-xl bg-[#F9F7F2] border border-[#143224]/8 flex items-center justify-between">
-                <div>
-                  <span className="font-bold text-xs text-[#143224] block">Potato (Jyoti)</span>
-                  <span className="text-[11px] text-[#5E7367]">Hooghly Mandi</span>
+              {isMandiLoading ? (
+                <div className="space-y-2 py-4">
+                  <div className="h-12 rounded-xl bg-cream-200/60 animate-pulse" />
+                  <div className="h-12 rounded-xl bg-cream-200/60 animate-pulse" />
+                  <div className="h-12 rounded-xl bg-cream-200/60 animate-pulse" />
                 </div>
-                <div className="text-right">
-                  <span className="font-extrabold text-sm text-[#143224] block">₹1,820/q</span>
-                  <span className="text-[10px] font-bold text-emerald-700">+₹45 today</span>
+              ) : mandiRates.length > 0 ? (
+                mandiRates.map((item, idx) => (
+                  <div
+                    key={idx}
+                    className="p-3 rounded-xl bg-[#F9F7F2] border border-[#143224]/8 flex items-center justify-between"
+                  >
+                    <div>
+                      <span className="font-bold text-xs text-[#143224] block">
+                        {item.commodity}
+                      </span>
+                      <span className="text-[11px] text-[#5E7367]">
+                        {item.market} {item.district ? `(${item.district})` : ''}
+                      </span>
+                    </div>
+                    <div className="text-right">
+                      <span className="font-extrabold text-sm text-[#143224] block">
+                        ₹{item.modal_price.toLocaleString('en-IN')}/q
+                      </span>
+                      <span className="text-[10px] text-[#5E7367]">
+                        {content.cardBArrivalPrefix} {item.arrival_date}
+                      </span>
+                    </div>
+                  </div>
+                ))
+              ) : (
+                <div className="p-4 rounded-xl bg-[#F9F7F2] border border-[#143224]/8 text-center text-xs text-[#5E7367]">
+                  {content.cardBEmpty}
                 </div>
-              </div>
-
-              <div className="p-3 rounded-xl bg-[#F9F7F2] border border-[#143224]/8 flex items-center justify-between">
-                <div>
-                  <span className="font-bold text-xs text-[#143224] block">Swarna Paddy</span>
-                  <span className="text-[11px] text-[#5E7367]">Burdwan Mandi</span>
-                </div>
-                <div className="text-right">
-                  <span className="font-extrabold text-sm text-[#143224] block">₹2,380/q</span>
-                  <span className="text-[10px] font-bold text-emerald-700">+₹30 today</span>
-                </div>
-              </div>
-
-              <div className="p-3 rounded-xl bg-[#F9F7F2] border border-[#143224]/8 flex items-center justify-between">
-                <div>
-                  <span className="font-bold text-xs text-[#143224] block">Yellow Mustard</span>
-                  <span className="text-[11px] text-[#5E7367]">Nadia Mandi</span>
-                </div>
-                <div className="text-right">
-                  <span className="font-extrabold text-sm text-[#143224] block">₹5,850/q</span>
-                  <span className="text-[10px] font-bold text-emerald-700">+₹110 today</span>
-                </div>
-              </div>
-            </div>
-
-            {/* Selling Opportunity Pill */}
-            <div className="p-3 rounded-xl bg-[#FDF5EC] border border-[#D9822B]/20 space-y-1">
-              <span className="text-[11px] font-bold text-[#A95E13] block">
-                {content.cardBWindowLabel}
-              </span>
-              <p className="text-xs text-[#2D2319] font-medium leading-relaxed">
-                {content.cardBWindowText}
-              </p>
+              )}
             </div>
 
             <Link href="/mandi" className="block pt-1">
@@ -501,6 +547,7 @@ export default function LandingPage() {
 
           {/* ----------------------------------------------------
               CARD C (1-Column Span): Micro-Climate & Soil Forecast
+              Connected to live Open-Meteo Weather API
              ---------------------------------------------------- */}
           <div className="rounded-3xl bg-white/95 border border-[#143224]/12 shadow-[0_4px_24px_rgba(20,50,36,0.04)] hover:shadow-[0_12px_32px_rgba(20,50,36,0.08)] transition-all p-6 sm:p-7 flex flex-col justify-between space-y-5 text-left group">
             <div className="space-y-3">
@@ -509,7 +556,10 @@ export default function LandingPage() {
                   <CloudSun className="w-3.5 h-3.5 text-[#D9822B]" />
                   <span>{content.cardCTag}</span>
                 </span>
-                <span className="text-[11px] font-bold text-emerald-800">IMD Radar</span>
+                <span className="text-[11px] font-bold text-emerald-800 bg-emerald-100/70 px-2 py-0.5 rounded-md flex items-center gap-1">
+                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-600 animate-pulse" />
+                  <span>Open-Meteo</span>
+                </span>
               </div>
 
               <h3 className="text-lg sm:text-xl font-bold text-[#143224] leading-snug">
@@ -517,37 +567,67 @@ export default function LandingPage() {
               </h3>
             </div>
 
-            {/* 3-Day Spray Strip */}
-            <div className="grid grid-cols-3 gap-2">
-              <div className="p-2.5 rounded-xl bg-[#EAF2EC] border border-[#143224]/10 text-center space-y-1">
-                <span className="text-[10px] font-bold text-[#5E7367] block">Today</span>
-                <CloudSun className="w-5 h-5 mx-auto text-[#D9822B]" />
-                <span className="text-xs font-extrabold text-[#143224] block">28°C</span>
-                <span className="text-[9px] font-bold text-emerald-800 bg-emerald-100 px-1 py-0.2 rounded">Safe Spray</span>
+            {/* Live Weather Metrics (Zero Hardcoded Values) */}
+            {isWeatherLoading ? (
+              <div className="space-y-2 py-4">
+                <div className="h-14 rounded-xl bg-cream-200/60 animate-pulse" />
+                <div className="h-14 rounded-xl bg-cream-200/60 animate-pulse" />
               </div>
+            ) : weatherData?.current ? (
+              <div className="space-y-3">
+                <div className="grid grid-cols-3 gap-2">
+                  <div className="p-2.5 rounded-xl bg-[#EAF2EC] border border-[#143224]/10 text-center space-y-0.5">
+                    <span className="text-[10px] font-bold text-[#5E7367] block">
+                      {content.cardCTemp}
+                    </span>
+                    <span className="text-base font-extrabold text-[#143224] block">
+                      {Math.round(weatherData.current.temperature)}°C
+                    </span>
+                    <span className="text-[9px] font-medium text-[#384D41]">
+                      {weatherData.current.weatherDescription || 'Current'}
+                    </span>
+                  </div>
 
-              <div className="p-2.5 rounded-xl bg-[#FDF5EC] border border-[#D9822B]/20 text-center space-y-1">
-                <span className="text-[10px] font-bold text-[#5E7367] block">Tomorrow</span>
-                <Droplets className="w-5 h-5 mx-auto text-sky-600" />
-                <span className="text-xs font-extrabold text-[#143224] block">26°C</span>
-                <span className="text-[9px] font-bold text-amber-800 bg-amber-100 px-1 py-0.2 rounded">75% Rain</span>
+                  <div className="p-2.5 rounded-xl bg-[#F9F7F2] border border-[#143224]/10 text-center space-y-0.5">
+                    <span className="text-[10px] font-bold text-[#5E7367] block">
+                      {content.cardCHumidity}
+                    </span>
+                    <span className="text-base font-extrabold text-[#143224] block">
+                      {weatherData.current.relativeHumidity}%
+                    </span>
+                    <span className="text-[9px] font-medium text-[#384D41]">
+                      RH
+                    </span>
+                  </div>
+
+                  <div className="p-2.5 rounded-xl bg-[#F9F7F2] border border-[#143224]/10 text-center space-y-0.5">
+                    <span className="text-[10px] font-bold text-[#5E7367] block">
+                      {content.cardCWind}
+                    </span>
+                    <span className="text-base font-extrabold text-[#143224] block">
+                      {Math.round(weatherData.current.windSpeed)} km/h
+                    </span>
+                    <span className="text-[9px] font-medium text-[#384D41]">
+                      Velocity
+                    </span>
+                  </div>
+                </div>
+
+                {/* Real Agronomic Spray Condition Status */}
+                {weatherData.agronomicInsights?.sprayCondition && (
+                  <div className="p-3 rounded-xl bg-[#FDF5EC] border border-[#D9822B]/20 flex items-start gap-2.5">
+                    <AlertTriangle className="w-4 h-4 text-[#D9822B] shrink-0 mt-0.5" />
+                    <p className="text-xs text-[#2D2319] leading-relaxed font-medium">
+                      {weatherData.agronomicInsights.sprayCondition.reason}
+                    </p>
+                  </div>
+                )}
               </div>
-
-              <div className="p-2.5 rounded-xl bg-[#EAF2EC] border border-[#143224]/10 text-center space-y-1">
-                <span className="text-[10px] font-bold text-[#5E7367] block">Thu</span>
-                <CloudSun className="w-5 h-5 mx-auto text-[#D9822B]" />
-                <span className="text-xs font-extrabold text-[#143224] block">29°C</span>
-                <span className="text-[9px] font-bold text-emerald-800 bg-emerald-100 px-1 py-0.2 rounded">Clear</span>
+            ) : (
+              <div className="p-4 rounded-xl bg-[#F9F7F2] border border-[#143224]/8 text-center text-xs text-[#5E7367]">
+                Live weather data synchronizing...
               </div>
-            </div>
-
-            {/* Washout Warning Note */}
-            <div className="p-3 rounded-xl bg-[#FDF5EC] border border-[#D9822B]/20 flex items-start gap-2.5">
-              <AlertTriangle className="w-4 h-4 text-[#D9822B] shrink-0 mt-0.5" />
-              <p className="text-xs text-[#2D2319] leading-relaxed font-medium">
-                {content.cardCAlert}
-              </p>
-            </div>
+            )}
 
             <Link href="/weather" className="block pt-1">
               <button
@@ -562,6 +642,7 @@ export default function LandingPage() {
 
           {/* ----------------------------------------------------
               CARD D (Large 2-Column Span): Government Schemes & Subsidies Tracker
+              Verified Direct Official Portals
              ---------------------------------------------------- */}
           <div className="lg:col-span-2 rounded-3xl bg-white/95 border border-[#143224]/12 shadow-[0_4px_24px_rgba(20,50,36,0.04)] hover:shadow-[0_12px_32px_rgba(20,50,36,0.08)] transition-all p-6 sm:p-8 flex flex-col justify-between space-y-6 text-left group">
             <div className="space-y-3">
@@ -571,7 +652,7 @@ export default function LandingPage() {
                   <span>{content.cardDTag}</span>
                 </span>
                 <span className="text-xs font-bold text-[#143224] bg-[#EAF2EC] px-2.5 py-0.5 rounded-full">
-                  1-Click Eligibility Check
+                  Direct Official Portals
                 </span>
               </div>
 
@@ -584,42 +665,42 @@ export default function LandingPage() {
               </p>
             </div>
 
-            {/* Clean List of Active Farmer Financial Aid */}
+            {/* List of Verified Government Agricultural Aid Schemes */}
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               <div className="p-3.5 rounded-2xl bg-[#F9F7F2] border border-[#143224]/8 space-y-1">
                 <div className="flex items-center justify-between">
-                  <span className="font-extrabold text-sm text-[#143224]">Krishak Bandhu</span>
+                  <span className="font-extrabold text-sm text-[#143224]">Krishak Bandhu (Assured Income)</span>
                   <span className="text-[10px] font-bold text-emerald-800 bg-emerald-100 px-2 py-0.5 rounded-md">WB Govt</span>
                 </div>
-                <p className="text-xs text-[#384D41] font-medium">₹10,000/year direct cash transfer for landholders in 2 seasonal installments.</p>
-                <div className="text-[11px] font-bold text-[#D9822B] pt-0.5">✓ 1 Bigha minimum verified</div>
+                <p className="text-xs text-[#384D41] font-medium">Direct DBT cash transfer up to ₹10,000/year in Rabi & Kharif installments for landholders.</p>
+                <div className="text-[11px] font-bold text-[#D9822B] pt-0.5">krishakbandhu.wb.gov.in</div>
               </div>
 
               <div className="p-3.5 rounded-2xl bg-[#F9F7F2] border border-[#143224]/8 space-y-1">
                 <div className="flex items-center justify-between">
-                  <span className="font-extrabold text-sm text-[#143224]">Bangla Shasya Bima</span>
-                  <span className="text-[10px] font-bold text-emerald-800 bg-emerald-100 px-2 py-0.5 rounded-md">100% Free</span>
+                  <span className="font-extrabold text-sm text-[#143224]">Bangla Shasya Bima (BSB)</span>
+                  <span className="text-[10px] font-bold text-emerald-800 bg-emerald-100 px-2 py-0.5 rounded-md">100% Free Premium</span>
                 </div>
-                <p className="text-xs text-[#384D41] font-medium">Full state-paid insurance against crop failure due to cyclone, flood, and drought.</p>
-                <div className="text-[11px] font-bold text-[#D9822B] pt-0.5">✓ Automatic for KCC holders</div>
+                <p className="text-xs text-[#384D41] font-medium">100% state-paid crop insurance protecting paddy, potato, and jute against flood & cyclone.</p>
+                <div className="text-[11px] font-bold text-[#D9822B] pt-0.5">banglashasyabima.net</div>
               </div>
 
               <div className="p-3.5 rounded-2xl bg-[#F9F7F2] border border-[#143224]/8 space-y-1">
                 <div className="flex items-center justify-between">
-                  <span className="font-extrabold text-sm text-[#143224]">PM-Kisan Samman</span>
-                  <span className="text-[10px] font-bold text-blue-800 bg-blue-100 px-2 py-0.5 rounded-md">Central Govt</span>
+                  <span className="font-extrabold text-sm text-[#143224]">PM-Kisan Samman Nidhi</span>
+                  <span className="text-[10px] font-bold text-blue-800 bg-blue-100 px-2 py-0.5 rounded-md">Central DBT</span>
                 </div>
-                <p className="text-xs text-[#384D41] font-medium">₹6,000/year financial benefit transferred in 3 equal installments via DBT.</p>
-                <div className="text-[11px] font-bold text-[#D9822B] pt-0.5">✓ Aadhaar & e-KYC linked</div>
+                <p className="text-xs text-[#384D41] font-medium">₹6,000 per year directly credited to Aadhaar-linked bank accounts in three 4-monthly installments.</p>
+                <div className="text-[11px] font-bold text-[#D9822B] pt-0.5">pmkisan.gov.in</div>
               </div>
 
               <div className="p-3.5 rounded-2xl bg-[#F9F7F2] border border-[#143224]/8 space-y-1">
                 <div className="flex items-center justify-between">
-                  <span className="font-extrabold text-sm text-[#143224]">Agri Equipment Subsidy</span>
+                  <span className="font-extrabold text-sm text-[#143224]">Farm Mechanization Subsidies</span>
                   <span className="text-[10px] font-bold text-amber-800 bg-amber-100 px-2 py-0.5 rounded-md">50% Subsidy</span>
                 </div>
-                <p className="text-xs text-[#384D41] font-medium">50% subsidy on solar water pumps, battery sprayers, and power tillers (OTA-SFI).</p>
-                <div className="text-[11px] font-bold text-[#D9822B] pt-0.5">✓ Online block application</div>
+                <p className="text-xs text-[#384D41] font-medium">50% financial subsidy on power sprayers, solar pumps, and tillers through Matir Katha portal.</p>
+                <div className="text-[11px] font-bold text-[#D9822B] pt-0.5">matirkatha.gov.in</div>
               </div>
             </div>
 
@@ -636,7 +717,7 @@ export default function LandingPage() {
                 </button>
               </Link>
               <span className="text-xs font-semibold text-[#5E7367]">
-                Official Portal Direct Links
+                Official Government Direct Links
               </span>
             </div>
           </div>
@@ -644,88 +725,64 @@ export default function LandingPage() {
       </section>
 
       {/* ========================================================
-          3. INTERACTIVE FIELD PROOF / REAL STORIES
-          High-Quality Editorial Proof & Real Data Metrics
+          3. INSTITUTIONAL SCIENTIFIC & OPEN DATA FOUNDATION
+          Strictly Zero Fake Testimonials · Verifiable Public Sources
          ======================================================== */}
       <section className="space-y-10 rounded-[2.5rem] bg-[#EAF2EC]/60 border border-[#143224]/12 p-8 sm:p-12 text-left">
         {/* Header */}
-        <div className="max-w-2xl space-y-2">
+        <div className="max-w-3xl space-y-2">
           <span className="text-xs font-bold uppercase tracking-wider text-[#143224] inline-flex items-center gap-1.5">
             <Award className="w-4 h-4 text-[#D9822B]" />
-            <span>{content.proofTag}</span>
+            <span>{content.pillarsTag}</span>
           </span>
           <h2 className="text-2xl sm:text-4xl font-extrabold text-[#143224] tracking-tight">
-            {content.proofTitle}
+            {content.pillarsTitle}
           </h2>
           <p className="text-sm sm:text-base text-[#384D41] font-medium">
-            {content.proofSubtitle}
+            {content.pillarsSubtitle}
           </p>
         </div>
 
-        {/* 4 Quantitative Impact Metrics */}
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
-          {content.metrics.map((m, idx) => (
-            <div
-              key={idx}
-              className="p-5 sm:p-6 rounded-2xl bg-white/95 border border-[#143224]/10 shadow-[0_2px_10px_rgba(20,50,36,0.03)] space-y-1.5"
-            >
-              <div className="text-3xl sm:text-4xl font-black text-[#143224] tracking-tight">
-                {m.value}
-              </div>
-              <div className="text-xs sm:text-sm font-bold text-[#143224]">
-                {m.label}
-              </div>
-              <div className="text-[11px] text-[#5E7367] leading-relaxed font-medium">
-                {m.sub}
-              </div>
+        {/* 4 Authentic Institutional Pillars */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
+          <div className="p-5 sm:p-6 rounded-2xl bg-white/95 border border-[#143224]/10 shadow-[0_2px_10px_rgba(20,50,36,0.03)] space-y-2.5">
+            <div className="w-10 h-10 rounded-xl bg-[#143224] text-[#D9822B] flex items-center justify-center font-bold text-sm">
+              <ShieldCheck className="w-5 h-5" />
             </div>
-          ))}
-        </div>
+            <h4 className="text-base font-bold text-[#143224]">{content.pillar1Title}</h4>
+            <p className="text-xs text-[#384D41] leading-relaxed font-medium">
+              {content.pillar1Desc}
+            </p>
+          </div>
 
-        {/* Real Farmer Testimonial Cards */}
-        <div className="pt-4 space-y-4">
-          <h3 className="text-lg sm:text-xl font-bold text-[#143224]">
-            {content.storyTitle}
-          </h3>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div className="p-6 rounded-2xl bg-white/95 border border-[#143224]/10 space-y-4">
-              <p className="text-sm text-[#2D2319] leading-relaxed italic font-medium">
-                &ldquo;{content.story1Quote}&rdquo;
-              </p>
-              <div className="flex items-center gap-3 pt-2 border-t border-[#143224]/8">
-                <div className="w-10 h-10 rounded-full bg-[#143224] text-[#D9822B] flex items-center justify-center font-bold text-sm shrink-0">
-                  SM
-                </div>
-                <div>
-                  <span className="font-bold text-xs sm:text-sm text-[#143224] block">
-                    {content.story1Author}
-                  </span>
-                  <span className="text-[11px] text-[#5E7367]">
-                    {content.story1Location}
-                  </span>
-                </div>
-              </div>
+          <div className="p-5 sm:p-6 rounded-2xl bg-white/95 border border-[#143224]/10 shadow-[0_2px_10px_rgba(20,50,36,0.03)] space-y-2.5">
+            <div className="w-10 h-10 rounded-xl bg-[#143224] text-[#D9822B] flex items-center justify-center font-bold text-sm">
+              <TrendingUp className="w-5 h-5" />
             </div>
+            <h4 className="text-base font-bold text-[#143224]">{content.pillar2Title}</h4>
+            <p className="text-xs text-[#384D41] leading-relaxed font-medium">
+              {content.pillar2Desc}
+            </p>
+          </div>
 
-            <div className="p-6 rounded-2xl bg-white/95 border border-[#143224]/10 space-y-4">
-              <p className="text-sm text-[#2D2319] leading-relaxed italic font-medium">
-                &ldquo;{content.story2Quote}&rdquo;
-              </p>
-              <div className="flex items-center gap-3 pt-2 border-t border-[#143224]/8">
-                <div className="w-10 h-10 rounded-full bg-[#143224] text-[#D9822B] flex items-center justify-center font-bold text-sm shrink-0">
-                  PB
-                </div>
-                <div>
-                  <span className="font-bold text-xs sm:text-sm text-[#143224] block">
-                    {content.story2Author}
-                  </span>
-                  <span className="text-[11px] text-[#5E7367]">
-                    {content.story2Location}
-                  </span>
-                </div>
-              </div>
+          <div className="p-5 sm:p-6 rounded-2xl bg-white/95 border border-[#143224]/10 shadow-[0_2px_10px_rgba(20,50,36,0.03)] space-y-2.5">
+            <div className="w-10 h-10 rounded-xl bg-[#143224] text-[#D9822B] flex items-center justify-center font-bold text-sm">
+              <CloudSun className="w-5 h-5" />
             </div>
+            <h4 className="text-base font-bold text-[#143224]">{content.pillar3Title}</h4>
+            <p className="text-xs text-[#384D41] leading-relaxed font-medium">
+              {content.pillar3Desc}
+            </p>
+          </div>
+
+          <div className="p-5 sm:p-6 rounded-2xl bg-white/95 border border-[#143224]/10 shadow-[0_2px_10px_rgba(20,50,36,0.03)] space-y-2.5">
+            <div className="w-10 h-10 rounded-xl bg-[#143224] text-[#D9822B] flex items-center justify-center font-bold text-sm">
+              <Building2 className="w-5 h-5" />
+            </div>
+            <h4 className="text-base font-bold text-[#143224]">{content.pillar4Title}</h4>
+            <p className="text-xs text-[#384D41] leading-relaxed font-medium">
+              {content.pillar4Desc}
+            </p>
           </div>
         </div>
       </section>
