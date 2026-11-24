@@ -285,7 +285,7 @@ export function UnifiedFarmAnalytics({
             <div className="h-64 sm:h-72 w-full pt-3">
               {isMounted ? (
                 <ResponsiveContainer width="100%" height="100%">
-                  <ComposedChart data={chartYieldData} margin={{ top: 10, right: 10, left: -15, bottom: 0 }}>
+                  <ComposedChart data={chartYieldData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
                     <defs>
                       <linearGradient id="predictedGradient" x1="0" y1="0" x2="0" y2="1">
                         <stop offset="0%" stopColor="#D9822B" stopOpacity={0.95} />
@@ -416,7 +416,7 @@ export function UnifiedFarmAnalytics({
             <div className="h-64 sm:h-72 w-full pt-1 flex items-center justify-center">
               {isMounted ? (
                 <ResponsiveContainer width="100%" height="100%">
-                  <RadarChart outerRadius="72%" data={soilRadarData}>
+                  <RadarChart outerRadius="62%" data={soilRadarData}>
                     <PolarGrid stroke="#e5e7eb" strokeDasharray="2 2" />
                     <PolarAngleAxis
                       dataKey="subject"

@@ -4,7 +4,7 @@ import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { useAuth } from '@/context/AuthContext';
 import { createClient } from '@/lib/supabase/client';
-import { FarmIntelligenceStage } from '@/components/dashboard/FarmIntelligenceStage';
+import { UnifiedFarmAnalytics } from '@/components/dashboard/UnifiedFarmAnalytics';
 import { Button } from '@/components/ui/Button';
 import {
   ScanLine,
@@ -258,7 +258,7 @@ export default function DashboardPage() {
       </div>
 
       {/* 2. THE UNIFIED EXECUTIVE FARM ANALYTICS MATRIX (ALL ANALYSES IN ONE PAGE) */}
-      <FarmIntelligenceStage
+      <UnifiedFarmAnalytics
         yieldData={yieldComparisonData}
         totalProjectedTons={totalProjectedTons}
         severityData={severityPieData}

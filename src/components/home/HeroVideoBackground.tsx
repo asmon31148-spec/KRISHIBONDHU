@@ -80,6 +80,9 @@ export default function HeroVideoBackground({
       {/* Gentle, authentic transparent overlay: clean agricultural vibe with high text contrast */}
       <div className="absolute inset-0 bg-[#0c180e]/40" />
       <div className="absolute inset-0 bg-gradient-to-t from-[#0c180e]/85 via-transparent to-[#0c180e]/40" />
+
+      {/* Seamless Soft Fade Dissolve into Page Background (#F9F7F2) */}
+      <div className="absolute inset-x-0 bottom-0 h-36 sm:h-52 lg:h-72 bg-gradient-to-b from-transparent via-[#F9F7F2]/60 to-[#F9F7F2] pointer-events-none" />
     </div>
   );
 }
