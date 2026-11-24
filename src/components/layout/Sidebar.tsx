@@ -29,9 +29,10 @@ export function Sidebar() {
 
   const navigationHubs = [
     {
-      title: language === 'bn' ? 'দৈনিক পরামর্শ' : language === 'hi' ? 'दैनिक परामर्श' : 'Daily Advisory',
+      title: language === 'bn' ? 'দৈনিক পরামর্শ ও সেবা' : language === 'hi' ? 'दैनिक परामर्श व सेवाएं' : 'Daily Advisory & Hub',
       items: [
-        { label: t('nav.home'), href: isGuest ? '/' : '/dashboard', icon: Home },
+        { label: t('nav.home') || 'Home', href: '/', icon: Home },
+        ...(!isGuest ? [{ label: t('nav.dashboard') || 'Dashboard', href: '/dashboard', icon: LayoutDashboard }] : []),
         { label: t('nav.scan'), href: '/scan', icon: ScanLine },
         { label: t('nav.assistant'), href: '/assistant', icon: Bot },
         { label: t('nav.weather'), href: '/weather', icon: CloudSun },
@@ -51,7 +52,6 @@ export function Sidebar() {
       items: [
         { label: t('nav.myFarm'), href: '/farms', icon: Warehouse },
         { label: t('nav.schemes') || 'Schemes', href: '/schemes', icon: FileText },
-        { label: t('nav.analytics') || 'Analytics', href: '/dashboard#analytics', icon: LayoutDashboard },
         { label: t('nav.profile'), href: '/profile', icon: User },
       ],
     },
