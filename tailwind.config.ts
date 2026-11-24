@@ -11,6 +11,32 @@ export default {
       colors: {
         background: "var(--background)",
         foreground: "var(--foreground)",
+        pine: {
+          50: "#F2F7F4",
+          100: "#EAF2EC",
+          700: "#2A5E44",
+          800: "#1E4733",
+          900: "#143224",
+          950: "#0E1A14",
+        },
+        paper: {
+          50: "#F9F7F2",
+          100: "#F3EFE6",
+          200: "#E8E2D5",
+          300: "#D6CDBC",
+        },
+        ochre: {
+          50: "#FDF5EC",
+          100: "#FBE7D2",
+          500: "#D9822B",
+          600: "#BF6D1C",
+          700: "#A95E13",
+        },
+        loam: {
+          100: "#F6F3EE",
+          800: "#423425",
+          900: "#2D2319",
+        },
         cream: {
           50: "#FAF9F5",
           100: "#F4F2E9",

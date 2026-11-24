@@ -1,0 +1,44 @@
+/**
+ * KRISHIBONDHU DESIGN TOKENS
+ * Modern Organic Editorial + Bento Utility
+ */
+
+:root {
+  /* Canvas & Surface */
+  --canvas-paper: #F9F7F2;
+  --canvas-dark: #0E1A14;
+  --surface-card: rgba(255, 255, 255, 0.85);
+  --surface-card-hover: rgba(255, 255, 255, 0.98);
+  --surface-card-border: rgba(20, 50, 36, 0.09);
+  --surface-card-border-hover: rgba(20, 50, 36, 0.22);
+
+  /* Primary Heritage Flora (Deep Pine Forest) */
+  --pine-deep: #143224;
+  --pine-medium: #1E4733;
+  --pine-hover: #173B2A;
+  --pine-tint: #EAF2EC;
+  --pine-tint-border: rgba(20, 50, 36, 0.15);
+
+  /* Secondary Accents (Harvest Ochre & Alluvial Loam) */
+  --harvest-ochre: #D9822B;
+  --harvest-ochre-dark: #A95E13;
+  --harvest-ochre-light: #FDF5EC;
+  --harvest-ochre-border: rgba(217, 130, 43, 0.25);
+  --rich-loam: #2D2319;
+  --rich-loam-light: #F6F3EE;
+
+  /* Typography Contrast */
+  --text-primary: #10241A;
+  --text-secondary: #384D41;
+  --text-muted: #5E7367;
+  --text-inverse: #FFFFFF;
+
+  /* Shadows & Elevation */
+  --elevation-subtle: 0 2px 10px rgba(20, 50, 36, 0.04);
+  --elevation-hover: 0 8px 24px rgba(20, 50, 36, 0.08);
+
+  /* Radius */
+  --radius-bento: 1.5rem; /* 24px */
+  --radius-inner: 1rem;   /* 16px */
+  --radius-pill: 9999px;
+}

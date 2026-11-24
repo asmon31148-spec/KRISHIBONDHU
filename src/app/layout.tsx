@@ -41,7 +41,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className="overflow-x-clip" suppressHydrationWarning>
-      <body className={`${plusJakarta.variable} bg-cream-50 text-brand-dark min-h-screen flex flex-col font-sans overflow-x-clip selection:bg-brand-mint selection:text-brand-forest`}>
+      <body className={`${plusJakarta.variable} bg-[#F9F7F2] text-[#10241A] min-h-screen flex flex-col font-sans overflow-x-clip selection:bg-pine-100 selection:text-pine-900`}>
         <I18nProvider>
           <GoogleTranslator />
           <AuthProvider>

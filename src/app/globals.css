@@ -3,8 +3,8 @@
 @tailwind utilities;
 
 :root {
-  --background: #FAF9F5;
-  --foreground: #081C15;
+  --background: #F9F7F2;
+  --foreground: #10241A;
   --font-inter: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
 }
 

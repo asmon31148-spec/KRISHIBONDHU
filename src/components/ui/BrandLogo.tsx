@@ -98,13 +98,13 @@ export function BrandLogo({ className = '', size = 'md', showSubtitle = true }: 
 
       <div className="flex flex-col text-left leading-none">
         <div className={`font-black tracking-tight ${titleSizes[size]} flex items-center`}>
-          <span className="text-emerald-950 transition-colors group-hover:text-emerald-800">
+          <span className="text-[#143224] transition-colors group-hover:text-[#1E4733]">
             KRISHI
           </span>
-          <span className="text-emerald-600 transition-colors group-hover:text-emerald-500">
+          <span className="text-[#2A5E44] transition-colors group-hover:text-[#1E4733]">
             BONDHU
           </span>
-          <span className="inline-block w-1.5 h-1.5 rounded-full bg-amber-400 ml-0.5 animate-pulse" />
+          <span className="inline-block w-1.5 h-1.5 rounded-full bg-[#D9822B] ml-0.5 animate-pulse" />
         </div>
 
         {showSubtitle && (

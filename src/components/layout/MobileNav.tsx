@@ -124,7 +124,7 @@ export function MobileNav() {
       {/* Persistent Bottom Bar with 85-90% Frosted Liquid Glass & Safe-Area Inset */}
       <nav
         aria-label="Mobile navigation"
-        className="lg:hidden fixed bottom-0 left-0 right-0 z-50 bg-cream-50/92 backdrop-blur-md border-t border-brand-forest/15 px-1 pt-1.5 pb-[max(0.6rem,env(safe-area-inset-bottom))] shadow-[0_-4px_24px_rgba(0,0,0,0.08)] flex items-center justify-around"
+        className="lg:hidden fixed bottom-0 left-0 right-0 z-50 bg-[#F9F7F2]/95 backdrop-blur-md border-t border-[#143224]/12 px-1 pt-1.5 pb-[max(0.6rem,env(safe-area-inset-bottom))] shadow-[0_-4px_24px_rgba(20,50,36,0.08)] flex items-center justify-around"
       >
         {mainTabs.map((tab) => {
           const isActive = pathname === tab.href || (tab.href !== '/' && pathname.startsWith(tab.href));
@@ -135,13 +135,13 @@ export function MobileNav() {
               href={tab.href}
               className={`flex flex-col items-center justify-center min-w-[62px] min-h-[48px] py-1 px-1 rounded-xl text-[10px] transition-all ${
                 isActive
-                  ? 'text-brand-forest font-extrabold'
-                  : 'text-brand-dark/75 hover:text-brand-forest font-semibold'
+                  ? 'text-[#143224] font-extrabold'
+                  : 'text-[#10241A]/75 hover:text-[#143224] font-semibold'
               }`}
             >
               <div
                 className={`p-1.5 rounded-xl transition-all ${
-                  isActive ? 'bg-brand-forest text-white shadow-xs' : 'text-brand-dark/70'
+                  isActive ? 'bg-[#143224] text-[#D9822B] shadow-xs' : 'text-[#10241A]/70'
                 }`}
               >
                 <Icon className="w-4 h-4 sm:w-5 sm:h-5" />

@@ -47,7 +47,7 @@ export function Sidebar() {
   ];
 
   return (
-    <aside className="hidden lg:flex flex-col w-64 border-r border-cream-200/90 bg-white/70 min-h-[calc(100vh-61px)] p-4 shrink-0">
+    <aside className="hidden lg:flex flex-col w-64 border-r border-[#143224]/10 bg-[#F9F7F2]/80 min-h-[calc(100vh-61px)] p-4 shrink-0">
       {/* Navigation Links */}
       <nav className="flex-1 space-y-1">
         {navItems.map((item) => {
@@ -59,11 +59,11 @@ export function Sidebar() {
               href={item.href}
               className={`flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-sm font-semibold transition-all ${
                 isActive
-                  ? 'bg-brand-forest text-white shadow-xs'
-                  : 'text-brand-dark/75 hover:text-brand-dark hover:bg-cream-100'
+                  ? 'bg-[#143224] text-white shadow-[0_2px_8px_rgba(20,50,36,0.18)]'
+                  : 'text-[#10241A]/80 hover:text-[#10241A] hover:bg-[#EAF2EC]/70'
               }`}
             >
-              <Icon className={`w-4 h-4 ${isActive ? 'text-brand-mint' : 'text-brand-leaf'}`} />
+              <Icon className={`w-4 h-4 ${isActive ? 'text-[#D9822B]' : 'text-[#1E4733]'}`} />
               <span>{item.label}</span>
             </Link>
           );
