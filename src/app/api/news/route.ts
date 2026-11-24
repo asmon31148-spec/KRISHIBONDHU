@@ -1,17 +1,32 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { fetchAgricultureNews } from '@/lib/news/aggregator';
+import { aggregateLiveAgriNews } from '@/lib/news/aggregator';
 import { createServerSupabaseClient } from '@/lib/supabase/server';
 
 export async function GET(req: NextRequest) {
   try {
     const { searchParams } = new URL(req.url);
-    const category = searchParams.get('category') || undefined;
+    const category = searchParams.get('category') || 'all';
     const query = searchParams.get('q') || undefined;
+    const forceRefresh = searchParams.get('refresh') === 'true';
 
-    const articles = await fetchAgricultureNews(category, query);
-    return NextResponse.json({ success: true, articles });
+    const result = await aggregateLiveAgriNews(category, query, forceRefresh);
+
+    return NextResponse.json(
+      {
+        success: true,
+        articles: result.articles,
+        count: result.articles.length,
+        fromCache: result.fromCache,
+        lastUpdated: result.lastUpdated,
+      },
+      {
+        headers: {
+          'Cache-Control': forceRefresh ? 'no-store, max-age=0' : 'public, s-maxage=300, stale-while-revalidate=600',
+        },
+      }
+    );
   } catch (err: unknown) {
-    const msg = err instanceof Error ? err.message : 'Error fetching news';
+    const msg = err instanceof Error ? err.message : 'Failed to retrieve live agricultural dispatches';
     return NextResponse.json({ error: msg }, { status: 500 });
   }
 }

@@ -428,12 +428,12 @@ What are the specific disease, pest, or nutrient risks for this crop in West Ben
   return (
     <div className="flex flex-col h-full w-full bg-white relative overflow-hidden text-left">
       {/* Top Bar with Clean Header & History Controls */}
-      <div className="flex items-center justify-between px-3 sm:px-4 h-[50px] border-b border-[#143224]/10 bg-[#F9F7F2]/80 backdrop-blur-md gap-2 shrink-0">
-        <div className="flex items-center gap-2.5 min-w-0">
+      <div className="flex items-center justify-between px-3 sm:px-5 h-[52px] border-b border-[#143224]/10 bg-[#F9F7F2]/90 backdrop-blur-md gap-3 shrink-0">
+        <div className="flex items-center gap-2 min-w-0">
           {!isGuest && (
             <button
               onClick={() => setIsSidebarOpen(!isSidebarOpen)}
-              className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl border text-xs font-bold transition-all shrink-0 cursor-pointer ${
+              className={`inline-flex items-center gap-2 px-3 py-1.5 rounded-xl border text-xs font-bold transition-all shrink-0 cursor-pointer ${
                 isSidebarOpen
                   ? 'bg-[#143224] text-white border-[#143224] shadow-xs'
                   : 'bg-white hover:bg-[#EAF2EC] text-[#143224] border-[#143224]/15 shadow-2xs'
@@ -442,7 +442,7 @@ What are the specific disease, pest, or nutrient risks for this crop in West Ben
               aria-label="Toggle history"
             >
               <MessageSquare className={`w-3.5 h-3.5 ${isSidebarOpen ? 'text-[#D9822B]' : 'text-[#1E4733]'}`} />
-              <span>{isSidebarOpen ? 'Hide History' : 'History'}</span>
+              <span>{isSidebarOpen ? 'Close History' : 'Chat History'}</span>
               {conversations.length > 0 && (
                 <span
                   className={`px-1.5 py-0.2 rounded-full text-[10px] font-extrabold ${
@@ -455,19 +455,19 @@ What are the specific disease, pest, or nutrient risks for this crop in West Ben
             </button>
           )}
 
-          <div className="flex items-center gap-1.5 px-3 py-1 rounded-xl bg-white border border-[#143224]/10 text-[#143224] text-xs font-bold shadow-2xs">
+          <div className="hidden sm:flex items-center gap-1.5 px-3 py-1 rounded-xl bg-white border border-[#143224]/10 text-[#143224] text-xs font-bold shadow-2xs">
             <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
             <span>BCKV & ICAR Agronomy AI</span>
           </div>
         </div>
 
-        <div className="flex items-center gap-1.5 shrink-0">
+        <div className="flex items-center gap-2 shrink-0">
           <Button
-            variant="ghost"
+            variant="outline"
             size="sm"
             onClick={handleNewChat}
-            className="text-xs font-bold text-[#143224] hover:bg-[#EAF2EC] rounded-xl"
-            leftIcon={<Plus className="w-3.5 h-3.5 text-[#D9822B]" />}
+            className="bg-white hover:bg-[#EAF2EC] text-xs font-bold border-[#143224]/15 text-[#143224] shadow-2xs"
+            leftIcon={<Plus className="w-3.5 h-3.5 text-[#1E4733]" />}
           >
             New Chat
           </Button>
@@ -475,78 +475,72 @@ What are the specific disease, pest, or nutrient risks for this crop in West Ben
       </div>
 
       {/* Main Chat Layout Area (Flush Docked with Zero Margin Gap) */}
-      <div className="flex-1 flex overflow-hidden relative border-t border-cream-200">
-        {/* Sub-Sidebar: Chat History (Flush Docked with Zero Margin Gap) */}
+      <div className="flex-1 flex overflow-hidden relative">
+        {/* Sub-Sidebar: Sleek Integrated Chat History */}
         {isSidebarOpen && !isGuest && (
-          <aside className="w-72 lg:w-80 border-r border-cream-200 bg-white flex flex-col shrink-0 z-10 animate-in slide-in-from-left duration-150">
+          <aside className="w-72 lg:w-80 border-r border-[#143224]/10 bg-[#FDFCFA] flex flex-col shrink-0 z-10 animate-in slide-in-from-left duration-150">
             {/* Panel Header */}
-            <div className="p-3.5 border-b border-cream-200 flex items-center justify-between bg-cream-50/50">
+            <div className="p-3.5 border-b border-[#143224]/10 flex items-center justify-between bg-[#F9F7F2]/60">
               <div className="flex items-center gap-2">
-                <span className="text-xs font-bold uppercase tracking-wider text-brand-forest">
-                  Chat History
+                <span className="text-xs font-bold uppercase tracking-wider text-[#143224]">
+                  Saved Chats
                 </span>
-                <span className="px-2 py-0.5 rounded-full text-[10px] font-extrabold bg-brand-forest/10 text-brand-forest">
+                <span className="px-2 py-0.5 rounded-full text-[10px] font-extrabold bg-[#143224]/10 text-[#143224]">
                   {conversations.length}
                 </span>
               </div>
               <button
                 onClick={() => setIsSidebarOpen(false)}
-                className="p-1 rounded-lg text-brand-dark/50 hover:text-brand-dark hover:bg-cream-100 transition-colors"
+                className="p-1 rounded-lg text-[#10241A]/50 hover:text-[#10241A] hover:bg-black/5 transition-colors"
                 title="Collapse History"
               >
                 <X className="w-4 h-4" />
               </button>
             </div>
 
-            {/* Scrollable Conversation List */}
-            <div className="flex-1 overflow-y-auto p-2 space-y-1">
+            {/* Scrollable Conversation List with Sleek Hover Items */}
+            <div className="flex-1 overflow-y-auto p-2.5 space-y-1">
               {conversations.length === 0 ? (
-                <div className="p-6 text-center text-xs text-brand-dark/50 italic">
-                  No previous conversations.
+                <div className="p-6 text-center text-xs text-[#10241A]/50 italic">
+                  No previous conversations. Start asking questions to save your advisory history!
                 </div>
               ) : (
-                conversations.map((conv) => (
-                  <div
-                    key={conv.id}
-                    onClick={() => {
-                      handleSelectConversation(conv.id);
-                      if (window.innerWidth < 1024) setIsSidebarOpen(false);
-                    }}
-                    className={`group flex items-center justify-between p-2.5 rounded-xl text-xs font-semibold cursor-pointer transition-all ${
-                      activeConversationId === conv.id
-                        ? 'bg-brand-forest text-white shadow-xs'
-                        : 'text-brand-dark hover:bg-cream-100 hover:text-brand-forest'
-                    }`}
-                  >
-                    <span className="truncate max-w-[200px]">{conv.title}</span>
-                    <button
-                      onClick={(e) => deleteConversation(conv.id, e)}
-                      className={`p-1 rounded opacity-0 group-hover:opacity-100 transition-opacity hover:text-red-500 ${
-                        activeConversationId === conv.id ? 'text-white/80 hover:text-white' : 'text-brand-dark/50'
+                conversations.map((conv) => {
+                  const isSelected = activeConversationId === conv.id;
+                  return (
+                    <div
+                      key={conv.id}
+                      onClick={() => {
+                        handleSelectConversation(conv.id);
+                        if (window.innerWidth < 1024) setIsSidebarOpen(false);
+                      }}
+                      className={`group flex items-center justify-between px-3 py-2.5 rounded-xl text-xs font-semibold cursor-pointer transition-all ${
+                        isSelected
+                          ? 'bg-[#143224] text-white shadow-xs'
+                          : 'text-[#10241A]/80 hover:bg-[#EAF2EC]/70 hover:text-[#143224]'
                       }`}
-                      aria-label="Delete chat"
                     >
-                      <Trash2 className="w-3.5 h-3.5" />
-                    </button>
-                  </div>
-                ))
+                      <div className="flex items-center gap-2 min-w-0">
+                        <MessageSquare
+                          className={`w-3.5 h-3.5 shrink-0 ${
+                            isSelected ? 'text-[#D9822B]' : 'text-[#143224]/40 group-hover:text-[#143224]'
+                          }`}
+                        />
+                        <span className="truncate">{conv.title}</span>
+                      </div>
+                      <button
+                        onClick={(e) => deleteConversation(conv.id, e)}
+                        className={`p-1 rounded-md opacity-0 group-hover:opacity-100 transition-opacity hover:text-red-500 hover:bg-black/5 ${
+                          isSelected ? 'text-white/80 hover:text-white' : 'text-[#10241A]/40'
+                        }`}
+                        aria-label="Delete chat"
+                      >
+                        <Trash2 className="w-3.5 h-3.5" />
+                      </button>
+                    </div>
+                  );
+                })
               )}
-            </div>
-
-            {/* Start New Chat Action */}
-            <div className="p-3 border-t border-cream-200 bg-cream-50/40">
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => {
-                  handleNewChat();
-                  if (window.innerWidth < 1024) setIsSidebarOpen(false);
-                }}
-                className="w-full justify-center bg-white hover:bg-cream-100 text-xs font-bold border-cream-300"
-                leftIcon={<Plus className="w-3.5 h-3.5 text-brand-forest" />}
-              >
-                Start New Chat
-              </Button>
             </div>
           </aside>
         )}

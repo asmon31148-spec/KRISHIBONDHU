@@ -14,6 +14,7 @@ import {
   ExternalLink,
   Calendar,
   Building2,
+  RefreshCw,
 } from 'lucide-react';
 import type { NewsArticle } from '@/lib/news/aggregator';
 
@@ -33,27 +34,44 @@ export default function NewsPage() {
   const [selectedCategory, setSelectedCategory] = useState('all');
   const [searchQuery, setSearchQuery] = useState('');
   const [isLoading, setIsLoading] = useState(true);
+  const [isRefreshing, setIsRefreshing] = useState(false);
+  const [lastUpdated, setLastUpdated] = useState<string | null>(null);
   const [bookmarkedUrls, setBookmarkedUrls] = useState<Set<string>>(new Set());
   const [isGuestPromptOpen, setIsGuestPromptOpen] = useState(false);
 
-  const loadNews = useCallback(async () => {
-    setIsLoading(true);
+  const loadNews = useCallback(async (forceRefresh: boolean = false) => {
+    if (forceRefresh) {
+      setIsRefreshing(true);
+    } else {
+      setIsLoading(true);
+    }
     try {
       const params = new URLSearchParams();
       if (selectedCategory !== 'all') params.set('category', selectedCategory);
       if (searchQuery.trim()) params.set('q', searchQuery.trim());
+      if (forceRefresh) params.set('refresh', 'true');
 
       const res = await fetch(`/api/news?${params.toString()}`);
       const data = await res.json();
       if (data.articles) {
         setArticles(data.articles);
       }
+      if (data.lastUpdated) {
+        setLastUpdated(data.lastUpdated);
+      }
+      if (forceRefresh) {
+        toast.success('Live news feeds synchronized.');
+      }
     } catch (err) {
       console.error('Failed to load news:', err);
+      if (forceRefresh) {
+        toast.error('Could not refresh news feeds.');
+      }
     } finally {
       setIsLoading(false);
+      setIsRefreshing(false);
     }
-  }, [selectedCategory, searchQuery]);
+  }, [selectedCategory, searchQuery, toast]);
 
   useEffect(() => {
     loadNews();
@@ -96,13 +114,31 @@ export default function NewsPage() {
 
   return (
     <div className="space-y-6 w-full text-left">
-      <div>
-        <h1 className="text-2xl sm:text-3xl font-extrabold text-brand-forest">
-          Agricultural News & Policy Bulletins
-        </h1>
-        <p className="text-xs sm:text-sm text-brand-dark/70 mt-1">
-          Authentic extension dispatches from Ministry of Agriculture, ICAR, and Government of West Bengal.
-        </p>
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+        <div>
+          <h1 className="text-2xl sm:text-3xl font-extrabold text-brand-forest">
+            Agricultural News & Policy Bulletins
+          </h1>
+          <p className="text-xs sm:text-sm text-brand-dark/70 mt-1">
+            Authentic extension dispatches from Ministry of Agriculture, ICAR, and Government of West Bengal.
+          </p>
+        </div>
+        <div className="flex items-center gap-2.5 shrink-0">
+          <button
+            onClick={() => loadNews(true)}
+            disabled={isRefreshing || isLoading}
+            className="inline-flex items-center gap-2 px-3.5 py-2 rounded-xl bg-white border border-[#143224]/15 hover:bg-[#EAF2EC] text-[#143224] text-xs font-bold transition-all shadow-2xs disabled:opacity-50 cursor-pointer"
+            title="Fetch latest live RSS feeds"
+          >
+            <RefreshCw className={`w-3.5 h-3.5 ${isRefreshing ? 'animate-spin text-[#D9822B]' : 'text-[#1E4733]'}`} />
+            <span>{isRefreshing ? 'Syncing Feeds...' : 'Refresh Live News'}</span>
+          </button>
+          {lastUpdated && (
+            <span className="text-[11px] text-[#10241A]/60 hidden sm:inline font-medium">
+              Updated: {new Date(lastUpdated).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+            </span>
+          )}
+        </div>
       </div>
 
       {/* Search and Category Filters */}

@@ -11,7 +11,7 @@ export function ContentWrapper({ children }: { children: React.ReactNode }) {
   // The Assistant screen docks flush with zero margin gap
   if (isAssistant) {
     return (
-      <main className="flex-1 min-w-0 w-full h-[calc(100dvh-57px-4rem)] lg:h-[calc(100dvh-57px)] overflow-hidden bg-white flex flex-col">
+      <main className="flex-1 min-w-0 w-full h-[calc(100dvh-57px-4rem)] lg:h-[calc(100dvh-57px)] overflow-hidden bg-[#F9F7F2] flex flex-col">
         {children}
       </main>
     );

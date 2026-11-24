@@ -42,7 +42,7 @@ declare module 'next/server' {
     readonly cookies: any;
   }
 
-  export class NextResponse<Body = any> extends Response {
+  export class NextResponse<_Body = any> extends Response {
     readonly cookies: any;
     static json<JsonBody = any>(body: JsonBody, init?: ResponseInit): NextResponse<JsonBody>;
     static redirect(url: string | URL | Location, init?: number | ResponseInit): NextResponse<unknown>;
@@ -72,7 +72,7 @@ declare module 'next/server.js' {
     readonly cookies: any;
   }
 
-  export class NextResponse<Body = any> extends Response {
+  export class NextResponse<_Body = any> extends Response {
     readonly cookies: any;
     static json<JsonBody = any>(body: JsonBody, init?: ResponseInit): NextResponse<JsonBody>;
     static redirect(url: string | URL | Location, init?: number | ResponseInit): NextResponse<unknown>;

@@ -4,6 +4,7 @@
  * - Press Information Bureau (PIB) Ministry of Agriculture
  * - ICAR (Indian Council of Agricultural Research)
  * - DD Kisan / Krishi Jagran Agriculture Bulletins
+ * - Real-time Google News RSS for West Bengal & India Agriculture
  */
 
 export interface NewsArticle {
@@ -29,6 +30,31 @@ export interface NewsArticle {
 let cachedNews: NewsArticle[] = [];
 let lastFetchTime = 0;
 const NEWS_CACHE_TTL = 15 * 60 * 1000; // 15 minutes
+
+export function extractCleanSummary(rawHtml: string): string {
+  if (!rawHtml) return '';
+  // Strip HTML tags and entities
+  const clean = rawHtml
+    .replace(/<[^>]*>?/gm, ' ')
+    .replace(/&nbsp;/g, ' ')
+    .replace(/&amp;/g, '&')
+    .replace(/&quot;/g, '"')
+    .replace(/&#39;/g, "'")
+    .replace(/&lt;/g, '<')
+    .replace(/&gt;/g, '>')
+    .replace(/\s+/g, ' ')
+    .trim();
+
+  // Return substantive summary sentences (up to 240-260 chars)
+  if (clean.length > 240) {
+    const periodIdx = clean.indexOf('.', 120);
+    if (periodIdx !== -1 && periodIdx <= 260) {
+      return clean.substring(0, periodIdx + 1);
+    }
+    return clean.substring(0, 240) + '...';
+  }
+  return clean;
+}
 
 const BASELINE_ARTICLES: NewsArticle[] = [
   {
@@ -107,13 +133,26 @@ function categorizeArticle(title: string, desc: string): NewsArticle['category']
   return 'technology';
 }
 
-export async function fetchAgricultureNews(
-  category?: string,
-  searchQuery?: string
-): Promise<NewsArticle[]> {
-  // Return cached articles if valid (15-min TTL)
-  if (cachedNews.length > 0 && Date.now() - lastFetchTime < NEWS_CACHE_TTL) {
-    return filterArticles(cachedNews, category, searchQuery);
+export async function aggregateLiveAgriNews(
+  category: string = 'all',
+  searchQuery?: string,
+  forceRefresh: boolean = false
+): Promise<{ articles: NewsArticle[]; fromCache: boolean; lastUpdated: string }> {
+  const now = Date.now();
+
+  // If not forcing refresh and cache is still fresh:
+  if (!forceRefresh && cachedNews.length > 0 && now - lastFetchTime < NEWS_CACHE_TTL) {
+    return {
+      articles: filterArticles(cachedNews, category, searchQuery),
+      fromCache: true,
+      lastUpdated: new Date(lastFetchTime).toISOString(),
+    };
+  }
+
+  // Clear cache if forcing refresh
+  if (forceRefresh) {
+    cachedNews = [];
+    lastFetchTime = 0;
   }
 
   const liveArticles: NewsArticle[] = [];
@@ -136,12 +175,13 @@ export async function fetchAgricultureNews(
       const xml = await res.text();
       const items = xml.match(/<item>[\s\S]*?<\/item>/g) || [];
 
-      for (let idx = 0; idx < Math.min(items.length, 10); idx++) {
+      for (let idx = 0; idx < Math.min(items.length, 12); idx++) {
         const raw = items[idx];
         const titleMatch = raw.match(/<title><!\[CDATA\[(.*?)\]\]><\/title>/) || raw.match(/<title>(.*?)<\/title>/);
         const linkMatch = raw.match(/<link>(.*?)<\/link>/);
         const sourceMatch = raw.match(/<source[^>]*>(.*?)<\/source>/);
         const pubDateMatch = raw.match(/<pubDate>(.*?)<\/pubDate>/);
+        const descMatch = raw.match(/<description><!\[CDATA\[([\s\S]*?)\]\]><\/description>/i) || raw.match(/<description>([\s\S]*?)<\/description>/i);
 
         let fullTitle = titleMatch ? titleMatch[1].replace(/<[^>]+>/g, '').trim() : '';
         let sourceName = sourceMatch ? sourceMatch[1].replace(/<[^>]+>/g, '').trim() : 'Agri News Dispatch';
@@ -155,12 +195,14 @@ export async function fetchAgricultureNews(
         if (fullTitle && linkMatch) {
           const link = linkMatch[1].trim();
           const pubDate = pubDateMatch ? new Date(pubDateMatch[1]).toISOString() : new Date().toISOString();
-          const cat = categorizeArticle(fullTitle, '');
+          const rawDesc = descMatch ? descMatch[1] : '';
+          const cleanSummary = extractCleanSummary(rawDesc) || `Live agricultural dispatch reported by ${sourceName}. Verified coverage on rural economy, farming policies, and crop advisories.`;
+          const cat = categorizeArticle(fullTitle, cleanSummary);
 
           liveArticles.push({
             id: `live-rss-${idx}`,
             title: fullTitle,
-            description: `Live agricultural dispatch reported by ${sourceName}. Verified coverage on rural economy, farming policies, and crop advisories.`,
+            description: cleanSummary,
             source: sourceName,
             sourceUrl: link,
             publishedAt: pubDate,
@@ -192,13 +234,16 @@ export async function fetchAgricultureNews(
       const pibItems: NewsArticle[] = items.slice(0, 4).map((raw, idx) => {
         const titleMatch = raw.match(/<title><!\[CDATA\[(.*?)\]\]><\/title>/) || raw.match(/<title>(.*?)<\/title>/);
         const linkMatch = raw.match(/<link>(.*?)<\/link>/);
-        const descMatch = raw.match(/<description><!\[CDATA\[(.*?)\]\]><\/description>/) || raw.match(/<description>(.*?)<\/description>/);
+        const descMatch = raw.match(/<description><!\[CDATA\[([\s\S]*?)\]\]><\/description>/i) || raw.match(/<description>([\s\S]*?)<\/description>/i);
         const pubDateMatch = raw.match(/<pubDate>(.*?)<\/pubDate>/);
+
+        const rawDesc = descMatch ? descMatch[1] : '';
+        const cleanSummary = extractCleanSummary(rawDesc) || 'Official notification from Ministry of Agriculture.';
 
         return {
           id: `pib-rss-${idx}`,
           title: titleMatch ? titleMatch[1].replace(/<[^>]+>/g, '').trim() : 'Agricultural Ministry Notification',
-          description: descMatch ? descMatch[1].replace(/<[^>]+>/g, '').trim().substring(0, 180) + '...' : 'Official notification from Ministry of Agriculture.',
+          description: cleanSummary,
           source: 'PIB Ministry of Agriculture',
           sourceUrl: linkMatch ? linkMatch[1].trim() : 'https://pib.gov.in',
           publishedAt: pubDateMatch ? new Date(pubDateMatch[1]).toISOString() : new Date().toISOString(),
@@ -227,7 +272,21 @@ export async function fetchAgricultureNews(
 
   cachedNews = uniqueArticles;
   lastFetchTime = Date.now();
-  return filterArticles(cachedNews, category, searchQuery);
+
+  return {
+    articles: filterArticles(cachedNews, category, searchQuery),
+    fromCache: false,
+    lastUpdated: new Date(lastFetchTime).toISOString(),
+  };
+}
+
+export async function fetchAgricultureNews(
+  category?: string,
+  searchQuery?: string,
+  forceRefresh: boolean = false
+): Promise<NewsArticle[]> {
+  const result = await aggregateLiveAgriNews(category, searchQuery, forceRefresh);
+  return result.articles;
 }
 
 function filterArticles(articles: NewsArticle[], category?: string, query?: string): NewsArticle[] {

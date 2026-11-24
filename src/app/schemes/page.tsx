@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import Link from 'next/link';
 import { useTranslation } from '@/i18n/context';
 import { useToast } from '@/components/ui/Toast';
@@ -50,22 +50,36 @@ export default function SchemesPage() {
   const [liveVerifications, setLiveVerifications] = useState<Record<string, SchemeLiveVerification>>({});
   const [isVerifying, setIsVerifying] = useState<boolean>(true);
 
-  const fetchLiveStatus = () => {
+  const fetchLiveStatus = useCallback((forceRefresh: boolean = false) => {
     setIsVerifying(true);
-    fetch('/api/schemes/verify-live')
+    fetch(`/api/schemes/verify-live${forceRefresh ? '?refresh=true' : ''}`)
       .then((r) => r.json())
       .then((data) => {
         if (data.verifications) {
           setLiveVerifications(data.verifications);
+          if (forceRefresh) {
+            toast.success(
+              language === 'bn'
+                ? 'সরকারি পোর্টাল ও মৌসুমী যাচাই সম্পন্ন হয়েছে!'
+                : language === 'hi'
+                ? 'सरकारी पोर्टल और मौसमी सत्यापन पूर्ण हुआ!'
+                : 'Government portal statuses and seasonal cutoffs verified live!'
+            );
+          }
         }
       })
-      .catch((err) => console.warn('Live scheme verification check:', err))
+      .catch((err) => {
+        console.warn('Live scheme verification check:', err);
+        if (forceRefresh) {
+          toast.error('Could not verify scheme portals.');
+        }
+      })
       .finally(() => setIsVerifying(false));
-  };
+  }, [language, toast]);
 
   useEffect(() => {
     fetchLiveStatus();
-  }, []);
+  }, [fetchLiveStatus]);
 
   const toggleDoc = (id: string) => {
     setCheckedDocs((prev) => ({ ...prev, [id]: !prev[id] }));
@@ -130,10 +144,10 @@ export default function SchemesPage() {
               variant="secondary"
               size="sm"
               leftIcon={<RefreshCw className={`w-3.5 h-3.5 ${isVerifying ? 'animate-spin' : ''}`} />}
-              onClick={fetchLiveStatus}
+              onClick={() => fetchLiveStatus(true)}
               disabled={isVerifying}
             >
-              {language === 'bn' ? 'লাইভ যাচাই' : 'Live Web Re-Check'}
+              {language === 'bn' ? 'লাইভ পোর্টাল যাচাই' : language === 'hi' ? 'लाइव पोर्टल सत्यापन' : 'Verify Live Portal Status'}
             </Button>
             <a href="tel:18001801551" onClick={(e) => handlePhoneClick(e, '1800-180-1551')}>
               <Button variant="primary" size="sm" leftIcon={<Phone className="w-3.5 h-3.5" />}>
