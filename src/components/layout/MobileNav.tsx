@@ -22,7 +22,6 @@ import {
   TrendingUp,
   FlaskConical,
   Scale,
-  History,
 } from 'lucide-react';
 
 export function MobileNav() {
@@ -39,7 +38,6 @@ export function MobileNav() {
   ];
 
   const moreItems = [
-    { label: t('nav.scanHistory'), href: '/scans/history', icon: History },
     { label: t('nav.yield'), href: '/yield', icon: Scale },
     { label: t('nav.mandi'), href: '/mandi', icon: TrendingUp },
     { label: t('nav.fertilizer'), href: '/fertilizer', icon: FlaskConical },

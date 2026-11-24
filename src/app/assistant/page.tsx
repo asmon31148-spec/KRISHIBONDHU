@@ -89,11 +89,8 @@ function AssistantChat() {
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  useEffect(() => {
-    if (typeof window !== 'undefined' && window.innerWidth >= 1024 && !isGuest) {
-      setIsSidebarOpen(true);
-    }
-  }, [isGuest]);
+  // Keep sidebar closed by default for a clean, spacious, centered conversational interface
+  // User can click "History" at any time to open saved chats
 
   // Auto scroll to bottom of messages
   const scrollToBottom = () => {
@@ -652,7 +649,7 @@ What are the specific disease, pest, or nutrient risks for this crop in West Ben
           )}
 
           {/* Interactive Voice & Text Input Box */}
-          <div className="p-2.5 sm:p-4 border-t border-cream-200/90 bg-white">
+          <div className="p-2.5 sm:p-4 border-t border-cream-200/90 bg-white/95 backdrop-blur-md sticky bottom-0 z-10">
             <div className="max-w-3xl mx-auto flex items-center gap-2">
               {/* Walkie-Talkie Voice Microphone Button */}
               <WalkieTalkie

@@ -108,7 +108,7 @@ export function BrandLogo({ className = '', size = 'md', showSubtitle = true }: 
         </div>
 
         {showSubtitle && (
-          <div className="flex items-center gap-1.5 mt-0.5 sm:mt-1">
+          <div className="hidden sm:flex items-center gap-1.5 mt-0.5 sm:mt-1">
             <span className="text-[10px] sm:text-[11px] font-bold text-emerald-800/80 tracking-wide">
               {language === 'bn' ? 'কৃষিবন্ধু' : language === 'hi' ? 'कृषिबंधु' : 'Bengal Agritech'}
             </span>

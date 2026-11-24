@@ -3,6 +3,8 @@
 import React from 'react';
 import Link from 'next/link';
 import { useTranslation } from '@/i18n/context';
+import HeroVideoBackground from '@/components/home/HeroVideoBackground';
+import FeatureOrbitDial from '@/components/home/FeatureOrbitDial';
 import {
   ScanLine,
   TrendingUp,
@@ -15,7 +17,7 @@ import {
   Droplets,
   AlertTriangle,
   Award,
-  ChevronRight,
+  Bot,
 } from 'lucide-react';
 
 export default function LandingPage() {
@@ -29,7 +31,7 @@ export default function LandingPage() {
       subtext:
         'গাছের পাতার রোগ নির্ণয়, জমির মাপে সারের বৈজ্ঞানিক হিসাব, লাইভ মান্ডি বাজার দর ও আবহাওয়া অনুযায়ী স্প্রে পরামর্শ — বাংলার কৃষকের সার্বক্ষণিক বিশ্বস্ত সহকারী।',
       primaryCTA: 'পাতার রোগ পরীক্ষা করুন',
-      secondaryCTA: 'আজকের বাজার দর দেখুন',
+      secondaryCTA: 'কৃষি সহকারীর পরামর্শ নিন',
       trustPill: '১০০% কৃষকের জন্য বিনামূল্যে · কোনো রেজিস্ট্রেশন ফি নেই · নির্ভুল সরকারি নির্দেশিকা',
 
       // Live Intel Widget (Hero Right)
@@ -110,7 +112,7 @@ export default function LandingPage() {
       subtext:
         'पत्ती की फोटो से तुरंत रोग पहचान, जमीन के अनुसार वैज्ञानिक खाद कैलकुलेटर, लाइव थोक मंडी भाव और सुरक्षित स्प्रे मौसम परामर्श — किसान भाइयों का विश्वसनीय साथी।',
       primaryCTA: 'पत्ती का रोग जांचें',
-      secondaryCTA: 'आज का मंडी भाव देखें',
+      secondaryCTA: 'कृषि सहायक से पूछें',
       trustPill: '100% किसानों के लिए मुफ्त · कोई लॉगिन या पासवर्ड की बाधा नहीं · प्रामाणिक कृषि सलाह',
 
       intelTitle: 'लाइव कृषि इंटेलिजेंस',
@@ -177,13 +179,13 @@ export default function LandingPage() {
       footerCitation: `© ${new Date().getFullYear()} कृषिबंधु (KRISHIBONDHU) · डेटा समर्थन: ICAR, कृषि विभाग, IMD एवं BCKV`,
     },
     en: {
-      heroTag: 'ICAR & BCKV Aligned Agricultural Intelligence',
-      headline: 'Protect your harvest,\nmaximize every Bigha.',
+      heroTag: 'AI SMART FARMING PLATFORM',
+      headline: 'Smarter farming,\nguided by AI.',
       subtext:
-        'Certified crop leaf diagnostics, scientific fertilizer calculation, real-time APMC Mandi rates, and precision weather spray advisories for Bengal & Indian farmers.',
-      primaryCTA: 'Analyze Your Crop',
-      secondaryCTA: 'Explore Market Rates',
-      trustPill: '100% Free for Farmers · Zero Login Required · ICAR & University Validated',
+        'Detect crop diseases instantly, calculate scientific fertilizer dosages for your land, track weather spray windows, and check live mandi prices — all in one place.',
+      primaryCTA: 'Diagnose Leaf From Photo',
+      secondaryCTA: 'Ask Agronomy Assistant',
+      trustPill: '100% Free for all farmers · No account or password required · ICAR Validated',
 
       intelTitle: 'Live Agricultural Intelligence',
       intelLocation: 'Bengal & Eastern Region',
@@ -256,23 +258,31 @@ export default function LandingPage() {
           1. THE HERO (1440x900 SINGLE SCREEN IMPACT)
           Dignified, High-Agency Editorial Architecture
          ======================================================== */}
-      <section className="pt-4 lg:pt-8 min-h-[580px] lg:min-h-[640px] flex items-center">
-        <div className="w-full grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center">
-          {/* Left Column: Bold Editorial Headline, Mission & Actions */}
-          <div className="lg:col-span-7 space-y-6">
+      {/* ========================================================
+          1. THE HERO WITH SEAMLESS LOOPING 1080p VIDEO & ORBITAL DIAL
+          High-Agency, Visual & Interactive Agriculture Command Hero
+         ======================================================== */}
+      <section className="relative overflow-hidden rounded-[2rem] shadow-[0_12px_40px_rgba(20,50,36,0.18)] min-h-[580px] lg:min-h-[640px] flex items-center p-6 sm:p-10 lg:p-12 border border-[#143224]/15">
+        {/* Authentic 9-Clip Looping Video Background */}
+        <HeroVideoBackground />
+
+        {/* Hero Content Grid: Left Column Text & CTAs, Right Column Orbital Selector */}
+        <div className="relative z-10 w-full max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center">
+          {/* Left Column: Heading, Subtitle & Action Buttons */}
+          <div className="lg:col-span-7 space-y-6 text-white text-left">
             {/* Scientific Anchor Eyebrow */}
-            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#EAF2EC] border border-[#143224]/15 text-[#143224] text-xs font-bold tracking-wide select-none">
-              <Sparkles className="w-3.5 h-3.5 text-[#D9822B]" />
+            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white/10 backdrop-blur-md border border-white/20 text-emerald-300 text-xs font-bold tracking-wide select-none">
+              <Sparkles className="w-3.5 h-3.5 text-amber-300" />
               <span>{content.heroTag}</span>
             </div>
 
             {/* Monumental High-Contrast Headline */}
-            <h1 className="text-3xl sm:text-5xl lg:text-[3.5rem] font-extrabold text-[#143224] tracking-tight leading-[1.12] whitespace-pre-line">
+            <h1 className="text-3xl sm:text-5xl lg:text-[3.25rem] font-extrabold text-white tracking-tight leading-[1.14] whitespace-pre-line drop-shadow-md">
               {content.headline}
             </h1>
 
             {/* Grounded, Readable Editorial Copy */}
-            <p className="text-base sm:text-lg text-[#384D41] leading-relaxed max-w-xl font-medium">
+            <p className="text-sm sm:text-base lg:text-lg text-emerald-50/90 leading-relaxed max-w-xl font-medium drop-shadow-sm">
               {content.subtext}
             </p>
 
@@ -281,117 +291,35 @@ export default function LandingPage() {
               <Link href="/scan" className="w-full sm:w-auto">
                 <button
                   type="button"
-                  className="w-full sm:w-auto inline-flex items-center justify-center gap-2.5 px-6 py-4 rounded-2xl bg-[#143224] hover:bg-[#1E4733] text-white font-bold text-base shadow-[0_4px_16px_rgba(20,50,36,0.22)] hover:-translate-y-0.5 active:translate-y-0 transition-all cursor-pointer border border-[#143224]"
+                  className="w-full sm:w-auto inline-flex items-center justify-center gap-2.5 px-6 py-4 rounded-2xl bg-emerald-500 hover:bg-emerald-400 text-[#0c180e] font-extrabold text-base shadow-[0_4px_20px_rgba(16,185,129,0.35)] hover:-translate-y-0.5 active:translate-y-0 transition-all cursor-pointer"
                 >
-                  <ScanLine className="w-5 h-5 text-[#D9822B]" />
+                  <ScanLine className="w-5 h-5 text-[#0c180e]" />
                   <span>{content.primaryCTA}</span>
                   <ArrowRight className="w-4 h-4 ml-1" />
                 </button>
               </Link>
 
-              <Link href="/mandi" className="w-full sm:w-auto">
+              <Link href="/assistant" className="w-full sm:w-auto">
                 <button
                   type="button"
-                  className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-4 rounded-2xl bg-white hover:bg-[#F3EFE6] text-[#143224] font-bold text-base border border-[#143224]/18 shadow-[0_2px_8px_rgba(20,50,36,0.04)] hover:-translate-y-0.5 active:translate-y-0 transition-all cursor-pointer"
+                  className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-4 rounded-2xl bg-black/40 hover:bg-black/60 text-white font-bold text-base border border-white/25 backdrop-blur-md shadow-[0_2px_8px_rgba(0,0,0,0.2)] hover:-translate-y-0.5 active:translate-y-0 transition-all cursor-pointer"
                 >
-                  <TrendingUp className="w-4 h-4 text-[#D9822B]" />
+                  <Bot className="w-5 h-5 text-emerald-400" />
                   <span>{content.secondaryCTA}</span>
                 </button>
               </Link>
             </div>
 
             {/* Respectful Farmer Guarantee Pill */}
-            <div className="flex items-center gap-2 pt-1 text-xs text-[#5E7367] font-semibold">
-              <ShieldCheck className="w-4 h-4 text-[#1E4733] shrink-0" />
+            <div className="flex items-center gap-2 pt-1 text-xs text-emerald-200/90 font-semibold drop-shadow-xs">
+              <ShieldCheck className="w-4 h-4 text-emerald-400 shrink-0" />
               <span>{content.trustPill}</span>
             </div>
           </div>
 
-          {/* Right Column: High-Density Live Agricultural Intelligence Preview Card */}
-          <div className="lg:col-span-5 w-full">
-            <div className="relative rounded-3xl bg-white/95 border border-[#143224]/12 shadow-[0_8px_32px_rgba(20,50,36,0.06)] p-6 sm:p-7 space-y-5">
-              {/* Widget Header with Live Beacon */}
-              <div className="flex items-center justify-between pb-3.5 border-b border-[#143224]/8">
-                <div className="space-y-0.5">
-                  <div className="flex items-center gap-2">
-                    <span className="w-2.5 h-2.5 rounded-full bg-emerald-600 animate-pulse" />
-                    <span className="text-xs font-bold uppercase tracking-wider text-[#143224]">
-                      {content.intelTitle}
-                    </span>
-                  </div>
-                  <p className="text-[11px] text-[#5E7367] font-medium">
-                    {content.intelLocation} · {new Date().toLocaleDateString(langKey === 'bn' ? 'bn-IN' : langKey === 'hi' ? 'hi-IN' : 'en-IN', { day: 'numeric', month: 'short', year: 'numeric' })}
-                  </p>
-                </div>
-                <span className="text-[11px] font-bold px-2.5 py-1 rounded-full bg-[#EAF2EC] text-[#143224] border border-[#143224]/10">
-                  {content.sprayStatus}
-                </span>
-              </div>
-
-              {/* 1. Mandi Live Price Snapshot */}
-              <div className="space-y-2.5">
-                <div className="flex items-center justify-between text-xs font-bold text-[#143224]">
-                  <span>{content.mandiHeadline}</span>
-                  <Link href="/mandi" className="text-[11px] text-[#D9822B] hover:underline flex items-center gap-0.5">
-                    <span>Live Mandi</span>
-                    <ChevronRight className="w-3 h-3" />
-                  </Link>
-                </div>
-
-                <div className="grid grid-cols-3 gap-2">
-                  <div className="p-2.5 rounded-xl bg-[#F9F7F2] border border-[#143224]/8 text-left">
-                    <span className="text-[11px] text-[#5E7367] font-semibold block">Potato (Jyoti)</span>
-                    <div className="text-sm font-extrabold text-[#143224] mt-0.5">₹18<span className="text-[10px] font-normal">/kg</span></div>
-                    <span className="text-[10px] font-bold text-emerald-700">▲ +4.2%</span>
-                  </div>
-
-                  <div className="p-2.5 rounded-xl bg-[#F9F7F2] border border-[#143224]/8 text-left">
-                    <span className="text-[11px] text-[#5E7367] font-semibold block">Aman Paddy</span>
-                    <div className="text-sm font-extrabold text-[#143224] mt-0.5">₹2,350<span className="text-[10px] font-normal">/q</span></div>
-                    <span className="text-[10px] font-bold text-emerald-700">▲ +1.8%</span>
-                  </div>
-
-                  <div className="p-2.5 rounded-xl bg-[#F9F7F2] border border-[#143224]/8 text-left">
-                    <span className="text-[11px] text-[#5E7367] font-semibold block">Raw Jute</span>
-                    <div className="text-sm font-extrabold text-[#143224] mt-0.5">₹6,450<span className="text-[10px] font-normal">/q</span></div>
-                    <span className="text-[10px] font-bold text-emerald-700">▲ +3.1%</span>
-                  </div>
-                </div>
-              </div>
-
-              {/* 2. Precision Spray Window Gauge */}
-              <div className="p-3.5 rounded-2xl bg-[#EAF2EC]/70 border border-[#143224]/12 flex items-center justify-between gap-3 text-left">
-                <div className="flex items-center gap-2.5">
-                  <div className="w-8 h-8 rounded-xl bg-[#143224] text-[#D9822B] flex items-center justify-center shrink-0">
-                    <CloudSun className="w-4 h-4" />
-                  </div>
-                  <div>
-                    <span className="text-xs font-bold text-[#143224] block">
-                      {content.sprayHeadline}
-                    </span>
-                    <span className="text-[11px] text-[#384D41] font-medium">
-                      {content.sprayTime}
-                    </span>
-                  </div>
-                </div>
-                <Link href="/weather">
-                  <span className="text-xs font-bold text-[#143224] hover:text-[#1E4733] underline whitespace-nowrap">
-                    View
-                  </span>
-                </Link>
-              </div>
-
-              {/* 3. Soil Moisture & Field Condition Strip */}
-              <div className="flex items-center justify-between text-xs text-[#384D41] font-semibold pt-1 border-t border-[#143224]/8">
-                <span className="flex items-center gap-1.5">
-                  <Droplets className="w-3.5 h-3.5 text-[#D9822B]" />
-                  <span>{content.soilMoisture}</span>
-                </span>
-                <span className="text-[11px] font-bold text-emerald-800 bg-emerald-100/70 px-2 py-0.5 rounded-md">
-                  Gangetic Alluvial
-                </span>
-              </div>
-            </div>
+          {/* Right Column: Orbital Interactive Dial */}
+          <div className="lg:col-span-5 w-full flex items-center justify-center">
+            <FeatureOrbitDial />
           </div>
         </div>
       </section>
@@ -449,6 +377,9 @@ export default function LandingPage() {
                   src="https://images.unsplash.com/photo-1595974482597-4b8da8879bc5?auto=format&fit=crop&w=500&q=80"
                   alt="Crop Leaf Diagnosis"
                   className="w-full h-full object-cover"
+                  onError={(e) => {
+                    e.currentTarget.style.display = 'none';
+                  }}
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent" />
                 <span className="absolute bottom-2 left-2 text-[10px] font-bold text-white bg-black/60 px-2 py-0.5 rounded-md backdrop-blur-xs">
