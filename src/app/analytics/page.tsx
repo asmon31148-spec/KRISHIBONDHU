@@ -157,12 +157,18 @@ export default function AnalyticsPage() {
     };
   });
 
-  // 3. Compute Yield Prediction vs Actual Harvest
-  const yieldComparisonData = yields.map((y) => ({
-    crop: y.crop_name.split(' ')[0],
-    predicted: y.total_expected_production_tons,
-    actual: y.actual_harvest_yield_tons || 0,
-  }));
+  // 3. Compute Yield Prediction vs Actual Harvest with disambiguated labels
+  const yieldComparisonData = yields.map((y, idx) => {
+    const baseName = y.crop_name.split(' ')[0];
+    const duplicates = yields.filter((other) => other.crop_name.split(' ')[0] === baseName);
+    const label = duplicates.length > 1 ? `${baseName} (Plot ${idx + 1})` : baseName;
+    return {
+      crop: label,
+      predicted: y.total_expected_production_tons,
+      actual: y.actual_harvest_yield_tons || 0,
+      isPending: !y.actual_harvest_yield_tons || y.actual_harvest_yield_tons === 0,
+    };
+  });
 
   const handlePrint = () => {
     window.print();
@@ -321,18 +327,26 @@ export default function AnalyticsPage() {
                   Run yield calculations to view production benchmarks.
                 </div>
               ) : (
-                <div className="h-72 w-full">
-                  <ResponsiveContainer width="100%" height="100%">
-                    <BarChart data={yieldComparisonData}>
-                      <CartesianGrid strokeDasharray="3 3" stroke="#f0efe9" />
-                      <XAxis dataKey="crop" tick={{ fontSize: 11 }} />
-                      <YAxis tick={{ fontSize: 11 }} />
-                      <Tooltip />
-                      <Legend />
-                      <Bar dataKey="predicted" fill="#D97706" name="Predicted (Tons)" radius={[6, 6, 0, 0]} />
-                      <Bar dataKey="actual" fill="#1B4332" name="Actual Harvest (Tons)" radius={[6, 6, 0, 0]} />
-                    </BarChart>
-                  </ResponsiveContainer>
+                <div className="space-y-3">
+                  <div className="h-72 w-full">
+                    <ResponsiveContainer width="100%" height="100%">
+                      <BarChart data={yieldComparisonData}>
+                        <CartesianGrid strokeDasharray="3 3" stroke="#f0efe9" />
+                        <XAxis dataKey="crop" tick={{ fontSize: 11 }} />
+                        <YAxis tick={{ fontSize: 11 }} />
+                        <Tooltip />
+                        <Legend />
+                        <Bar dataKey="predicted" fill="#D97706" name="Predicted (Tons)" radius={[6, 6, 0, 0]} />
+                        <Bar dataKey="actual" fill="#1B4332" name="Actual Harvest (Tons)" radius={[6, 6, 0, 0]} />
+                      </BarChart>
+                    </ResponsiveContainer>
+                  </div>
+                  {yieldComparisonData.some((d) => d.isPending) && (
+                    <p className="text-[11px] text-[#2D2319]/80 bg-[#F9F7F2] border border-[#143224]/10 rounded-xl p-2.5 flex items-center gap-2 font-medium">
+                      <span className="text-[#D9822B] font-bold">ℹ️</span>
+                      <span>Zero actual harvest indicates active crops currently in mid-season growth. Final verified yield will record automatically upon season harvest logging.</span>
+                    </p>
+                  )}
                 </div>
               )}
             </Card>

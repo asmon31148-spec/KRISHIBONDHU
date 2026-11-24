@@ -6,6 +6,7 @@
   },
   "nav": {
     "home": "Home",
+    "dashboard": "Dashboard",
     "scan": "Scan Crop",
     "scanHistory": "Scan History",
     "assistant": "AI Assistant",

@@ -55,8 +55,9 @@ export default function LandingPage() {
     fetch('/api/mandi/prices')
       .then((res) => res.json())
       .then((json) => {
-        if (json.data && Array.isArray(json.data) && json.data.length > 0) {
-          setMandiRates(json.data.slice(0, 3));
+        const records = json.records || json.data || [];
+        if (Array.isArray(records) && records.length > 0) {
+          setMandiRates(records.slice(0, 3));
         }
       })
       .catch((err) => {

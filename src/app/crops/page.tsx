@@ -74,7 +74,7 @@ const IRRIGATION_TYPES = [
 ];
 
 export default function CropsPage() {
-  const { t } = useTranslation();
+  const { t, language } = useTranslation();
   const { user, isGuest } = useAuth();
   const toast = useToast();
 
@@ -423,7 +423,7 @@ export default function CropsPage() {
                       {t('farms.area')}
                     </span>
                     <span className="font-bold text-brand-forest">
-                      {formatLandArea(crop.area, crop.area_unit as LandUnit)}
+                      {formatLandArea(crop.area, crop.area_unit as LandUnit, (language as any) || 'en')}
                     </span>
                   </div>
 

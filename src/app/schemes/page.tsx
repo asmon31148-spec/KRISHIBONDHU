@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useTranslation } from '@/i18n/context';
+import { useToast } from '@/components/ui/Toast';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/Card';
 import { Badge } from '@/components/ui/Badge';
 import { Button } from '@/components/ui/Button';
@@ -25,6 +26,22 @@ import { SchemeLiveVerification } from '@/app/api/schemes/verify-live/route';
 
 export default function SchemesPage() {
   const { language } = useTranslation();
+  const toast = useToast();
+
+  const handlePhoneClick = (e: React.MouseEvent, phone: string) => {
+    const isTouchDevice = typeof window !== 'undefined' && window.matchMedia('(pointer: coarse)').matches;
+    if (!isTouchDevice) {
+      e.preventDefault();
+      navigator.clipboard?.writeText(phone);
+      toast.success(
+        language === 'bn'
+          ? `হেল্পলাইন নম্বর ${phone} কপি করা হয়েছে!`
+          : language === 'hi'
+          ? `हेल्पलाइन नंबर ${phone} क्लिपबोर्ड पर कॉपी किया गया!`
+          : `Helpline ${phone} copied to clipboard!`
+      );
+    }
+  };
 
   const [search, setSearch] = useState('');
   const [selectedCategory, setSelectedCategory] = useState<string>('All');
@@ -118,7 +135,7 @@ export default function SchemesPage() {
             >
               {language === 'bn' ? 'লাইভ যাচাই' : 'Live Web Re-Check'}
             </Button>
-            <a href="tel:18001801551">
+            <a href="tel:18001801551" onClick={(e) => handlePhoneClick(e, '1800-180-1551')}>
               <Button variant="primary" size="sm" leftIcon={<Phone className="w-3.5 h-3.5" />}>
                 {language === 'bn' ? 'কিষাণ কল সেন্টার' : 'Kisan Helpline 1800-180-1551'}
               </Button>
@@ -232,6 +249,7 @@ export default function SchemesPage() {
               <a
                 key={i}
                 href={`tel:${h.dial}`}
+                onClick={(e) => handlePhoneClick(e, h.number)}
                 className="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl bg-white/15 hover:bg-white/25 backdrop-blur-xs text-white text-xs font-bold border border-white/20 transition-colors shadow-2xs"
               >
                 <Phone className="w-3.5 h-3.5 text-emerald-300" />
@@ -407,6 +425,7 @@ export default function SchemesPage() {
 
                 <a
                   href={`tel:${scheme.phoneDial}`}
+                  onClick={(e) => handlePhoneClick(e, scheme.helpline)}
                   className="inline-flex items-center justify-center gap-1 px-3 py-2 rounded-xl bg-white border border-cream-300 hover:border-brand-leaf text-brand-dark text-xs font-semibold transition-colors"
                   title="Direct Phone Call"
                 >

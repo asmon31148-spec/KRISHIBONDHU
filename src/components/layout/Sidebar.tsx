@@ -21,6 +21,7 @@ import {
   TrendingUp,
   FlaskConical,
   Scale,
+  LayoutDashboard,
 } from 'lucide-react';
 
 export function Sidebar() {
@@ -29,7 +30,8 @@ export function Sidebar() {
   const { isGuest, signOut } = useAuth();
 
   const navItems = [
-    { label: t('nav.home'), href: isGuest ? '/' : '/dashboard', icon: Home },
+    { label: t('nav.home'), href: '/', icon: Home },
+    ...(!isGuest ? [{ label: t('nav.dashboard'), href: '/dashboard', icon: LayoutDashboard }] : []),
     { label: t('nav.scan'), href: '/scan', icon: ScanLine },
     { label: t('nav.assistant'), href: '/assistant', icon: Bot },
     { label: t('nav.yield'), href: '/yield', icon: Scale },
@@ -45,7 +47,7 @@ export function Sidebar() {
   ];
 
   return (
-    <aside className="hidden lg:flex flex-col w-64 border-r border-[#143224]/10 bg-[#F9F7F2]/80 min-h-[calc(100vh-61px)] p-4 shrink-0">
+    <aside className="hidden lg:flex flex-col w-64 border-r border-[#143224]/10 bg-[#F9F7F2]/80 min-h-[calc(100vh-61px)] p-4 shrink-0 print:hidden">
       {/* Navigation Links */}
       <nav className="flex-1 space-y-1">
         {navItems.map((item) => {

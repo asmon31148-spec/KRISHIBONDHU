@@ -609,7 +609,7 @@ export default function FarmsPage() {
                           {farm.name}
                         </CardTitle>
                         <Badge variant="outline" className="text-xs font-semibold bg-white border-brand-forest/20 text-brand-forest">
-                          {formatLandArea(farm.area, farm.area_unit as LandUnit)}
+                          {formatLandArea(farm.area, farm.area_unit as LandUnit, activeLang)}
                         </Badge>
                         <Badge variant="outline" className="text-xs capitalize bg-white text-brand-dark/80">
                           {farm.soil_type || 'Alluvial'} Soil

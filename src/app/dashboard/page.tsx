@@ -76,7 +76,7 @@ function getCropEmoji(name: string): string {
 }
 
 export default function DashboardPage() {
-  const { t } = useTranslation();
+  const { t, language } = useTranslation();
   const { user, profile } = useAuth();
 
   const [farms, setFarms] = useState<FarmData[]>([]);
@@ -751,7 +751,7 @@ export default function DashboardPage() {
                                 {farm.name}
                               </h4>
                               <span className="px-2 py-0.5 rounded-md bg-emerald-100 text-emerald-900 text-[10px] font-bold">
-                                {formatLandArea(farm.area, farm.area_unit as LandUnit)}
+                                {formatLandArea(farm.area, farm.area_unit as LandUnit, (language as any) || 'en')}
                               </span>
                             </div>
                             <div className="flex items-center gap-3 text-xs text-brand-dark/70 flex-wrap">
@@ -858,7 +858,7 @@ export default function DashboardPage() {
                                 Sown: {crop.planting_date}
                               </span>
                               <span>•</span>
-                              <span>{formatLandArea(crop.area, crop.area_unit as LandUnit)}</span>
+                              <span>{formatLandArea(crop.area, crop.area_unit as LandUnit, (language as any) || 'en')}</span>
                             </div>
                           </div>
                         </div>

@@ -22,6 +22,7 @@ import {
   TrendingUp,
   FlaskConical,
   Scale,
+  LayoutDashboard,
 } from 'lucide-react';
 
 export function MobileNav() {
@@ -31,13 +32,15 @@ export function MobileNav() {
   const [isMoreOpen, setIsMoreOpen] = useState(false);
 
   const mainTabs = [
-    { label: t('nav.home'), href: isGuest ? '/' : '/dashboard', icon: Home },
+    { label: t('nav.home'), href: '/', icon: Home },
+    ...(!isGuest ? [{ label: t('nav.dashboard') || 'Dashboard', href: '/dashboard', icon: LayoutDashboard }] : []),
     { label: t('nav.scan'), href: '/scan', icon: ScanLine },
     { label: t('nav.assistant'), href: '/assistant', icon: Bot },
-    { label: t('nav.myFarm'), href: '/farms', icon: Warehouse },
+    ...(isGuest ? [{ label: t('nav.myFarm'), href: '/farms', icon: Warehouse }] : []),
   ];
 
   const moreItems = [
+    ...(!isGuest ? [{ label: t('nav.myFarm'), href: '/farms', icon: Warehouse }] : []),
     { label: t('nav.yield'), href: '/yield', icon: Scale },
     { label: t('nav.mandi'), href: '/mandi', icon: TrendingUp },
     { label: t('nav.fertilizer'), href: '/fertilizer', icon: FlaskConical },
@@ -56,7 +59,7 @@ export function MobileNav() {
         <div
           role="dialog"
           aria-modal="true"
-          className="lg:hidden fixed inset-0 z-[60] bg-brand-dark/70 backdrop-blur-xs flex flex-col justify-end animate-in fade-in duration-150"
+          className="lg:hidden fixed inset-0 z-[60] bg-brand-dark/70 backdrop-blur-xs flex flex-col justify-end animate-in fade-in duration-150 print:hidden"
         >
           <div
             className="fixed inset-0"
@@ -122,7 +125,7 @@ export function MobileNav() {
       {/* Persistent Bottom Bar with 85-90% Frosted Liquid Glass & Safe-Area Inset */}
       <nav
         aria-label="Mobile navigation"
-        className="lg:hidden fixed bottom-0 left-0 right-0 z-50 bg-[#F9F7F2]/95 backdrop-blur-md border-t border-[#143224]/12 px-1 pt-1.5 pb-[max(0.6rem,env(safe-area-inset-bottom))] shadow-[0_-4px_24px_rgba(20,50,36,0.08)] flex items-center justify-around"
+        className="lg:hidden fixed bottom-0 left-0 right-0 z-50 bg-[#F9F7F2]/95 backdrop-blur-md border-t border-[#143224]/12 px-1 pt-1.5 pb-[max(0.6rem,env(safe-area-inset-bottom))] shadow-[0_-4px_24px_rgba(20,50,36,0.08)] flex items-center justify-around print:hidden"
       >
         {mainTabs.map((tab) => {
           const isActive = pathname === tab.href || (tab.href !== '/' && pathname.startsWith(tab.href));

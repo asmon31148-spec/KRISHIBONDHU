@@ -34,8 +34,35 @@ export function convertLandArea(
   return Math.round(targetValue * 1000) / 1000;
 }
 
-export function formatLandArea(value: number, unit: LandUnit): string {
+export function formatLandArea(value: number, unit: LandUnit, lang?: 'en' | 'bn' | 'hi'): string {
   const rounded = Math.round(value * 100) / 100;
+  if (lang === 'en') {
+    const unitNamesEn: Record<LandUnit, string> = {
+      acres: 'Acres',
+      bigha: 'Bigha',
+      katha: 'Katha',
+      hectares: 'Hectares',
+    };
+    return `${rounded} ${unitNamesEn[unit] || unit}`;
+  }
+  if (lang === 'bn') {
+    const unitNamesBn: Record<LandUnit, string> = {
+      acres: 'একর',
+      bigha: 'বিঘা',
+      katha: 'কাঠা',
+      hectares: 'হেক্টর',
+    };
+    return `${rounded} ${unitNamesBn[unit] || unit}`;
+  }
+  if (lang === 'hi') {
+    const unitNamesHi: Record<LandUnit, string> = {
+      acres: 'एकड़',
+      bigha: 'बीघा',
+      katha: 'कट्ठा',
+      hectares: 'हेक्टेयर',
+    };
+    return `${rounded} ${unitNamesHi[unit] || unit}`;
+  }
   const unitNames: Record<LandUnit, string> = {
     acres: 'Acres',
     bigha: 'Bigha (বিঘা)',

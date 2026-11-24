@@ -25,7 +25,7 @@ export function Navbar() {
   }[language || 'en'];
 
   return (
-    <header className="sticky top-0 z-40 w-full bg-[#F9F7F2]/90 backdrop-blur-md border-b border-[#143224]/10 px-3 sm:px-6 lg:px-8 py-2.5 transition-all shadow-[0_2px_12px_rgba(20,50,36,0.03)]">
+    <header className="sticky top-0 z-40 w-full bg-[#F9F7F2]/90 backdrop-blur-md border-b border-[#143224]/10 px-3 sm:px-6 lg:px-8 py-2.5 transition-all shadow-[0_2px_12px_rgba(20,50,36,0.03)] print:hidden">
       <div className="w-full max-w-[1536px] mx-auto flex items-center justify-between gap-2 sm:gap-4">
         {/* Left: Brand Mark */}
         <div className="flex items-center gap-4 shrink-0">

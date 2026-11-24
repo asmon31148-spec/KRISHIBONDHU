@@ -93,3 +93,38 @@ body,
     scroll-behavior: auto !important;
   }
 }
+
+/* High-Quality Print Stylesheet */
+@media print {
+  header,
+  nav,
+  aside,
+  footer,
+  [role="navigation"],
+  [role="dialog"],
+  button,
+  .print\:hidden {
+    display: none !important;
+  }
+
+  body,
+  main {
+    background: #ffffff !important;
+    color: #111827 !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    box-shadow: none !important;
+  }
+
+  .card,
+  [class*="rounded-"] {
+    box-shadow: none !important;
+    border-color: #e5e7eb !important;
+  }
+
+  @page {
+    margin: 1.2cm;
+    size: auto;
+  }
+}
+

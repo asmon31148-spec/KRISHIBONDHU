@@ -39,10 +39,12 @@ export function I18nProvider({ children }: { children: React.ReactNode }) {
       if (stored && ['en', 'bn', 'hi'].includes(stored)) {
         setLanguageState(stored);
         document.documentElement.lang = stored;
-
-        // Sync with Google Translate
-        const gtVal = stored === 'en' ? '/en/en' : `/en/${stored}`;
-        document.cookie = `googtrans=${gtVal}; path=/;`;
+      }
+      // Clean up any legacy external translate cookies to prevent DOM mutation and language mixing
+      document.cookie = 'googtrans=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
+      if (typeof window !== 'undefined' && window.location.hostname) {
+        document.cookie = `googtrans=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/; domain=${window.location.hostname};`;
+        document.cookie = `googtrans=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/; domain=.${window.location.hostname};`;
       }
     } catch {
       // Ignore localStorage errors in private browsing
@@ -55,21 +57,6 @@ export function I18nProvider({ children }: { children: React.ReactNode }) {
     try {
       localStorage.setItem('krishibondhu_lang', lang);
       document.documentElement.lang = lang;
-
-      // Sync Google Translate cookie
-      const gtVal = lang === 'en' ? '/en/en' : `/en/${lang}`;
-      document.cookie = `googtrans=${gtVal}; path=/;`;
-      if (typeof window !== 'undefined' && window.location.hostname) {
-        document.cookie = `googtrans=${gtVal}; path=/; domain=${window.location.hostname};`;
-        document.cookie = `googtrans=${gtVal}; path=/; domain=.${window.location.hostname};`;
-      }
-
-      // If Google Translate combo box is rendered, trigger programmatic change
-      const combo = document.querySelector('.goog-te-combo') as HTMLSelectElement | null;
-      if (combo) {
-        combo.value = lang;
-        combo.dispatchEvent(new Event('change'));
-      }
     } catch {
       // Ignore
     }
