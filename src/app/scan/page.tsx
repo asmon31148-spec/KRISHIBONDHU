@@ -703,8 +703,8 @@ export default function CropScannerPage() {
           </Card>
 
           {/* Photo Taking Guidelines */}
-          <div className="p-4 sm:p-5 rounded-2xl bg-cream-100/70 border border-cream-200 space-y-3">
-            <h4 className="text-xs font-bold uppercase tracking-wider text-emerald-900 flex items-center gap-1.5">
+          <div className="p-4 sm:p-5 rounded-2xl bg-cream-100/70 dark:bg-[#141C2B] border border-cream-200 dark:border-slate-800 space-y-3">
+            <h4 className="text-xs font-bold uppercase tracking-wider text-emerald-900 dark:text-emerald-400 flex items-center gap-1.5">
               <Sun className="w-4 h-4 text-amber-500" />
               <span>
                 {language === 'bn'
@@ -714,9 +714,9 @@ export default function CropScannerPage() {
                   : 'Guidelines for 100% Diagnostic Accuracy'}
               </span>
             </h4>
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs text-brand-dark/80">
-              <div className="p-3 bg-white rounded-xl border border-cream-200 shadow-2xs">
-                <span className="font-bold block text-brand-dark mb-0.5">
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs text-brand-dark/80 dark:text-slate-300">
+              <div className="p-3 bg-white dark:bg-[#1B2537] rounded-xl border border-cream-200 dark:border-slate-700/60 shadow-2xs">
+                <span className="font-bold block text-brand-dark dark:text-white mb-0.5">
                   1. {language === 'bn' ? 'কাছ থেকে ছবি তুলুন' : language === 'hi' ? 'पास से फोटो लें' : 'Close-Up View'}
                 </span>
                 {language === 'bn'
@@ -725,8 +725,8 @@ export default function CropScannerPage() {
                   ? 'कैमरा 10-15 सेमी दूर रखकर पत्ते के धब्बे व लक्षण स्पष्ट दिखाएं।'
                   : 'Hold camera 10-15 cm away so lesion spots and fungal spores are sharp.'}
               </div>
-              <div className="p-3 bg-white rounded-xl border border-cream-200 shadow-2xs">
-                <span className="font-bold block text-brand-dark mb-0.5">
+              <div className="p-3 bg-white dark:bg-[#1B2537] rounded-xl border border-cream-200 dark:border-slate-700/60 shadow-2xs">
+                <span className="font-bold block text-brand-dark dark:text-white mb-0.5">
                   2. {language === 'bn' ? 'স্বাভাবিক দিনের আলো' : language === 'hi' ? 'प्राकृतिक रोशनी' : 'Natural Daylight'}
                 </span>
                 {language === 'bn'
@@ -735,8 +735,8 @@ export default function CropScannerPage() {
                   ? 'दिन की प्राकृतिक धूप में फोटो लें। तेज परछाई से बचें।'
                   : 'Natural sunlight yields the best color fidelity for disease scoring.'}
               </div>
-              <div className="p-3 bg-white rounded-xl border border-cream-200 shadow-2xs">
-                <span className="font-bold block text-brand-dark mb-0.5">
+              <div className="p-3 bg-white dark:bg-[#1B2537] rounded-xl border border-cream-200 dark:border-slate-700/60 shadow-2xs">
+                <span className="font-bold block text-brand-dark dark:text-white mb-0.5">
                   3. {language === 'bn' ? 'একটিমাত্র আক্রান্ত পাতা' : language === 'hi' ? 'केवल एक रोगी पत्ता' : 'Single Leaf'}
                 </span>
                 {language === 'bn'
@@ -752,8 +752,8 @@ export default function CropScannerPage() {
           {recentScans.length > 0 && (
             <div className="space-y-3 pt-2">
               <div className="flex items-center justify-between">
-                <h3 className="text-base font-bold text-brand-dark flex items-center gap-2">
-                  <History className="w-4 h-4 text-emerald-700" />
+                <h3 className="text-base font-bold text-brand-dark dark:text-white flex items-center gap-2">
+                  <History className="w-4 h-4 text-emerald-700 dark:text-emerald-400" />
                   <span>
                     {language === 'bn'
                       ? 'আপনার সাম্প্রতিক স্ক্যান সমূহ'
@@ -764,7 +764,7 @@ export default function CropScannerPage() {
                 </h3>
                 <button
                   onClick={() => setActiveTab('history')}
-                  className="text-xs font-bold text-emerald-700 hover:text-emerald-800 flex items-center gap-1 cursor-pointer"
+                  className="text-xs font-bold text-emerald-700 dark:text-emerald-400 hover:text-emerald-800 dark:hover:text-emerald-300 flex items-center gap-1 cursor-pointer"
                 >
                   <span>{language === 'bn' ? 'সব ইতিহাস দেখুন' : language === 'hi' ? 'पूरा इतिहास देखें' : 'View All'}</span>
                   <ChevronRight className="w-3.5 h-3.5" />
@@ -776,9 +776,9 @@ export default function CropScannerPage() {
                   <div
                     key={sc.id}
                     onClick={() => openSavedScan(sc)}
-                    className="p-3 rounded-xl bg-white border border-cream-200 shadow-2xs hover:border-emerald-500 hover:shadow-sm transition-all cursor-pointer flex items-center gap-3"
+                    className="p-3 rounded-xl bg-white dark:bg-[#141C2B] border border-cream-200 dark:border-slate-800 shadow-2xs hover:border-emerald-500 hover:shadow-sm transition-all cursor-pointer flex items-center gap-3"
                   >
-                    <div className="w-12 h-12 rounded-lg overflow-hidden bg-cream-100 shrink-0 border border-cream-200">
+                    <div className="w-12 h-12 rounded-lg overflow-hidden bg-cream-100 dark:bg-slate-800 shrink-0 border border-cream-200 dark:border-slate-700">
                       {/* eslint-disable-next-line @next/next/no-img-element */}
                       <img
                         src={sc.image_url}
@@ -788,7 +788,7 @@ export default function CropScannerPage() {
                     </div>
                     <div className="min-w-0 flex-1">
                       <div className="flex items-center justify-between">
-                        <span className="font-bold text-xs text-brand-dark truncate">{sc.crop_name}</span>
+                        <span className="font-bold text-xs text-brand-dark dark:text-white truncate">{sc.crop_name}</span>
                         <span
                           className={`text-[9px] px-1.5 py-0.2 rounded-full font-bold ${
                             sc.is_healthy

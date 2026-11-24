@@ -21,7 +21,7 @@ export function Navbar() {
   }[language || 'en'];
 
   return (
-    <header className="sticky top-0 z-40 w-full h-12 sm:h-14 bg-white dark:bg-[#121212] border-b border-gray-200 dark:border-white/10 px-3 sm:px-6 lg:px-8 flex items-center transition-colors duration-200 shadow-xs print:hidden shrink-0 pt-safe">
+    <header className="sticky top-0 z-40 w-full h-12 sm:h-14 bg-white dark:bg-[#0E1522] border-b border-gray-200 dark:border-slate-800 px-3 sm:px-6 lg:px-8 flex items-center transition-colors duration-200 shadow-xs print:hidden shrink-0 pt-safe">
       <div className="w-full max-w-[1536px] mx-auto flex items-center justify-between gap-3 sm:gap-6">
         {/* Left: Brand Logo & Subtle Weather Indicator */}
         <div className="flex items-center gap-3 sm:gap-4 shrink-0">

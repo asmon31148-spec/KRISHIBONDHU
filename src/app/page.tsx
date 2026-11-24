@@ -406,7 +406,7 @@ export default function LandingPage() {
 
             {/* If user has real saved scans, display their actual recent scan */}
             {latestUserScan ? (
-              <div className="rounded-2xl bg-[#F9F7F2] dark:bg-[#000000] border border-[#143224]/10 dark:border-white/10 p-4 sm:p-5 flex items-center justify-between gap-4">
+              <div className="rounded-2xl bg-[#F9F7F2] dark:bg-[#1B2537] border border-[#143224]/10 dark:border-white/10 p-4 sm:p-5 flex items-center justify-between gap-4">
                 <div className="space-y-1">
                   <span className="text-xs font-bold text-[#5E7367] dark:text-white/40">
                     {content.cardARecentLabel}
@@ -437,7 +437,7 @@ export default function LandingPage() {
               </div>
             ) : (
               /* Actionable Scan Trigger Area */
-              <div className="rounded-2xl bg-[#F9F7F2] dark:bg-[#000000] border border-[#143224]/10 dark:border-white/10 p-5 space-y-4">
+              <div className="rounded-2xl bg-[#F9F7F2] dark:bg-[#1B2537] border border-[#143224]/10 dark:border-white/10 p-5 space-y-4">
                 <div className="space-y-1">
                   <span className="text-xs font-bold text-[#143224] dark:text-white uppercase tracking-wider block">
                     {content.cardASupportedTitle}
@@ -512,7 +512,7 @@ export default function LandingPage() {
                 mandiRates.map((item, idx) => (
                   <div
                     key={idx}
-                    className="p-3 rounded-xl bg-[#F9F7F2] dark:bg-[#000000] border border-[#143224]/8 dark:border-white/8 flex items-center justify-between"
+                    className="p-3 rounded-xl bg-[#F9F7F2] dark:bg-[#1B2537] border border-[#143224]/8 dark:border-white/8 flex items-center justify-between"
                   >
                     <div>
                       <span className="font-bold text-xs text-[#143224] dark:text-white block">
@@ -533,7 +533,7 @@ export default function LandingPage() {
                   </div>
                 ))
               ) : (
-                <div className="p-4 rounded-xl bg-[#F9F7F2] dark:bg-[#000000] border border-[#143224]/8 dark:border-white/8 text-center text-xs text-[#5E7367] dark:text-white/40">
+                <div className="p-4 rounded-xl bg-[#F9F7F2] dark:bg-[#1B2537] border border-[#143224]/8 dark:border-white/8 text-center text-xs text-[#5E7367] dark:text-white/40">
                   {content.cardBEmpty}
                 </div>
               )}
@@ -593,7 +593,7 @@ export default function LandingPage() {
                     </span>
                   </div>
 
-                  <div className="p-2.5 rounded-xl bg-[#F9F7F2] dark:bg-[#000000] border border-[#143224]/10 dark:border-white/10 text-center space-y-0.5">
+                  <div className="p-2.5 rounded-xl bg-[#F9F7F2] dark:bg-[#1B2537] border border-[#143224]/10 dark:border-white/10 text-center space-y-0.5">
                     <span className="text-[10px] font-bold text-[#5E7367] dark:text-white/40 block">
                       {content.cardCHumidity}
                     </span>
@@ -605,7 +605,7 @@ export default function LandingPage() {
                     </span>
                   </div>
 
-                  <div className="p-2.5 rounded-xl bg-[#F9F7F2] dark:bg-[#000000] border border-[#143224]/10 dark:border-white/10 text-center space-y-0.5">
+                  <div className="p-2.5 rounded-xl bg-[#F9F7F2] dark:bg-[#1B2537] border border-[#143224]/10 dark:border-white/10 text-center space-y-0.5">
                     <span className="text-[10px] font-bold text-[#5E7367] dark:text-white/40 block">
                       {content.cardCWind}
                     </span>
@@ -629,7 +629,7 @@ export default function LandingPage() {
                 )}
               </div>
             ) : (
-              <div className="p-4 rounded-xl bg-[#F9F7F2] dark:bg-[#000000] border border-[#143224]/8 dark:border-white/8 text-center text-xs text-[#5E7367] dark:text-white/40">
+              <div className="p-4 rounded-xl bg-[#F9F7F2] dark:bg-[#1B2537] border border-[#143224]/8 dark:border-white/8 text-center text-xs text-[#5E7367] dark:text-white/40">
                 Live weather data synchronizing...
               </div>
             )}
@@ -650,7 +650,7 @@ export default function LandingPage() {
               Eliminates vertical bloat on small screens
               ---------------------------------------------------- */}
           <div className="block md:hidden rounded-3xl bg-white/95 dark:bg-[#111418] border border-[#143224]/12 dark:border-white/10 shadow-xs p-5 space-y-4 text-left">
-            <div className="flex items-center p-1 bg-cream-100 dark:bg-[#000000] rounded-2xl">
+            <div className="flex items-center p-1 bg-cream-100 dark:bg-[#1B2537] rounded-2xl">
               <button
                 type="button"
                 onClick={() => setMobilePulseTab('mandi')}
@@ -695,7 +695,7 @@ export default function LandingPage() {
                     </div>
                   ) : mandiRates.length > 0 ? (
                     mandiRates.map((item, idx) => (
-                      <div key={idx} className="p-2.5 rounded-xl bg-[#F9F7F2] dark:bg-[#000000] border border-[#143224]/8 dark:border-white/8 flex items-center justify-between text-xs">
+                      <div key={idx} className="p-2.5 rounded-xl bg-[#F9F7F2] dark:bg-[#1B2537] border border-[#143224]/8 dark:border-white/8 flex items-center justify-between text-xs">
                         <div>
                           <span className="font-bold text-[#143224] dark:text-white block">{item.commodity}</span>
                           <span className="text-[11px] text-[#5E7367] dark:text-white/40">{item.market}</span>
@@ -707,7 +707,7 @@ export default function LandingPage() {
                       </div>
                     ))
                   ) : (
-                    <div className="p-3 rounded-xl bg-[#F9F7F2] dark:bg-[#000000] text-center text-xs text-[#5E7367] dark:text-white/40">
+                    <div className="p-3 rounded-xl bg-[#F9F7F2] dark:bg-[#1B2537] text-center text-xs text-[#5E7367] dark:text-white/40">
                       {content.cardBEmpty}
                     </div>
                   )}
@@ -733,16 +733,16 @@ export default function LandingPage() {
                 ) : weatherData?.current ? (
                   <div className="space-y-2.5">
                     <div className="grid grid-cols-3 gap-2">
-                      <div className="p-2 rounded-xl bg-[#EAF2EC] dark:bg-[#1A3326] border border-[#143224]/10 dark:border-white/10 text-center">
-                        <span className="text-[10px] font-bold text-[#5E7367] dark:text-white/40 block">{content.cardCTemp}</span>
+                      <div className="p-2 rounded-xl bg-[#EAF2EC] dark:bg-[#1B2537] border border-[#143224]/10 dark:border-slate-700/60 text-center">
+                        <span className="text-[10px] font-bold text-[#5E7367] dark:text-slate-400 block">{content.cardCTemp}</span>
                         <span className="text-base font-extrabold text-[#143224] dark:text-white block">{Math.round(weatherData.current.temperature)}°C</span>
                       </div>
-                      <div className="p-2 rounded-xl bg-[#F9F7F2] dark:bg-[#000000] border border-[#143224]/10 dark:border-white/10 text-center">
-                        <span className="text-[10px] font-bold text-[#5E7367] dark:text-white/40 block">{content.cardCHumidity}</span>
+                      <div className="p-2 rounded-xl bg-[#F9F7F2] dark:bg-[#1B2537] border border-[#143224]/10 dark:border-slate-700/60 text-center">
+                        <span className="text-[10px] font-bold text-[#5E7367] dark:text-slate-400 block">{content.cardCHumidity}</span>
                         <span className="text-base font-extrabold text-[#143224] dark:text-white block">{weatherData.current.relativeHumidity}%</span>
                       </div>
-                      <div className="p-2 rounded-xl bg-[#F9F7F2] dark:bg-[#000000] border border-[#143224]/10 dark:border-white/10 text-center">
-                        <span className="text-[10px] font-bold text-[#5E7367] dark:text-white/40 block">{content.cardCWind}</span>
+                      <div className="p-2 rounded-xl bg-[#F9F7F2] dark:bg-[#1B2537] border border-[#143224]/10 dark:border-slate-700/60 text-center">
+                        <span className="text-[10px] font-bold text-[#5E7367] dark:text-slate-400 block">{content.cardCWind}</span>
                         <span className="text-base font-extrabold text-[#143224] dark:text-white block">{Math.round(weatherData.current.windSpeed)} km/h</span>
                       </div>
                     </div>
@@ -756,12 +756,12 @@ export default function LandingPage() {
                     )}
                   </div>
                 ) : (
-                  <div className="p-3 rounded-xl bg-[#F9F7F2] dark:bg-[#000000] text-center text-xs text-[#5E7367] dark:text-white/40">
+                  <div className="p-3 rounded-xl bg-[#F9F7F2] dark:bg-[#141C2B] text-center text-xs text-[#5E7367] dark:text-slate-400">
                     Live weather updating...
                   </div>
                 )}
                 <Link href="/weather" className="block pt-1">
-                  <button type="button" className="w-full py-2.5 rounded-xl bg-white dark:bg-[#111418] border border-[#143224]/18 dark:border-white/15 text-xs font-bold text-[#143224] dark:text-white flex items-center justify-center gap-1.5 min-h-[44px] cursor-pointer">
+                  <button type="button" className="w-full py-2.5 rounded-xl bg-white dark:bg-[#1B2537] border border-[#143224]/18 dark:border-slate-700 text-xs font-bold text-[#143224] dark:text-white flex items-center justify-center gap-1.5 min-h-[44px] cursor-pointer">
                     <span>{content.cardCBtn}</span>
                     <ArrowRight className="w-3.5 h-3.5" />
                   </button>
@@ -774,14 +774,14 @@ export default function LandingPage() {
               CARD D (Large 2-Column Span): Government Schemes & Subsidies Tracker
               Verified Direct Official Portals
              ---------------------------------------------------- */}
-          <div className="lg:col-span-2 rounded-3xl bg-white/95 dark:bg-[#111418] border border-[#143224]/12 dark:border-white/10 shadow-[0_4px_24px_rgba(20,50,36,0.04)] hover:shadow-[0_12px_32px_rgba(20,50,36,0.08)] transition-all p-6 sm:p-8 flex flex-col justify-between space-y-6 text-left group">
+          <div className="lg:col-span-2 rounded-3xl bg-white/95 dark:bg-[#141C2B] border border-[#143224]/12 dark:border-slate-800 shadow-[0_4px_24px_rgba(20,50,36,0.04)] hover:shadow-[0_12px_32px_rgba(20,50,36,0.08)] transition-all p-6 sm:p-8 flex flex-col justify-between space-y-6 text-left group">
             <div className="space-y-3">
               <div className="flex items-center justify-between">
-                <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-[#EAF2EC] dark:bg-emerald-950/60 text-[#143224] dark:text-emerald-400 border border-[#143224]/12 dark:border-white/10">
+                <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-[#EAF2EC] dark:bg-emerald-950/60 text-[#143224] dark:text-emerald-400 border border-[#143224]/12 dark:border-slate-800">
                   <FileText className="w-3.5 h-3.5 text-[#D9822B]" />
                   <span>{content.cardDTag}</span>
                 </span>
-                <span className="text-xs font-bold text-[#143224] dark:text-white bg-[#EAF2EC] dark:bg-[#1A3326] px-2.5 py-0.5 rounded-full">
+                <span className="text-xs font-bold text-[#143224] dark:text-white bg-[#EAF2EC] dark:bg-[#1B2537] px-2.5 py-0.5 rounded-full">
                   Direct Official Portals
                 </span>
               </div>
@@ -797,7 +797,7 @@ export default function LandingPage() {
 
             {/* List of Verified Government Agricultural Aid Schemes */}
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-              <div className="p-3.5 rounded-2xl bg-[#F9F7F2] dark:bg-[#000000] border border-[#143224]/8 dark:border-white/8 space-y-1">
+              <div className="p-3.5 rounded-2xl bg-[#F9F7F2] dark:bg-[#1B2537] border border-[#143224]/8 dark:border-slate-700/60 space-y-1">
                 <div className="flex items-center justify-between">
                   <span className="font-extrabold text-sm text-[#143224] dark:text-white">Krishak Bandhu (Assured Income)</span>
                   <span className="text-[10px] font-bold text-emerald-800 dark:text-emerald-300 bg-emerald-100 dark:bg-emerald-900/40 px-2 py-0.5 rounded-md">WB Govt</span>
@@ -806,7 +806,7 @@ export default function LandingPage() {
                 <div className="text-[11px] font-bold text-[#D9822B] pt-0.5">krishakbandhu.wb.gov.in</div>
               </div>
 
-              <div className="p-3.5 rounded-2xl bg-[#F9F7F2] dark:bg-[#000000] border border-[#143224]/8 dark:border-white/8 space-y-1">
+              <div className="p-3.5 rounded-2xl bg-[#F9F7F2] dark:bg-[#1B2537] border border-[#143224]/8 dark:border-slate-700/60 space-y-1">
                 <div className="flex items-center justify-between">
                   <span className="font-extrabold text-sm text-[#143224] dark:text-white">Bangla Shasya Bima (BSB)</span>
                   <span className="text-[10px] font-bold text-emerald-800 dark:text-emerald-300 bg-emerald-100 dark:bg-emerald-900/40 px-2 py-0.5 rounded-md">100% Free Premium</span>
@@ -815,7 +815,7 @@ export default function LandingPage() {
                 <div className="text-[11px] font-bold text-[#D9822B] pt-0.5">banglashasyabima.net</div>
               </div>
 
-              <div className={`p-3.5 rounded-2xl bg-[#F9F7F2] dark:bg-[#000000] border border-[#143224]/8 dark:border-white/8 space-y-1 ${!isSchemesExpanded ? 'hidden sm:block' : 'block'}`}>
+              <div className={`p-3.5 rounded-2xl bg-[#F9F7F2] dark:bg-[#1B2537] border border-[#143224]/8 dark:border-slate-700/60 space-y-1 ${!isSchemesExpanded ? 'hidden sm:block' : 'block'}`}>
                 <div className="flex items-center justify-between">
                   <span className="font-extrabold text-sm text-[#143224] dark:text-white">PM-Kisan Samman Nidhi</span>
                   <span className="text-[10px] font-bold text-blue-800 dark:text-blue-300 bg-blue-100 dark:bg-blue-900/40 px-2 py-0.5 rounded-md">Central DBT</span>
@@ -824,7 +824,7 @@ export default function LandingPage() {
                 <div className="text-[11px] font-bold text-[#D9822B] pt-0.5">pmkisan.gov.in</div>
               </div>
 
-              <div className={`p-3.5 rounded-2xl bg-[#F9F7F2] dark:bg-[#000000] border border-[#143224]/8 dark:border-white/8 space-y-1 ${!isSchemesExpanded ? 'hidden sm:block' : 'block'}`}>
+              <div className={`p-3.5 rounded-2xl bg-[#F9F7F2] dark:bg-[#1B2537] border border-[#143224]/8 dark:border-slate-700/60 space-y-1 ${!isSchemesExpanded ? 'hidden sm:block' : 'block'}`}>
                 <div className="flex items-center justify-between">
                   <span className="font-extrabold text-sm text-[#143224] dark:text-white">Farm Mechanization Subsidies</span>
                   <span className="text-[10px] font-bold text-amber-800 dark:text-amber-300 bg-amber-100 dark:bg-amber-900/40 px-2 py-0.5 rounded-md">50% Subsidy</span>
@@ -886,7 +886,7 @@ export default function LandingPage() {
 
         {/* 4 Authentic Institutional Pillars */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
-          <div className="p-5 sm:p-6 rounded-2xl bg-white/95 dark:bg-[#000000] border border-[#143224]/10 dark:border-white/10 shadow-[0_2px_10px_rgba(20,50,36,0.03)] space-y-2.5">
+          <div className="p-5 sm:p-6 rounded-2xl bg-white/95 dark:bg-[#141C2B] border border-[#143224]/10 dark:border-slate-800 shadow-[0_2px_10px_rgba(20,50,36,0.03)] space-y-2.5">
             <div className="w-10 h-10 rounded-xl bg-[#143224] dark:bg-emerald-950 text-[#D9822B] flex items-center justify-center font-bold text-sm">
               <ShieldCheck className="w-5 h-5" />
             </div>
@@ -896,7 +896,7 @@ export default function LandingPage() {
             </p>
           </div>
 
-          <div className="p-5 sm:p-6 rounded-2xl bg-white/95 dark:bg-[#000000] border border-[#143224]/10 dark:border-white/10 shadow-[0_2px_10px_rgba(20,50,36,0.03)] space-y-2.5">
+          <div className="p-5 sm:p-6 rounded-2xl bg-white/95 dark:bg-[#141C2B] border border-[#143224]/10 dark:border-slate-800 shadow-[0_2px_10px_rgba(20,50,36,0.03)] space-y-2.5">
             <div className="w-10 h-10 rounded-xl bg-[#143224] dark:bg-emerald-950 text-[#D9822B] flex items-center justify-center font-bold text-sm">
               <TrendingUp className="w-5 h-5" />
             </div>
@@ -906,7 +906,7 @@ export default function LandingPage() {
             </p>
           </div>
 
-          <div className="p-5 sm:p-6 rounded-2xl bg-white/95 dark:bg-[#000000] border border-[#143224]/10 dark:border-white/10 shadow-[0_2px_10px_rgba(20,50,36,0.03)] space-y-2.5">
+          <div className="p-5 sm:p-6 rounded-2xl bg-white/95 dark:bg-[#141C2B] border border-[#143224]/10 dark:border-slate-800 shadow-[0_2px_10px_rgba(20,50,36,0.03)] space-y-2.5">
             <div className="w-10 h-10 rounded-xl bg-[#143224] dark:bg-emerald-950 text-[#D9822B] flex items-center justify-center font-bold text-sm">
               <CloudSun className="w-5 h-5" />
             </div>
@@ -916,7 +916,7 @@ export default function LandingPage() {
             </p>
           </div>
 
-          <div className="p-5 sm:p-6 rounded-2xl bg-white/95 dark:bg-[#000000] border border-[#143224]/10 dark:border-white/10 shadow-[0_2px_10px_rgba(20,50,36,0.03)] space-y-2.5">
+          <div className="p-5 sm:p-6 rounded-2xl bg-white/95 dark:bg-[#141C2B] border border-[#143224]/10 dark:border-slate-800 shadow-[0_2px_10px_rgba(20,50,36,0.03)] space-y-2.5">
             <div className="w-10 h-10 rounded-xl bg-[#143224] dark:bg-emerald-950 text-[#D9822B] flex items-center justify-center font-bold text-sm">
               <Building2 className="w-5 h-5" />
             </div>

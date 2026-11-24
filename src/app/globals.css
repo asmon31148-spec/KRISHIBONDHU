@@ -16,15 +16,15 @@
 }
 
 .dark {
-  --background: #090D0B;
+  --background: #0B0F17;
   --foreground: #F8FAFC;
-  --card: #121815;
+  --card: #141C2B;
   --card-foreground: #F8FAFC;
-  --muted: #1A241F;
+  --muted: #1E293B;
   --muted-foreground: #94A3B8;
-  --border: rgba(255, 255, 255, 0.10);
-  --header-bg: rgba(9, 13, 11, 0.95);
-  --nav-bg: rgba(9, 13, 11, 0.98);
+  --border: rgba(255, 255, 255, 0.08);
+  --header-bg: #0E1522;
+  --nav-bg: #0E1522;
 }
 
 body {

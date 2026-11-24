@@ -834,57 +834,57 @@ function YieldPredictionContent() {
 
                 {/* Regional Land Unit Breakdown (Bigha & Katha) */}
                 <CardContent className="p-4 sm:p-5 space-y-4">
-                  <h4 className="text-xs font-bold text-brand-forest uppercase tracking-wider">
+                  <h4 className="text-xs font-bold text-brand-forest dark:text-emerald-400 uppercase tracking-wider">
                     Regional Yield Breakdown ({selectedDistrict})
                   </h4>
                   <div className="grid grid-cols-3 gap-2 sm:gap-3 text-center">
-                    <div className="p-3 rounded-2xl bg-cream-50 border border-cream-200">
-                      <span className="text-[10px] sm:text-xs font-semibold text-brand-dark/60 block">
+                    <div className="p-3 rounded-2xl bg-cream-50 dark:bg-[#1B2537] border border-cream-200 dark:border-slate-700/60">
+                      <span className="text-[10px] sm:text-xs font-semibold text-brand-dark/60 dark:text-slate-400 block">
                         Per Bigha (বিঘা)
                       </span>
-                      <span className="text-base sm:text-lg font-black text-brand-forest">
+                      <span className="text-base sm:text-lg font-black text-brand-forest dark:text-emerald-400">
                         {result.yieldPerBighaQuintals} Q/bigha
                       </span>
-                      <span className="text-[10px] text-brand-dark/50 block">
+                      <span className="text-[10px] text-brand-dark/50 dark:text-slate-500 block">
                         ({result.yieldPerBighaTons} Tons)
                       </span>
                     </div>
 
-                    <div className="p-3 rounded-2xl bg-cream-50 border border-cream-200">
-                      <span className="text-[10px] sm:text-xs font-semibold text-brand-dark/60 block">
+                    <div className="p-3 rounded-2xl bg-cream-50 dark:bg-[#1B2537] border border-cream-200 dark:border-slate-700/60">
+                      <span className="text-[10px] sm:text-xs font-semibold text-brand-dark/60 dark:text-slate-400 block">
                         Per Katha (কাঠা)
                       </span>
-                      <span className="text-base sm:text-lg font-black text-brand-forest">
+                      <span className="text-base sm:text-lg font-black text-brand-forest dark:text-emerald-400">
                         {result.yieldPerKathaKg} kg
                       </span>
-                      <span className="text-[10px] text-brand-dark/50 block">Per Katha</span>
+                      <span className="text-[10px] text-brand-dark/50 dark:text-slate-500 block">Per Katha</span>
                     </div>
 
-                    <div className="p-3 rounded-2xl bg-cream-50 border border-cream-200">
-                      <span className="text-[10px] sm:text-xs font-semibold text-brand-dark/60 block">
+                    <div className="p-3 rounded-2xl bg-cream-50 dark:bg-[#1B2537] border border-cream-200 dark:border-slate-700/60">
+                      <span className="text-[10px] sm:text-xs font-semibold text-brand-dark/60 dark:text-slate-400 block">
                         Per Acre (একর)
                       </span>
-                      <span className="text-base sm:text-lg font-black text-brand-forest">
+                      <span className="text-base sm:text-lg font-black text-brand-forest dark:text-emerald-400">
                         {result.estimatedYieldPerAcreTons} T/ac
                       </span>
-                      <span className="text-[10px] text-brand-dark/50 block">Normalized</span>
+                      <span className="text-[10px] text-brand-dark/50 dark:text-slate-500 block">Normalized</span>
                     </div>
                   </div>
                 </CardContent>
               </Card>
 
               {/* Card 2: Cultivation Expenses & Production Economics */}
-              <Card className="border-cream-300 shadow-xs overflow-hidden">
-                <CardHeader className="pb-3 border-b border-cream-200 bg-cream-50/60">
+              <Card className="border-cream-300 dark:border-slate-800 shadow-xs overflow-hidden">
+                <CardHeader className="pb-3 border-b border-cream-200 dark:border-slate-800 bg-cream-50/60 dark:bg-[#141C2B]">
                   <div className="flex items-center justify-between">
-                    <CardTitle className="text-sm sm:text-base font-bold text-brand-dark flex items-center gap-2">
-                      <IndianRupee className="w-4 h-4 text-emerald-700" />
+                    <CardTitle className="text-sm sm:text-base font-bold text-brand-dark dark:text-white flex items-center gap-2">
+                      <IndianRupee className="w-4 h-4 text-emerald-700 dark:text-emerald-400" />
                       <span>Cultivation Expense & Net Return Projection</span>
                     </CardTitle>
                     <button
                       type="button"
                       onClick={() => setShowCostBreakdown(!showCostBreakdown)}
-                      className="text-xs font-bold text-brand-forest hover:underline flex items-center gap-1 cursor-pointer"
+                      className="text-xs font-bold text-brand-forest dark:text-emerald-400 hover:underline flex items-center gap-1 cursor-pointer"
                     >
                       <span>{showCostBreakdown ? 'Hide Breakdown' : 'View Breakdown'}</span>
                       {showCostBreakdown ? <ChevronUp className="w-3.5 h-3.5" /> : <ChevronDown className="w-3.5 h-3.5" />}
@@ -895,40 +895,40 @@ function YieldPredictionContent() {
                 <CardContent className="p-4 sm:p-5 space-y-4">
                   <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
                     {/* Expense Estimate */}
-                    <div className="p-3.5 rounded-2xl bg-amber-50/80 border border-amber-200/90 space-y-1">
-                      <span className="text-[11px] font-bold text-amber-900 block">
+                    <div className="p-3.5 rounded-2xl bg-amber-50/80 dark:bg-amber-950/30 border border-amber-200/90 dark:border-amber-900/50 space-y-1">
+                      <span className="text-[11px] font-bold text-amber-900 dark:text-amber-300 block">
                         Estimated Budget / Expense
                       </span>
-                      <span className="text-lg font-extrabold text-amber-950 block">
+                      <span className="text-lg font-extrabold text-amber-950 dark:text-amber-100 block">
                         ₹{result.economics.totalPlotCostExpected.toLocaleString('en-IN')}
                       </span>
-                      <span className="text-[10px] text-amber-800/80 block">
+                      <span className="text-[10px] text-amber-800/80 dark:text-amber-400/80 block">
                         ₹{result.economics.costPerBighaExpected.toLocaleString('en-IN')} / bigha
                       </span>
                     </div>
 
                     {/* Revenue Estimate */}
-                    <div className="p-3.5 rounded-2xl bg-emerald-50/80 border border-emerald-200/90 space-y-1">
-                      <span className="text-[11px] font-bold text-emerald-900 block">
+                    <div className="p-3.5 rounded-2xl bg-emerald-50/80 dark:bg-emerald-950/30 border border-emerald-200/90 dark:border-emerald-900/50 space-y-1">
+                      <span className="text-[11px] font-bold text-emerald-900 dark:text-emerald-300 block">
                         Gross APMC Realization
                       </span>
-                      <span className="text-lg font-extrabold text-emerald-950 block">
+                      <span className="text-lg font-extrabold text-emerald-950 dark:text-emerald-100 block">
                         ₹{result.economics.projectedRevenueExpected.toLocaleString('en-IN')}
                       </span>
-                      <span className="text-[10px] text-emerald-800/80 block">
+                      <span className="text-[10px] text-emerald-800/80 dark:text-emerald-400/80 block">
                         @ ₹{(liveMandiRate || result.economics.indicativePricePerQuintal).toLocaleString('en-IN')}/Q ({liveMandiRate ? 'Live APMC' : 'Benchmark'})
                       </span>
                     </div>
 
                     {/* Net Profit Estimate */}
-                    <div className="p-3.5 rounded-2xl bg-brand-forest/10 border border-brand-forest/20 space-y-1">
-                      <span className="text-[11px] font-bold text-brand-forest block">
+                    <div className="p-3.5 rounded-2xl bg-brand-forest/10 dark:bg-emerald-950/40 border border-brand-forest/20 dark:border-emerald-800/50 space-y-1">
+                      <span className="text-[11px] font-bold text-brand-forest dark:text-emerald-300 block">
                         Projected Net Margin
                       </span>
-                      <span className="text-lg font-extrabold text-brand-forest block">
+                      <span className="text-lg font-extrabold text-brand-forest dark:text-emerald-200 block">
                         ₹{result.economics.projectedNetProfitExpected.toLocaleString('en-IN')}
                       </span>
-                      <span className="text-[10px] text-brand-forest/80 block">
+                      <span className="text-[10px] text-brand-forest/80 dark:text-emerald-300/80 block">
                         Range: ₹{result.economics.projectedNetProfitMin.toLocaleString('en-IN')} – ₹{result.economics.projectedNetProfitMax.toLocaleString('en-IN')}
                       </span>
                     </div>

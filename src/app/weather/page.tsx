@@ -584,24 +584,24 @@ export default function WeatherPage() {
                     key={idx}
                     className={`p-4 rounded-2xl border text-xs space-y-2 ${
                       risk.level === 'high'
-                        ? 'bg-red-50/80 border-red-200 text-red-950'
-                        : 'bg-amber-50/80 border-amber-200 text-amber-950'
+                        ? 'bg-red-50/80 dark:bg-red-950/30 border-red-200 dark:border-red-900/50 text-red-950 dark:text-red-200'
+                        : 'bg-amber-50/80 dark:bg-amber-950/30 border-amber-200 dark:border-amber-900/50 text-amber-950 dark:text-amber-200'
                     }`}
                   >
                     <div className="flex items-center justify-between">
-                      <span className="font-bold text-sm text-brand-dark flex items-center gap-1.5">
-                        <AlertTriangle className={`w-4 h-4 ${risk.level === 'high' ? 'text-red-600' : 'text-amber-600'}`} />
+                      <span className="font-bold text-sm text-brand-dark dark:text-white flex items-center gap-1.5">
+                        <AlertTriangle className={`w-4 h-4 ${risk.level === 'high' ? 'text-red-600 dark:text-red-400' : 'text-amber-600 dark:text-amber-400'}`} />
                         {risk.cropName}: {risk.riskTitle}
                       </span>
                       <Badge variant={risk.level === 'high' ? 'red' : 'amber'} size="sm">
                         {risk.level.toUpperCase()} RISK
                       </Badge>
                     </div>
-                    <p className="text-brand-dark/80 leading-relaxed">
+                    <p className="text-brand-dark/80 dark:text-slate-300 leading-relaxed">
                       {risk.details}
                     </p>
-                    <div className="p-2.5 rounded-xl bg-white/90 dark:bg-[#000000] border border-cream-200 dark:border-white/10 font-medium text-brand-forest dark:text-emerald-400">
-                      <span className="font-bold block text-[10px] uppercase text-brand-dark/60 dark:text-white/60">Actionable Agronomy Advice:</span>
+                    <div className="p-2.5 rounded-xl bg-white/90 dark:bg-[#1B2537] border border-cream-200 dark:border-slate-700/60 font-medium text-brand-forest dark:text-emerald-400">
+                      <span className="font-bold block text-[10px] uppercase text-brand-dark/60 dark:text-slate-400">Actionable Agronomy Advice:</span>
                       {risk.action}
                     </div>
                   </div>
@@ -616,7 +616,7 @@ export default function WeatherPage() {
             <Card className="hover:border-brand-leaf/40 transition-all">
               <CardHeader className="pb-2">
                 <div className="flex items-center justify-between">
-                  <span className="text-xs font-bold text-brand-dark uppercase tracking-wider">
+                  <span className="text-xs font-bold text-brand-dark dark:text-white uppercase tracking-wider">
                     Pesticide Spray Window
                   </span>
                   <Badge
@@ -634,7 +634,7 @@ export default function WeatherPage() {
                 </div>
               </CardHeader>
               <CardContent>
-                <p className="text-xs text-brand-dark/80 leading-relaxed">
+                <p className="text-xs text-brand-dark/80 dark:text-slate-300 leading-relaxed">
                   {weather.agronomicInsights.sprayCondition.reason}
                 </p>
               </CardContent>
@@ -644,7 +644,7 @@ export default function WeatherPage() {
             <Card className="hover:border-brand-leaf/40 transition-all">
               <CardHeader className="pb-2">
                 <div className="flex items-center justify-between">
-                  <span className="text-xs font-bold text-brand-dark uppercase tracking-wider">
+                  <span className="text-xs font-bold text-brand-dark dark:text-white uppercase tracking-wider">
                     Irrigation Guidance
                   </span>
                   <Badge

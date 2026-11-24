@@ -62,17 +62,17 @@ export function MobileNav() {
             onClick={() => setIsMoreOpen(false)}
             aria-hidden="true"
           />
-          <div className="relative bg-white dark:bg-[#121212] text-gray-900 dark:text-gray-100 rounded-t-3xl border-t border-gray-200 dark:border-white/10 p-4 pb-safe shadow-2xl z-10 max-h-[82vh] overflow-y-auto">
+          <div className="relative bg-white dark:bg-[#0E1522] text-gray-900 dark:text-gray-100 rounded-t-3xl border-t border-gray-200 dark:border-slate-800 p-4 pb-safe shadow-2xl z-10 max-h-[82vh] overflow-y-auto">
             {/* Visual drag handle for tactile mobile feedback */}
             <div className="w-12 h-1.5 bg-gray-300 dark:bg-white/20 rounded-full mx-auto mb-3" />
 
-            <div className="flex items-center justify-between pb-3 border-b border-gray-200 dark:border-white/10">
+            <div className="flex items-center justify-between pb-3 border-b border-gray-200 dark:border-slate-800">
               <span className="text-base font-bold text-brand-dark dark:text-white">
                 {t('nav.more')}
               </span>
               <button
                 onClick={() => setIsMoreOpen(false)}
-                className="p-1.5 rounded-full bg-cream-100 dark:bg-white/10 text-brand-dark/70 dark:text-white/70 hover:text-brand-dark dark:hover:text-white transition-colors"
+                className="p-1.5 rounded-full bg-cream-100 dark:bg-slate-800 text-brand-dark/70 dark:text-white/70 hover:text-brand-dark dark:hover:text-white transition-colors"
                 aria-label="Close menu"
               >
                 <X className="w-5 h-5" />
@@ -88,7 +88,7 @@ export function MobileNav() {
                     key={item.href}
                     href={item.href}
                     onClick={() => setIsMoreOpen(false)}
-                    className="flex items-center gap-2.5 p-3 rounded-xl bg-white dark:bg-[#111418] border border-cream-200 dark:border-white/10 shadow-2xs hover:border-brand-leaf/40 active:bg-cream-100 dark:active:bg-[#1A3528] transition-colors"
+                    className="flex items-center gap-2.5 p-3 rounded-xl bg-white dark:bg-[#141C2B] border border-cream-200 dark:border-slate-800 shadow-2xs hover:border-brand-leaf/40 active:bg-cream-100 dark:active:bg-[#1B2537] transition-colors"
                   >
                     <div className="p-2 rounded-lg bg-cream-100 dark:bg-emerald-950/60 text-brand-leaf dark:text-emerald-400 shrink-0">
                       <Icon className="w-5 h-5" />
@@ -121,7 +121,7 @@ export function MobileNav() {
       {/* Persistent Bottom Bar with Edge-to-Edge Safe-Area Inset and Seamless Background */}
       <nav
         aria-label="Mobile navigation"
-        className="lg:hidden fixed bottom-0 left-0 right-0 z-50 bg-white dark:bg-[#121212] border-t border-gray-200 dark:border-white/10 px-1 pt-1 pb-[max(0.5rem,env(safe-area-inset-bottom))] shadow-lg flex items-center justify-around print:hidden transition-colors duration-200"
+        className="lg:hidden fixed bottom-0 left-0 right-0 z-50 bg-white dark:bg-[#0E1522] border-t border-gray-200 dark:border-slate-800 px-1 pt-1 pb-[max(0.5rem,env(safe-area-inset-bottom))] shadow-lg flex items-center justify-around print:hidden transition-colors duration-200"
       >
         {mainTabs.map((tab) => {
           const isActive = pathname === tab.href || (tab.href !== '/' && pathname.startsWith(tab.href));

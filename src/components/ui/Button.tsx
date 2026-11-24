@@ -33,15 +33,15 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
       primary:
         'bg-brand-forest hover:bg-brand-leaf text-white shadow-sm border border-brand-forest/20',
       secondary:
-        'bg-cream-100 hover:bg-cream-200 text-brand-dark border border-cream-200/80',
+        'bg-cream-100 hover:bg-cream-200 text-brand-dark border border-cream-200/80 dark:bg-slate-800 dark:hover:bg-slate-700 dark:text-white dark:border-slate-700',
       outline:
-        'border-2 border-brand-leaf/40 text-brand-forest hover:bg-brand-leaf/10 bg-transparent',
+        'border-2 border-brand-leaf/40 text-brand-forest hover:bg-brand-leaf/10 dark:text-emerald-400 dark:border-emerald-500/40 dark:hover:bg-emerald-950/40 bg-transparent',
       amber:
         'bg-brand-harvest hover:bg-brand-harvestDark text-white shadow-sm',
       danger:
         'bg-red-700 hover:bg-red-800 text-white shadow-sm',
       ghost:
-        'hover:bg-cream-200/60 text-brand-dark/80 hover:text-brand-dark bg-transparent',
+        'hover:bg-cream-200/60 dark:hover:bg-slate-800/80 text-brand-dark/80 dark:text-slate-200 hover:text-brand-dark dark:hover:text-white bg-transparent',
     };
 
     const sizes = {

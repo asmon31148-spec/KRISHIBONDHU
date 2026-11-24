@@ -68,7 +68,7 @@ export default function RootLayout({
           }}
         />
       </head>
-      <body className={`${plusJakarta.variable} bg-[#F9F7F2] dark:bg-[#000000] text-[#10241A] dark:text-white min-h-screen flex flex-col font-sans overflow-x-clip selection:bg-pine-100 selection:text-pine-900 transition-colors duration-200`}>
+      <body className={`${plusJakarta.variable} bg-[#F9F7F2] dark:bg-[#0B0F17] text-[#10241A] dark:text-white min-h-screen flex flex-col font-sans overflow-x-clip selection:bg-pine-100 selection:text-pine-900 transition-colors duration-200`}>
         <SplashScreen />
         <ThemeProvider>
           <I18nProvider>

@@ -533,21 +533,21 @@ export default function FertilizerCalculatorPage() {
                         }}
                         className={`p-3 rounded-2xl border text-left transition-all cursor-pointer flex flex-col justify-between min-h-[92px] ${
                           isSelected
-                            ? 'border-brand-forest bg-brand-forest/5 ring-2 ring-brand-forest shadow-xs'
-                            : 'border-cream-200 bg-white hover:border-brand-leaf/40'
+                            ? 'border-brand-forest dark:border-emerald-500 bg-brand-forest/5 dark:bg-emerald-950/40 ring-2 ring-brand-forest dark:ring-emerald-500 shadow-xs'
+                            : 'border-cream-200 dark:border-slate-800 bg-white dark:bg-[#141C2B] hover:border-brand-leaf/40 dark:hover:border-slate-700'
                         }`}
                       >
                         <div className="flex items-center justify-between w-full">
-                          <span className="w-7 h-7 rounded-lg bg-emerald-50 text-emerald-700 flex items-center justify-center">
+                          <span className="w-7 h-7 rounded-lg bg-emerald-50 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-400 flex items-center justify-center">
                             <Sprout className="w-3.5 h-3.5" />
                           </span>
-                          {isSelected && <CheckCircle2 className="w-4 h-4 text-brand-forest" />}
+                          {isSelected && <CheckCircle2 className="w-4 h-4 text-brand-forest dark:text-emerald-400" />}
                         </div>
                         <div className="mt-2">
-                          <h4 className="text-xs font-bold text-brand-dark leading-snug line-clamp-1">
+                          <h4 className="text-xs font-bold text-brand-dark dark:text-white leading-snug line-clamp-1">
                             {language === 'bn' ? c.name_bn : language === 'hi' ? c.name_hi : c.name_en}
                           </h4>
-                          <span className="text-[10px] text-brand-dark/60 font-semibold block mt-0.5">
+                          <span className="text-[10px] text-brand-dark/60 dark:text-slate-400 font-semibold block mt-0.5">
                             N:P:K {c.n_kg_ha}:{c.p_kg_ha}:{c.k_kg_ha} kg/ha
                           </span>
                         </div>
@@ -581,24 +581,24 @@ export default function FertilizerCalculatorPage() {
             <CardContent className="space-y-4 pt-4">
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 {/* Bigha Stepper */}
-                <div className="p-4 rounded-2xl bg-cream-50 border border-cream-200">
-                  <span className="text-xs font-bold text-brand-dark block mb-2">
+                <div className="p-4 rounded-2xl bg-cream-50 dark:bg-[#141C2B] border border-cream-200 dark:border-slate-800">
+                  <span className="text-xs font-bold text-brand-dark dark:text-white block mb-2">
                     {language === 'bn' ? 'বিঘা (Bigha)' : 'Bigha (বিঘা)'}
                   </span>
                   <div className="flex items-center justify-between gap-3">
                     <button
                       onClick={() => handleBighaChange(-1)}
                       disabled={bigha <= 0}
-                      className="w-11 h-11 rounded-xl bg-white border border-cream-300 text-brand-dark hover:bg-cream-100 flex items-center justify-center text-lg font-bold disabled:opacity-40 transition-colors cursor-pointer"
+                      className="w-11 h-11 rounded-xl bg-white dark:bg-[#1B2537] border border-cream-300 dark:border-slate-700 text-brand-dark dark:text-white hover:bg-cream-100 dark:hover:bg-slate-700 flex items-center justify-center text-lg font-bold disabled:opacity-40 transition-colors cursor-pointer"
                     >
                       <Minus className="w-4 h-4" />
                     </button>
-                    <span className="text-2xl sm:text-3xl font-black text-brand-forest">
+                    <span className="text-2xl sm:text-3xl font-black text-brand-forest dark:text-emerald-400">
                       {bigha}
                     </span>
                     <button
                       onClick={() => handleBighaChange(1)}
-                      className="w-11 h-11 rounded-xl bg-white border border-cream-300 text-brand-dark hover:bg-cream-100 flex items-center justify-center text-lg font-bold transition-colors cursor-pointer"
+                      className="w-11 h-11 rounded-xl bg-white dark:bg-[#1B2537] border border-cream-300 dark:border-slate-700 text-brand-dark dark:text-white hover:bg-cream-100 dark:hover:bg-slate-700 flex items-center justify-center text-lg font-bold transition-colors cursor-pointer"
                     >
                       <Plus className="w-4 h-4" />
                     </button>
@@ -606,24 +606,24 @@ export default function FertilizerCalculatorPage() {
                 </div>
 
                 {/* Katha Stepper */}
-                <div className="p-4 rounded-2xl bg-cream-50 border border-cream-200">
-                  <span className="text-xs font-bold text-brand-dark block mb-2">
+                <div className="p-4 rounded-2xl bg-cream-50 dark:bg-[#141C2B] border border-cream-200 dark:border-slate-800">
+                  <span className="text-xs font-bold text-brand-dark dark:text-white block mb-2">
                     {language === 'bn' ? 'কাঠা (Katha — ২০ কাঠা = ১ বিঘা)' : 'Katha (কাঠা — 20 Katha = 1 Bigha)'}
                   </span>
                   <div className="flex items-center justify-between gap-3">
                     <button
                       onClick={() => handleKathaChange(-1)}
                       disabled={bigha === 0 && katha <= 0}
-                      className="w-11 h-11 rounded-xl bg-white border border-cream-300 text-brand-dark hover:bg-cream-100 flex items-center justify-center text-lg font-bold disabled:opacity-40 transition-colors cursor-pointer"
+                      className="w-11 h-11 rounded-xl bg-white dark:bg-[#1B2537] border border-cream-300 dark:border-slate-700 text-brand-dark dark:text-white hover:bg-cream-100 dark:hover:bg-slate-700 flex items-center justify-center text-lg font-bold disabled:opacity-40 transition-colors cursor-pointer"
                     >
                       <Minus className="w-4 h-4" />
                     </button>
-                    <span className="text-2xl sm:text-3xl font-black text-brand-forest">
+                    <span className="text-2xl sm:text-3xl font-black text-brand-forest dark:text-emerald-400">
                       {katha}
                     </span>
                     <button
                       onClick={() => handleKathaChange(1)}
-                      className="w-11 h-11 rounded-xl bg-white border border-cream-300 text-brand-dark hover:bg-cream-100 flex items-center justify-center text-lg font-bold transition-colors cursor-pointer"
+                      className="w-11 h-11 rounded-xl bg-white dark:bg-[#1B2537] border border-cream-300 dark:border-slate-700 text-brand-dark dark:text-white hover:bg-cream-100 dark:hover:bg-slate-700 flex items-center justify-center text-lg font-bold transition-colors cursor-pointer"
                     >
                       <Plus className="w-4 h-4" />
                     </button>
@@ -670,14 +670,14 @@ export default function FertilizerCalculatorPage() {
               <CardContent className="pt-0 pb-5 px-4 sm:px-5 space-y-4 border-t border-cream-100">
                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-3">
                   {/* Soil Available N */}
-                  <div className="p-3 rounded-xl bg-cream-50 border border-cream-200">
-                    <label className="text-[11px] font-bold text-brand-dark block mb-1">
+                  <div className="p-3 rounded-xl bg-cream-50 dark:bg-[#141C2B] border border-cream-200 dark:border-slate-800">
+                    <label className="text-[11px] font-bold text-brand-dark dark:text-white block mb-1">
                       Soil Nitrogen (N / জৈব কার্বন)
                     </label>
                     <select
                       value={soilNStatus}
                       onChange={(e) => setSoilNStatus(e.target.value as any)}
-                      className="w-full bg-white border border-cream-300 rounded-lg p-1.5 text-xs font-bold text-brand-dark cursor-pointer"
+                      className="w-full bg-white dark:bg-[#1B2537] border border-cream-300 dark:border-slate-700 rounded-lg p-1.5 text-xs font-bold text-brand-dark dark:text-white cursor-pointer"
                     >
                       <option value="low">Low (+25% N required)</option>
                       <option value="medium">Medium (Standard 100%)</option>
@@ -686,14 +686,14 @@ export default function FertilizerCalculatorPage() {
                   </div>
 
                   {/* Soil Available P */}
-                  <div className="p-3 rounded-xl bg-cream-50 border border-cream-200">
-                    <label className="text-[11px] font-bold text-brand-dark block mb-1">
+                  <div className="p-3 rounded-xl bg-cream-50 dark:bg-[#141C2B] border border-cream-200 dark:border-slate-800">
+                    <label className="text-[11px] font-bold text-brand-dark dark:text-white block mb-1">
                       Soil Phosphorus (P / ফসফরাস)
                     </label>
                     <select
                       value={soilPStatus}
                       onChange={(e) => setSoilPStatus(e.target.value as any)}
-                      className="w-full bg-white border border-cream-300 rounded-lg p-1.5 text-xs font-bold text-brand-dark cursor-pointer"
+                      className="w-full bg-white dark:bg-[#1B2537] border border-cream-300 dark:border-slate-700 rounded-lg p-1.5 text-xs font-bold text-brand-dark dark:text-white cursor-pointer"
                     >
                       <option value="low">Low (+25% P required)</option>
                       <option value="medium">Medium (Standard 100%)</option>
@@ -702,14 +702,14 @@ export default function FertilizerCalculatorPage() {
                   </div>
 
                   {/* Soil Available K */}
-                  <div className="p-3 rounded-xl bg-cream-50 border border-cream-200">
-                    <label className="text-[11px] font-bold text-brand-dark block mb-1">
+                  <div className="p-3 rounded-xl bg-cream-50 dark:bg-[#141C2B] border border-cream-200 dark:border-slate-800">
+                    <label className="text-[11px] font-bold text-brand-dark dark:text-white block mb-1">
                       Soil Potassium (K / পটাশ)
                     </label>
                     <select
                       value={soilKStatus}
                       onChange={(e) => setSoilKStatus(e.target.value as any)}
-                      className="w-full bg-white border border-cream-300 rounded-lg p-1.5 text-xs font-bold text-brand-dark cursor-pointer"
+                      className="w-full bg-white dark:bg-[#1B2537] border border-cream-300 dark:border-slate-700 rounded-lg p-1.5 text-xs font-bold text-brand-dark dark:text-white cursor-pointer"
                     >
                       <option value="low">Low (+25% K required)</option>
                       <option value="medium">Medium (Standard 100%)</option>
@@ -720,14 +720,14 @@ export default function FertilizerCalculatorPage() {
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                   {/* Soil Texture */}
-                  <div className="p-3 rounded-xl bg-cream-50 border border-cream-200">
-                    <label className="text-[11px] font-bold text-brand-dark block mb-1">
+                  <div className="p-3 rounded-xl bg-cream-50 dark:bg-[#141C2B] border border-cream-200 dark:border-slate-800">
+                    <label className="text-[11px] font-bold text-brand-dark dark:text-white block mb-1">
                       Soil Texture (মাটির গঠন)
                     </label>
                     <select
                       value={soilTexture}
                       onChange={(e) => setSoilTexture(e.target.value as any)}
-                      className="w-full bg-white border border-cream-300 rounded-lg p-1.5 text-xs font-bold text-brand-dark cursor-pointer"
+                      className="w-full bg-white dark:bg-[#1B2537] border border-cream-300 dark:border-slate-700 rounded-lg p-1.5 text-xs font-bold text-brand-dark dark:text-white cursor-pointer"
                     >
                       <option value="loam">Loam / দোআঁশ (Balanced)</option>
                       <option value="alluvial_clay">Heavy Alluvial Clay / এঁটেল (High retention)</option>
@@ -737,7 +737,7 @@ export default function FertilizerCalculatorPage() {
                   </div>
 
                   {/* FYM Manure Input */}
-                  <div className="p-3 rounded-xl bg-cream-50 border border-cream-200">
+                  <div className="p-3 rounded-xl bg-cream-50 dark:bg-[#141C2B] border border-cream-200 dark:border-slate-800">
                     <label className="text-[11px] font-bold text-brand-dark block mb-1">
                       Farmyard Manure Applied (গোবর সার - টন/বিঘা)
                     </label>
@@ -845,68 +845,68 @@ export default function FertilizerCalculatorPage() {
               {/* Quantities Grid */}
               <div className="space-y-3">
                 {/* Urea */}
-                <div className="p-3.5 rounded-xl bg-cream-50 border border-cream-200 flex items-center justify-between">
+                <div className="p-3.5 rounded-xl bg-cream-50 dark:bg-[#141C2B] border border-cream-200 dark:border-slate-800 flex items-center justify-between">
                   <div>
-                    <span className="text-xs font-bold text-brand-dark block">
+                    <span className="text-xs font-bold text-brand-dark dark:text-white block">
                       Urea (ইউরিয়া — 46% N)
                     </span>
-                    <span className="text-[11px] text-brand-dark/60 font-semibold">
+                    <span className="text-[11px] text-brand-dark/60 dark:text-slate-400 font-semibold">
                       ≈ {calculationResult.bags.urea_50kg} bags (50kg)
                     </span>
                   </div>
-                  <span className="text-xl font-black text-brand-forest">
-                    {calculationResult.fertilizers_kg.urea} <span className="text-xs font-semibold text-brand-dark/70">kg</span>
+                  <span className="text-xl font-black text-brand-forest dark:text-emerald-400">
+                    {calculationResult.fertilizers_kg.urea} <span className="text-xs font-semibold text-brand-dark/70 dark:text-slate-400">kg</span>
                   </span>
                 </div>
 
                 {/* SSP or DAP */}
-                <div className="p-3.5 rounded-xl bg-cream-50 border border-cream-200 flex items-center justify-between">
+                <div className="p-3.5 rounded-xl bg-cream-50 dark:bg-[#141C2B] border border-cream-200 dark:border-slate-800 flex items-center justify-between">
                   <div>
-                    <span className="text-xs font-bold text-brand-dark block">
+                    <span className="text-xs font-bold text-brand-dark dark:text-white block">
                       {calculationResult.fertilizers_kg.dap_label}
                     </span>
-                    <span className="text-[11px] text-brand-dark/60 font-semibold">
+                    <span className="text-[11px] text-brand-dark/60 dark:text-slate-400 font-semibold">
                       ≈ {calculationResult.bags.ssp_or_dap_50kg} bags (50kg)
                     </span>
                   </div>
-                  <span className="text-xl font-black text-brand-forest">
-                    {calculationResult.fertilizers_kg.ssp_or_dap} <span className="text-xs font-semibold text-brand-dark/70">kg</span>
+                  <span className="text-xl font-black text-brand-forest dark:text-emerald-400">
+                    {calculationResult.fertilizers_kg.ssp_or_dap} <span className="text-xs font-semibold text-brand-dark/70 dark:text-slate-400">kg</span>
                   </span>
                 </div>
 
                 {/* MOP */}
-                <div className="p-3.5 rounded-xl bg-cream-50 border border-cream-200 flex items-center justify-between">
+                <div className="p-3.5 rounded-xl bg-cream-50 dark:bg-[#141C2B] border border-cream-200 dark:border-slate-800 flex items-center justify-between">
                   <div>
-                    <span className="text-xs font-bold text-brand-dark block">
+                    <span className="text-xs font-bold text-brand-dark dark:text-white block">
                       MOP (পটাশ সার — 60% K₂O)
                     </span>
-                    <span className="text-[11px] text-brand-dark/60 font-semibold">
+                    <span className="text-[11px] text-brand-dark/60 dark:text-slate-400 font-semibold">
                       ≈ {calculationResult.bags.mop_50kg} bags (50kg)
                     </span>
                   </div>
-                  <span className="text-xl font-black text-brand-forest">
-                    {calculationResult.fertilizers_kg.mop} <span className="text-xs font-semibold text-brand-dark/70">kg</span>
+                  <span className="text-xl font-black text-brand-forest dark:text-emerald-400">
+                    {calculationResult.fertilizers_kg.mop} <span className="text-xs font-semibold text-brand-dark/70 dark:text-slate-400">kg</span>
                   </span>
                 </div>
               </div>
 
               {/* Elemental Balance Pill */}
-              <div className="p-3 rounded-xl bg-white border border-cream-200 text-xs flex flex-wrap items-center justify-between gap-2 text-brand-dark/80">
+              <div className="p-3 rounded-xl bg-white dark:bg-[#1B2537] border border-cream-200 dark:border-slate-700/60 text-xs flex flex-wrap items-center justify-between gap-2 text-brand-dark/80 dark:text-slate-300">
                 <span className="font-medium">Net Elemental Demand:</span>
-                <span className="font-bold text-brand-forest break-words">
+                <span className="font-bold text-brand-forest dark:text-emerald-400 break-words">
                   N: {calculationResult.required_elemental.n_kg}kg | P: {calculationResult.required_elemental.p_kg}kg | K: {calculationResult.required_elemental.k_kg}kg
                 </span>
               </div>
 
               {/* Farmer Savings Highlight */}
-              <div className="p-3.5 rounded-xl bg-emerald-50 border border-emerald-200 flex items-center justify-between">
+              <div className="p-3.5 rounded-xl bg-emerald-50 dark:bg-emerald-950/30 border border-emerald-200 dark:border-emerald-800/40 flex items-center justify-between">
                 <div className="flex items-center gap-2">
-                  <TrendingDown className="w-5 h-5 text-emerald-700" />
+                  <TrendingDown className="w-5 h-5 text-emerald-700 dark:text-emerald-400" />
                   <div>
-                    <span className="text-xs font-bold text-emerald-950 block">
+                    <span className="text-xs font-bold text-emerald-950 dark:text-emerald-200 block">
                       {language === 'bn' ? 'আনুমানিক অর্থ সাশ্রয়' : 'Estimated Farmer Savings'}
                     </span>
-                    <span className="text-[10px] text-emerald-800">
+                    <span className="text-[10px] text-emerald-800 dark:text-emerald-300">
                       {language === 'bn' ? 'ডিলারের মাত্রাতিরিক্ত সারের অপচয় রোধ' : 'vs unguided dealer over-prescription'}
                     </span>
                   </div>

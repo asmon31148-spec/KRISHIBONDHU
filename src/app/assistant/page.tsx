@@ -507,9 +507,9 @@ What are the specific disease, pest, or nutrient risks for this crop in West Ben
   };
 
   return (
-    <div className="flex flex-col h-full w-full bg-[#FFFFFF] dark:bg-[#000000] relative overflow-hidden text-left transition-colors duration-200">
+    <div className="flex flex-col h-full w-full bg-[#FFFFFF] dark:bg-[#0B0F17] relative overflow-hidden text-left transition-colors duration-200">
       {/* Top Bar with Clean Header & History Controls */}
-      <div className="flex items-center justify-between px-3 sm:px-5 h-[52px] border-b border-gray-200 dark:border-white/10 bg-white/90 dark:bg-[#000000]/90  gap-3 shrink-0">
+      <div className="flex items-center justify-between px-3 sm:px-5 h-[52px] border-b border-gray-200 dark:border-slate-800 bg-white dark:bg-[#0E1522] gap-3 shrink-0">
         <div className="flex items-center gap-2 min-w-0">
           {!isGuest && (
             <button
@@ -561,7 +561,7 @@ What are the specific disease, pest, or nutrient risks for this crop in West Ben
         {isSidebarOpen && !isGuest && (
           <aside className="w-72 lg:w-80 border-r border-[#143224]/10 dark:border-white/10 bg-[#FDFCFA] dark:bg-[#111418] flex flex-col shrink-0 z-10 animate-in slide-in-from-left duration-150">
             {/* Panel Header */}
-            <div className="p-3.5 border-b border-[#143224]/10 dark:border-white/10 flex items-center justify-between bg-[#F9F7F2]/60 dark:bg-[#000000]/60">
+            <div className="p-3.5 border-b border-[#143224]/10 dark:border-slate-800 flex items-center justify-between bg-[#F9F7F2]/60 dark:bg-[#141C2B]">
               <div className="flex items-center gap-2">
                 <span className="text-xs font-bold uppercase tracking-wider text-[#143224] dark:text-white">
                   Saved Chats
@@ -627,7 +627,7 @@ What are the specific disease, pest, or nutrient risks for this crop in West Ben
         )}
 
         {/* Chat Messages Stream Area (Flush Docked flex-1) */}
-        <div className="flex-1 flex flex-col min-h-0 bg-[#FDFCFA] dark:bg-[#000000] overflow-hidden transition-colors duration-200">
+        <div className="flex-1 flex flex-col min-h-0 bg-[#FDFCFA] dark:bg-[#0B0F17] overflow-hidden transition-colors duration-200">
           {/* Active Crop Field Issue Context Pill (If navigated from Farms/Crops/Alerts) */}
           {activeCropContext && (
             <div className="mx-3 mt-3 p-3 rounded-2xl bg-amber-50 dark:bg-amber-950/40 border border-amber-300 dark:border-amber-500/30 flex items-start justify-between gap-3 shadow-2xs shrink-0">
@@ -859,9 +859,9 @@ What are the specific disease, pest, or nutrient risks for this crop in West Ben
           )}
 
           {/* Unified Modern Agronomy Chat Capsule (Pinned Above Mobile Navigation) */}
-          <div className="p-2.5 sm:p-4 border-t border-[#143224]/10 dark:border-white/10 bg-white/95 dark:bg-[#000000]/95  shrink-0">
+          <div className="p-2.5 sm:p-4 border-t border-[#143224]/10 dark:border-slate-800 bg-white dark:bg-[#0E1522] shrink-0">
             <div className="max-w-3xl mx-auto space-y-1">
-              <div className="flex items-center gap-1.5 sm:gap-2 p-1.5 sm:p-2 rounded-2xl bg-[#F9F7F2] dark:bg-[#111418] border border-[#143224]/15 dark:border-white/15 shadow-[0_2px_12px_rgba(0,0,0,0.03)] focus-within:border-[#143224]/40 dark:focus-within:border-emerald-500 focus-within:bg-white dark:focus-within:bg-[#172D22] transition-all">
+              <div className="flex items-center gap-1.5 sm:gap-2 p-1.5 sm:p-2 rounded-2xl bg-[#F9F7F2] dark:bg-[#141C2B] border border-[#143224]/15 dark:border-slate-700/60 shadow-[0_2px_12px_rgba(0,0,0,0.03)] focus-within:border-[#143224]/40 dark:focus-within:border-emerald-500 focus-within:bg-white dark:focus-within:bg-[#1B2537] transition-all">
                 {/* Photo Attachment Input & Trigger */}
                 <input
                   type="file"
