@@ -66,12 +66,12 @@ export function Sidebar() {
   const userDisplayName = profile?.full_name || user?.email?.split('@')[0] || 'Farmer';
 
   return (
-    <aside className="hidden lg:flex flex-col w-64 border-r border-[#143224]/10 bg-[#F9F7F2]/80 h-[calc(100dvh-57px)] sticky top-[57px] p-3.5 shrink-0 print:hidden justify-between">
+    <aside className="hidden lg:flex flex-col w-64 border-r border-[#143224]/10 dark:border-white/10 bg-[#F9F7F2]/80 dark:bg-[#0B1711]/90 backdrop-blur-md h-[calc(100dvh-57px)] sticky top-[57px] p-3.5 shrink-0 print:hidden justify-between transition-colors duration-200">
       {/* Scrollable Grouped 3-Tier Navigation */}
       <nav className="flex-1 space-y-4 overflow-y-auto pr-1 -mr-1 no-scrollbar">
         {navigationHubs.map((hub, idx) => (
           <div key={idx} className="space-y-1">
-            <span className="text-[10px] font-bold uppercase tracking-wider text-[#143224]/50 px-3 block">
+            <span className="text-[10px] font-bold uppercase tracking-wider text-[#143224]/50 dark:text-white/40 px-3 block">
               {hub.title}
             </span>
             <div className="space-y-0.5 pt-0.5">
@@ -84,11 +84,11 @@ export function Sidebar() {
                     href={item.href}
                     className={`flex items-center gap-3 px-3 py-2 rounded-xl text-xs font-semibold transition-all ${
                       isActive
-                        ? 'bg-[#143224] text-white shadow-xs'
-                        : 'text-[#10241A]/80 hover:text-[#10241A] hover:bg-[#EAF2EC]/70'
+                        ? 'bg-[#143224] dark:bg-emerald-500/20 text-white dark:text-[#34D399] dark:border dark:border-emerald-500/30 shadow-xs'
+                        : 'text-[#10241A]/80 dark:text-[#EAF2EC]/75 hover:text-[#10241A] dark:hover:text-white hover:bg-[#EAF2EC]/70 dark:hover:bg-white/5'
                     }`}
                   >
-                    <Icon className={`w-4 h-4 ${isActive ? 'text-[#D9822B]' : 'text-[#1E4733]'}`} />
+                    <Icon className={`w-4 h-4 ${isActive ? 'text-[#D9822B] dark:text-[#34D399]' : 'text-[#1E4733] dark:text-emerald-400'}`} />
                     <span className="truncate">{item.label}</span>
                   </Link>
                 );
@@ -99,14 +99,14 @@ export function Sidebar() {
       </nav>
 
       {/* Bottom Area: Guest Banner OR Dignified Integrated User Profile Card */}
-      <div className="pt-3 mt-2 border-t border-[#143224]/10 shrink-0">
+      <div className="pt-3 mt-2 border-t border-[#143224]/10 dark:border-white/10 shrink-0">
         {isGuest ? (
-          <div className="p-3 rounded-xl bg-amber-50/90 border border-amber-200/80 text-left">
-            <div className="flex items-center gap-1.5 text-xs font-bold text-amber-900 mb-1">
-              <Sparkles className="w-3.5 h-3.5 text-amber-600" />
+          <div className="p-3 rounded-xl bg-amber-50/90 dark:bg-amber-950/30 border border-amber-200/80 dark:border-amber-500/20 text-left">
+            <div className="flex items-center gap-1.5 text-xs font-bold text-amber-900 dark:text-amber-300 mb-1">
+              <Sparkles className="w-3.5 h-3.5 text-amber-600 dark:text-amber-400" />
               <span>{t('guest.bannerTitle')}</span>
             </div>
-            <p className="text-[11px] text-amber-900/80 leading-relaxed mb-2">
+            <p className="text-[11px] text-amber-900/80 dark:text-amber-200/70 leading-relaxed mb-2">
               {t('guest.bannerDesc')}
             </p>
             <Link
@@ -117,20 +117,20 @@ export function Sidebar() {
             </Link>
           </div>
         ) : (
-          <div className="flex items-center justify-between p-2 rounded-xl bg-[#EAF2EC]/70 border border-[#143224]/10 hover:bg-[#EAF2EC] transition-colors">
+          <div className="flex items-center justify-between p-2 rounded-xl bg-[#EAF2EC]/70 dark:bg-[#13261D] border border-[#143224]/10 dark:border-white/10 hover:bg-[#EAF2EC] dark:hover:bg-[#1A3326] transition-colors">
             <Link
               href="/profile"
               className="flex items-center gap-2.5 min-w-0 flex-1 group"
               title="View profile & settings"
             >
-              <div className="w-8 h-8 rounded-full bg-[#143224] text-[#D9822B] flex items-center justify-center font-bold text-xs shrink-0 shadow-2xs">
+              <div className="w-8 h-8 rounded-full bg-[#143224] dark:bg-emerald-700 text-[#D9822B] dark:text-emerald-100 flex items-center justify-center font-bold text-xs shrink-0 shadow-2xs ring-1 ring-white/20">
                 {userInitial}
               </div>
               <div className="min-w-0 flex-1 text-left">
-                <p className="text-xs font-bold text-[#143224] truncate group-hover:text-[#D9822B] transition-colors">
+                <p className="text-xs font-bold text-[#143224] dark:text-[#EAF2EC] truncate group-hover:text-[#D9822B] dark:group-hover:text-emerald-400 transition-colors">
                   {userDisplayName}
                 </p>
-                <span className="text-[10px] text-[#5E7367] block truncate">
+                <span className="text-[10px] text-[#5E7367] dark:text-white/40 block truncate">
                   {user?.email || 'Active Account'}
                 </span>
               </div>
@@ -139,7 +139,7 @@ export function Sidebar() {
               type="button"
               onClick={() => signOut()}
               title={t('nav.logout') || 'Sign Out'}
-              className="p-1.5 rounded-lg text-[#143224]/70 hover:text-red-700 hover:bg-red-50 transition-colors ml-1 shrink-0 cursor-pointer"
+              className="p-1.5 rounded-lg text-[#143224]/70 dark:text-white/60 hover:text-red-700 dark:hover:text-red-400 hover:bg-red-50 dark:hover:bg-red-950/40 transition-colors ml-1 shrink-0 cursor-pointer"
               aria-label="Sign Out"
             >
               <LogOut className="w-4 h-4" />

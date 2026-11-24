@@ -3,6 +3,7 @@ import { Plus_Jakarta_Sans } from 'next/font/google';
 import './globals.css';
 import { I18nProvider } from '@/i18n/context';
 import { AuthProvider } from '@/context/AuthContext';
+import { ThemeProvider } from '@/context/ThemeContext';
 import { ToastProvider } from '@/components/ui/Toast';
 import { Navbar } from '@/components/layout/Navbar';
 import { Sidebar } from '@/components/layout/Sidebar';
@@ -30,7 +31,10 @@ export const viewport: Viewport = {
   initialScale: 1,
   maximumScale: 5,
   viewportFit: 'cover',
-  themeColor: '#1B4332',
+  themeColor: [
+    { media: '(prefers-color-scheme: light)', color: '#F9F7F2' },
+    { media: '(prefers-color-scheme: dark)', color: '#0B1711' },
+  ],
 };
 
 export default function RootLayout({
@@ -40,19 +44,40 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className="overflow-x-clip" suppressHydrationWarning>
-      <body className={`${plusJakarta.variable} bg-[#F9F7F2] text-[#10241A] min-h-screen flex flex-col font-sans overflow-x-clip selection:bg-pine-100 selection:text-pine-900`}>
-        <I18nProvider>
-          <AuthProvider>
-            <ToastProvider>
-              <Navbar />
-              <div className="flex-1 flex w-full pb-16 lg:pb-0 overflow-x-clip min-h-[calc(100vh-57px)]">
-                <Sidebar />
-                <ContentWrapper>{children}</ContentWrapper>
-              </div>
-              <MobileNav />
-            </ToastProvider>
-          </AuthProvider>
-        </I18nProvider>
+      <head>
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+              try {
+                var saved = localStorage.getItem('krishibondhu-theme');
+                var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+                if (saved === 'dark' || (!saved && prefersDark)) {
+                  document.documentElement.classList.add('dark');
+                  document.documentElement.classList.remove('light');
+                } else {
+                  document.documentElement.classList.add('light');
+                  document.documentElement.classList.remove('dark');
+                }
+              } catch (e) {}
+            `,
+          }}
+        />
+      </head>
+      <body className={`${plusJakarta.variable} bg-[#F9F7F2] dark:bg-[#0B1711] text-[#10241A] dark:text-[#EAF2EC] min-h-screen flex flex-col font-sans overflow-x-clip selection:bg-pine-100 selection:text-pine-900 transition-colors duration-200`}>
+        <ThemeProvider>
+          <I18nProvider>
+            <AuthProvider>
+              <ToastProvider>
+                <Navbar />
+                <div className="flex-1 flex w-full pb-16 lg:pb-0 overflow-x-clip min-h-[calc(100vh-57px)]">
+                  <Sidebar />
+                  <ContentWrapper>{children}</ContentWrapper>
+                </div>
+                <MobileNav />
+              </ToastProvider>
+            </AuthProvider>
+          </I18nProvider>
+        </ThemeProvider>
         <script
           dangerouslySetInnerHTML={{
             __html: `

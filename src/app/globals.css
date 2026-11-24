@@ -5,7 +5,26 @@
 :root {
   --background: #F9F7F2;
   --foreground: #10241A;
+  --card: #FFFFFF;
+  --card-foreground: #10241A;
+  --muted: #EAF2EC;
+  --muted-foreground: #4B6354;
+  --border: rgba(20, 50, 36, 0.10);
+  --header-bg: rgba(249, 247, 242, 0.95);
+  --nav-bg: rgba(249, 247, 242, 0.98);
   --font-inter: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+}
+
+.dark {
+  --background: #0B1711;
+  --foreground: #EAF2EC;
+  --card: #13261D;
+  --card-foreground: #EAF2EC;
+  --muted: #1A3326;
+  --muted-foreground: #94A89E;
+  --border: rgba(255, 255, 255, 0.08);
+  --header-bg: rgba(11, 23, 17, 0.95);
+  --nav-bg: rgba(11, 23, 17, 0.98);
 }
 
 body {
@@ -14,6 +33,7 @@ body {
   font-family: var(--font-inter), system-ui, -apple-system, 'Noto Sans Bengali', 'Noto Sans Devanagari', 'Hind Siliguri', sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  transition: background-color 0.2s ease, color 0.2s ease;
 }
 
 /* Accessible focus ring */

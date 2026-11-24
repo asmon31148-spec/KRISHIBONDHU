@@ -55,24 +55,24 @@ export function MobileNav() {
         <div
           role="dialog"
           aria-modal="true"
-          className="lg:hidden fixed inset-0 z-[60] bg-brand-dark/70 backdrop-blur-xs flex flex-col justify-end animate-in fade-in duration-150 print:hidden"
+          className="lg:hidden fixed inset-0 z-[60] bg-black/60 dark:bg-black/80 backdrop-blur-xs flex flex-col justify-end animate-in fade-in duration-150 print:hidden"
         >
           <div
             className="fixed inset-0"
             onClick={() => setIsMoreOpen(false)}
             aria-hidden="true"
           />
-          <div className="relative bg-cream-50 rounded-t-3xl border-t border-cream-200 p-4 pb-safe shadow-2xl z-10 max-h-[82vh] overflow-y-auto">
+          <div className="relative bg-cream-50 dark:bg-[#0F1E16] text-[#10241A] dark:text-[#EAF2EC] rounded-t-3xl border-t border-cream-200 dark:border-white/10 p-4 pb-safe shadow-2xl z-10 max-h-[82vh] overflow-y-auto">
             {/* Visual drag handle for tactile mobile feedback */}
-            <div className="w-12 h-1.5 bg-cream-300 rounded-full mx-auto mb-3" />
+            <div className="w-12 h-1.5 bg-cream-300 dark:bg-white/20 rounded-full mx-auto mb-3" />
 
-            <div className="flex items-center justify-between pb-3 border-b border-cream-200">
-              <span className="text-base font-bold text-brand-dark">
+            <div className="flex items-center justify-between pb-3 border-b border-cream-200 dark:border-white/10">
+              <span className="text-base font-bold text-brand-dark dark:text-white">
                 {t('nav.more')}
               </span>
               <button
                 onClick={() => setIsMoreOpen(false)}
-                className="p-1.5 rounded-full bg-cream-100 text-brand-dark/70 hover:text-brand-dark transition-colors"
+                className="p-1.5 rounded-full bg-cream-100 dark:bg-white/10 text-brand-dark/70 dark:text-white/70 hover:text-brand-dark dark:hover:text-white transition-colors"
                 aria-label="Close menu"
               >
                 <X className="w-5 h-5" />
@@ -88,12 +88,12 @@ export function MobileNav() {
                     key={item.href}
                     href={item.href}
                     onClick={() => setIsMoreOpen(false)}
-                    className="flex items-center gap-2.5 p-3 rounded-xl bg-white border border-cream-200 shadow-2xs hover:border-brand-leaf/40 active:bg-cream-100 transition-colors"
+                    className="flex items-center gap-2.5 p-3 rounded-xl bg-white dark:bg-[#13261D] border border-cream-200 dark:border-white/10 shadow-2xs hover:border-brand-leaf/40 active:bg-cream-100 dark:active:bg-[#1A3528] transition-colors"
                   >
-                    <div className="p-2 rounded-lg bg-cream-100 text-brand-leaf shrink-0">
+                    <div className="p-2 rounded-lg bg-cream-100 dark:bg-emerald-950/60 text-brand-leaf dark:text-emerald-400 shrink-0">
                       <Icon className="w-5 h-5" />
                     </div>
-                    <span className="text-xs font-bold text-brand-dark text-left leading-tight">
+                    <span className="text-xs font-bold text-brand-dark dark:text-[#EAF2EC] text-left leading-tight">
                       {item.label}
                     </span>
                   </Link>
@@ -108,7 +108,7 @@ export function MobileNav() {
                   setIsMoreOpen(false);
                   signOut();
                 }}
-                className="w-full mt-2 mb-6 flex items-center justify-center gap-2 py-3 rounded-xl bg-red-50 text-red-700 font-semibold text-sm hover:bg-red-100 active:scale-[0.99] transition-all"
+                className="w-full mt-2 mb-6 flex items-center justify-center gap-2 py-3 rounded-xl bg-red-50 dark:bg-red-950/40 text-red-700 dark:text-red-400 font-semibold text-sm hover:bg-red-100 dark:hover:bg-red-900/40 active:scale-[0.99] transition-all"
               >
                 <LogOut className="w-4 h-4" />
                 <span>{t('nav.logout')}</span>
@@ -118,10 +118,10 @@ export function MobileNav() {
         </div>
       )}
 
-      {/* Persistent Bottom Bar with 85-90% Frosted Liquid Glass & Safe-Area Inset */}
+      {/* Persistent Bottom Bar with Edge-to-Edge Safe-Area Inset and Seamless Background */}
       <nav
         aria-label="Mobile navigation"
-        className="lg:hidden fixed bottom-0 left-0 right-0 z-50 bg-[#F9F7F2]/95 backdrop-blur-md border-t border-[#143224]/12 px-1 pt-1.5 pb-[max(0.6rem,env(safe-area-inset-bottom))] shadow-[0_-4px_24px_rgba(20,50,36,0.08)] flex items-center justify-around print:hidden"
+        className="lg:hidden fixed bottom-0 left-0 right-0 z-50 bg-[#F9F7F2]/98 dark:bg-[#0B1711]/98 backdrop-blur-md border-t border-[#143224]/10 dark:border-white/10 px-1 pt-1.5 pb-[max(0.75rem,env(safe-area-inset-bottom))] shadow-[0_-4px_24px_rgba(0,0,0,0.06)] flex items-center justify-around print:hidden transition-colors duration-200"
       >
         {mainTabs.map((tab) => {
           const isActive = pathname === tab.href || (tab.href !== '/' && pathname.startsWith(tab.href));
@@ -132,13 +132,15 @@ export function MobileNav() {
               href={tab.href}
               className={`flex flex-col items-center justify-center min-w-[62px] min-h-[48px] py-1 px-1 rounded-xl text-[10px] transition-all ${
                 isActive
-                  ? 'text-[#143224] font-extrabold'
-                  : 'text-[#10241A]/75 hover:text-[#143224] font-semibold'
+                  ? 'text-[#143224] dark:text-[#34D399] font-extrabold'
+                  : 'text-[#10241A]/75 dark:text-[#EAF2EC]/70 hover:text-[#143224] dark:hover:text-[#EAF2EC] font-semibold'
               }`}
             >
               <div
                 className={`p-1.5 rounded-xl transition-all ${
-                  isActive ? 'bg-[#143224] text-[#D9822B] shadow-xs' : 'text-[#10241A]/70'
+                  isActive
+                    ? 'bg-[#143224] dark:bg-emerald-500/20 text-[#D9822B] dark:text-[#34D399] dark:border dark:border-emerald-500/30 shadow-xs'
+                    : 'text-[#10241A]/70 dark:text-[#EAF2EC]/60'
                 }`}
               >
                 <Icon className="w-4 h-4 sm:w-5 sm:h-5" />
@@ -152,9 +154,9 @@ export function MobileNav() {
         <button
           type="button"
           onClick={() => setIsMoreOpen(true)}
-          className="flex flex-col items-center justify-center min-w-[62px] min-h-[48px] py-1 px-1 rounded-xl text-[10px] font-semibold text-brand-dark/75 hover:text-brand-forest"
+          className="flex flex-col items-center justify-center min-w-[62px] min-h-[48px] py-1 px-1 rounded-xl text-[10px] font-semibold text-[#10241A]/75 dark:text-[#EAF2EC]/70 hover:text-brand-forest dark:hover:text-emerald-400"
         >
-          <div className="p-1.5 rounded-xl text-brand-dark/70">
+          <div className="p-1.5 rounded-xl text-[#10241A]/70 dark:text-[#EAF2EC]/60">
             <Menu className="w-4 h-4 sm:w-5 sm:h-5" />
           </div>
           <span className="leading-tight mt-0.5">{t('nav.more')}</span>
